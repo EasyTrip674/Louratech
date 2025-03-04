@@ -12,23 +12,14 @@ import PhoneInput from "@/components/form/group-input/PhoneInput";
 import { PlusIcon } from "@/icons";
 import { countriesCode } from "@/lib/countries";
 import { Plus } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import {  createClientSchema } from "./client.create.shema";
+import { doCreateClient } from "./client.create.action";
 
 // Zod validation schema
-const clientSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  email: z.string().email({ message: "Invalid email address" }),
-  phone: z.string().optional(),
-  passport: z.string().optional(),
-  address: z.string().optional(),
-  birthDate: z.string().optional(),
-  fatherLastName: z.string().optional(),
-  fatherFirstName: z.string().optional(),
-  motherLastName: z.string().optional(),
-  motherFirstName: z.string().optional(),
-});
 
 // Infer the TypeScript type from the Zod schema
-type ClientFormData = z.infer<typeof clientSchema>;
+type ClientFormData = z.infer<typeof createClientSchema>;
 
 export default function CreateClientFormModal() {
   const { isOpen, openModal, closeModal } = useModal();
@@ -43,7 +34,7 @@ export default function CreateClientFormModal() {
     reset,
     watch,
   } = useForm<ClientFormData>({
-    resolver: zodResolver(clientSchema),
+    resolver: zodResolver(createClientSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -59,7 +50,17 @@ export default function CreateClientFormModal() {
   });
 
   // Watch form values in real-time
-  const watchedValues = watch();
+  // const watchedValues = watch();
+
+  const createMutation = useMutation({
+    mutationFn: async (data: ClientFormData) => {
+    await doCreateClient(data);
+  },
+    onSuccess: () => {
+      closeModal();
+      reset();
+    },
+  });
 
   const onSubmit = (data: ClientFormData) => {
     console.log("Saving client data:", data);
@@ -79,7 +80,7 @@ export default function CreateClientFormModal() {
       </Button>
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Client Information</h4>
+          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Ajouter un nouveau client</h4>
           
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             {/* Name */}
@@ -153,9 +154,9 @@ export default function CreateClientFormModal() {
           </div>
         </form>
         {/* Debugging: Display watched values */}
-        <pre className="mt-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs text-gray-700 dark:text-gray-300">
+        {/* <pre className="mt-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs text-gray-700 dark:text-gray-300">
           {JSON.stringify(watchedValues, null, 2)}
-        </pre>
+        </pre> */}
       </Modal>
     </>
   );
