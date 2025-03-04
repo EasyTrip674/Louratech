@@ -34,12 +34,12 @@ const navItems: NavItem[] = [
   },
   {
     icon: <CalenderIcon />,
-    name: "Procedures",
-    path: "/calendar",
+    name: "Gestion",
+    path: "/services/gestion",
     subItems: [
-      { name: "Statistiques", path: "/date-time", pro: false },
-      { name: "Cliens", path: "/calendar", pro: false },
-      { name: "Destinations", path: "/date-time", pro: false,new:true },
+      { name: "Statistiques", path: "/services/gestion/statistiques", pro: false },
+      { name: "Clients", path: "/services/gestion/clients", pro: false },
+      { name: "Procedures", path: "/services/gestion/procedures", pro: false,new:true },
     ],
   },
   {
@@ -52,11 +52,6 @@ const navItems: NavItem[] = [
     name: "Comptabilites",
     icon: <ListIcon />,
     subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Clients",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
   {
     name: "Ai",
