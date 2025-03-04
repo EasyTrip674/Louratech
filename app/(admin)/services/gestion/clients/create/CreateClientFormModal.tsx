@@ -15,6 +15,8 @@ import { Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import {  createClientSchema } from "./client.create.shema";
 import { doCreateClient } from "./client.create.action";
+import SuccessModal from "@/components/alerts/SuccessModal";
+import ErrorModal from "@/components/alerts/ErrorModal";
 
 // Zod validation schema
 
@@ -23,8 +25,8 @@ type ClientFormData = z.infer<typeof createClientSchema>;
 
 export default function CreateClientFormModal() {
   const { isOpen, openModal, closeModal } = useModal();
-
-  
+  const successModal = useModal();
+  const errorModal = useModal();
 
   const {
     control,
@@ -35,7 +37,8 @@ export default function CreateClientFormModal() {
   } = useForm<ClientFormData>({
     resolver: zodResolver(createClientSchema),
     defaultValues: {
-      name: "",
+      lastName: "",
+      firstName: "",
       email: "",
       phone: "",
       passport: "",
@@ -53,12 +56,23 @@ export default function CreateClientFormModal() {
 
   const createMutation = useMutation({
     mutationFn: async (data: ClientFormData) => {
-    await doCreateClient(data);
-  },
-    onSuccess: () => {
+    const result = await doCreateClient(data);
+    if (result?.data?.success) {
       closeModal();
       reset();
+      successModal.openModal();
+    } else {
+      closeModal();
+      errorModal.openModal();
+    }
+  },
+    onSuccess: () => {
+     
     },
+    onError: (error) => {
+      console.error("Failed to create client", error);
+    },
+    
   });
 
   const onSubmit = (data: ClientFormData) => {
@@ -77,6 +91,8 @@ export default function CreateClientFormModal() {
 
   return (
     <>
+    <SuccessModal successModal={successModal} />
+    <ErrorModal errorModal={errorModal} onRetry={openModal} />
       <Button variant="outline" size="sm" onClick={openModal} className="bg-gray-200">
         <Plus className="w-4 h-4 dark:text-white" />
       </Button>
@@ -84,18 +100,18 @@ export default function CreateClientFormModal() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Ajouter un nouveau client</h4>
           
-          <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-            {/* Name */}
+          <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 border-b border-gray-200 dark:border-gray-800 pb-6">
+            {/* firstName */}
             <div className="col-span-1">
-              <Label>Full Name</Label>
-              <Input {...register("name")} error={!!errors.name} hint={errors.name?.message}  type="text" placeholder="Enter full name" />
+              <Label>Prenom</Label>
+              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message}  type="text" placeholder="Enter full name" />
             </div>
-
-            {/* Email */}
+            {/* lastName */}
             <div className="col-span-1">
-              <Label>Email</Label>
-              <Input {...register("email")} error={!!errors.email} hint={errors.email?.message} type="email" placeholder="Enter email address" />
+              <Label>Nom</Label>
+              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message}  type="text" placeholder="Enter full name" />
             </div>
+          
 
             {/* Phone */}
             <div className="col-span-1">
@@ -122,7 +138,7 @@ export default function CreateClientFormModal() {
             </div>
 
             {/* Birth Date */}
-            <div className="col-span-1">
+            <div className="col-span-2">
               <Label>Birth Date</Label>
               <Input {...register("birthDate")} type="date" />
             </div>
@@ -145,6 +161,26 @@ export default function CreateClientFormModal() {
             <div className="col-span-1">
               <Label>Mother's Last Name</Label>
               <Input {...register("motherLastName")} type="text" placeholder="Enter mother's last name" />
+            </div>
+          </div>
+
+
+          <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 mt-6">
+              {/* Email */}
+            <div className="col-span-2">
+              <Label>Email</Label>
+              <Input {...register("email")} error={!!errors.email} hint={errors.email?.message} type="email" placeholder="Enter email address" />
+            </div>
+             {/* Password */}
+            <div className="col-span-1">
+              <Label>Password</Label>
+              <Input {...register("password")} error={!!errors.password} hint={errors.password?.message} type="password" placeholder="Enter password" />
+            </div>
+
+            {/* Confirm Password */}
+            <div className="col-span-1">
+              <Label>Confirm Password</Label>
+              <Input {...register("confirmPassword")} error={!!errors.confirmPassword} hint={errors.confirmPassword?.message} type="password" placeholder="Confirm password" />
             </div>
           </div>
 

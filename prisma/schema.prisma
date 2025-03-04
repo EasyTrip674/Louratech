@@ -43,24 +43,21 @@ enum Role {
 model User {
   id            String        @id @default(cuid())
   email         String        @unique
-  name          String
+  firstName          String?
+  lastName          String
   password      String
   role          Role          @default(USER)
+  active        Boolean       @default(true)
   organization  Organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   client       Client?
   admin        Admin?
-
-  
 }
 
 model Client {
   id          String   @id @default(cuid())
-  name        String
-  email       String
-
   phone       String?
   passport    String?
   address     String?
@@ -84,8 +81,6 @@ model Client {
 
 model Admin {
   id          String   @id @default(cuid())
-  name        String
-  email       String
   phone       String
   address     String
   createdAt   DateTime @default(now())
@@ -97,8 +92,6 @@ model Admin {
   organization  Organization @relation(fields: [organizationId], references: [id])
   organizationId String
 }
-
-
 
 model StepProcedure {
   id          String   @id @default(cuid())

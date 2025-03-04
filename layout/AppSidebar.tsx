@@ -308,8 +308,8 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link href="/">
-          {isExpanded || isHovered || isMobileOpen ? (
+        <Link href="/services">
+          {/* {isExpanded || isHovered || isMobileOpen ? (
             <>
               <Image
                 className="dark:hidden"
@@ -333,7 +333,8 @@ const AppSidebar: React.FC = () => {
               width={32}
               height={32}
             />
-          )}
+          )} */}
+          <p><span className="text-brand-500">M</span>G</p>
         </Link>
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
