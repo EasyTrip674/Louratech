@@ -7,7 +7,10 @@ import { z } from "zod";
 
 class ActionError extends Error {}
 
-// Base client.
+
+// ✅ Définition du client de base avec un schéma de métadonnées valide
+
+
 const actionClient = createSafeActionClient({
   handleServerError(e) {
     console.error("Action error:", e.message);
@@ -18,20 +21,17 @@ const actionClient = createSafeActionClient({
 
     return DEFAULT_SERVER_ERROR_MESSAGE;
   },
-  defineMetadataSchema() {
-    return z.object({
+  defineMetadataSchema: () => 
+    z.object({
       actionName: z.string(),
-    });
-  },
-  // Define logging middleware.
-}).use(async ({ next, clientInput, metadata }) => {
+    }),
+})
+// ✅ Middleware de logging
+.use(async ({ next, clientInput, metadata }) => {
   console.log("LOGGING MIDDLEWARE");
 
   const startTime = performance.now();
-
-  // Here we await the action execution.
   const result = await next();
-
   const endTime = performance.now();
 
   console.log("Result ->", result);
@@ -39,37 +39,28 @@ const actionClient = createSafeActionClient({
   console.log("Metadata ->", metadata);
   console.log("Action execution took", endTime - startTime, "ms");
 
-  // And then return the result of the awaited action.
   return result;
 });
 
-// Auth client defined by extending the base one.
-// Note that the same initialization options and middleware functions of the base client
-// will also be used for this one.
+// ✅ Client d'authentification basé sur `actionClient`
 export const authActionClient = actionClient
-  // Define authorization middleware.
   .use(async ({ next }) => {
-
-    // Return the next middleware with `userId` value in the context
-    return next({ ctx: { userId:null } });
+    return next({ ctx: { userId: null } });
   });
 
-
-  export const superAdminAction = authActionClient
-  // Define authorization middleware.
+// ✅ Client pour les super-admins
+export const superAdminAction = authActionClient
   .use(async ({ next }) => {
-
-
-
-    // Return the next middleware with `userId` value in the context
-    return next({ ctx: { userId:null } });
+    return next({ ctx: { userId: null } });
   });
 
+// ✅ Client pour les admins avec validation de `metadata`
+export const adminAction = authActionClient
+  .use(async ({ metadata, clientInput, next }) => {
+    // Vérification que `metadata` est bien défini avant d'exécuter l'action
+    if (!metadata?.actionName) {
+      throw new ActionError("Missing required metadata: actionName");
+    }
 
-  export const adminAction = authActionClient
-  // Define authorization middleware.
-  .use(async ({ next }) => {
-
-    // Return the next middleware with `userId` value in the context
-    return next({ ctx: { userId:null } });
+    return next({ ctx: { userId: null } });
   });

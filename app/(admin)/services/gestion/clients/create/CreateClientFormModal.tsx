@@ -32,7 +32,6 @@ export default function CreateClientFormModal() {
     handleSubmit,
     formState: { errors },
     reset,
-    watch,
   } = useForm<ClientFormData>({
     resolver: zodResolver(createClientSchema),
     defaultValues: {
@@ -66,8 +65,11 @@ export default function CreateClientFormModal() {
     console.log("Saving client data:", data);
     // TODO: Save client data to the database
     // INFO: You can use the `data` object to send the form data to the server
-    
-
+    if (data) {
+     createMutation.mutate(data);
+    }else{
+      console.log("No data to save");
+    }
     // INFO: Close the modal and reset the form
     // closeModal();
     // reset(); // Reset form after submission
@@ -150,7 +152,9 @@ export default function CreateClientFormModal() {
             <Button type="button" size="sm" variant="outline" onClick={() => { closeModal(); reset(); }}>
               Annuler
             </Button>
-            <Button type="submit" size="sm">Creer</Button>
+            <Button type="submit" size="sm" disabled={createMutation.isPending}>
+              {createMutation.isPending ? "En cours..." : "Enregistrer"}
+            </Button>
           </div>
         </form>
         {/* Debugging: Display watched values */}
