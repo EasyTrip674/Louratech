@@ -1,0 +1,60 @@
+// components/icons/Icons.tsx
+import React from 'react';
+import Image from 'next/image';
+
+interface IconProps {
+  className?: string;
+}
+
+export const PlusIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/plus.svg" alt="Plus Icon" width={24} height={24} className={className} />;
+export const CloseIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/close.svg" alt="Close Icon" width={24} height={24} className={className} />;
+export const BoxIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/box.svg" alt="Box Icon" width={24} height={24} className={className} />;
+export const CheckCircleIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/check-circle.svg" alt="Check Circle Icon" width={24} height={24} className={className} />;
+export const AlertIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/alert.svg" alt="Alert Icon" width={24} height={24} className={className} />;
+export const InfoIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/info.svg" alt="Info Icon" width={24} height={24} className={className} />;
+export const ErrorIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/info-hexa.svg" alt="Error Icon" width={24} height={24} className={className} />;
+export const BoltIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/bolt.svg" alt="Bolt Icon" width={24} height={24} className={className} />;
+export const ArrowUpIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/arrow-up.svg" alt="Arrow Up Icon" width={24} height={24} className={className} />;
+export const ArrowDownIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/arrow-down.svg" alt="Arrow Down Icon" width={24} height={24} className={className} />;
+export const FolderIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/folder.svg" alt="Folder Icon" width={24} height={24} className={className} />;
+export const VideoIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/videos.svg" alt="Video Icon" width={24} height={24} className={className} />;
+export const AudioIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/audio.svg" alt="Audio Icon" width={24} height={24} className={className} />;
+export const GridIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/grid.svg" alt="Grid Icon" width={24} height={24} className={className} />;
+export const FileIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/file.svg" alt="File Icon" width={24} height={24} className={className} />;
+export const DownloadIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/download.svg" alt="Download Icon" width={24} height={24} className={className} />;
+export const ArrowRightIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/arrow-right.svg" alt="Arrow Right Icon" width={24} height={24} className={className} />;
+export const GroupIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/group.svg" alt="Group Icon" width={24} height={24} className={className} />;
+export const BoxIconLine: React.FC<IconProps> = ({ className }) => <Image src="/icons/box-line.svg" alt="Box Line Icon" width={24} height={24} className={className} />;
+export const ShootingStarIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/shooting-star.svg" alt="Shooting Star Icon" width={24} height={24} className={className} />;
+export const DollarLineIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/dollar-line.svg" alt="Dollar Line Icon" width={24} height={24} className={className} />;
+export const TrashBinIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/trash.svg" alt="Trash Bin Icon" width={24} height={24} className={className} />;
+export const AngleUpIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/angle-up.svg" alt="Angle Up Icon" width={24} height={24} className={className} />;
+export const AngleDownIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/angle-down.svg" alt="Angle Down Icon" width={24} height={24} className={className} />;
+export const PencilIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/pencil.svg" alt="Pencil Icon" width={24} height={24} className={className} />;
+export const CheckLineIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/check-line.svg" alt="Check Line Icon" width={24} height={24} className={className} />;
+export const CloseLineIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/close-line.svg" alt="Close Line Icon" width={24} height={24} className={className} />;
+export const ChevronDownIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/chevron-down.svg" alt="Chevron Down Icon" width={24} height={24} className={className} />;
+export const ChevronUpIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/chevron-up.svg" alt="Chevron Up Icon" width={24} height={24} className={className} />;
+export const PaperPlaneIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/paper-plane.svg" alt="Paper Plane Icon" width={24} height={24} className={className} />;
+export const LockIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/lock.svg" alt="Lock Icon" width={24} height={24} className={className} />;
+export const EnvelopeIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/envelope.svg" alt="Envelope Icon" width={24} height={24} className={className} />;
+export const UserIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/user-line.svg" alt="User Icon" width={24} height={24} className={className} />;
+export const CalenderIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/calender-line.svg" alt="Calendar Icon" width={24} height={24} className={className} />;
+export const EyeIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/eye.svg" alt="Eye Icon" width={24} height={24} className={className} />;
+export const EyeCloseIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/eye-close.svg" alt="Eye Close Icon" width={24} height={24} className={className} />;
+export const TimeIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/time.svg" alt="Time Icon" width={24} height={24} className={className} />;
+export const CopyIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/copy.svg" alt="Copy Icon" width={24} height={24} className={className} />;
+export const ChevronLeftIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/chevron-left.svg" alt="Chevron Left Icon" width={24} height={24} className={className} />;
+export const UserCircleIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/user-circle.svg" alt="User Circle Icon" width={24} height={24} className={className} />;
+export const ListIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/list.svg" alt="List Icon" width={24} height={24} className={className} />;
+export const TableIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/table.svg" alt="Table Icon" width={24} height={24} className={className} />;
+export const PageIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/page.svg" alt="Page Icon" width={24} height={24} className={className} />;
+export const PieChartIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/pie-chart.svg" alt="Pie Chart Icon" width={24} height={24} className={className} />;
+export const BoxCubeIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/box-cube.svg" alt="Box Cube Icon" width={24} height={24} className={className} />;
+export const PlugInIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/plug-in.svg" alt="Plug In Icon" width={24} height={24} className={className} />;
+export const DocsIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/docs.svg" alt="Docs Icon" width={24} height={24} className={className} />;
+export const MailIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/mail-line.svg" alt="Mail Icon" width={24} height={24} className={className} />;
+export const HorizontaLDots: React.FC<IconProps> = ({ className }) => <Image src="/icons/horizontal-dots.svg" alt="Horizontal Dots Icon" width={24} height={24} className={className} />;
+export const ChatIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/chat.svg" alt="Chat Icon" width={24} height={24} className={className} />;
+export const MoreDotIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/more-dot.svg" alt="More Dot Icon" width={24} height={24} className={className} />;
+export const BellIcon: React.FC<IconProps> = ({ className }) => <Image src="/icons/bell.svg" alt="Bell Icon" width={24} height={24} className={className} />;
