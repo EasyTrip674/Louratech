@@ -67,10 +67,10 @@ export default function CreateClientFormModal() {
     }
   },
     onSuccess: () => {
-     
+      console.log("Client created successfully");
     },
     onError: (error) => {
-      console.error("Failed to create client", error);
+      console.error("Failed to create client");
     },
     
   });
@@ -84,15 +84,15 @@ export default function CreateClientFormModal() {
     }else{
       console.log("No data to save");
     }
-    // INFO: Close the modal and reset the form
-    // closeModal();
-    // reset(); // Reset form after submission
   };
 
   return (
     <>
-    <SuccessModal successModal={successModal} />
-    <ErrorModal errorModal={errorModal} onRetry={openModal} />
+    <SuccessModal successModal={successModal}
+               message="Client created successfully"
+               title="" />
+    <ErrorModal errorModal={errorModal} onRetry={openModal}
+        message="Error during creation user" />
       <Button variant="outline" size="sm" onClick={openModal} className="bg-gray-200">
         <Plus className="w-4 h-4 dark:text-white" />
       </Button>

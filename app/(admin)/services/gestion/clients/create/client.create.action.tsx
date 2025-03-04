@@ -5,6 +5,7 @@ import { adminAction } from "@/lib/safe-action"
 import { createClientSchema } from "./client.create.shema"
 import prisma from "@/db/prisma";
 import { Role } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 export const doCreateClient = adminAction
     .metadata({actionName:"create client"}) // ✅ Ajout des métadonnées obligatoires
@@ -51,7 +52,7 @@ export const doCreateClient = adminAction
         });
         
 
-    
+        revalidatePath("/app/(admin)/services/gestion/clients");
         
         return { success: true, client };
     });

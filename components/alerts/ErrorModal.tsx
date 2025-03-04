@@ -61,8 +61,7 @@ const ErrorModal = ({errorModal, message,onRetry,title}: Props) => {
                Danger Alert!
              </h4>
              <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-               Lorem ipsum dolor sit amet consectetur. Feugiat ipsum libero tempor
-               felis risus nisi non. Quisque eu ut tempor curabitur.
+             {message || "Une erreur s'est produite. Veuillez réessayer."}
              </p>
    
              <div className="flex items-center justify-center w-full gap-3 mt-7">
