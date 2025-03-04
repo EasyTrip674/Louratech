@@ -29,32 +29,37 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
+    path: "/services",
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
   {
     icon: <CalenderIcon />,
-    name: "Calendar",
+    name: "Procedures",
     path: "/calendar",
+    subItems: [
+      { name: "Statistiques", path: "/date-time", pro: false },
+      { name: "Cliens", path: "/calendar", pro: false },
+      { name: "Destinations", path: "/date-time", pro: false,new:true },
+    ],
   },
   {
     icon: <UserCircleIcon />,
-    name: "User Profile",
+    name: "Clients",
     path: "/profile",
   },
 
   {
-    name: "Forms",
+    name: "Comptabilites",
     icon: <ListIcon />,
     subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
   },
   {
-    name: "Tables",
+    name: "Clients",
     icon: <TableIcon />,
     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
   {
-    name: "Pages",
+    name: "Ai",
     icon: <PageIcon />,
     subItems: [
       { name: "Blank Page", path: "/blank", pro: false },

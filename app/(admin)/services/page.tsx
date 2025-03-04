@@ -1,11 +1,42 @@
-import React from 'react'
+import type { Metadata } from "next";
+import { ProceduresMetrics } from "@/components/stats/ProceduresMetrics";
+import React from "react";
+import MonthlyTarget from "@/components/stats/MonthlyTarget";
+import MonthlySalesChart from "@/components/stats/MonthlySalesChart";
+import StatisticsChart from "@/components/stats/StatisticsChart";
+import RecentOrders from "@/components/stats/RecentOrders";
+import DemographicCard from "@/components/stats/DemographicCard";
 
-type Props = {}
+export const metadata: Metadata = {
+  title:
+    "Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template",
+  description: "This is Next.js Home for TailAdmin Dashboard Template",
+};
 
-const page = (props: Props) => {
+export default function Home() {
   return (
-    <div>page</div>
-  )
-}
+    <div className="grid grid-cols-12 gap-4 md:gap-6">
+      <div className="col-span-12 space-y-6 xl:col-span-7">
+        <ProceduresMetrics />
 
-export default page
+        <MonthlySalesChart />
+      </div>
+
+      <div className="col-span-12 xl:col-span-5">
+        <MonthlyTarget />
+      </div>
+
+      <div className="col-span-12">
+        <StatisticsChart />
+      </div>
+
+      <div className="col-span-12 xl:col-span-5">
+        <DemographicCard />
+      </div>
+
+      <div className="col-span-12 xl:col-span-7">
+        <RecentOrders />
+      </div>
+    </div>
+  );
+}
