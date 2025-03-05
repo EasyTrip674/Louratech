@@ -7,7 +7,9 @@ type Props = {
     openModal: () => void;
     closeModal: () => void;
     toggleModal: () => void;
-}
+},
+ title?: string;
+    message?: string;
 }
 
 const InfosModal = ({infoModal}: Props) => {

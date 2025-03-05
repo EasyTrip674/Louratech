@@ -21,7 +21,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${outfit.variable} dark:bg-gray-900`}>
           <CopilotKit publicApiKey="<your-copilot-cloud-public-api-key>"> 
-        
               <ThemeProvider>
               <TansQueryProvider>
                 <SidebarProvider>

@@ -37,9 +37,9 @@ const navItems: NavItem[] = [
     name: "Gestion",
     path: "/services/gestion",
     subItems: [
-      { name: "Statistiques", path: "/services/gestion/statistiques", pro: false },
+      { name: "Employees", path: "/services/gestion/employees", pro: false },
       { name: "Clients", path: "/services/gestion/clients", pro: false },
-      { name: "Procedures", path: "/services/gestion/procedures", pro: false,new:true },
+      { name: "Procedures", path: "/services/gestion/procedures", pro: false, new:true },
     ],
   },
   {

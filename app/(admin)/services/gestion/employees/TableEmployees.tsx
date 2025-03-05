@@ -11,18 +11,18 @@ import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
 import Button from "@/components/ui/button/Button";
 import {  EyeIcon, PencilIcon, TrashBinIcon } from "@/icons";
-import { clientsTableOrganizationDB } from "@/db/queries/clients.query";
-import EditClientFormModal from "./edit/EditClientFormModal";
+import { employeesTableOrganizationDB } from "@/db/queries/employees.query";
 import { Eye } from "lucide-react";
+import EditEmployeeFormModal from "./edit/EditEmployeeFormModal";
 
-type TableClientsProps = {
+type TableemployeesProps = {
 }
 // Define the table data using the interface
 
 
-export default async function TableClients({  }:  TableClientsProps ) {
-  const tableClients = await clientsTableOrganizationDB();
-  if (!tableClients) return null;
+export default async function Tableemployees({  }:  TableemployeesProps ) {
+  const tableemployees = await employeesTableOrganizationDB();
+  if (!tableemployees) return null;
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
@@ -66,34 +66,34 @@ export default async function TableClients({  }:  TableClientsProps ) {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {tableClients.map((client , index) => (
-                <TableRow key={client.id}>
+              {tableemployees.map((employee , index) => (
+                <TableRow key={employee.id}>
                   <TableCell className="px-5 py-4 sm:px-6 text-start">
                     <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                      {client.user.lastName} {client.user.firstName}
+                      {employee.user.lastName} {employee.user.firstName}
                     </span>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {client.user.email}
+                    {employee.user.email}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {client.address}
+                    {employee.address}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <Badge
                       size="sm"
                       color={
-                        client.user.active
+                        employee.user.active
                           ? "success"
                           : "error"
                       }
                     >
-                      {client.user.active ? "Active" : "Inactive"}
+                      {employee.user.active ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 flex items-center gap-2">
-                          <Button href={`/services/gestion/clients/${client.id}`} key={client.id} variant="outline" size="sm"> <Eye className="w-4 h-4 dark:text-white" /> </Button>
-                          <EditClientFormModal key={client.id} client={client} />
+                          <Button href={`/services/gestion/employees/${employee.id}`} key={employee.id} variant="outline" size="sm"> <Eye className="w-4 h-4 dark:text-white" /> </Button>
+                          <EditEmployeeFormModal key={employee.id} admin={employee} />
                   </TableCell>
                 </TableRow>
               ))}

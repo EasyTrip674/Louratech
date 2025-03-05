@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { ReactNode } from "react";
 
 interface ButtonProps {
@@ -10,6 +11,7 @@ interface ButtonProps {
   disabled?: boolean; // Disabled state
   className?: string; // Disabled state
   type?: "button" | "submit" | "reset"; // Button type
+  href?: string; // Button href
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -19,8 +21,8 @@ const Button: React.FC<ButtonProps> = ({
   startIcon,
   endIcon,
   type = "button",
+  href,
   onClick,
-  
   className = "",
   disabled = false,
 }) => {
@@ -39,8 +41,20 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-
-    <button
+      href ?   <Link
+      className={`inline-flex items-center justify-center font-medium gap-2 rounded-lg transition ${className} ${
+        sizeClasses[size]
+      } ${variantClasses[variant]} ${
+        disabled ? "cursor-not-allowed opacity-50" : ""
+      }`}
+      href={href}
+      type={type}
+    >
+      {startIcon && <span className="flex items-center">{startIcon}</span>}
+      {children}
+      {endIcon && <span className="flex items-center">{endIcon}</span>}
+    </Link>
+    :  <button
       className={`inline-flex items-center justify-center font-medium gap-2 rounded-lg transition ${className} ${
         sizeClasses[size]
       } ${variantClasses[variant]} ${
