@@ -22,7 +22,7 @@ const ProceduresPage = async (props: Props) => {
       <div className="mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Apperçu</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Aperçu</h1>
             <p className="text-gray-500 dark:text-gray-400">Gérez vos services et voir leur details</p>
           </div>
           
