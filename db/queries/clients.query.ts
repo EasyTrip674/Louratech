@@ -59,3 +59,20 @@ export const clientProfileDB = async (clientId: string) => {
 }
 
 export type clientProfileDB =  Prisma.PromiseReturnType<typeof clientProfileDB>;
+
+
+
+// for AddCLientTOProcedureModal
+export const getCLientsIdWithNameDB = async () => prisma.client.findMany({
+  select: {
+    id: true,
+    user: {
+      select: {
+        firstName: true,
+        lastName: true,
+      },
+    },  
+  },
+})
+
+export type ClientIdWithNameDB = Prisma.PromiseReturnType<typeof getCLientsIdWithNameDB>;

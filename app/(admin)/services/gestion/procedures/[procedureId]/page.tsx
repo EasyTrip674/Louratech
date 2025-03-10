@@ -8,7 +8,8 @@ import Link from 'next/link';
 import { ProcedureFinancialSummary } from '@/components/procedures/ProcedureFinancialSummary';
 import TableClientsProcedure from './TableClientsProcedure';
 import { getProcedureDetails } from '@/db/queries/procedures.query';
-import AddClientToProcedureModal from './clientProcedure/AddClientToProcedureModal';
+import AddCLientToProcedure from './clientProcedure/AddClientToProcedureModal';
+import { getCLientsIdWithNameDB } from '@/db/queries/clients.query';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
 
 // Type pour les paramètres de la page
@@ -129,6 +130,7 @@ function getProcedureStatus(status: string)  {
 export default async function ProcedureDetailPage({ params }: PageProps) {
   const procedureId = params.procedureId;
   const procedure = await getProcedureDetails(procedureId);
+  const clients = await getCLientsIdWithNameDB();
 
 
   if (!procedure) {
@@ -222,14 +224,14 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-medium text-gray-900 dark:text-white">Clients inscrits</h2>
           <div>
-        <AddClientToProcedureModal procedureId={procedureId}   />
+        <AddCLientToProcedure procedureId={procedureId} clientsDB={clients}   />
           </div>
         </div>
         
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <div className="min-w-full">
-           <TableClientsProcedure procedureDetails={  {
+           <TableClientsProcedure procedureDetails={{
                 id: procedure.id,
                 name: procedure.name,
                 totalClients: procedure.totalClients,
