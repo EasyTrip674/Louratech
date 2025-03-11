@@ -8,8 +8,8 @@ import Link from 'next/link';
 import { ProcedureFinancialSummary } from '@/components/procedures/ProcedureFinancialSummary';
 import TableClientsProcedure from './TableClientsProcedure';
 import { getProcedureDetails } from '@/db/queries/procedures.query';
-import AddCLientToProcedure from './clientProcedure/AddClientToProcedureModal';
 import { getCLientsIdWithNameDB } from '@/db/queries/clients.query';
+import AddClientToStepModal from './step/clientProcedure/AddClientToStepModal';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
 
 // Type pour les paramètres de la page
@@ -224,7 +224,12 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-medium text-gray-900 dark:text-white">Clients inscrits</h2>
           <div>
-        <AddCLientToProcedure procedureId={procedureId} clientsDB={clients}   />
+        <AddClientToStepModal
+           steps={[
+            { id: "step-1", name: "Étape 1" },
+            { id: "step-2", name: "Étape 2" },
+          ]} 
+         procedureId={procedureId} clientsDB={clients}   />
           </div>
         </div>
         

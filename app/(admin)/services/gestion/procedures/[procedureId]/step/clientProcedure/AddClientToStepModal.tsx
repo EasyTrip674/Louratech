@@ -1,4 +1,5 @@
 "use client"
+import SelectSearch from '@/components/form/SelectSearch'
 import Button from '@/components/ui/button/Button'
 import { Modal } from '@/components/ui/modal'
 import { ClientIdWithNameDB } from '@/db/queries/clients.query'
@@ -11,61 +12,126 @@ import { z } from 'zod'
 
 type Props = {
     procedureId: string,
-    clientsDB: ClientIdWithNameDB
+    clientsDB: ClientIdWithNameDB,
+    steps: { id: string, name: string }[]
 }
 
-const addClientToProcedureSchema = z.object({
-    clientId: z.string(),
-    procedureId: z.string()
+const addClientToStepSchema = z.object({
+    clientId: z.string().min(1, "Veuillez sélectionner un client"),
+    procedureId: z.string(),
+    stepId: z.string().min(1, "Veuillez sélectionner une étape")
 })
-type addClientToProcedureSchema = z.infer<typeof addClientToProcedureSchema>
 
-const AddClientToProcedureModal = ({procedureId, clientsDB}: Props) => {
-    const {openModal,isOpen,closeModal,toggleModal} = useModal()
+type AddClientToStepSchema = z.infer<typeof addClientToStepSchema>
+
+const AddClientToStepModal = ({ procedureId, clientsDB, steps }: Props) => {
+    const { openModal, isOpen, closeModal } = useModal()
+    
     const {
         register,
         handleSubmit,
-        formState: { errors }
-    } = useForm<addClientToProcedureSchema>({
-        resolver: zodResolver(addClientToProcedureSchema),
+        formState: { errors },
+        reset,
+        setValue,
+        watch
+    } = useForm<AddClientToStepSchema>({
+        resolver: zodResolver(addClientToStepSchema),
         defaultValues: {
             clientId: '',
-            procedureId: procedureId
+            procedureId: procedureId,
+            stepId: ''
         }
     })
-
-    const onSubmit = (data: addClientToProcedureSchema) => {
-        console.log(data)
+    
+    const selectedClientId = watch('clientId')
+    const selectedStepId = watch('stepId')
+    
+    // Transformer les données pour notre composant SelectSearch
+    const clientOptions = clientsDB.map(client => ({
+        id: client.id,
+        label: `${client.user.firstName} ${client.user.lastName}`
+    }))
+    
+    const stepOptions = steps.map(step => ({
+        id: step.id,
+        label: step.name
+    }))
+    
+    const onSubmit = async (data: AddClientToStepSchema) => {
+        try {
+            console.log(data)
+            // Ici, ajoutez votre logique pour envoyer les données au serveur
+            
+            // Réinitialiser le formulaire et fermer le modal après le succès
+            reset()
+            closeModal()
+        } catch (error) {
+            console.error("Erreur lors de l'inscription du client:", error)
+        }
+    }
+    
+    const handleOpen = () => {
+        reset()
+        openModal()
+    }
+    
+    const handleSelectClient = (id: string) => {
+        setValue('clientId', id, { shouldValidate: true })
+    }
+    
+    const handleSelectStep = (id: string) => {
+        setValue('stepId', id, { shouldValidate: true })
     }
 
     return (
         <>
-        <Button onClick={openModal} size='sm' variant={"outline"}>
-            <Plus className="h-5 w-5" />
-        </Button>
-        <Modal   isOpen={isOpen} onClose={closeModal} className='max-w-[584px] p-5 lg:p-10'>
-            <form {...handleSubmit(onSubmit)} className="space-y-4">
-                <div className="p-4">
-                    <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Ajouter un client à la procédure</h2>
-                    <div className="mt-4">
-                        <label htmlFor="client" className="text-sm font-medium text-gray-700 dark:text-gray-300">Client</label>
-                        <select 
-                        {...register('clientId')}
-                         className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm
-                        dark:bg-gray-800 dark:border-gray-700 dark:text-white">
-                            {clientsDB.map(client => <option key={client.id} value={client.id}>{client.user.firstName} {client.user.lastName}</option>)}
-                        </select>
-                        <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.clientId?.message}</p>
+            <Button onClick={handleOpen} size='sm' variant="outline">
+                <Plus className="h-5 w-5" />
+            </Button>
+            <Modal isOpen={isOpen} onClose={closeModal} className='max-w-[584px] p-5 lg:p-10'>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="p-4">
+                        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Inscrire un client à un module</h2>
+                        
+                        {/* Utilisation de notre composant SelectSearch pour les étapes */}
+                        <div className="mt-6">
+                            <SelectSearch
+                                options={stepOptions}
+                                label="Étape"
+                                placeholder="Rechercher une étape..."
+                                value={selectedStepId}
+                                onChange={handleSelectStep}
+                                emptyMessage="Aucune étape trouvée"
+                                error={errors.stepId?.message}
+                            />
+                            {/* Champ caché pour la validation */}
+                            <input type="hidden" {...register('stepId')} />
+                        </div>
+                        
+                        {/* Utilisation de notre composant SelectSearch pour les clients */}
+                        <div className="mt-6">
+                            <SelectSearch
+                                options={clientOptions}
+                                label="Client"
+                                placeholder="Rechercher un client..."
+                                value={selectedClientId}
+                                onChange={handleSelectClient}
+                                emptyMessage="Aucun client trouvé"
+                                error={errors.clientId?.message}
+                            />
+                            {/* Champ caché pour la validation */}
+                            <input type="hidden" {...register('clientId')} />
+                        </div>
                     </div>
-                </div>
-                <div className="flex justify-end p-4 gap-3">
-                    <Button onClick={closeModal} size="sm" variant="outline">Annuler</Button>
-                    <Button type="submit" size="sm">Ajouter</Button>
-                </div>
-            </form>
-        </Modal>
-     </>
-  )
+                    
+                    <div className="flex justify-end p-4 gap-3">
+                        <Button onClick={closeModal} size="sm" variant="outline" type="button">Annuler</Button>
+                        <Button type="submit" size="sm">Inscrire</Button>
+                    </div>
+                </form>
+            </Modal>
+        </>
+    )
 }
 
-export default AddClientToProcedureModal
+export default AddClientToStepModal
