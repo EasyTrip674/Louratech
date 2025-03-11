@@ -1,4 +1,5 @@
 "use client"
+import Input from '@/components/form/input/InputField'
 import SelectSearch from '@/components/form/SelectSearch'
 import Button from '@/components/ui/button/Button'
 import { Modal } from '@/components/ui/modal'
@@ -19,7 +20,8 @@ type Props = {
 const addClientToStepSchema = z.object({
     clientId: z.string().min(1, "Veuillez sélectionner un client"),
     procedureId: z.string(),
-    stepId: z.string().min(1, "Veuillez sélectionner une étape")
+    stepId: z.string().min(1, "Veuillez sélectionner une étape"),
+    price: z.number().int().positive()
 })
 
 type AddClientToStepSchema = z.infer<typeof addClientToStepSchema>
@@ -39,7 +41,8 @@ const AddClientToStepModal = ({ procedureId, clientsDB, steps }: Props) => {
         defaultValues: {
             clientId: '',
             procedureId: procedureId,
-            stepId: ''
+            stepId: '',
+            price: 0
         }
     })
     
@@ -121,6 +124,19 @@ const AddClientToStepModal = ({ procedureId, clientsDB, steps }: Props) => {
                             />
                             {/* Champ caché pour la validation */}
                             <input type="hidden" {...register('clientId')} />
+                        </div>
+
+                        <div className='mt-6'>
+                            <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                                Le prix du module (en FNG) que le client doit payer
+                            </label>
+                            <Input
+                                type="number"
+                                id="price"
+                                {...register('price')}
+                            />
+                            {errors.price && <p className="mt-2 text-sm text-red-600">{errors.price.message}</p>}
+
                         </div>
                     </div>
                     

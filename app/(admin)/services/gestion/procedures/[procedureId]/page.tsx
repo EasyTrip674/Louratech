@@ -7,9 +7,10 @@ import Button from "@/components/ui/button/Button";
 import Link from 'next/link';
 import { ProcedureFinancialSummary } from '@/components/procedures/ProcedureFinancialSummary';
 import TableClientsProcedure from './TableClientsProcedure';
-import { getProcedureDetails } from '@/db/queries/procedures.query';
+import { getProcedureDetails, getProcedureDetailsStepsDB } from '@/db/queries/procedures.query';
 import { getCLientsIdWithNameDB } from '@/db/queries/clients.query';
-import AddClientToStepModal from './step/clientProcedure/AddClientToStepModal';
+import AddClientToStepModal from './steps/clientProcedure/AddClientToStepModal';
+import TableProcedureSteps from './TableStepProcedure';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
 
 // Type pour les paramètres de la page
@@ -19,118 +20,18 @@ type PageProps = {
   };
 };
 
-// Type pour les données d'une procédure
-type ProcedureDetails = {
-  id: string;
-  name: string;
-  description: string;
-  price: number | null;
-  estimatedDuration: number | null;
-  category: string | null;
-  isActive: boolean;
-  steps: StepProcedure[];
-  clientProcedures: ClientProcedureWithClient[];
-  totalClients: number;
-  inProgressCount: number;
-  completedCount: number;
-  cancelledCount: number;
-  totalRevenue: number;
-  pendingRevenue: number;
-};
 
-// Type pour une étape de procédure
-type StepProcedure = {
-  id: string;
-  name: string;
-  description: string;
-  price: number | null;
-  order: number;
-  estimatedDuration: number | null;
-  required: boolean;
-};
 
-// Type pour un client avec sa procédure
-type ClientProcedureWithClient = {
-  id: string;
-  status: 'NOT_STARTED' | 'IN_PROGRESS' | 'ON_HOLD' | 'COMPLETED' | 'CANCELLED' | 'REJECTED';
-  startDate: string;
-  completionDate: string | null;
-  dueDate: string | null;
-  reference: string | null;
-  client: {
-    id: string;
-    user: {
-      firstName: string | null;
-      lastName: string;
-      email: string;
-      active: boolean;
-    };
-  };
-  steps: ClientStep[];
-  invoice: {
-    id: string;
-    invoiceNumber: string;
-    totalAmount: number;
-    status: 'DRAFT' | 'SENT' | 'PARTIALLY_PAID' | 'PAID' | 'OVERDUE' | 'CANCELLED';
-  } | null;
-  stepProgress: number;
-};
-
-// Type pour une étape client
-type ClientStep = {
-  id: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'WAITING' | 'COMPLETED' | 'SKIPPED' | 'FAILED';
-  startDate: string | null;
-  completionDate: string | null;
-};
-
-// Fonction pour récupérer les détails d'une procédure spécifique
-
-// Fonction pour calculer le statut d'un paiement
-function getPaymentStatus(status: string) {
-  switch(status) {
-    case 'PAID':
-      return { text: 'Payée', color: 'success' };
-    case 'PARTIALLY_PAID':
-      return { text: 'Partiellement payée', color: 'warning' };
-    case 'OVERDUE':
-      return { text: 'En retard', color: 'error' };
-    case 'SENT':
-      return { text: 'Envoyée', color: 'info' };
-    case 'DRAFT':
-      return { text: 'Brouillon', color: 'default' };
-    case 'CANCELLED':
-      return { text: 'Annulée', color: 'error' };
-    default:
-      return { text: 'Inconnue', color: 'default' };
-  }
-}
-
-// Fonction pour calculer le statut de la procédure
-function getProcedureStatus(status: string)  {
-  switch(status) {
-    case 'NOT_STARTED':
-      return { text: 'Non démarrée', color: 'primary' };
-    case 'IN_PROGRESS':
-      return { text: 'En cours', color: 'info' };
-    case 'ON_HOLD':
-      return { text: 'En attente', color: 'info' };
-    case 'COMPLETED':
-      return { text: 'Terminée', color: 'success' };
-    case 'CANCELLED':
-      return { text: 'Annulée', color: 'warning' };
-    case 'REJECTED':
-      return { text: 'Rejetée', color: 'error' };
-    default:
-      return { text: 'Inconnue', color: 'info' };
-  }
-}
 
 // Composant principal de la page
 export default async function ProcedureDetailPage({ params }: PageProps) {
   const procedureId = params.procedureId;
   const procedure = await getProcedureDetails(procedureId);
   const clients = await getCLientsIdWithNameDB();
+  // Données de test pour les étapes d'une procédure
+  const procedureDataStep = await getProcedureDetails(procedureId);
+
+
 
 
   if (!procedure) {
@@ -215,6 +116,11 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
            {/* les modules */}
+
+            <TableProcedureSteps
+              procedureDetails={procedureDataStep}
+            />
+
           </div>
         </div>
       </div>

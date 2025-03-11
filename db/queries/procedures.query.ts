@@ -224,3 +224,111 @@ export async function getProcedureDetails(id: string) {
     throw error;
   }
 }
+
+
+
+// ===== STEP QUERIES =====
+
+
+/**
+ * Récupère les détails d'une procédure avec toutes ses étapes
+ * @param procedureId - L'identifiant unique de la procédure
+ * @returns Les détails de la procédure et ses étapes, ou null si non trouvée
+ */
+export async function getProcedureWithStepsDb(procedureId: string) {
+  try {
+    const procedureWithSteps = await prisma.procedure.findUnique({
+      where: {
+        id: procedureId,
+      },
+      include: {
+        steps: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
+    });
+
+    return procedureWithSteps;
+  } catch (error) {
+    console.error('Erreur lors de la récupération de la procédure:', error);
+    throw error;
+  }
+}
+
+export type ProcedureWithStepsDb = Prisma.PromiseReturnType<typeof getProcedureWithStepsDb>;
+
+
+
+
+/**
+ * Récupère les détails d'une procédure avec ses étapes et le nombre de procédures clients
+ * associées dans chaque statut
+ * @param procedureId - L'identifiant unique de la procédure
+ * @returns Les détails complets de la procédure avec statistiques
+ */
+export async function getProcedureDetailsStepsDB(procedureId: string) {
+  try {
+    // Récupérer la procédure avec ses étapes
+    const procedure = await prisma.procedure.findUnique({
+      where: {
+        id: procedureId,
+      },
+      include: {
+        steps: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+        clientProcedures: {
+          include: {
+            invoice: true,
+          },
+        },
+      },
+    });
+
+    if (!procedure) {
+      return null;
+    }
+
+    // Calculer les statistiques
+    const inProgressCount = procedure.clientProcedures.filter(cp => 
+      cp.status === 'IN_PROGRESS'
+    ).length;
+    
+    const completedCount = procedure.clientProcedures.filter(cp => 
+      cp.status === 'COMPLETED'
+    ).length;
+    
+    const cancelledCount = procedure.clientProcedures.filter(cp => 
+      cp.status === 'CANCELLED' || cp.status === 'REJECTED'
+    ).length;
+    
+    // Calculer les revenus
+    const totalRevenue = procedure.clientProcedures
+      .filter(cp => cp.invoice && cp.invoice.status === 'PAID')
+      .reduce((sum, cp) => sum + (cp.invoice?.totalAmount || 0), 0);
+    
+    const pendingRevenue = procedure.clientProcedures
+      .filter(cp => cp.invoice && cp.invoice.status !== 'PAID' && cp.invoice.status !== 'CANCELLED')
+      .reduce((sum, cp) => sum + (cp.invoice?.totalAmount || 0), 0);
+
+    // Construire l'objet de résultat
+    return {
+      ...procedure,
+      totalStep: procedure.steps.length,
+      inProgressCount,
+      completedCount,
+      cancelledCount,
+      totalRevenue,
+      pendingRevenue,
+    };
+  } catch (error) {
+    console.error('Erreur lors de la récupération des détails de procédure:', error);
+    throw error;
+  }
+}
+
+type ProcedureDetailsWithStats = Prisma.PromiseReturnType<typeof getProcedureDetailsStepsDB>;
