@@ -49,30 +49,14 @@ export default function TableProcedureSteps({
                 >
                   Nom
                 </TableCell>
+              
                 <TableCell
                   isHeader
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Description
+                  Coût du module
                 </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Prix
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Durée estimée
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Statut
-                </TableCell>
+              
                 {!readOnly && (
                   <TableCell
                     isHeader
@@ -96,26 +80,11 @@ export default function TableProcedureSteps({
                       {step.name}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {step.description}
-                  </TableCell>
+                 
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {step.price !== null ? `${step.price.toLocaleString()} FNG` : '-'}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {step.estimatedDuration !== null 
-                      ? `${step.estimatedDuration} ${step.estimatedDuration > 1 ? 'jours' : 'jour'}`
-                      : '-'
-                    }
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-start">
-                    <Badge
-                      size="sm"
-                      color={step.required ? "light" : "info"}
-                    >
-                      {step.required ? "Obligatoire" : "Optionnel"}
-                    </Badge>
-                  </TableCell>
+                 
                   {!readOnly && (
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                       <div className="flex items-center gap-2">

@@ -11,6 +11,8 @@ import { getProcedureDetails, getProcedureDetailsStepsDB } from '@/db/queries/pr
 import { getCLientsIdWithNameDB } from '@/db/queries/clients.query';
 import AddClientToStepModal from './steps/clientProcedure/AddClientToStepModal';
 import TableProcedureSteps from './TableStepProcedure';
+import CreateClientFormModal from '../../clients/create/CreateClientFormModal';
+import CreateStepFormModal from './steps/step/create/CreateStepFormModal';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
 
 // Type pour les paramètres de la page
@@ -112,7 +114,12 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
       
       {/* les modules */}
       <div className="mb-8">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Modules</h2>
+          <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white">Modules</h2>
+          <div>
+           <CreateStepFormModal procedureId={procedure.id}  />
+          </div>
+        </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
            {/* les modules */}
@@ -130,12 +137,12 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-medium text-gray-900 dark:text-white">Clients inscrits</h2>
           <div>
-        <AddClientToStepModal
-           steps={[
-            { id: "step-1", name: "Étape 1" },
-            { id: "step-2", name: "Étape 2" },
-          ]} 
-         procedureId={procedureId} clientsDB={clients}   />
+            <AddClientToStepModal
+              steps={[
+                { id: "step-1", name: "Étape 1" },
+                { id: "step-2", name: "Étape 2" },
+              ]} 
+            procedureId={procedureId} clientsDB={clients}   />
           </div>
         </div>
         

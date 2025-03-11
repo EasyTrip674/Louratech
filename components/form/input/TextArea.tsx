@@ -1,29 +1,27 @@
 import React from "react";
 
-interface TextareaProps {
-  placeholder?: string; // Placeholder text
-  rows?: number; // Number of rows
-  value?: string; // Current value
-  onChange?: (value: string) => void; // Change handler
-  className?: string; // Additional CSS classes
-  disabled?: boolean; // Disabled state
-  error?: boolean; // Error state
-  hint?: string; // Hint text to display
+interface TextareaProps extends React.InputHTMLAttributes<HTMLTextAreaElement> {
+   success?: boolean;
+  error?: boolean;
+  hint?: string;
+   // Hint text to display
+  onChangeValue: (v:string)=>void
 }
 
 const TextArea: React.FC<TextareaProps> = ({
   placeholder = "Enter your message", // Default placeholder
-  rows = 3, // Default number of rows
   value = "", // Default value
-  onChange, // Callback for changes
+  onChangeValue, // Callback for changes
   className = "", // Additional custom styles
   disabled = false, // Disabled state
   error = false, // Error state
-  hint = "", // Default hint text
+  hint = "",
+  ...props
+   // Default hint text
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (onChange) {
-      onChange(e.target.value);
+    if (onChangeValue) {
+      onChangeValue(e.target.value);
     }
   };
 
@@ -40,9 +38,9 @@ const TextArea: React.FC<TextareaProps> = ({
   return (
     <div className="relative">
       <textarea
+        {...props}
         placeholder={placeholder}
-        rows={rows}
-        value={value}
+        defaultValue={value}
         onChange={handleChange}
         disabled={disabled}
         className={textareaClasses}

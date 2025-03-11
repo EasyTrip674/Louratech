@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const createStepProcedureSchema = z.object({
     name: z.string().min(1, "Veuillez saisir un nom"),
-    description: z.string().min(1, "Veuillez saisir une description"),
+    description: z.string().optional(),
     price: z.number().int().positive().optional(),
     procedureId: z.string(),
     estimatedDuration: z.number().int().positive().optional(),
