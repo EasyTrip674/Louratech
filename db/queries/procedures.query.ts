@@ -146,6 +146,7 @@ export async function getProcedureDetails(id: string) {
             status: true,
             startDate: true,
             completionDate: true,
+            step:true
           },
           orderBy: {
             step: {
