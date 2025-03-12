@@ -4,17 +4,18 @@ import SelectSearch from '@/components/form/SelectSearch'
 import Button from '@/components/ui/button/Button'
 import { Modal } from '@/components/ui/modal'
 import { ClientIdWithNameDB } from '@/db/queries/clients.query'
+import { StepsProcedureDB } from '@/db/queries/procedures.query'
 import { useModal } from '@/hooks/useModal'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus } from 'lucide-react'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 type Props = {
     procedureId: string,
     clientsDB: ClientIdWithNameDB,
-    steps: { id: string, name: string }[]
+    stepsProcedure: StepsProcedureDB
 }
 
 const addClientToStepSchema = z.object({
@@ -26,7 +27,7 @@ const addClientToStepSchema = z.object({
 
 type AddClientToStepSchema = z.infer<typeof addClientToStepSchema>
 
-const AddClientToStepModal = ({ procedureId, clientsDB, steps }: Props) => {
+const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props) => {
     const { openModal, isOpen, closeModal } = useModal()
     
     const {
@@ -55,16 +56,26 @@ const AddClientToStepModal = ({ procedureId, clientsDB, steps }: Props) => {
         label: `${client.user.firstName} ${client.user.lastName}`
     }))
     
-    const stepOptions = steps.map(step => ({
-        id: step.id,
-        label: step.name
+    const stepOptions = stepsProcedure?.steps.map(step => ({
+        id: step.id ?? "",
+        label: step.name ?? "",
+        price: step.price ?? 0
     }))
+    
+    // Effet pour mettre à jour le prix lorsqu'une étape est sélectionnée
+    useEffect(() => {
+        if (selectedStepId) {
+            const selectedStep = stepsProcedure?.steps.find(step => step.id === selectedStepId)
+            if (selectedStep) {
+                setValue('price', selectedStep.price ?? 0, { shouldValidate: true })
+            }
+        }
+    }, [selectedStepId, stepsProcedure?.steps, setValue])
     
     const onSubmit = async (data: AddClientToStepSchema) => {
         try {
             console.log(data)
-            // Ici, ajoutez votre logique pour envoyer les données au serveur
-            
+        
             // Réinitialiser le formulaire et fermer le modal après le succès
             reset()
             closeModal()
@@ -125,7 +136,6 @@ const AddClientToStepModal = ({ procedureId, clientsDB, steps }: Props) => {
                             {/* Champ caché pour la validation */}
                             <input type="hidden" {...register('clientId')} />
                         </div>
-
                         <div className='mt-6'>
                             <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                                 Le prix du module (en FNG) que le client doit payer
@@ -133,10 +143,9 @@ const AddClientToStepModal = ({ procedureId, clientsDB, steps }: Props) => {
                             <Input
                                 type="number"
                                 id="price"
-                                {...register('price')}
+                                {...register('price', { valueAsNumber: true })}
                             />
                             {errors.price && <p className="mt-2 text-sm text-red-600">{errors.price.message}</p>}
-
                         </div>
                     </div>
                     

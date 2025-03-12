@@ -331,4 +331,16 @@ export async function getProcedureDetailsStepsDB(procedureId: string) {
   }
 }
 
-type ProcedureDetailsWithStats = Prisma.PromiseReturnType<typeof getProcedureDetailsStepsDB>;
+export type ProcedureDetailsWithStats = Prisma.PromiseReturnType<typeof getProcedureDetailsStepsDB>;
+
+
+export const getStepsProcedureDB = async(procedureId:string)=>{
+  return prisma.procedure.findUnique({
+    where:{id:procedureId},
+    select:{
+      steps:true,
+    }
+  })
+}
+
+export type StepsProcedureDB = Prisma.PromiseReturnType<typeof getStepsProcedureDB>

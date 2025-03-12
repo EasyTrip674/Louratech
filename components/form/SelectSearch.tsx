@@ -5,11 +5,12 @@ import Button from '@/components/ui/button/Button'
 
 type Option = {
   id: string
-  label: string
+  label: string,
+  price?:number | undefined
 }
 
 type SelectSearchProps = {
-  options: Option[]
+  options: Option[] | undefined
   label: string
   placeholder: string
   value: string
@@ -27,6 +28,9 @@ const SelectSearch: React.FC<SelectSearchProps> = ({
   emptyMessage = "Aucun résultat trouvé",
   error
 }) => {
+  if (!options) {
+    return null;
+  }
   const [searchTerm, setSearchTerm] = useState("")
   const [isOpen, setIsOpen] = useState(false)
   
