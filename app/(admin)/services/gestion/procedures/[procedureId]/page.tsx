@@ -7,7 +7,7 @@ import Button from "@/components/ui/button/Button";
 import Link from 'next/link';
 import { ProcedureFinancialSummary } from '@/components/procedures/ProcedureFinancialSummary';
 import TableClientsProcedure from './TableClientsProcedure';
-import { getProcedureDetails, getProcedureDetailsStepsDB, getStepsProcedureDB } from '@/db/queries/procedures.query';
+import { getProcedureDetails, getProcedureDetailsStepsDB, getProcedureWithStepsDb, getStepsProcedureDB } from '@/db/queries/procedures.query';
 import { getCLientsIdWithNameDB } from '@/db/queries/clients.query';
 import AddClientToStepModal from './steps/clientProcedure/AddClientToStepModal';
 import TableProcedureSteps from './TableStepProcedure';
@@ -27,13 +27,12 @@ type PageProps = {
 
 // Composant principal de la page
 export default async function ProcedureDetailPage({ params }: PageProps) {
-  const procedureId = params.procedureId;
-  const procedure = await getProcedureDetails(procedureId);
+  const procedure = await getProcedureDetails(params?.procedureId);
   const clients = await getCLientsIdWithNameDB();
   // Données de test pour les étapes d'une procédure
-  const procedureDataStep = await getProcedureDetails(procedureId);
+  const procedureDataStep = await getProcedureWithStepsDb(params?.procedureId);
 
-  const stepsProc = await getStepsProcedureDB(procedureId);
+  const stepsProc = await getStepsProcedureDB(params?.procedureId);
 
 
 
@@ -60,7 +59,7 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         </div>
         
         <div className="flex items-center gap-3 mt-4 md:mt-0">
-          <Button href={`/procedures/${procedureId}/edit`} variant="outline">
+          <Button href={`/procedures/${params.procedureId}/edit`} variant="outline">
             Modifier
           </Button>
         </div>
@@ -142,7 +141,7 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
           <div>
             <AddClientToStepModal
               stepsProcedure={stepsProc}
-            procedureId={procedureId} clientsDB={clients}   />
+            procedureId={params.procedureId} clientsDB={clients}   />
           </div>
         </div>
         

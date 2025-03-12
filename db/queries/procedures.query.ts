@@ -225,6 +225,8 @@ export async function getProcedureDetails(id: string) {
   }
 }
 
+export type procedureDetailsDb = Prisma.PromiseReturnType<typeof getProcedureDetails>
+
 
 
 // ===== STEP QUERIES =====

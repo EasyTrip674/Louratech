@@ -10,89 +10,25 @@ import {
 import Badge from "@/components/ui/badge/Badge";
 import Button from "@/components/ui/button/Button";
 import { Eye, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { procedureDetailsDb } from "@/db/queries/procedures.query";
 
-type ClientProcedure = {
-  id: string;
-  status: string;
-  startDate: string;
-  completionDate: string | null;
-  dueDate: string | null;
-  reference: string;
-  client: {
-    id: string;
-    user: {
-      firstName: string | null;
-      lastName: string;
-      email: string;
-      active: boolean;
-    }
-  };
-  steps: {
-    id: string;
-    status: string;
-    startDate: string | null;
-    completionDate: string | null;
-  }[];
-  invoice: {
-    id: string;
-    invoiceNumber: string;
-    totalAmount: number;
-    status: string;
-  } | null;
-  stepProgress: number;
-};
 
-type ProcedureDetails = {
-  id: string;
-  name: string;
-  description: string;
-  price: number | null;
-  estimatedDuration: number | null;
-  category: string | null;
-  isActive: boolean;
-  steps: any[];
-  clientProcedures: ClientProcedure[];
-  totalClients: number;
-  inProgressCount: number;
-  completedCount: number;
-  cancelledCount: number;
-  totalRevenue: number;
-  pendingRevenue: number;
-};
 
 type TableClientsProcedureProps = {
-  procedureDetails: ProcedureDetails;
+  procedureDetails: procedureDetailsDb;
   showProgress?: boolean;
   showDates?: boolean;
   showInvoice?: boolean;
 }
 
 // Helper function to format dates
-const formatDate = (dateString: string | null) => {
+const formatDate = (dateString: string | null)  => {
   if (!dateString) return "N/A";
   return new Date(dateString).toLocaleDateString();
 };
 
 
-// Fonction pour calculer le statut d'un paiement
-function getPaymentStatus(status: string) {
-  switch(status) {
-    case 'PAID':
-      return { text: 'Payée', color: 'success' };
-    case 'PARTIALLY_PAID':
-      return { text: 'Partiellement payée', color: 'warning' };
-    case 'OVERDUE':
-      return { text: 'En retard', color: 'error' };
-    case 'SENT':
-      return { text: 'Envoyée', color: 'info' };
-    case 'DRAFT':
-      return { text: 'Brouillon', color: 'default' };
-    case 'CANCELLED':
-      return { text: 'Annulée', color: 'error' };
-    default:
-      return { text: 'Inconnue', color: 'default' };
-  }
-}
+
 
 // Fonction pour calculer le statut de la procédure
 function getProcedureStatus(status: string)  {
@@ -155,7 +91,7 @@ export default function TableClientsProcedure({
                   isHeader
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Référence
+                  Nombres de modules
                 </TableCell>
                 <TableCell
                   isHeader
@@ -209,12 +145,11 @@ export default function TableClientsProcedure({
                     </span>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {clientProc.reference}
+                    {clientProc.steps.length}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-start">
                     <Badge
                       size="sm"
-                      color={getProcedureStatus(clientProc.status).color}
                     >
                       {getProcedureStatus(clientProc.status).text}
                     </Badge>
@@ -237,18 +172,18 @@ export default function TableClientsProcedure({
                       <div className="flex flex-col">
                         <div className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
-                          <span>Début: {formatDate(clientProc.startDate)}</span>
+                          <span>Début: {formatDate(String(clientProc.startDate))}</span>
                         </div>
                         {clientProc.dueDate && (
                           <div className="flex items-center gap-1">
                             <AlertCircle className="w-3 h-3" />
-                            <span>Échéance: {formatDate(clientProc.dueDate)}</span>
+                            <span>Échéance: {formatDate(String(clientProc.dueDate))}</span>
                           </div>
                         )}
                         {clientProc.completionDate && (
                           <div className="flex items-center gap-1">
                             <CheckCircle className="w-3 h-3" />
-                            <span>Terminé: {formatDate(clientProc.completionDate)}</span>
+                            <span>Terminé: {formatDate(String(clientProc.completionDate))}</span>
                           </div>
                         )}
                       </div>
