@@ -11,6 +11,11 @@ import { Plus } from 'lucide-react'
 import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { addClientToStepSchema } from './client.add.to.step.scheme'
+import { useMutation } from '@tanstack/react-query'
+import { doAddClientToStep } from './client.add.to.step.action'
+import SuccessModal from '@/components/alerts/SuccessModal'
+import ErrorModal from '@/components/alerts/ErrorModal'
 
 type Props = {
     procedureId: string,
@@ -18,17 +23,14 @@ type Props = {
     stepsProcedure: StepsProcedureDB
 }
 
-const addClientToStepSchema = z.object({
-    clientId: z.string().min(1, "Veuillez sélectionner un client"),
-    procedureId: z.string(),
-    stepId: z.string().min(1, "Veuillez sélectionner une étape"),
-    price: z.number().int().positive()
-})
+
 
 type AddClientToStepSchema = z.infer<typeof addClientToStepSchema>
 
 const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props) => {
     const { openModal, isOpen, closeModal } = useModal()
+      const successModal = useModal();
+      const errorModal = useModal();
     
     const {
         register,
@@ -38,7 +40,8 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
         setValue,
         watch
     } = useForm<AddClientToStepSchema>({
-        resolver: zodResolver(addClientToStepSchema),
+        resolver: zodResolver(addClientToStepSchema
+        ),
         defaultValues: {
             clientId: '',
             procedureId: procedureId,
@@ -71,14 +74,34 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
             }
         }
     }, [selectedStepId, stepsProcedure?.steps, setValue])
+
+
+  const addCLientToStepMutation = useMutation({
+    mutationFn: async (data: AddClientToStepSchema) => {
+    const result = await doAddClientToStep(data);
+    if (result?.data?.success) {
+      closeModal();
+      reset();
+      successModal.openModal();
+    } else {
+      closeModal();
+      errorModal.openModal();
+    }
+  },
+    onSuccess: () => {
+      console.log("Stepp created successfully");
+    },
+    onError: (error) => {
+      console.error("Failed to add step in client");
+    },
+    
+  });
+
     
     const onSubmit = async (data: AddClientToStepSchema) => {
         try {
             console.log(data)
-        
-            // Réinitialiser le formulaire et fermer le modal après le succès
-            reset()
-            closeModal()
+            addCLientToStepMutation.mutate(data);
         } catch (error) {
             console.error("Erreur lors de l'inscription du client:", error)
         }
@@ -99,6 +122,11 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
 
     return (
         <>
+            <SuccessModal successModal={successModal}
+               message="CLient added successfully"
+               title="" />
+            <ErrorModal errorModal={errorModal} onRetry={openModal}
+        message="Error during adding client to module" />
             <Button onClick={handleOpen} size='sm' variant="outline">
                 <Plus className="h-5 w-5" />
             </Button>
@@ -151,7 +179,7 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
                     
                     <div className="flex justify-end p-4 gap-3">
                         <Button onClick={closeModal} size="sm" variant="outline" type="button">Annuler</Button>
-                        <Button type="submit" size="sm">Inscrire</Button>
+                        <Button disabled={addCLientToStepMutation.isPending} type="submit" size="sm">Inscrire</Button>
                     </div>
                 </form>
             </Modal>
