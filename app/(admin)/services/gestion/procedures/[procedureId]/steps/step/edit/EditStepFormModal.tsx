@@ -11,16 +11,23 @@ import { Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
-import { createStepProcedureSchema } from "./step.edit.shema";
 import type { z } from "zod";
 import TextArea from "@/components/form/input/TextArea";
-import { doCreateStep } from "./step.edit.action";
+import { doEditStep } from "./step.edit.action";
+import { editStepProcedureSchema } from "./step.edit.shema";
 
 // Infer the TypeScript type from the Zod schema
-type StepProcedureScheme = z.infer<typeof createStepProcedureSchema>;
+type StepProcedureScheme = z.infer<typeof editStepProcedureSchema>;
 
-export default function CreateStepFormModal({procedureId}:{
-  procedureId:string
+export default function EditStepFormModal({procedureId, stepId, }:{
+  procedureId:string,
+  stepId:string,
+  name : string,
+  description : string,
+  price : number,
+  estimatedDuration : number,
+  order : number,
+  isRequired : boolean,
 }) {
   const { isOpen, openModal, closeModal } = useModal();
   const successModal = useModal();
@@ -32,18 +39,19 @@ export default function CreateStepFormModal({procedureId}:{
     formState: { errors, isSubmitting },
     reset
   } = useForm<StepProcedureScheme>({
-    resolver: zodResolver(createStepProcedureSchema),
+    resolver: zodResolver(editStepProcedureSchema),
     defaultValues: {
       name: "",
       description: "",
       isRequired: true,
       procedureId: procedureId,
+      stepId: stepId,
     }
   });
 
-  const createMutation = useMutation({
+  const EditMutation = useMutation({
     mutationFn: async (data: StepProcedureScheme) => {
-      const result = await doCreateStep(data);
+      const result = await doEditStep(data);
       if (result?.data?.success) {
         closeModal();
         reset();
@@ -51,14 +59,14 @@ export default function CreateStepFormModal({procedureId}:{
         return result;
       } else {
         errorModal.openModal();
-        throw new Error("Failed to create step");
+        throw new Error("Failed to Edit step");
       }
     }
   });
 
   const onSubmit = (data: StepProcedureScheme) => {
     console.log(data);
-    createMutation.mutate(data);
+    EditMutation.mutate(data);
   };
 
   return (
@@ -153,9 +161,9 @@ export default function CreateStepFormModal({procedureId}:{
             <Button 
               type="submit" 
               size="sm" 
-              disabled={isSubmitting || createMutation.isPending}
+              disabled={isSubmitting || EditMutation.isPending}
             >
-              {createMutation.isPending ? "En cours..." : "Enregistrer"}
+              {EditMutation.isPending ? "En cours..." : "Enregistrer"}
             </Button>
           </div>
         </form>

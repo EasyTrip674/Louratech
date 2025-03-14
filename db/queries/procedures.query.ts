@@ -240,7 +240,7 @@ export type procedureDetailsDb = Prisma.PromiseReturnType<typeof getProcedureDet
  */
 export async function getProcedureWithStepsDb(procedureId: string) {
   try {
-    const procedureWithSteps = await prisma.procedure.findUnique({
+    return await prisma.procedure.findUnique({
       where: {
         id: procedureId,
       },
@@ -253,7 +253,6 @@ export async function getProcedureWithStepsDb(procedureId: string) {
       },
     });
 
-    return procedureWithSteps;
   } catch (error) {
     console.error('Erreur lors de la récupération de la procédure:', error);
     throw error;
@@ -261,7 +260,6 @@ export async function getProcedureWithStepsDb(procedureId: string) {
 }
 
 export type ProcedureWithStepsDb = Prisma.PromiseReturnType<typeof getProcedureWithStepsDb>;
-
 
 
 

@@ -5,11 +5,11 @@ import { adminAction } from "@/lib/safe-action"
 import prisma from "@/db/prisma";
 import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { createStepProcedureSchema } from "./step.edit.shema";
+import {  editStepProcedureSchema } from "./step.edit.shema";
 
-export const doCreateStep = adminAction
+export const doEditStep = adminAction
     .metadata({actionName:"step client"}) // ✅ Ajout des métadonnées obligatoires
-    .schema(createStepProcedureSchema)
+    .schema(editStepProcedureSchema)
     .action(async ({ clientInput }) => {
         console.log("Creating step with data:", clientInput);
 
