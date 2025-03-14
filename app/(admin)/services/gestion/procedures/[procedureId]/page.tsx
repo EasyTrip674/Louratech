@@ -148,17 +148,7 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <div className="min-w-full">
-           <TableClientsProcedure procedureDetails={{
-                id: procedure.id,
-                name: procedure.name,
-                totalClients: procedure.totalClients,
-                inProgressCount: procedure.inProgressCount,
-                completedCount: procedure.completedCount,
-                cancelledCount: procedure.cancelledCount,
-                totalRevenue: procedure.totalRevenue,
-                pendingRevenue: procedure.pendingRevenue,
-                clientProcedures: procedure.clientProcedures
-                }} />
+           <TableClientsProcedure procedureDetails={procedure} />
             </div>
           </div>
         </div>

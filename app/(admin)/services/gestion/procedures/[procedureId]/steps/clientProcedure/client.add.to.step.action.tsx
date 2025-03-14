@@ -42,6 +42,7 @@ export const doAddClientToStep = adminAction
         }
 
          const clientStep = await prisma.clientStep.create({
+            
                 data:{
                     clientProcedureId:clientProcedure.id,
                     stepId:clientInput.stepId,

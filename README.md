@@ -38,3 +38,11 @@ J'ai intégré un système complet de gestion comptable pour votre agence. Voici
 - Horodatage de toutes les opérations
 
 Cette structure vous permettra de gérer l'ensemble des opérations comptables de votre agence, avec un suivi précis des dépenses et revenus, une gestion des factures clients, et la possibilité de générer des rapports financiers.
+
+
+
+## NEXT OBJECTIF:
+  - Modifier le nom et le prix par defaut d'un step (module)
+  - page client step() procedures
+  - page client details with procedures
+  - edit , add, change status step

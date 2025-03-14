@@ -1,0 +1,47 @@
+"use server"
+import bcrypt from "bcrypt";
+
+import { adminAction } from "@/lib/safe-action"
+import prisma from "@/db/prisma";
+import { Role } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+import { createStepProcedureSchema } from "./step.edit.shema";
+
+export const doCreateStep = adminAction
+    .metadata({actionName:"step client"}) // ✅ Ajout des métadonnées obligatoires
+    .schema(createStepProcedureSchema)
+    .action(async ({ clientInput }) => {
+        console.log("Creating step with data:", clientInput);
+
+
+
+        // TODO: Sauvegarder les données du step dans la base de données
+
+        const procedure  = await prisma.procedure.findUnique({
+            where:{
+                id: clientInput.procedureId
+            },
+            select:{
+                id:true
+            }
+        })
+        if(!procedure){
+            // throw new Error("Donnees invalides");
+            return;
+        }
+        const step = await prisma.stepProcedure.create({
+            data:{
+                description: clientInput.description ?? "",
+                procedureId: procedure.id,
+                price: clientInput.price,
+                name:clientInput.name,
+                order:1
+            }
+        })
+     
+        
+
+        revalidatePath("/app/(admin)/services/gestion/procedures");
+        
+        return { success: true, step };
+    });
