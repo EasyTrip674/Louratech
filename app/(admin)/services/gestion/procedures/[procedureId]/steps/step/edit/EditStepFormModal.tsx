@@ -7,7 +7,7 @@ import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
-import { Plus } from "lucide-react";
+import { Edit, Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
@@ -19,15 +19,15 @@ import { editStepProcedureSchema } from "./step.edit.shema";
 // Infer the TypeScript type from the Zod schema
 type StepProcedureScheme = z.infer<typeof editStepProcedureSchema>;
 
-export default function EditStepFormModal({procedureId, stepId, }:{
+export default function EditStepFormModal({procedureId, stepId,name,description,price,estimatedDuration,order,isRequired }:{
   procedureId:string,
   stepId:string,
   name : string,
-  description : string,
-  price : number,
-  estimatedDuration : number,
+  description?: string,
+  price: number | null,
+  estimatedDuration?: number | null,
   order : number,
-  isRequired : boolean,
+  isRequired?: boolean,
 }) {
   const { isOpen, openModal, closeModal } = useModal();
   const successModal = useModal();
@@ -41,9 +41,12 @@ export default function EditStepFormModal({procedureId, stepId, }:{
   } = useForm<StepProcedureScheme>({
     resolver: zodResolver(editStepProcedureSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      isRequired: true,
+      name: name,
+      description: description,
+      price: price || 0,
+      estimatedDuration: estimatedDuration || 0,
+      order: order,
+      isRequired: isRequired,
       procedureId: procedureId,
       stepId: stepId,
     }
@@ -83,14 +86,10 @@ export default function EditStepFormModal({procedureId, stepId, }:{
         message="Erreur lors de la création du module" 
       />
       
-      <Button 
-        variant="outline" 
-        size="sm" 
-        onClick={openModal} 
-        className="bg-gray-200 hover:bg-gray-300 transition-colors"
-      >
-        <Plus className="w-4 h-4 dark:text-white" />
-      </Button>
+      <Button variant="outline"size="sm" onClick={openModal} >
+            <Edit className="w-4 h-4 dark:text-white" />
+          </Button>
+     
       
       <Modal 
         isOpen={isOpen} 

@@ -9,6 +9,7 @@ import DemographicCard from "@/components/stats/DemographicCard";
 
 export const metadata: Metadata = {
   title:
+  
     "Dashboard",
   description:
     "Dashboard page",

@@ -29,7 +29,11 @@ export const doEditStep = adminAction
             // throw new Error("Donnees invalides");
             return;
         }
-        const step = await prisma.stepProcedure.create({
+        const step = await prisma.stepProcedure.update({
+            where:{
+                id: clientInput.stepId
+                procedureId: clientInput.procedureId
+            },
             data:{
                 description: clientInput.description ?? "",
                 procedureId: procedure.id,

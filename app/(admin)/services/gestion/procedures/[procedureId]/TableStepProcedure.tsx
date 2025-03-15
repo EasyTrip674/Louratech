@@ -12,6 +12,7 @@ import Badge from "@/components/ui/badge/Badge";
 import Button from "@/components/ui/button/Button";
 import { Eye, Clock, CheckCircle, AlertCircle, Edit, Trash } from "lucide-react";
 import { ProcedureWithStepsDb } from "@/db/queries/procedures.query";
+import EditStepFormModal from "./steps/step/edit/EditStepFormModal";
 
 
 
@@ -88,12 +89,15 @@ export default function TableProcedureSteps({
                   {!readOnly && (
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                       <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                        >
-                          <Edit className="w-4 h-4 dark:text-white" />
-                        </Button>
+                       <EditStepFormModal 
+                          procedureId={step.procedureId} 
+                          stepId={step.id} 
+                          name={step.name} 
+                          description={step.description} 
+                          estimatedDuration={step.estimatedDuration}
+                          price={step.price}
+                          order={step.order} 
+                          />
                         <Button
                           variant="outline"
                           size="sm"
