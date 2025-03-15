@@ -6,7 +6,8 @@ export const editStepProcedureSchema = z.object({
     price: z.number().int().positive().optional(),
     procedureId: z.string(),
     stepId:z.string(),
-    estimatedDuration: z.number().int().positive().optional(),
+    estimatedDuration: z.number().int().optional(),
     order: z.number().int().positive().optional(),
     isRequired: z.boolean().optional(),
    });
+

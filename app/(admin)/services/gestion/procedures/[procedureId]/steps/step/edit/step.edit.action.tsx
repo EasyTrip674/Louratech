@@ -32,11 +32,9 @@ export const doEditStep = adminAction
         const step = await prisma.stepProcedure.update({
             where:{
                 id: clientInput.stepId
-                procedureId: clientInput.procedureId
             },
             data:{
                 description: clientInput.description ?? "",
-                procedureId: procedure.id,
                 price: clientInput.price,
                 name:clientInput.name,
                 order:1

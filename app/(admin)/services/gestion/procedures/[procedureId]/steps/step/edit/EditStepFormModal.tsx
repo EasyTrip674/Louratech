@@ -7,7 +7,7 @@ import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
-import { Edit, Plus } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
@@ -19,16 +19,27 @@ import { editStepProcedureSchema } from "./step.edit.shema";
 // Infer the TypeScript type from the Zod schema
 type StepProcedureScheme = z.infer<typeof editStepProcedureSchema>;
 
-export default function EditStepFormModal({procedureId, stepId,name,description,price,estimatedDuration,order,isRequired }:{
-  procedureId:string,
-  stepId:string,
-  name : string,
-  description?: string,
-  price: number | null,
-  estimatedDuration?: number | null,
-  order : number,
-  isRequired?: boolean,
-}) {
+interface EditStepFormModalProps {
+  procedureId: string;
+  stepId: string;
+  name: string;
+  description?: string;
+  price: number | null;
+  estimatedDuration?: number | null;
+  order: number;
+  isRequired?: boolean;
+}
+
+export default function EditStepFormModal({
+  procedureId,
+  stepId,
+  name,
+  description,
+  price,
+  estimatedDuration,
+  order,
+  isRequired,
+}: EditStepFormModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
   const successModal = useModal();
   const errorModal = useModal();
@@ -41,68 +52,72 @@ export default function EditStepFormModal({procedureId, stepId,name,description,
   } = useForm<StepProcedureScheme>({
     resolver: zodResolver(editStepProcedureSchema),
     defaultValues: {
-      name: name,
-      description: description,
-      price: price || 0,
-      estimatedDuration: estimatedDuration || 0,
-      order: order,
-      isRequired: isRequired,
-      procedureId: procedureId,
-      stepId: stepId,
+      name,
+      description,
+      price: price ?? 0,
+      estimatedDuration: estimatedDuration ?? 0,
+      order,
+      isRequired,
+      procedureId,
+      stepId,
     }
   });
 
-  const EditMutation = useMutation({
+  const editMutation = useMutation({
     mutationFn: async (data: StepProcedureScheme) => {
       const result = await doEditStep(data);
+      
       if (result?.data?.success) {
         closeModal();
         reset();
         successModal.openModal();
         return result;
-      } else {
-        errorModal.openModal();
-        throw new Error("Failed to Edit step");
-      }
+      } 
+      
+      errorModal.openModal();
+      throw new Error("Failed to edit step");
     }
   });
 
   const onSubmit = (data: StepProcedureScheme) => {
-    console.log(data);
-    EditMutation.mutate(data);
+    editMutation.mutate(data);
+  };
+
+  const handleCancel = () => {
+    closeModal();
+    reset();
   };
 
   return (
     <>
       <SuccessModal 
         successModal={successModal}
-        message="Module créé avec succès"
-        title="Création réussie" 
+        message="Module modifié avec succès"
+        title="Modification réussie" 
       />
       
       <ErrorModal 
         errorModal={errorModal} 
         onRetry={openModal}
-        message="Erreur lors de la création du module" 
+        message="Erreur lors de la modification du module" 
       />
       
-      <Button variant="outline"size="sm" onClick={openModal} >
-            <Edit className="w-4 h-4 dark:text-white" />
-          </Button>
-     
+      <Button variant="outline" size="sm" onClick={openModal}>
+        <Edit className="w-4 h-4 dark:text-white" />
+      </Button>
       
       <Modal 
+        key={stepId}
         isOpen={isOpen} 
-        onClose={() => {
-          closeModal();
-          reset();
-        }} 
+        onClose={handleCancel} 
         className="max-w-[584px] p-5 lg:p-10"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Ajouter un nouveau module
+            Modifier le module
           </h4>
+
+        
           
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 border-b border-gray-200 dark:border-gray-800 pb-6">
             {/* Name field */}
@@ -119,7 +134,7 @@ export default function EditStepFormModal({procedureId, stepId,name,description,
             
             {/* Description field */}
             <div className="col-span-1">
-              <Label>Description (Optionel)</Label>
+              <Label>Description (Optionnel)</Label>
               <TextArea 
                 {...register("description")}
                 error={!!errors.description} 
@@ -150,19 +165,16 @@ export default function EditStepFormModal({procedureId, stepId,name,description,
               type="button" 
               size="sm" 
               variant="outline" 
-              onClick={() => { 
-                closeModal(); 
-                reset(); 
-              }}
+              onClick={handleCancel}
             >
               Annuler
             </Button>
             <Button 
               type="submit" 
               size="sm" 
-              disabled={isSubmitting || EditMutation.isPending}
+              disabled={isSubmitting || editMutation.isPending}
             >
-              {EditMutation.isPending ? "En cours..." : "Enregistrer"}
+              {editMutation.isPending ? "En cours..." : "Modifier"}
             </Button>
           </div>
         </form>

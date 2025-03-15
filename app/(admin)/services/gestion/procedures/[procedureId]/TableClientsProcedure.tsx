@@ -25,26 +25,6 @@ const formatDate = (dateString: string | null) => {
   return new Date(dateString).toLocaleDateString();
 };
 
-// Function to calculate procedure status
-function getProcedureStatus(status: string) {
-  switch(status) {
-    case 'NOT_STARTED':
-      return { text: 'Non démarrée', color: 'primary' };
-    case 'IN_PROGRESS':
-      return { text: 'En cours', color: 'info' };
-    case 'ON_HOLD':
-      return { text: 'En attente', color: 'info' };
-    case 'COMPLETED':
-      return { text: 'Terminée', color: 'success' };
-    case 'CANCELLED':
-      return { text: 'Annulée', color: 'warning' };
-    case 'REJECTED':
-      return { text: 'Rejetée', color: 'error' };
-    default:
-      return { text: 'Inconnue', color: 'info' };
-  }
-}
-
 // Helper function to get step status badge
 const getStepStatusBadge = (status: string) => {
   switch (status) {
@@ -76,7 +56,6 @@ const getInvoiceStatusColor = (status: string) => {
 
 export default function TableClientsProcedure({ 
   procedureDetails,
-  showProgress = true,
   showDates = true,
   showInvoice = true 
 }: TableClientsProcedureProps) {
