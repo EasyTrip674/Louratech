@@ -8,7 +8,6 @@ import {
   TableRow
 } from "@/components/ui/table";
 
-import Badge from "@/components/ui/badge/Badge";
 import Button from "@/components/ui/button/Button";
 import { Eye, Clock, CheckCircle, AlertCircle, Edit, Trash } from "lucide-react";
 import { ProcedureWithStepsDb } from "@/db/queries/procedures.query";

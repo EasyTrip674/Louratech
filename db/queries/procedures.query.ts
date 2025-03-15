@@ -374,22 +374,24 @@ export type StepProcedureDetails = Prisma.PromiseReturnType<typeof getStepProced
 
 // ===== CLIENT Procdures QUERIES =====
 
-export const getClientProcedureWithSteps = async (clientId: string, procedureId: string) => {
+export const getClientProcedureWithSteps = async (clientProcedureId: string, procedureId: string) => {
   try {
-    return await prisma.procedure.findFirst({
+    return await prisma.clientProcedure.findFirst({
       where: {
-        id:procedureId,
+        id: clientProcedureId,
       },
       include: {
-        clientProcedures: {
-          
-          where: {
-            clientId,
-          },
-          include: {
-            steps: true
-          },
+        procedure: true,
+        client:{
+          include:{
+            user:true
+          }
         },
+        steps: {
+          include: {
+            step: true,
+          },
+        }
     }});
   } catch (error) {
     console.error('Error fetching client procedure:', error);
