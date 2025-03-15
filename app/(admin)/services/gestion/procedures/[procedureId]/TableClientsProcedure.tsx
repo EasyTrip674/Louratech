@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/table";
 
 import Badge from "@/components/ui/badge/Badge";
-import Button from "@/components/ui/button/Button";
-import { Eye, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { Eye, Clock, CheckCircle } from "lucide-react";
 import { procedureDetailsDb } from "@/db/queries/procedures.query";
+import Link from "next/link";
 
 type TableClientsProcedureProps = {
   procedureDetails: procedureDetailsDb;
@@ -172,13 +172,13 @@ export default function TableClientsProcedure({
                   )}
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <div className="flex items-center gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
+                      <Link 
+                        // variant="outline" 
+                        // size="sm"
                         href={`/services/gestion/procedures/${clientProc.procedureId}/clients/${clientProc.id}`}
                       >
                         <Eye className="w-4 h-4 dark:text-white" />
-                      </Button>
+                      </Link>
                     </div>
                   </TableCell>
                 </TableRow>

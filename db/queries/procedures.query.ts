@@ -373,49 +373,28 @@ export type StepProcedureDetails = Prisma.PromiseReturnType<typeof getStepProced
 
 
 // ===== CLIENT Procdures QUERIES =====
-export const getClientProcedureWithSteps = async (clientId: string, procedureId:string) => {
-  return await prisma.clientProcedure.findFirst({
-    where: {
-      clientId,
-      procedureId:procedureId
-    },
-    select: {
-      id: true,
-      client: {
-        select: {
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-              email: true
-            }
-          }
-        }
+
+export const getClientProcedureWithSteps = async (clientId: string, procedureId: string) => {
+  try {
+    return await prisma.procedure.findFirst({
+      where: {
+        id:procedureId,
       },
-      procedure: {
-        select: {
-          id: true,
-          name: true,
-          description: true
-        }
-      },
-      steps: {
-        select: {
-          id: true,
-          stepId: true,
-          status: true,
-          startDate: true,
-          completionDate: true,
-          step: {
-            select: {
-              id: true,
-              name: true,
-              description: true,
-              order: true,
-            }
-          }
-        }
-      }
-    }
-  });
+      include: {
+        clientProcedures: {
+          
+          where: {
+            clientId,
+          },
+          include: {
+            steps: true
+          },
+        },
+    }});
+  } catch (error) {
+    console.error('Error fetching client procedure:', error);
+    throw error;
+  }
 };
+
+export type ClientProcedureWithSteps = Prisma.PromiseReturnType<typeof getClientProcedureWithSteps>;
