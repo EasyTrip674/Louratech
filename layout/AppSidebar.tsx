@@ -3,20 +3,10 @@ import React, { useEffect, useRef, useState,useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
-import {
-  BoxCubeIcon,
-  CalenderIcon,
-  ChevronDownIcon,
-  GridIcon,
-  HorizontaLDots,
-  ListIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
-  UserCircleIcon,
-} from "../icons/index";
+
 import SidebarWidget from "./SidebarWidget";
+import { Book, BoxIcon, CalendarHeartIcon, ChevronDownIcon, GridIcon, ListIcon, PieChartIcon, PlugIcon } from "lucide-react";
+import { HorizontaLDots } from "@/icons";
 
 type NavItem = {
   name: string;
@@ -32,7 +22,7 @@ const navItems: NavItem[] = [
     name: "Dashboard",
   },
   {
-    icon: <CalenderIcon />,
+    icon: <CalendarHeartIcon />,
     name: "Gestion",
     path: "/services/gestion",
     subItems: [
@@ -40,11 +30,6 @@ const navItems: NavItem[] = [
       { name: "Clients", path: "/services/gestion/clients", pro: false },
       { name: "Services", path: "/services/gestion/procedures", pro: false, new:true },
     ],
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: "Clients",
-    path: "/profile",
   },
 
   {
@@ -54,7 +39,7 @@ const navItems: NavItem[] = [
   },
   {
     name: "Ai",
-    icon: <PageIcon />,
+    icon: <Book />,
     subItems: [
       { name: "Blank Page", path: "/blank", pro: false },
       { name: "404 Error", path: "/error-404", pro: false },
@@ -72,7 +57,7 @@ const othersItems: NavItem[] = [
     ],
   },
   {
-    icon: <BoxCubeIcon />,
+    icon: <BoxIcon />,
     name: "UI Elements",
     subItems: [
       { name: "Alerts", path: "/alerts", pro: false },
@@ -84,7 +69,7 @@ const othersItems: NavItem[] = [
     ],
   },
   {
-    icon: <PlugInIcon />,
+    icon: <PlugIcon />,
     name: "Authentication",
     subItems: [
       { name: "Sign In", path: "/signin", pro: false },

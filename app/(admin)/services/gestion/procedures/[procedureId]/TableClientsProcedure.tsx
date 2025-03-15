@@ -140,12 +140,12 @@ export default function TableClientsProcedure({
                           <div key={`${stepClient.id}-dates`} className="flex flex-col">
                             <div className="flex items-center gap-1">
                               <Clock className="w-3 h-3" />
-                              <span className="text-xs">Début: {formatDate(stepClient?.startDate)}</span>
+                              <span className="text-xs">Début: {formatDate(stepClient?.startDate ?? "")}</span>
                             </div>
                             {stepClient.completionDate && (
                               <div className="flex items-center gap-1">
                                 <CheckCircle className="w-3 h-3 text-green-500" />
-                                <span className="text-xs">Terminé: {formatDate(stepClient?.completionDate)}</span>
+                                <span className="text-xs">Terminé: {formatDate(stepClient?.completionDate ?? "")}</span>
                               </div>
                             )}
                           </div>
@@ -173,9 +173,9 @@ export default function TableClientsProcedure({
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <div className="flex items-center gap-2">
                       <Button 
-                        href={`/procedures/clients/${clientProc.id}`} 
                         variant="outline" 
                         size="sm"
+                        href={`/services/gestion/procedures/${clientProc.procedureId}/clients/${clientProc.id}`}
                       >
                         <Eye className="w-4 h-4 dark:text-white" />
                       </Button>

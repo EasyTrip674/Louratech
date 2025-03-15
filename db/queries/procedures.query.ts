@@ -345,3 +345,77 @@ export const getStepsProcedureDB = async(procedureId:string)=>{
 }
 
 export type StepsProcedureDB = Prisma.PromiseReturnType<typeof getStepsProcedureDB>
+
+
+// ===== Details Step Procedure =====
+export const getStepProcedureDetails = async (stepId: string) => {
+  return await prisma.stepProcedure.findUnique({
+    where: { id: stepId },
+    include: {
+      clientSteps: {
+        include: {
+          clientProcedure: {
+            include: {
+              client: {
+                include: {
+                  user: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+export type StepProcedureDetails = Prisma.PromiseReturnType<typeof getStepProcedureDetails>;
+
+
+// ===== CLIENT Procdures QUERIES =====
+export const getClientProcedureWithSteps = async (clientId: string, procedureId:string) => {
+  return await prisma.clientProcedure.findFirst({
+    where: {
+      clientId,
+      procedureId:procedureId
+    },
+    select: {
+      id: true,
+      client: {
+        select: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              email: true
+            }
+          }
+        }
+      },
+      procedure: {
+        select: {
+          id: true,
+          name: true,
+          description: true
+        }
+      },
+      steps: {
+        select: {
+          id: true,
+          stepId: true,
+          status: true,
+          startDate: true,
+          completionDate: true,
+          step: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              order: true,
+            }
+          }
+        }
+      }
+    }
+  });
+};

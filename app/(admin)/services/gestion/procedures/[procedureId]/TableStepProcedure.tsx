@@ -98,6 +98,13 @@ export default function TableProcedureSteps({
                           price={step.price}
                           order={step.order} 
                           />
+                          <Button
+                          variant="outline"
+                          size="sm"
+                          href={`/services/gestion/procedures/${step.procedureId}/steps/step/${step.id}`}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
