@@ -1,123 +1,113 @@
 "use client";
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow
-} from "@/components/ui/table";
-
 import Button from "@/components/ui/button/Button";
-import { Eye, Clock, CheckCircle, AlertCircle, Edit, Trash } from "lucide-react";
+import { Eye, Edit, Trash, Clock, ChevronRight, Banknote, FileText, Check } from "lucide-react";
 import { ProcedureWithStepsDb } from "@/db/queries/procedures.query";
 import EditStepFormModal from "./steps/step/edit/EditStepFormModal";
 
-
-
-type TableProcedureStepsProps = {
+type CardsProcedureStepsProps = {
   procedureDetails: ProcedureWithStepsDb;
   readOnly?: boolean;
 };
 
-export default function TableProcedureSteps({
+export default function CardsProcedureSteps({
   procedureDetails,
   readOnly = false
-}: TableProcedureStepsProps) {
+}: CardsProcedureStepsProps) {
   if (!procedureDetails || !procedureDetails.steps) return null;
 
   // Sort steps by order
   const sortedSteps = [...procedureDetails?.steps].sort((a, b) => Number(a.createdAt) - Number(b.createdAt));
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-      <div className="max-w-full overflow-x-auto">
-        <div className="min-w-[800px]">
-          <Table>
-            {/* Table Header */}
-            <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
-              <TableRow>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Ordre
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Nom
-                </TableCell>
-              
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Coût du module
-                </TableCell>
-              
-                {!readOnly && (
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                  >
-                    Actions
-                  </TableCell>
-                )}
-              </TableRow>
-            </TableHeader>
+    <div className="space-y-6">
 
-            {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {sortedSteps.map((step) => (
-                <TableRow key={step.id}>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {step.order}
-                  </TableCell>
-                  <TableCell className="px-5 py-4 sm:px-6 text-start">
-                    <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                      {step.name}
-                    </span>
-                  </TableCell>
-                 
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {step.price !== null ? `${step.price.toLocaleString()} FNG` : '-'}
-                  </TableCell>
-                 
-                  {!readOnly && (
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                      <div className="flex items-center gap-2">
-                       <EditStepFormModal 
-                          procedureId={step.procedureId} 
-                          stepId={step.id} 
-                          name={step.name} 
-                          description={step.description} 
-                          estimatedDuration={step.estimatedDuration}
-                          price={step.price}
-                          order={step.order} 
-                          />
-                          <Button
-                          variant="outline"
-                          size="sm"
-                          href={`/services/gestion/procedures/${step.procedureId}/steps/step/${step.id}`}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                        >
-                          <Trash className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+      {/* Grille de cartes */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sortedSteps.map((step) => (
+          <div 
+            key={step.id} 
+            className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow duration-200"
+          >
+            {/* Entête avec numéro d'ordre */}
+            <div className="bg-blue-50 dark:bg-blue-900/30 px-4 py-2 flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center mr-2">
+                  <span className="font-bold text-blue-600 dark:text-blue-300">{step.order}</span>
+                </div>
+                <h3 className="font-medium text-blue-700 dark:text-blue-300">Module</h3>
+              </div>
+              
+              {/* Prix du module */}
+              {step.price !== null && (
+                <div className="bg-green-100 dark:bg-green-900/30 py-1 px-3 rounded-full">
+                  <span className="text-green-700 dark:text-green-300 text-sm font-medium">{step.price.toLocaleString()} FNG</span>
+                </div>
+              )}
+            </div>
+            
+            {/* Corps de la carte */}
+            <div className="p-5">
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{step.name}</h4>
+              
+              {step.description && (
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
+                  {step.description}
+                </p>
+              )}
+              
+              {/* Informations supplémentaires */}
+              <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm mb-4">
+                {step.estimatedDuration && (
+                  <div className="flex items-center mr-4">
+                    <Clock className="w-4 h-4 mr-1" />
+                    <span>{step.estimatedDuration} jours</span>
+                  </div>
+                )}
+                
+                {step.documents?.length > 0 && (
+                  <div className="flex items-center">
+                    <FileText className="w-4 h-4 mr-1" />
+                    <span>{step.documents.length} document{step.documents.length > 1 ? 's' : ''}</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Actions */}
+              {!readOnly && (
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center space-x-2">
+                    <EditStepFormModal 
+                      procedureId={step.procedureId} 
+                      stepId={step.id} 
+                      name={step.name} 
+                      description={step.description} 
+                      estimatedDuration={step.estimatedDuration}
+                      price={step.price}
+                      order={step.order} 
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                    >
+                      <Trash className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    href={`/services/gestion/procedures/${step.procedureId}/steps/step/${step.id}`}
+                    className="flex items-center"
+                  >
+                    <Eye className="w-4 h-4 mr-1" />
+                    Détails
+                    <ChevronRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

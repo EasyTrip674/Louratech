@@ -116,13 +116,13 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
       {/* les modules */}
       <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white">Modules</h2>
+          <h2 className="text-2xl font-medium text-gray-900 dark:text-white">Modules</h2>
           <div>
            <CreateStepFormModal procedureId={procedure.id}
              />
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
            {/* les modules */}
 
@@ -137,7 +137,7 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
       {/* Liste des clients */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white">Clients inscrits</h2>
+          <h2 className="text-2xl font-medium text-gray-900 dark:text-white">Clients inscrits</h2>
           <div>
             <AddClientToStepModal
               stepsProcedure={stepsProc}
