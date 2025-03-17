@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 
 import SidebarWidget from "./SidebarWidget";
-import { Book, BoxIcon, CalendarHeartIcon, ChevronDownIcon, GridIcon, ListIcon, PieChartIcon, PlugIcon } from "lucide-react";
+import { Book, CalendarHeartIcon, ChevronDownIcon, GridIcon, ListIcon } from "lucide-react";
 import { HorizontaLDots } from "@/icons";
 
 type NavItem = {
@@ -26,56 +26,56 @@ const navItems: NavItem[] = [
     name: "Gestion",
     path: "/services/gestion",
     subItems: [
+      { name: "Services", path: "/services/gestion/procedures", pro: false, new:true },
       { name: "Employees", path: "/services/gestion/employees", pro: false },
       { name: "Clients", path: "/services/gestion/clients", pro: false },
-      { name: "Services", path: "/services/gestion/procedures", pro: false, new:true },
     ],
   },
 
   {
     name: "Comptabilites",
     icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+    subItems: [{ name: "Statistiques", path: "/", pro: false }],
   },
   {
     name: "Ai",
     icon: <Book />,
     subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "Chat", path: "/blank", pro: true },
+      { name: "Historique", path: "/error-404", pro: true },
     ],
   },
 ];
 
 const othersItems: NavItem[] = [
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <BoxIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <PlugIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
-  },
+  // {
+  //   icon: <PieChartIcon />,
+  //   name: "Charts",
+  //   subItems: [
+  //     { name: "Line Chart", path: "/line-chart", pro: false },
+  //     { name: "Bar Chart", path: "/bar-chart", pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <BoxIcon />,
+  //   name: "UI Elements",
+  //   subItems: [
+  //     { name: "Alerts", path: "/alerts", pro: false },
+  //     { name: "Avatar", path: "/avatars", pro: false },
+  //     { name: "Badge", path: "/badge", pro: false },
+  //     { name: "Buttons", path: "/buttons", pro: false },
+  //     { name: "Images", path: "/images", pro: false },
+  //     { name: "Videos", path: "/videos", pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <PlugIcon />,
+  //   name: "Authentication",
+  //   subItems: [
+  //     { name: "Sign In", path: "/signin", pro: false },
+  //     { name: "Sign Up", path: "/signup", pro: false },
+  //   ],
+  // },
 ];
 
 const AppSidebar: React.FC = () => {

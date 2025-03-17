@@ -13,6 +13,8 @@ import Link from "next/link";
 import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
 import ChangerStatutClientProcedure from "./stepClient/status/ChangerStatutClientProcedure";
 import CreateFactureModal from "./stepClient/facture/createFactureModal";
+import PaymentStepModal from "./stepClient/facture/PayementStepModal";
+import PaymentStepDetails from "./stepClient/facture/PayementStepDetails";
 
 // Helper function to format dates
 const formatDate = (dateString: string | null | Date) => {
@@ -288,6 +290,10 @@ export default async function ClientProcedurePage({
 
                       {/* Paiement pour les étapes impliquant un paiement */}
                        <CreateFactureModal clientStepId={stepClient.id} />
+                       <PaymentStepModal >
+                        <PaymentStepDetails  clientStepId={stepClient.id} stepName={stepClient.step.name} 
+                       clientName={clientProcedure.client.fatherLastName ?? ""} procedureName={clientProcedure.procedure.name}  />
+                       </PaymentStepModal>
 
                       {/* Ajouter une note */}
                       <Button variant="outline" size="sm" className="flex items-center">

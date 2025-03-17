@@ -1,4 +1,4 @@
-import { Prisma, ProcedureStatus, StepStatus } from "@prisma/client";
+import { Prisma, ProcedureStatus } from "@prisma/client";
 import prisma from "../prisma";
 
 // ===== PROCEDURE QUERIES =====
@@ -400,3 +400,81 @@ export const getClientProcedureWithSteps = async (clientProcedureId: string, pro
 };
 
 export type ClientProcedureWithSteps = Prisma.PromiseReturnType<typeof getClientProcedureWithSteps>;
+
+
+
+// ===== CLIENT STEP PAYMENT QUERIES =====
+export const getClientStepPaymentInfo = async (clientStepId: string) => {
+  try {
+    // Get the client step with related payment info
+    const clientStep = await prisma.clientStep.findUnique({
+      where: { id: clientStepId },
+      select: {
+        id: true,
+        price: true,
+        status: true,
+        completionDate: true,
+        clientProcedure: {
+          select: {
+            invoice: {
+              select: {
+                id: true,
+                invoiceNumber: true,
+                totalAmount: true,
+                status: true,
+                issuedDate: true,
+                dueDate: true,
+                paidDate: true,
+                items: true,
+                revenue: {
+                  select: {
+                    transaction: {
+                      select: {
+                        id: true,
+                        amount: true,
+                        description: true,
+                        status: true,
+                        date: true,
+                        paymentMethod: true,
+                        reference: true,
+                        approvedBy: {
+                          select: {
+                            firstName: true,
+                            lastName: true
+                          }
+                        },
+                        approvedAt: true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!clientStep) {
+      throw new Error('Client step not found');
+    }
+
+    // Format response
+    return {
+      clientStep: {
+        id: clientStep.id,
+        price: clientStep.price,
+        status: clientStep.status,
+        completionDate: clientStep.completionDate
+      },
+      invoices: clientStep.clientProcedure?.invoice ? [clientStep.clientProcedure.invoice] : [],
+      transactions: clientStep.clientProcedure?.invoice?.revenue?.transaction ? [clientStep.clientProcedure.invoice.revenue.transaction] : []
+    };
+
+  } catch (error) {
+    console.error('Error fetching client step payment info:', error);
+    throw error;
+  }
+};
+
+export type ClientStepPaymentInfo = Prisma.PromiseReturnType<typeof getClientStepPaymentInfo>;
