@@ -10,7 +10,7 @@ import TableClientsProcedure from './TableClientsProcedure';
 import { getProcedureDetails, getProcedureDetailsStepsDB, getProcedureWithStepsDb, getStepsProcedureDB } from '@/db/queries/procedures.query';
 import { getCLientsIdWithNameDB } from '@/db/queries/clients.query';
 import AddClientToStepModal from './steps/clientProcedure/AddClientToStepModal';
-import TableProcedureSteps from './TableStepProcedure';
+import TableProcedureSteps from './CardsStepProcedure';
 import CreateClientFormModal from '../../clients/create/CreateClientFormModal';
 import CreateStepFormModal from './steps/step/create/CreateStepFormModal';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';

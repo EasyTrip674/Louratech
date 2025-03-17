@@ -65,7 +65,7 @@ export default function CardsProcedureSteps({
                   </div>
                 )}
                 
-                {step.documents?.length > 0 && (
+                {step?.documents?.length > 0 && (
                   <div className="flex items-center">
                     <FileText className="w-4 h-4 mr-1" />
                     <span>{step.documents.length} document{step.documents.length > 1 ? 's' : ''}</span>
@@ -94,7 +94,7 @@ export default function CardsProcedureSteps({
                     </Button>
                   </div>
                   <Button
-                    variant="default"
+                    variant="outline"
                     size="sm"
                     href={`/services/gestion/procedures/${step.procedureId}/steps/step/${step.id}`}
                     className="flex items-center"

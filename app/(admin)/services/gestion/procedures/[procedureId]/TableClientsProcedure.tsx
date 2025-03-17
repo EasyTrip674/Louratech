@@ -21,7 +21,7 @@ type TableClientsProcedureProps = {
 }
 
 // Helper function to format dates
-const formatDate = (dateString: string | null) => {
+const formatDate = (dateString: string | null | Date) => {
   if (!dateString) return "N/A";
   return new Date(dateString).toLocaleDateString();
 };
@@ -141,7 +141,7 @@ export default function TableClientsProcedure({
                           <div key={`${stepClient.id}-dates`} className="flex flex-col">
                             <div className="flex items-center gap-1">
                               <Clock className="w-3 h-3" />
-                              <span className="text-xs">Début: {formatDate(stepClient?.startDate ?? "")}</span>
+                              <span className="text-xs">Début: {formatDate(stepClient?.startDate)}</span>
                             </div>
                             {stepClient.completionDate && (
                               <div className="flex items-center gap-1">

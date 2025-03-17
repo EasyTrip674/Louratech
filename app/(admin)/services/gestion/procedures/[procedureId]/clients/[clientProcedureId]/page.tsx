@@ -7,13 +7,14 @@ import {
   XCircle, AlertTriangle, Clock3, ArrowLeft, 
   CircleDashed, CircleDot
 } from "lucide-react";
-import Badge from "@/components/ui/badge/Badge";
 import { formatCurrency } from "@/lib/utils";
 import Button from "@/components/ui/button/Button";
 import Link from "next/link";
+import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
+import ChangerStatutClientProcedure from "./ChangerStatutClientProcedure";
 
 // Helper function to format dates
-const formatDate = (dateString: string | null) => {
+const formatDate = (dateString: string | null | Date) => {
   if (!dateString) return "N/A";
   return new Date(dateString).toLocaleDateString('fr-FR', {
     day: '2-digit',
@@ -23,36 +24,10 @@ const formatDate = (dateString: string | null) => {
 };
 
 // Helper function to get step status badge
-const getStepStatusBadge = (status: string) => {
-  switch (status) {
-    case "COMPLETED":
-      return <Badge color="success">Terminée</Badge>;
-    case "IN_PROGRESS":
-      return <Badge color="info">En cours</Badge>;
-    case "NOT_STARTED":
-      return <Badge color="primary">Non démarrée</Badge>;
-    case "ON_HOLD":
-      return <Badge color="warning">En attente</Badge>;
-    default:
-      return <Badge color="info">Inconnue</Badge>;
-  }
-};
+
 
 // Helper function to get status icon
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case "COMPLETED":
-      return <CheckCircle className="w-6 h-6 text-green-500 dark:text-green-400" />;
-    case "IN_PROGRESS":
-      return <CircleDot className="w-6 h-6 text-blue-500 dark:text-blue-400" />;
-    case "NOT_STARTED":
-      return <CircleDashed className="w-6 h-6 text-gray-400 dark:text-gray-500" />;
-    case "ON_HOLD":
-      return <AlertTriangle className="w-6 h-6 text-amber-500 dark:text-amber-400" />;
-    default:
-      return <Info className="w-6 h-6 text-gray-400 dark:text-gray-500" />;
-  }
-};
+
 
 // Helper function to calculate progress percentage
 const calculateProgress = (steps: any[]) => {
@@ -124,7 +99,7 @@ export default async function ClientProcedurePage({
                 Retour
               </Button>
             </Link>
-            <Button variant="default" size="sm">
+            <Button variant="outline" size="sm">
               <FileCheck className="w-4 h-4 mr-2" />
               Exporter PDF
             </Button>
@@ -177,7 +152,7 @@ export default async function ClientProcedurePage({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Client</p>
-                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.name || "N/A"}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.user.firstName || "N/A"}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Téléphone</p>
@@ -185,7 +160,7 @@ export default async function ClientProcedurePage({
               </div>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
-                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.email || "N/A"}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.user.email || "N/A"}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Référence</p>
@@ -217,7 +192,7 @@ export default async function ClientProcedurePage({
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Créé le</p>
-              <p className="font-medium text-gray-900 dark:text-white">{formatDate(clientProcedure.createdAt)}</p>
+              <p className="font-medium text-gray-900 dark:text-white">{formatDate(String(clientProcedure.createdAt))}</p>
             </div>
           </div>
         </div>
@@ -243,9 +218,11 @@ export default async function ClientProcedurePage({
                 <CheckCircle className="w-8 h-8 text-green-500 dark:text-green-400" />
               ) : stepClient.status === "IN_PROGRESS" ? (
                 <CircleDot className="w-8 h-8 text-blue-500 dark:text-blue-400" />
-              ) : stepClient.status === "ON_HOLD" ? (
+              ) : stepClient.status === "SKIPPED"  ? (
                 <AlertTriangle className="w-8 h-8 text-amber-500 dark:text-amber-400" />
-              ) : (
+              ) : stepClient.status === "FAILED"? (
+                <XCircle className="w-8 h-8 text-red-500 dark:text-red-400" />
+              ): (
                 <CircleDashed className="w-8 h-8 text-gray-400 dark:text-gray-500" />
               )}
             </div>
@@ -285,7 +262,7 @@ export default async function ClientProcedurePage({
                   </div>
                 </div>
               )}
-              {stepClient.assignedTo && (
+              {/* {stepClient.assignedTo && (
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                   <div>
@@ -293,7 +270,7 @@ export default async function ClientProcedurePage({
                     <p className="text-sm text-gray-900 dark:text-white">{stepClient.assignedTo}</p>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
             {stepClient.notes && (
@@ -306,39 +283,13 @@ export default async function ClientProcedurePage({
             <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
               <div className="flex flex-wrap gap-2">
                 {/* Changement de statut */}
-                <div className="relative group">
-                  <Button variant="outline" size="sm" className="flex items-center">
-                    <Clock3 className="w-4 h-4 mr-1" />
-                    Changer le statut
-                    <ChevronRight className="w-4 h-4 ml-1" />
-                  </Button>
-                  <div className="hidden group-hover:block absolute left-0 mt-1 z-10 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700">
-                    <div className="py-1">
-                      <button className="flex items-center w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <CircleDot className="w-4 h-4 mr-2 text-blue-500" />
-                        En cours
-                      </button>
-                      <button className="flex items-center w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                        Terminée
-                      </button>
-                      <button className="flex items-center w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <AlertTriangle className="w-4 h-4 mr-2 text-amber-500" />
-                        En attente
-                      </button>
-                      <button className="flex items-center w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <CircleDashed className="w-4 h-4 mr-2 text-gray-500" />
-                        Non démarrée
-                      </button>
-                    </div>
-                  </div>
-                </div>
+               <ChangerStatutClientProcedure clientStepId={stepClient.id} />
 
                 {/* Paiement pour les étapes impliquant un paiement */}
-                {stepClient.step.requiresPayment && (
+                {stepClient.step.required && (
                   <Button variant="outline" size="sm" className="flex items-center">
                     <Banknote className="w-4 h-4 mr-1" />
-                    Enregistrer paiement
+                    Enregister paiement
                   </Button>
                 )}
 
@@ -349,7 +300,7 @@ export default async function ClientProcedurePage({
                 </Button>
 
                 {/* Assigner à un utilisateur */}
-                <div className="relative group">
+                {/* <div className="relative group">
                   <Button variant="outline" size="sm" className="flex items-center">
                     <Users className="w-4 h-4 mr-1" />
                     Assigner
@@ -371,18 +322,18 @@ export default async function ClientProcedurePage({
                       </button>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Planifier un rendez-vous */}
-                <Button variant="outline" size="sm" className="flex items-center">
+                {/* <Button variant="outline" size="sm" className="flex items-center">
                   <CalendarClock className="w-4 h-4 mr-1" />
                   Planifier RDV
-                </Button>
+                </Button> */}
 
                 {/* Télécharger documents */}
                 <Button variant="outline" size="sm" className="flex items-center">
                   <FileCheck className="w-4 h-4 mr-1" />
-                  Documents
+                  Factures
                 </Button>
               </div>
             </div>
@@ -394,4 +345,5 @@ export default async function ClientProcedurePage({
 </div>
 </div>
   );
+
 }
