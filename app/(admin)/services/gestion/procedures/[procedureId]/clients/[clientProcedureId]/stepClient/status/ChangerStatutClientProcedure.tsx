@@ -12,9 +12,9 @@ import {
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { z } from "zod";
-import { doChangeStepStatus } from "./change.status.client.step.action";
-import { ChangeStatusSchema, Status } from "./change.status.clientStep.sheme";
 import Button from "@/components/ui/button/Button";
+import { ChangeStatusSchema } from "./change.status.clientStep.sheme";
+import { doChangeStepStatus } from "./change.status.client.step.action";
 
 type ChangeStatusInput = z.infer<typeof ChangeStatusSchema>;
 

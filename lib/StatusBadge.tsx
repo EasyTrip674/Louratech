@@ -1,9 +1,7 @@
 import Badge from "@/components/ui/badge/Badge";
 import { 
-  Clock, CheckCircle, FileText, AlertCircle, FileClock, 
-  CalendarClock, User, Users, Clipboard, Tag, Banknote, 
-  ChevronRight, Calendar, FileCheck, Info, CheckSquare, 
-  XCircle, AlertTriangle, Clock3, ArrowLeft, 
+   CheckCircle, Info,  
+   AlertTriangle,  
   CircleDashed, CircleDot
 } from "lucide-react";
 
@@ -14,7 +12,9 @@ type StepStatus =
   | "ON_HOLD"
   | "SKIPPED"
   | "FAILED"
-  | "PENDING";
+  | "PENDING"
+  | "WAITING"|
+  "CANCELLED";
 
 export const getStepStatusBadge = (status: StepStatus) => {
     switch (status) {
@@ -30,6 +30,11 @@ export const getStepStatusBadge = (status: StepStatus) => {
         return <Badge color="warning">Annulée</Badge>;
       case "FAILED":
         return <Badge color="error">Échouée</Badge>;
+      case "PENDING":
+      case "WAITING":
+        return <Badge color="warning">En attente</Badge>;
+      case "CANCELLED":
+        return <Badge color="error">Annulée</Badge>;
       default:
         return <Badge color="info">Inconnue</Badge>;
     }
@@ -41,12 +46,16 @@ export const getStatusIcon = (status: StepStatus) => {
     case "COMPLETED":
       return <CheckCircle className="w-6 h-6 text-green-500 dark:text-green-400" />;
     case "IN_PROGRESS":
-    case "PENDING":
+    case "PENDING": 
       return <CircleDot className="w-6 h-6 text-blue-500 dark:text-blue-400" />;
     case "NOT_STARTED":
       return <CircleDashed className="w-6 h-6 text-gray-400 dark:text-gray-500" />;
     case "ON_HOLD":
       return <AlertTriangle className="w-6 h-6 text-amber-500 dark:text-amber-400" />;
+    case "SKIPPED":
+      return <CircleDashed className="w-6 h-6 text-gray-400 dark:text-gray-500" />;
+    case "FAILED":
+      return <AlertTriangle className="w-6 h-6 text-red-500 dark:text-red-400" />;
     default:
       return <Info className="w-6 h-6 text-gray-400 dark:text-gray-500" />;
   }

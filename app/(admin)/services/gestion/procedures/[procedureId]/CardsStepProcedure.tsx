@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Button from "@/components/ui/button/Button";
-import { Eye, Edit, Trash, Clock, ChevronRight, Banknote, FileText, Check } from "lucide-react";
+import { Eye, Edit, Trash, Clock, ChevronRight } from "lucide-react";
 import { ProcedureWithStepsDb } from "@/db/queries/procedures.query";
 import EditStepFormModal from "./steps/step/edit/EditStepFormModal";
 
@@ -65,12 +65,12 @@ export default function CardsProcedureSteps({
                   </div>
                 )}
                 
-                {step?.documents?.length > 0 && (
+                {/* {step?.documents?.length > 0 && (
                   <div className="flex items-center">
                     <FileText className="w-4 h-4 mr-1" />
                     <span>{step.documents.length} document{step.documents.length > 1 ? 's' : ''}</span>
                   </div>
-                )}
+                )} */}
               </div>
               
               {/* Actions */}
