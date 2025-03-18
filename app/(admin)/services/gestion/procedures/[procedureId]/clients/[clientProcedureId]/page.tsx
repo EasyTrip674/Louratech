@@ -2,19 +2,19 @@ import React from "react";
 import { getClientProcedureWithSteps } from "@/db/queries/procedures.query";
 import { 
   Clock, CheckCircle, FileText, AlertCircle,  
-   User,  Clipboard,  Banknote, 
+   User,  Clipboard,   
   ChevronRight, Calendar, FileCheck, 
   XCircle, AlertTriangle,  ArrowLeft, 
-  CircleDashed, CircleDot
+  CircleDashed, CircleDot,
+  Plus
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import Button from "@/components/ui/button/Button";
 import Link from "next/link";
 import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
 import ChangerStatutClientProcedure from "./stepClient/status/ChangerStatutClientProcedure";
-import CreateFactureModal from "./stepClient/facture/createFactureModal";
-import PaymentStepModal from "./stepClient/facture/PayementStepModal";
-import PaymentStepDetails from "./stepClient/facture/PayementStepDetails";
+import PaymentStepModal from "./stepClient/payments/PayementStepModal";
+import PaymentStepDetails from "./stepClient/payments/PayementStepDetails";
 
 // Helper function to format dates
 const formatDate = (dateString: string | null | Date) => {
@@ -287,19 +287,25 @@ export default async function ClientProcedurePage({
                     <div className="flex flex-wrap gap-2">
                       {/* Changement de statut */}
                     <ChangerStatutClientProcedure clientStepId={stepClient.id} />
-
                       {/* Paiement pour les étapes impliquant un paiement */}
-                       <CreateFactureModal clientStepId={stepClient.id} />
                        <PaymentStepModal >
-                        <PaymentStepDetails  clientStepId={stepClient.id} stepName={stepClient.step.name} 
-                       clientName={clientProcedure.client.fatherLastName ?? ""} procedureName={clientProcedure.procedure.name}  />
+                          <PaymentStepDetails  clientStepId={stepClient.id} stepName={stepClient.step.name} 
+                          clientName={`${clientProcedure.client.user.firstName} ${clientProcedure.client.user.lastName}`} procedureName={clientProcedure.procedure.name}  />
                        </PaymentStepModal>
 
+
+                        {/*  */}
+                       <Button variant="outline" size="sm" className="flex items-center">
+                        <Plus className="w-4 h-4 mr-1" />
+                          Nouveau Payement
+                      </Button>
+
+
                       {/* Ajouter une note */}
-                      <Button variant="outline" size="sm" className="flex items-center">
+                      {/* <Button variant="outline" size="sm" className="flex items-center">
                         <FileText className="w-4 h-4 mr-1" />
                         Ajouter une note
-                      </Button>
+                      </Button> */}
 
                       {/* Assigner à un utilisateur */}
                       {/* <div className="relative group">

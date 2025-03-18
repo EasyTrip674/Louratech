@@ -22,10 +22,9 @@ children
         variant="outline" 
         size="sm" 
         onClick={openModal}
-        className="flex items-center gap-1 hover:bg-primary hover:text-white transition-colors"
       >
         <DollarSign className="w-4 h-4 mr-1 dark:text-white" />
-        <span>Paiements</span>
+        <span>Voir les payements</span>
       </Button>
       
       <Modal 

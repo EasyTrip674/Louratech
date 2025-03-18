@@ -19,6 +19,15 @@ export const doCreateProcedure = adminAction
             },
         });
 
+        // create category for the procedure
+        await prisma.category.create({
+            data: {
+                name: clientInput.name,
+                type: "REVENUE",
+                description: "Categorie de transaction pour la procedure : " + clientInput.name,
+            },
+        });
+
         revalidatePath("/app/(admin)/services/gestion/Procedures");
         
         return { success: true, procedure };

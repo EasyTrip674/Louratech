@@ -1,9 +1,7 @@
 "use server"
-import bcrypt from "bcrypt";
 
 import { adminAction } from "@/lib/safe-action"
 import prisma from "@/db/prisma";
-import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { addClientToStepSchema } from "./client.add.to.step.scheme";
 
@@ -47,6 +45,7 @@ export const doAddClientToStep = adminAction
                     clientProcedureId:clientProcedure.id,
                     stepId:clientInput.stepId,
                     price: clientInput.price,
+                    status: "PENDING",
                   //TODO:   processedById:
                 }
             })

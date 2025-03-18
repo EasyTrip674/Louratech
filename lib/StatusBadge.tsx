@@ -2,7 +2,8 @@ import Badge from "@/components/ui/badge/Badge";
 import { 
    CheckCircle, Info,  
    AlertTriangle,  
-  CircleDashed, CircleDot
+  CircleDashed, CircleDot,
+  Circle
 } from "lucide-react";
 
 type StepStatus = 
@@ -21,6 +22,7 @@ export const getStepStatusBadge = (status: StepStatus) => {
       case "COMPLETED":
         return <Badge color="success">Terminée</Badge>;
       case "IN_PROGRESS":
+      case "PENDING":
         return <Badge color="info">En cours</Badge>;
       case "NOT_STARTED":
         return <Badge color="primary">Non démarrée</Badge>;
@@ -30,9 +32,8 @@ export const getStepStatusBadge = (status: StepStatus) => {
         return <Badge color="warning">Annulée</Badge>;
       case "FAILED":
         return <Badge color="error">Échouée</Badge>;
-      case "PENDING":
       case "WAITING":
-        return <Badge color="warning">En attente</Badge>;
+        return <Badge color="warning">En cour</Badge>;
       case "CANCELLED":
         return <Badge color="error">Annulée</Badge>;
       default:
@@ -47,7 +48,7 @@ export const getStatusIcon = (status: StepStatus) => {
       return <CheckCircle className="w-6 h-6 text-green-500 dark:text-green-400" />;
     case "IN_PROGRESS":
     case "PENDING": 
-      return <CircleDot className="w-6 h-6 text-blue-500 dark:text-blue-400" />;
+      return <Circle className="w-6 h-6 text-blue-500 dark:text-blue-400" />;
     case "NOT_STARTED":
       return <CircleDashed className="w-6 h-6 text-gray-400 dark:text-gray-500" />;
     case "ON_HOLD":
