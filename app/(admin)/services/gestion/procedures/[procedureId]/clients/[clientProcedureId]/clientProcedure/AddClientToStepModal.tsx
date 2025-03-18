@@ -91,7 +91,7 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
     onSuccess: () => {
       console.log("Stepp created successfully");
     },
-    onError: (error) => {
+    onError: () => {
       console.error("Failed to add step in client");
     },
     

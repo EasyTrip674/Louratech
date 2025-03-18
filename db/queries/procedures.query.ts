@@ -414,40 +414,18 @@ export const getClientStepPaymentInfo = async (clientStepId: string) => {
         price: true,
         status: true,
         completionDate: true,
-        clientProcedure: {
+        transactions: {
           select: {
-            invoice: {
+            id: true,
+            amount: true,
+            paymentMethod: true,
+            status: true,
+            date: true,
+            description: true,
+            revenue: {
               select: {
                 id: true,
-                invoiceNumber: true,
-                totalAmount: true,
-                status: true,
-                issuedDate: true,
-                dueDate: true,
-                paidDate: true,
-                items: true,
-                revenue: {
-                  select: {
-                    transaction: {
-                      select: {
-                        id: true,
-                        amount: true,
-                        description: true,
-                        status: true,
-                        date: true,
-                        paymentMethod: true,
-                        reference: true,
-                        approvedBy: {
-                          select: {
-                            firstName: true,
-                            lastName: true
-                          }
-                        },
-                        approvedAt: true
-                      }
-                    }
-                  }
-                }
+                source: true
               }
             }
           }
@@ -467,8 +445,7 @@ export const getClientStepPaymentInfo = async (clientStepId: string) => {
         status: clientStep.status,
         completionDate: clientStep.completionDate
       },
-      invoices: clientStep.clientProcedure?.invoice ? [clientStep.clientProcedure.invoice] : [],
-      transactions: clientStep.clientProcedure?.invoice?.revenue?.transaction ? [clientStep.clientProcedure.invoice.revenue.transaction] : []
+      transactions: clientStep.transactions || []
     };
 
   } catch (error) {
