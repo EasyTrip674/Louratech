@@ -41,8 +41,12 @@ Cette structure vous permettra de gérer l'ensemble des opérations comptables d
 
 
 
-## NEXT OBJECTIF:
+## NEXT OBJECTIF A:
   - Modifier le nom et le prix par defaut d'un step (module)
   - page client step() procedures
   - page client details with procedures
   - edit , add, change status step
+
+## NEXT OBJECTIF B:
+ - Gestion des transactions status (on ne peut qu'Approuvées) 
+ -

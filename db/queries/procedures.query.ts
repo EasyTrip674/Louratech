@@ -414,18 +414,24 @@ export const getClientStepPaymentInfo = async (clientStepId: string) => {
         price: true,
         status: true,
         completionDate: true,
+
         transactions: {
           select: {
+            reference:true,
             id: true,
+          
             amount: true,
             paymentMethod: true,
+            approvedBy: true,
+            approvedAt:true,
             status: true,
             date: true,
             description: true,
             revenue: {
+              
               select: {
                 id: true,
-                source: true
+                source: true,
               }
             }
           }

@@ -30,7 +30,7 @@ children
       <Modal 
         isOpen={isOpen} 
         onClose={closeModal} 
-        className="max-w-[800px] p-5 lg:p-8"
+        className="max-w-[1200px] p-5 lg:p-8"
       >
      {children}
       </Modal>

@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { createTransactionSchema } from "./transaction.schema";
 import prisma from "@/db/prisma";
 import { PaymentMethod, TransactionStatus } from "@prisma/client";
+import { z } from "zod";
 
 export const doCreateTransaction = adminAction
     .metadata({actionName:"create Transaction"}) // ✅ Ajout des métadonnées obligatoires
@@ -66,5 +67,43 @@ export const doCreateTransaction = adminAction
 
         revalidatePath("/app/(admin)/services/gestion/Procedures");
         
+        return { success: true };
+    });
+
+
+
+// approve transaction action change status to APPROVED
+
+export const doApproveTransaction = adminAction
+    .metadata({actionName:"approve Transaction"}) // ✅ Ajout des métadonnées obligatoires
+    .schema(z.object({
+        transactionId: z.string(),
+    }))
+    .action(async ({ clientInput }) => {
+        console.log("Approve Transaction with data:", clientInput);
+
+        const transaction = await prisma.transaction.findUnique({
+            where: {
+                id: clientInput.transactionId,
+            },
+        });
+
+        if (!transaction) {
+            throw new Error("Transaction not found");
+        }
+
+        console.log(transaction);
+
+        await prisma.transaction.update({
+            where: {
+                id: transaction.id,
+            },
+            data: {
+                status: "APPROVED",
+            },
+        });
+
+        revalidatePath("/app/(admin)/services/gestion/Procedures");
+
         return { success: true };
     });

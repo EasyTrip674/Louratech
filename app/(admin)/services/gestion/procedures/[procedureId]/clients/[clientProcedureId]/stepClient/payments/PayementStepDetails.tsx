@@ -1,9 +1,10 @@
-import {  Info, FileText, CreditCard, Calendar, Clock, Receipt, Plus, CircleCheckIcon, ChevronRight, AlertCircle } from "lucide-react";
+import {  Info, FileText, CreditCard, Calendar, Clock, Receipt, Plus, CircleCheckIcon, ChevronRight, AlertCircle, DockIcon, Download } from "lucide-react";
 import { InvoiceStatus, PaymentMethod, StepStatus, TransactionStatus } from "@prisma/client";
 import { formatDate } from "@fullcalendar/core/index.js";
 import { getClientStepPaymentInfo } from "@/db/queries/procedures.query";
 import { Suspense } from "react";
 import CreateTransactionModalStep from "./transactions/CreateTransactionModalStep";
+import ApprovedTransactionModal from "./transactions/ApprovedTransactionModal";
 
 // Types pour les données de facturation liées à un ClientStep
 interface PaymentInfoModalProps {
@@ -33,9 +34,10 @@ export default async function PaymentStepDetails({
   const totalPaid = allTransactions.reduce((acc, transaction) => 
     transaction.status === "APPROVED" ? acc + transaction.amount : acc, 0);
   const remainingAmount = (data?.clientStep?.price ?? 0) - totalPaid;
+  type Status = InvoiceStatus | TransactionStatus | StepStatus
 
   // Fonction pour obtenir la couleur du badge selon le statut
-  const getStatusColor = (status: InvoiceStatus | TransactionStatus | StepStatus) => {
+  const getStatusColor = (status:Status) => {
     const statusColors = {
       // Statuts de facture
       DRAFT: "bg-gray-100 text-gray-800 border border-gray-200",
@@ -209,6 +211,7 @@ export default async function PaymentStepDetails({
                           <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Référence</th>
                           <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Approuvée par</th>
                           <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Date d&apos;approbation</th>
+                          <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Facture</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -224,23 +227,32 @@ export default async function PaymentStepDetails({
                                 {translatePaymentMethod(transaction.paymentMethod)}
                               </div>
                             </td>
-                            <td className="px-4 py-3">
+                            <td className="px-4 py-3 flex items-center text-gray-700 dark:text-gray-300 flex-col">
                               <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(transaction.status)}`}>
                                 {translateStatus(transaction.status)}
                               </span>
+                            <ApprovedTransactionModal transactionId={transaction.id}
+                               status={transaction.status}
+                              amount={transaction.amount}
+                              paymentMethod={transaction.paymentMethod}
+                              date={formatReadableDate(transaction.date)}
+                            />
                             </td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300 font-mono text-xs">{transaction.reference || "-"}</td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
                               {transaction.approvedBy ? (
                                 <div className="flex items-center">
                                   <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-medium text-primary mr-2">
-                                    {transaction.approvedBy.firstName[0]}{transaction.approvedBy.lastName[0]}
+                                    {transaction?.approvedBy?.firstName?.charAt(0)}{transaction.approvedBy.lastName[0]}
                                   </div>
                                   <span>{transaction.approvedBy.firstName} {transaction.approvedBy.lastName}</span>
                                 </div>
                               ) : "-"}
                             </td>
-                            <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{formatReadableDate(transaction.approvedAt)}</td>
+                            <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{formatReadableDate(String(transaction.approvedAt)) ?? "-"} </td>
+                            <td className="px-4 py-3 text-gray-700 dark:text-gray-300 cursor-pointer">
+                              <Download className="w-4 h-4" />
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -260,73 +272,7 @@ export default async function PaymentStepDetails({
               </div>
             )}
 
-            {/* Factures */}
-            {data.invoices && (
-              <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-                <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80">
-                  <h4 className="text-base font-semibold flex items-center text-gray-700 dark:text-gray-200">
-                    <FileText className="h-4 w-4 mr-2 text-primary" />
-                    Factures associées
-                    <span className="ml-2 text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-                      {data.invoices.length}
-                    </span>
-                  </h4>
-                </div>
-                
-                {data.invoices.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead className="bg-gray-50 dark:bg-gray-700/60">
-                        <tr>
-                          <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">N° Facture</th>
-                          <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Montant</th>
-                          <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Statut</th>
-                          <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Date d&apos;émission</th>
-                          <th className="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Date d&apos;échéance</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {data.invoices.map((invoice) => (
-                          <tr key={invoice.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
-                            <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200">
-                              <div className="flex items-center">
-                                <span className="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 dark:bg-gray-700 mr-2">
-                                  <Receipt className="h-4 w-4 text-gray-500" />
-                                </span>
-                                {invoice.invoiceNumber}
-                              </div>
-                            </td>
-                            <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200">{formatCurrency(invoice.totalAmount)}</td>
-                            <td className="px-4 py-3">
-                              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(invoice.status)}`}>
-                                {translateStatus(invoice.status)}
-                              </span>
-                            </td>
-                            <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{formatReadableDate(invoice.issuedDate)}</td>
-                            <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
-                              <div className="flex items-center">
-                                <Clock className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
-                                {formatReadableDate(invoice.dueDate)}
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="p-8 text-center">
-                    <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
-                      <FileText className="h-6 w-6 text-gray-400" />
-                    </div>
-                    <h3 className="text-gray-500 dark:text-gray-400 text-sm mb-2">Aucune facture</h3>
-                    <p className="text-gray-400 dark:text-gray-500 text-xs max-w-sm mx-auto mb-4">
-                      Aucune facture n'a encore été émise pour cette étape de procédure.
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
+         
           </div>
         )}
       </div>
