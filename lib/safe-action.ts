@@ -4,6 +4,9 @@ import {
 } from "next-safe-action";
 import { cookies } from "next/headers";
 import { z } from "zod";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
 
 class ActionError extends Error {}
 
@@ -39,28 +42,38 @@ const actionClient = createSafeActionClient({
   console.log("Metadata ->", metadata);
   console.log("Action execution took", endTime - startTime, "ms");
 
-  return result;
+  return next({ ...result });
 });
 
 // ✅ Client d'authentification basé sur `actionClient`
 export const authActionClient = actionClient
-  .use(async ({ next }) => {
-    return next({ ctx: { userId: null } });
+  .use(async ({ next,metadata }) => {
+
+    if (!metadata?.actionName) {
+      throw new ActionError("Missing required metadata: actionName");
+    }
+
+    const user = await auth.api.getSession({
+      headers: await headers() //some endpoint might require headers
+    })
+    if (!user) {
+      throw new ActionError("User not authenticated");
+    }
+
+
+    return next({ ctx: { user } });
   });
 
 // ✅ Client pour les super-admins
 export const superAdminAction = authActionClient
   .use(async ({ next }) => {
-    return next({ ctx: { userId: null } });
+
+    return next({ ctx: { user: null } });
   });
 
 // ✅ Client pour les admins avec validation de `metadata`
 export const adminAction = authActionClient
-  .use(async ({ metadata, clientInput, next }) => {
+  .use(async ({ next,ctx }) => {
     // Vérification que `metadata` est bien défini avant d'exécuter l'action
-    if (!metadata?.actionName) {
-      throw new ActionError("Missing required metadata: actionName");
-    }
-
-    return next({ ctx: { userId: null } });
+    return next({ ctx });
   });

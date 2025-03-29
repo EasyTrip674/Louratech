@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,24 +9,24 @@ import { Modal } from "@/components/ui/modal";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import PhoneInput from "@/components/form/group-input/PhoneInput";
-import { PlusIcon } from "@/icons";
+import {  EyeIcon, EyeCloseIcon } from "@/icons";
 import { countriesCode } from "@/lib/countries";
 import { Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import {  createClientSchema } from "./client.create.shema";
+import { createClientSchema } from "./client.create.shema";
 import { doCreateClient } from "./client.create.action";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
 
-// Zod validation schema
-
-// Infer the TypeScript type from the Zod schema
+// Infer le type TypeScript du schéma Zod
 type ClientFormData = z.infer<typeof createClientSchema>;
 
 export default function CreateClientFormModal() {
   const { isOpen, openModal, closeModal } = useModal();
   const successModal = useModal();
   const errorModal = useModal();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     control,
@@ -48,51 +48,52 @@ export default function CreateClientFormModal() {
       fatherFirstName: "",
       motherLastName: "",
       motherFirstName: "",
+      password: "",
+      confirmPassword: "",
     },
   });
-
-  // Watch form values in real-time
-  // const watchedValues = watch();
 
   const createMutation = useMutation({
     mutationFn: async (data: ClientFormData) => {
-    const result = await doCreateClient(data);
-    if (result?.data?.success) {
-      closeModal();
-      reset();
-      successModal.openModal();
-    } else {
-      closeModal();
-      errorModal.openModal();
-    }
-  },
+      const result = await doCreateClient(data);
+      if (result?.data?.success) {
+        closeModal();
+        reset();
+        successModal.openModal();
+      } else {
+        closeModal();
+        errorModal.openModal();
+      }
+    },
     onSuccess: () => {
-      console.log("Client created successfully");
+      console.log("Client créé avec succès");
     },
     onError: (error) => {
-      console.error("Failed to create client");
+      console.error("Échec de création du client");
     },
-    
   });
 
   const onSubmit = (data: ClientFormData) => {
-    console.log("Saving client data:", data);
-    // TODO: Save client data to the database
-    // INFO: You can use the `data` object to send the form data to the server
+    console.log("Enregistrement des données client:", data);
     if (data) {
-     createMutation.mutate(data);
-    }else{
-      console.log("No data to save");
+      createMutation.mutate(data);
+    } else {
+      console.log("Aucune donnée à enregistrer");
     }
   };
 
   return (
     <>
-    <SuccessModal successModal={successModal}
-               message="Client created successfully"
-               title="" />
-    <ErrorModal errorModal={errorModal} onRetry={openModal}
-        message="Error during creation user" />
+      <SuccessModal 
+        successModal={successModal}
+        message="Client créé avec succès"
+        title="" 
+      />
+      <ErrorModal 
+        errorModal={errorModal} 
+        onRetry={openModal}
+        message="Erreur lors de la création du client" 
+      />
       <Button variant="outline" size="sm" onClick={openModal} className="bg-gray-200">
         <Plus className="w-4 h-4 dark:text-white" />
       </Button>
@@ -101,86 +102,121 @@ export default function CreateClientFormModal() {
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Ajouter un nouveau client</h4>
           
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 border-b border-gray-200 dark:border-gray-800 pb-6">
-            {/* firstName */}
+            {/* Prénom */}
             <div className="col-span-1">
-              <Label>Prenom</Label>
-              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message}  type="text" placeholder="Enter full name" />
+              <Label>Prénom</Label>
+              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message} type="text" placeholder="Entrez le prénom" />
             </div>
-            {/* lastName */}
+            {/* Nom */}
             <div className="col-span-1">
               <Label>Nom</Label>
-              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message}  type="text" placeholder="Enter full name" />
+              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message} type="text" placeholder="Entrez le nom" />
             </div>
           
-
-            {/* Phone */}
+            {/* Téléphone */}
             <div className="col-span-1">
-              <Label>Phone</Label>
+              <Label>Téléphone</Label>
               <Controller
                 name="phone"
                 control={control}
                 render={({ field }) => (
-                  <PhoneInput selectPosition="start" countries={countriesCode} placeholder="+1 (555) 000-0000" {...field} />
+                  <PhoneInput selectPosition="start" countries={countriesCode} placeholder="+33 (0) 600-0000" {...field} />
                 )}
               />
             </div>
 
-            {/* Passport */}
+            {/* Passeport */}
             <div className="col-span-1">
-              <Label>Passport</Label>
-              <Input {...register("passport")} type="text" placeholder="Enter passport number" />
+              <Label>Passeport</Label>
+              <Input {...register("passport")} type="text" placeholder="Entrez le numéro de passeport" />
             </div>
 
-            {/* Address */}
+            {/* Adresse */}
             <div className="col-span-1 sm:col-span-2">
-              <Label>Address</Label>
-              <Input {...register("address")} type="text" placeholder="Enter full address" />
+              <Label>Adresse</Label>
+              <Input {...register("address")} type="text" placeholder="Entrez l'adresse complète" />
             </div>
 
-            {/* Birth Date */}
+            {/* Date de naissance */}
             <div className="col-span-2">
-              <Label>Birth Date</Label>
+              <Label>Date de naissance</Label>
               <Input {...register("birthDate")} type="date" />
             </div>
 
-            {/* Father's Information */}
+            {/* Informations du père */}
             <div className="col-span-1">
-              <Label>Father's First Name</Label>
-              <Input {...register("fatherFirstName")} type="text" placeholder="Enter father's first name" />
+              <Label>Prénom du père</Label>
+              <Input {...register("fatherFirstName")} type="text" placeholder="Entrez le prénom du père" />
             </div>
             <div className="col-span-1">
-              <Label>Father's Last Name</Label>
-              <Input {...register("fatherLastName")} type="text" placeholder="Enter father's last name" />
+              <Label>Nom du père</Label>
+              <Input {...register("fatherLastName")} type="text" placeholder="Entrez le nom du père" />
             </div>
 
-            {/* Mother's Information */}
+            {/* Informations de la mère */}
             <div className="col-span-1">
-              <Label>Mother's First Name</Label>
-              <Input {...register("motherFirstName")} type="text" placeholder="Enter mother's first name" />
+              <Label>Prénom de la mère</Label>
+              <Input {...register("motherFirstName")} type="text" placeholder="Entrez le prénom de la mère" />
             </div>
             <div className="col-span-1">
-              <Label>Mother's Last Name</Label>
-              <Input {...register("motherLastName")} type="text" placeholder="Enter mother's last name" />
+              <Label>Nom de la mère</Label>
+              <Input {...register("motherLastName")} type="text" placeholder="Entrez le nom de la mère" />
             </div>
           </div>
 
-
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 mt-6">
-              {/* Email */}
+            {/* Email */}
             <div className="col-span-2">
               <Label>Email</Label>
-              <Input {...register("email")} error={!!errors.email} hint={errors.email?.message} type="email" placeholder="Enter email address" />
+              <Input {...register("email")} error={!!errors.email} hint={errors.email?.message} type="email" placeholder="Entrez l'adresse email" />
             </div>
-             {/* Password */}
+            
+            {/* Mot de passe */}
             <div className="col-span-1">
-              <Label>Password</Label>
-              <Input {...register("password")} error={!!errors.password} hint={errors.password?.message} type="password" placeholder="Enter password" />
+              <Label>Mot de passe</Label>
+              <div className="relative">
+                <Input 
+                  {...register("password")} 
+                  error={!!errors.password} 
+                  hint={errors.password?.message} 
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="Entrez le mot de passe" 
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                >
+                  {showPassword ? (
+                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                  ) : (
+                    <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                  )}
+                </span>
+              </div>
             </div>
 
-            {/* Confirm Password */}
+            {/* Confirmer le mot de passe */}
             <div className="col-span-1">
-              <Label>Confirm Password</Label>
-              <Input {...register("confirmPassword")} error={!!errors.confirmPassword} hint={errors.confirmPassword?.message} type="password" placeholder="Confirm password" />
+              <Label>Confirmer le mot de passe</Label>
+              <div className="relative">
+                <Input 
+                  {...register("confirmPassword")} 
+                  error={!!errors.confirmPassword} 
+                  hint={errors.confirmPassword?.message} 
+                  type={showConfirmPassword ? "text" : "password"} 
+                  placeholder="Confirmez le mot de passe" 
+                />
+                <span
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                >
+                  {showConfirmPassword ? (
+                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                  ) : (
+                    <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                  )}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -193,10 +229,6 @@ export default function CreateClientFormModal() {
             </Button>
           </div>
         </form>
-        {/* Debugging: Display watched values */}
-        {/* <pre className="mt-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs text-gray-700 dark:text-gray-300">
-          {JSON.stringify(watchedValues, null, 2)}
-        </pre> */}
       </Modal>
     </>
   );

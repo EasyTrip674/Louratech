@@ -11,6 +11,7 @@ import Button from "@/components/ui/button/Button";
 import { createOrganizationSchema } from "./create.organization.shema";
 import { doCreateOrganization } from "./organization.create.action";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 
 type OrganizationFormData = z.infer<typeof createOrganizationSchema>;
@@ -19,6 +20,7 @@ export default function CreationOrganisationFormulaire() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const { 
     register, 
@@ -35,6 +37,7 @@ export default function CreationOrganisationFormulaire() {
     mutationFn: async (data: OrganizationFormData) => {
       const result = await doCreateOrganization(data);
       if (result?.data?.success) {
+        router.push("/auth/signin");
       } else {
       }
     },
@@ -44,17 +47,7 @@ export default function CreationOrganisationFormulaire() {
     setIsSubmitting(true);
     try {
       // TODO: Implémenter la logique de création d'organisation et d'administrateur
-      console.log("Données de création d'organisation:", {
-        organization: {
-          name: data.organizationName,
-          description: data.organizationDescription
-        },
-        admin: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email
-        }
-      });
+      
       
     await creationOrganiozationMutation.mutate(data);
     } catch (error) {

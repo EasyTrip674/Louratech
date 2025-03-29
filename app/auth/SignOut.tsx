@@ -48,7 +48,7 @@ const SignOutButton = () => {
         </svg>
         Deconnexion
         </button>
-      <Modal isOpen={isOpen} onClose={closeModal} className="max-w=[584px] p-5 lg:p-10">
+      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
         <div className="p-6">
           <div className="flex items-center justify-center mb-4">
             <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full dark:bg-red-900/20">

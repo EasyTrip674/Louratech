@@ -3,6 +3,7 @@ import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import React, { useState ,useEffect,useRef} from "react";
 
@@ -10,6 +11,9 @@ const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
+
+  const { data: session, isPending, error } = authClient.useSession();
+
 
   const handleToggle = () => {
     if (window.innerWidth >= 991) {
@@ -154,6 +158,21 @@ const AppHeader: React.FC = () => {
             </form>
           </div>
         </div>
+
+        <div className="flex items-center justify-between w-full px-4 py-4">
+          <h1 className="text-2xl font-extrabold text-gray-800 dark:text-white tracking-tight">
+            {/* organizationName */}
+            <span className="inline-flex items-center">
+              {session?.userDetails?.organization?.name}
+              <span className="ml-2 h-2 w-2 rounded-full bg-green-500"></span>
+            </span>
+          </h1>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Organisation</span>
+          </div>
+        </div>
+
+
         <div
           className={`${
             isApplicationMenuOpen ? "flex" : "hidden"

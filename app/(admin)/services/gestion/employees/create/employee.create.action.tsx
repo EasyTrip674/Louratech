@@ -1,58 +1,78 @@
 "use server"
-import bcrypt from "bcrypt";
 
 import { adminAction } from "@/lib/safe-action"
 import { createEmployeeSheme } from "./employee.create.shema"
 import prisma from "@/db/prisma";
 import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
 
 export const doCreateEmployee = adminAction
     .metadata({actionName:"Employee client"}) // ✅ Ajout des métadonnées obligatoires
     .schema(createEmployeeSheme)
-    .action(async ({ clientInput }) => {
+    .action(async ({ clientInput,ctx }) => {
         console.log("Creating client with data:", clientInput);
 
-        const passwordHash = await bcrypt.hash(clientInput.password, 10);
-
-        if (!passwordHash) {
-            throw new Error("Failed to hash password");
+        if(clientInput.password !== clientInput.confirmPassword){
+            throw new Error("Passwords do not match");
         }
 
-        const organization = await prisma.organization.findFirst({ });
-        if (!organization) {
-            throw new Error("Organization not found");
-        }
+        const user = await auth.api.signUpEmail({
 
-        // TODO: Sauvegarder les données du client dans la base de données
-
-        const employee = await prisma.user.create({
-            data: {
+            body: {
                 email: clientInput.email,
-                firstName: clientInput.firstName,
+                password: clientInput.password,
+                name: clientInput.firstName + " " + clientInput.lastName,
+            },
+            });
+
+        if (!user.user.id) {
+            throw new Error("Erreur lors de la création de l'utilisateur");
+        }
+
+        const organization = await prisma.organization.findFirst({
+            where: {
+                id: ctx.user.userDetails?.organization?.id,
+            },
+        });
+
+        if (!organization) {
+            throw new Error("Organisation introuvable");
+        }
+
+        await auth.api.addMember({
+            body: {
+                organizationId: organization.id,
+                userId: user.user.id,
+                role: Role.EMPLOYEE,
+            },
+        });
+
+        const admin = await prisma.user.update({
+            where: {
+                id: user.user.id,
+            },
+            data: {
+                organizationId: organization.id,
+                role: Role.ADMIN,
                 lastName: clientInput.lastName,
-                password: passwordHash,
-                role: Role.CLIENT,
-                organization: {
-                    connect: {
-                        id: organization.id,
-                    },
-                },
+                firstName: clientInput.firstName,
                 admin: {
                     create: {
                         phone: clientInput.phone || "",
-                        address: clientInput.address || "", 
+                        address: clientInput.address || "",
                         organization: {
                             connect: {
-                                id: organization.id,
-                            },
-                        },
-                    },
+                                id: organization.id, 
+                            }
+                        }
+                    }
+                }
             },
-        }});
-        
+        });
 
+      
         revalidatePath("/app/(admin)/services/gestion/clients");
         
-        return { success: true, employee };
+        return { success: true, admin };
     });

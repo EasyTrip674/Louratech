@@ -6,6 +6,7 @@ import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
 import React from "react";
 import { authClient } from "@/lib/auth-client";
+import Loading from "../laoding";
 
 
 export default function AdminLayout({
@@ -24,7 +25,7 @@ export default function AdminLayout({
 
     // redirect user to login page if not authenticated
     const { data: session, isPending, error } = authClient.useSession();
-    if (isPending) return <div>Loading...</div>;
+    if (isPending) return <Loading />;
     if (error) return <div>{error.message}</div>;
     if (!session) {
       window.location.href = "/auth/signin";

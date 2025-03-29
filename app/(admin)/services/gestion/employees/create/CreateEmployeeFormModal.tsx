@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +10,7 @@ import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import PhoneInput from "@/components/form/group-input/PhoneInput";
 import { countriesCode } from "@/lib/countries";
-import { Plus } from "lucide-react";
+import { EyeClosedIcon, EyeIcon, Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
@@ -25,6 +25,8 @@ export default function CreateEmployeeFormModal() {
   const { isOpen, openModal, closeModal } = useModal();
   const successModal = useModal();
   const errorModal = useModal();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     control,
@@ -135,13 +137,49 @@ export default function CreateEmployeeFormModal() {
              {/* Password */}
             <div className="col-span-1">
               <Label>Password</Label>
-              <Input {...register("password")} error={!!errors.password} hint={errors.password?.message} type="password" placeholder="Enter password" />
+              <div className="relative">
+                <Input
+                  {...register("password")}
+                  error={!!errors.password}
+                  hint={errors.password?.message}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter password"
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                >
+                  {showPassword ? (
+                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                  ) : (
+                    <EyeClosedIcon className="fill-gray-500 dark:fill-gray-400" />
+                  )}
+                </span>
+              </div>
             </div>
 
             {/* Confirm Password */}
             <div className="col-span-1">
               <Label>Confirm Password</Label>
-              <Input {...register("confirmPassword")} error={!!errors.confirmPassword} hint={errors.confirmPassword?.message} type="password" placeholder="Confirm password" />
+              <div className="relative">
+                <Input
+                  {...register("confirmPassword")}
+                  error={!!errors.confirmPassword}
+                  hint={errors.confirmPassword?.message}
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm password"
+                />
+                <span
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                >
+                  {showConfirmPassword ? (
+                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                  ) : (
+                    <EyeClosedIcon className="fill-gray-500 dark:fill-gray-400" />
+                  )}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -154,10 +192,7 @@ export default function CreateEmployeeFormModal() {
             </Button>
           </div>
         </form>
-        {/* Debugging: Display watched values */}
-        {/* <pre className="mt-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs text-gray-700 dark:text-gray-300">
-          {JSON.stringify(watchedValues, null, 2)}
-        </pre> */}
+       
       </Modal>
     </>
   );
