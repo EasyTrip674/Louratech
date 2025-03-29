@@ -4,8 +4,9 @@ import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
-import { CopilotPopup } from "@copilotkit/react-ui";
 import React from "react";
+import { authClient } from "@/lib/auth-client";
+
 
 export default function AdminLayout({
   children,
@@ -20,6 +21,15 @@ export default function AdminLayout({
     : isExpanded || isHovered
     ? "lg:ml-[290px]"
     : "lg:ml-[90px]";
+
+    // redirect user to login page if not authenticated
+    const { data: session, isPending, error } = authClient.useSession();
+    if (isPending) return <div>Loading...</div>;
+    if (error) return <div>{error.message}</div>;
+    if (!session) {
+      window.location.href = "/auth/signin";
+      return null;
+    }
 
   return (
    <>

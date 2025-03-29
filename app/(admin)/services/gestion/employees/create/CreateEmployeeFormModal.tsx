@@ -9,7 +9,6 @@ import { Modal } from "@/components/ui/modal";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import PhoneInput from "@/components/form/group-input/PhoneInput";
-import { PlusIcon } from "@/icons";
 import { countriesCode } from "@/lib/countries";
 import { Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";

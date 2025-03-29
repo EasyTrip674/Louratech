@@ -4,39 +4,16 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import Button from "../ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import Checkbox from "@/components/form/input/Checkbox";
 import { ChevronLeftIcon, EyeIcon, EyeCloseIcon } from "@/icons";
+import Button from "@/components/ui/button/Button";
+import { createOrganizationSchema } from "./create.organization.shema";
+import { doCreateOrganization } from "./organization.create.action";
+import { useMutation } from "@tanstack/react-query";
 
-// Schéma de validation Zod pour la création d'organisation
-const organizationSchema = z.object({
-  // Détails de l'organisation
-  organizationName: z.string().min(2, { message: "Le nom de l'organisation doit contenir au moins 2 caractères" }),
-  organizationDescription: z.string().optional(),
 
-  // Détails de l'administrateur
-  firstName: z.string().min(2, { message: "Le prénom doit contenir au moins 2 caractères" }),
-  lastName: z.string().min(2, { message: "Le nom de famille doit contenir au moins 2 caractères" }),
-  email: z.string().email({ message: "Veuillez saisir une adresse email valide" }),
-  password: z.string()
-    .min(8, { message: "Le mot de passe doit contenir au moins 8 caractères" })
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
-      message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial"
-    }),
-  confirmPassword: z.string(),
-
-  // Conditions d'utilisation
-  agreesToTerms: z.boolean().refine(val => val, { 
-    message: "Vous devez accepter les conditions d'utilisation" 
-  })
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Les mots de passe ne correspondent pas",
-  path: ["confirmPassword"]
-});
-
-type OrganizationFormData = z.infer<typeof organizationSchema>;
+type OrganizationFormData = z.infer<typeof createOrganizationSchema>;
 
 export default function CreationOrganisationFormulaire() {
   const [showPassword, setShowPassword] = useState(false);
@@ -48,10 +25,19 @@ export default function CreationOrganisationFormulaire() {
     handleSubmit, 
     formState: { errors } 
   } = useForm<OrganizationFormData>({
-    resolver: zodResolver(organizationSchema),
+    resolver: zodResolver(createOrganizationSchema),
     defaultValues: {
       agreesToTerms: false
     }
+  });
+
+  const creationOrganiozationMutation = useMutation({
+    mutationFn: async (data: OrganizationFormData) => {
+      const result = await doCreateOrganization(data);
+      if (result?.data?.success) {
+      } else {
+      }
+    },
   });
 
   const onSubmit = async (data: OrganizationFormData) => {
@@ -70,27 +56,7 @@ export default function CreationOrganisationFormulaire() {
         }
       });
       
-      // Exemple d'appel API potentiel
-      // const response = await fetch('/api/organizations', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     organization: {
-      //       name: data.organizationName,
-      //       description: data.organizationDescription
-      //     },
-      //     admin: {
-      //       firstName: data.firstName,
-      //       lastName: data.lastName,
-      //       email: data.email,
-      //       password: data.password
-      //     }
-      //   })
-      // });
-
-      // if (response.ok) {
-      //   // Gérer la création réussie
-      // }
+    await creationOrganiozationMutation.mutate(data);
     } catch (error) {
       console.error("Échec de la création de l'organisation:", error);
     } finally {
@@ -255,7 +221,8 @@ export default function CreationOrganisationFormulaire() {
             <div className="flex items-center gap-3">
               <input type="checkbox"
                 {...register("agreesToTerms")}
-                className="w-5 h-5"
+                className="w-5 h-5 text-primary-500 border-gray-300 rounded checked:bg-primary-500 checked:border-transparent"
+                
               />
               <p className="inline-block text-sm text-gray-600 dark:text-gray-400">
                 J'accepte les{" "}
@@ -271,7 +238,7 @@ export default function CreationOrganisationFormulaire() {
             )}
 
             {/* Bouton de Soumission */}
-            <Button 
+            <Button
               type="submit" 
               className="w-full"
               disabled={isSubmitting}
