@@ -49,4 +49,4 @@ Cette structure vous permettra de gérer l'ensemble des opérations comptables d
 
 ## NEXT OBJECTIF B:
  - Gestion des transactions status (on ne peut qu'Approuvées) 
- -
+ - ajout des autorizations avec better auth !

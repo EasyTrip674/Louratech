@@ -20,12 +20,10 @@ export default function UserProfileCard({ email, firstName,lastName,phone,addres
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
             <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
-              <Image
-                width={80}
-                height={80}
-                src={imageSrc || "/assets/img/avatars/avatar1.jpg"}
-                alt="User profile"
-              />
+             {imageSrc ? <Image src={imageSrc} alt="user" width={80} height={80} /> : <div className="w-full h-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 text-2xl font-semibold">
+              {/* first letter */}
+              {firstName?.charAt(0)}
+              </div>}
             </div>
             <div className="order-3 xl:order-2">
               <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">

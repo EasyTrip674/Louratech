@@ -101,7 +101,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
                   fill=""
                 />
               </svg>
-              Edit profile
+             Profil 
             </DropdownItem>
           </li>
           <li>
@@ -126,7 +126,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
                   fill=""
                 />
               </svg>
-              Account settings
+             Paramètres
             </DropdownItem>
           </li>
           <li>

@@ -2,7 +2,6 @@ import {
   createSafeActionClient,
   DEFAULT_SERVER_ERROR_MESSAGE,
 } from "next-safe-action";
-import { cookies } from "next/headers";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
