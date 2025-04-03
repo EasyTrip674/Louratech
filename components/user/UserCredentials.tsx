@@ -4,12 +4,10 @@ import { useModal } from "@/hooks/useModal";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Modal } from "@/components/ui/modal";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
-import { Pencil } from "lucide-react";
 import { PasswordFormData, passwordSchema } from "./user.password.shema";
 import { useMutation } from "@tanstack/react-query";
 import { doChangePassword } from "./user.password.change.action";
@@ -56,6 +54,8 @@ export default function UserCredentialsManage({ userId, email, active = true ,ro
       successModal.openModal();
       router.refresh();
     } else {
+      console.log("error", result?.serverError);
+      
       closeModal();
       errorModal.openModal();
     }
