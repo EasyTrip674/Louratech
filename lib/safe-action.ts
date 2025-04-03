@@ -12,8 +12,7 @@ class ActionError extends Error {}
 
 // ✅ Définition du client de base avec un schéma de métadonnées valide
 
-
-const actionClient = createSafeActionClient({
+export const actionClient = createSafeActionClient({
   handleServerError(e) {
     console.error("Action error:", e.message);
 

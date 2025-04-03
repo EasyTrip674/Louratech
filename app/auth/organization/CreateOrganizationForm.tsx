@@ -234,9 +234,9 @@ export default function CreationOrganisationFormulaire() {
             <Button
               type="submit" 
               className="w-full"
-              disabled={isSubmitting}
+              disabled={isSubmitting || creationOrganiozationMutation.isPending}
             >
-              {isSubmitting ? "Création en cours..." : "Créer mon Organisation"}
+              {(isSubmitting ||  creationOrganiozationMutation.isPending ) ? "Création en cours..." : "Créer mon Organisation"}
             </Button>
           </div>
         </form>

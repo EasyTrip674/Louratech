@@ -28,13 +28,14 @@ export const doChangePassword = adminAction
             throw new Error("Utilisateur introuvable");
         }
 
-        await auth.api.changePassword({
+            const data =  await auth.api.changePassword({
             body: {
                 newPassword: newPassword,
                 currentPassword: currentPassword,
                 revokeOtherSessions: false,     
             }});
-     
+            console.log("data",data);
+            
 
         revalidatePath("/app/(admin)/services/gestion");
 

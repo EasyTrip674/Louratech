@@ -1,13 +1,14 @@
 "use server"
 
-import { adminAction } from "@/lib/safe-action"
+import { actionClient, adminAction } from "@/lib/safe-action"
 import prisma from "@/db/prisma";
 import { revalidatePath } from "next/cache";
 import { createOrganizationSchema } from "./create.organization.shema";
 import { authClient } from "@/lib/auth-client";
 import { Role } from "@prisma/client";
+import { redirect } from "next/navigation";
 
-export const doCreateOrganization = adminAction
+export const doCreateOrganization = actionClient
     .metadata({actionName:"create organization"}) // ✅ Ajout des métadonnées obligatoires
     .schema(createOrganizationSchema)
     .action(async ({ clientInput }) => {
@@ -95,6 +96,8 @@ export const doCreateOrganization = adminAction
         console.log("Creating organization with data:", organization);
 
         revalidatePath("/app/auth/organization");
+
+        redirect("/auth/signin");
         
         return { success: true };
     });
