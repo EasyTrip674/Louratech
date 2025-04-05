@@ -6,7 +6,7 @@ import { Modal } from "@/components/ui/modal";
 import { DollarSign, CheckCircle, AlertTriangle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import { doApproveTransaction } from "./create.step.transaction.action";
+import { doApproveTransaction } from "./step.transaction.action";
 
 interface ApprovedTransactionModalProps {
   transactionId: string;

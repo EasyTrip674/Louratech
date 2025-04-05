@@ -175,7 +175,7 @@ export default async function PaymentStepDetails({
                   <AlertCircle className="h-4 w-4 mr-1.5 text-amber-500" />
                   Reste à payer
                 </p>
-                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{formatCurrency(remainingAmount)}</p>
+                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{formatCurrency(Math.max(remainingAmount,0))}</p>
                 {remainingAmount <= 0 && (
                   <span className="inline-flex items-center mt-2 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800">
                     <CircleCheckIcon className="h-3 w-3 mr-1" />
@@ -196,7 +196,7 @@ export default async function PaymentStepDetails({
                       {data.transactions.length}
                     </span>
                   </h4>
-                  <CreateTransactionModalStep clientStepId={clientStepId} haveToPay={remainingAmount} />
+                  <CreateTransactionModalStep clientStepId={clientStepId} haveToPay={remainingAmount > 0 ? remainingAmount : 0} />
                 </div>
                 
                 {data.transactions.length > 0 ? (
@@ -243,13 +243,13 @@ export default async function PaymentStepDetails({
                               {transaction.approvedBy ? (
                                 <div className="flex items-center">
                                   <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-medium text-primary mr-2">
-                                    {transaction?.approvedBy?.firstName?.charAt(0)}{transaction.approvedBy.lastName[0]}
+                                    {transaction?.approvedBy?.firstName?.charAt(0)}{transaction?.approvedBy?.lastName?.charAt(0)}
                                   </div>
                                   <span>{transaction.approvedBy.firstName} {transaction.approvedBy.lastName}</span>
                                 </div>
                               ) : "-"}
                             </td>
-                            <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{formatReadableDate(String(transaction.approvedAt)) ?? "-"} </td>
+                            <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{formatDate(String(transaction.approvedAt)) ?? "-"} </td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300 cursor-pointer">
                               <Download className="w-4 h-4" />
                             </td>

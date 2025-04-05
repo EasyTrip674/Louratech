@@ -14,9 +14,22 @@ export const doCreateTransaction = adminAction
     .schema(createTransactionSchema)
     .action(async ({ clientInput,ctx }) => {
         console.log("Creating Procedure with data:", clientInput);
+        
+        // Vérifier si une transaction existe déjà pour ce clientStep
+        const existingTransaction = await prisma.transaction.findFirst({
+            where: {
+                clientStepId: clientInput.clientStepId,
+                organizationId: ctx.user.userDetails?.organizationId ?? "",
+                status: {
+                    in: ["PENDING"]
+                }
+            },
+        });
 
+        if (existingTransaction) {
+            throw new Error("Une transaction existe déjà pour cette étape client");
+        }
 
-        // TODO: a modifier
         const clientStep = await prisma.clientStep.findUnique({
             where: {
                 id: clientInput.clientStepId,
@@ -26,8 +39,6 @@ export const doCreateTransaction = adminAction
         if (!clientStep) {
             throw new Error("Client step not found");
         }
-
-        console.log(clientStep);
 
         const organization = await prisma.organization.findUnique({
             where: {
@@ -42,18 +53,15 @@ export const doCreateTransaction = adminAction
             throw new Error("Organization not found");
         }
 
-        const user = await prisma.user.findFirst({
-            
-        });
-
-        if (!user) {
-            throw new Error("User not found");
-        }
-
         // create transaction
         await prisma.transaction.create({
             data: {
                 amount: clientInput.amount,
+                reference:
+                    "TRX-" +
+                    new Date().getTime() +
+                    "-" +
+                    Math.floor(Math.random() * 1000),
                 type: "REVENUE",
                 status: clientInput.status as TransactionStatus,
                 clientStepId: clientStep.id,
@@ -62,7 +70,9 @@ export const doCreateTransaction = adminAction
                 date: new Date(),
                 clientProcedureId: clientStep.clientProcedureId,
                 organizationId: organization.id,
-                createdById: user.id,
+                approvedById: clientInput.status === "APPROVED" ? ctx.user.userDetails?.id : undefined,
+                approvedAt: clientInput.status === "APPROVED" ? new Date(Date.now()) : undefined,
+                createdById: ctx.user.userDetails?.id ?? "",
                 revenue: {
                     create: {
                         source: "CLIENT",
@@ -108,6 +118,8 @@ export const doApproveTransaction = adminAction
             },
             data: {
                 status: "APPROVED",
+                approvedById:ctx.user.userDetails?.id ?? "",
+                approvedAt: new Date(Date.now()),
             },
         });
 

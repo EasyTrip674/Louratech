@@ -11,7 +11,15 @@ export const doCreateStep = adminAction
     .action(async ({ clientInput ,ctx}) => {
         console.log("Creating step with data:", clientInput);
 
-
+        const existStep = await prisma.stepProcedure.findFirst({
+            where: {
+                name: clientInput.name,
+                procedureId: clientInput.procedureId,
+            }
+        });
+        if (existStep) {
+            throw new Error("Step already exist");
+        }
 
         // TODO: Sauvegarder les données du step dans la base de données
 

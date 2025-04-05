@@ -2,7 +2,7 @@
 
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { doCreateTransaction } from './create.step.transaction.action'
+import { doCreateTransaction } from './step.transaction.action'
 import { createTransactionSchema } from './transaction.schema'
 import Button from '@/components/ui/button/Button'
 import { z } from 'zod'

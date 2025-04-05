@@ -45,9 +45,6 @@ export default function CreateEmployeeFormModal() {
     },
   });
 
-  // Watch form values in real-time
-  // const watchedValues = watch();
-
   const createMutation = useMutation({
     mutationFn: async (data: EmployeeFormData) => {
     const result = await doCreateEmployee(data);
@@ -61,55 +58,53 @@ export default function CreateEmployeeFormModal() {
     }
   },
     onSuccess: () => {
-      console.log("Employee created successfully");
+      console.log("Employé créé avec succès");
     },
-    onError: (error) => {
-      console.error("Failed to create Employee");
+    onError: () => {
+      console.error("Échec de la création de l'employé");
     },
     
   });
 
   const onSubmit = (data: EmployeeFormData) => {
-    console.log("Saving Employee data:", data);
-    // TODO: Save Employee data to the database
-    // INFO: You can use the `data` object to send the form data to the server
+    console.log("Enregistrement des données de l'employé:", data);
     if (data) {
      createMutation.mutate(data);
     }else{
-      console.log("No data to save");
+      console.log("Aucune donnée à enregistrer");
     }
   };
 
   return (
     <>
     <SuccessModal successModal={successModal}
-               message="Employee created successfully"
+               message="Employé créé avec succès"
                title="" />
     <ErrorModal errorModal={errorModal} onRetry={openModal}
-        message="Error during creation user" />
+        message="Erreur lors de la création de l'utilisateur" />
       <Button variant="outline" size="sm" onClick={openModal} className="bg-gray-200">
         <Plus className="w-4 h-4 dark:text-white" />
       </Button>
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Ajouter un nouveau Employee</h4>
+          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Ajouter un nouvel employé</h4>
           
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 border-b border-gray-200 dark:border-gray-800 pb-6">
             {/* firstName */}
             <div className="col-span-1">
-              <Label>Prenom</Label>
-              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message}  type="text" placeholder="Enter full name" />
+              <Label>Prénom</Label>
+              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message}  type="text" placeholder="Entrez le prénom" />
             </div>
             {/* lastName */}
             <div className="col-span-1">
               <Label>Nom</Label>
-              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message}  type="text" placeholder="Enter full name" />
+              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message}  type="text" placeholder="Entrez le nom" />
             </div>
           
 
             {/* Phone */}
             <div className="col-span-1">
-              <Label>Phone</Label>
+              <Label>Téléphone</Label>
               <Controller
                 name="phone"
                 control={control}
@@ -121,8 +116,8 @@ export default function CreateEmployeeFormModal() {
 
             {/* Address */}
             <div className="col-span-1 sm:col-span-2">
-              <Label>Address</Label>
-              <Input {...register("address")} type="text" placeholder="Enter full address" />
+              <Label>Adresse</Label>
+              <Input {...register("address")} type="text" placeholder="Entrez l'adresse complète" />
             </div>
 
           </div>
@@ -132,18 +127,18 @@ export default function CreateEmployeeFormModal() {
               {/* Email */}
             <div className="col-span-2">
               <Label>Email</Label>
-              <Input {...register("email")} error={!!errors.email} hint={errors.email?.message} type="email" placeholder="Enter email address" />
+              <Input {...register("email")} error={!!errors.email} hint={errors.email?.message} type="email" placeholder="Entrez l'adresse email" />
             </div>
              {/* Password */}
             <div className="col-span-1">
-              <Label>Password</Label>
+              <Label>Mot de passe</Label>
               <div className="relative">
                 <Input
                   {...register("password")}
                   error={!!errors.password}
                   hint={errors.password?.message}
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter password"
+                  placeholder="Entrez le mot de passe"
                 />
                 <span
                   onClick={() => setShowPassword(!showPassword)}
@@ -160,14 +155,14 @@ export default function CreateEmployeeFormModal() {
 
             {/* Confirm Password */}
             <div className="col-span-1">
-              <Label>Confirm Password</Label>
+              <Label>Confirmer le mot de passe</Label>
               <div className="relative">
                 <Input
                   {...register("confirmPassword")}
                   error={!!errors.confirmPassword}
                   hint={errors.confirmPassword?.message}
                   type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm password"
+                  placeholder="Confirmez le mot de passe"
                 />
                 <span
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}

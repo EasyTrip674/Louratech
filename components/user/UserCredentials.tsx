@@ -67,17 +67,16 @@ export default function UserCredentialsManage({ userId, email, active = true ,ro
   });
 
   const onSubmit: SubmitHandler<PasswordFormData> = (data) => {
-    changePasswordMutation.mutate(data
-    );
+    changePasswordMutation.mutate(data);
   };
 
   return (
     <>
       <SuccessModal successModal={successModal}
-               message="User Editd successfully"
+               message="Utilisateur modifié avec succès"
                title="" />
           <ErrorModal errorModal={errorModal} onRetry={openModal}
-        message="Le mot ne passe n'est pas bon !" />
+        message="Le mot de passe n'est pas correct !" />
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -127,26 +126,26 @@ export default function UserCredentialsManage({ userId, email, active = true ,ro
 
       <Modal className="max-w-[584px] p-5 lg:p-10" isOpen={isOpen} onClose={closeModal}>
         <div className="p-6">
-          <h2 className="text-xl font-semibold mb-4 dark:text-white">Change Password</h2>
+          <h2 className="text-xl font-semibold mb-4 dark:text-white">Changer le mot de passe</h2>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <Label>Current Password</Label>
-              <Input type="password" {...register("currentPassword")} placeholder="Enter current password" />
+              <Label>Mot de passe actuel</Label>
+              <Input type="password" {...register("currentPassword")} placeholder="Entrez votre mot de passe actuel" />
               {errors.currentPassword && <p className="text-red-500 text-sm">{errors.currentPassword.message}</p>}
             </div>
             <div>
-              <Label>New Password</Label>
-              <Input type="password" {...register("newPassword")} placeholder="Enter new password" />
+              <Label>Nouveau mot de passe</Label>
+              <Input type="password" {...register("newPassword")} placeholder="Entrez votre nouveau mot de passe" />
               {errors.newPassword && <p className="text-red-500 text-sm">{errors.newPassword.message}</p>}
             </div>
             <div>
-              <Label>Confirm New Password</Label>
-              <Input type="password" {...register("confirmPassword")} placeholder="Confirm new password" />
+              <Label>Confirmer le nouveau mot de passe</Label>
+              <Input type="password" {...register("confirmPassword")} placeholder="Confirmez votre nouveau mot de passe" />
               {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
             </div>
             <div className="flex justify-end mt-6 space-x-2">
-              <Button variant="outline" onClick={closeModal} type="button">Cancel</Button>
-              <Button type="submit">Change Password</Button>
+              <Button variant="outline" onClick={closeModal} type="button">Annuler</Button>
+              <Button type="submit">Changer le mot de passe</Button>
             </div>
           </form>
         </div>

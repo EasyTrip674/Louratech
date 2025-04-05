@@ -8,10 +8,35 @@ import { addClientToStepSchema } from "./client.add.to.step.scheme";
 export const doAddClientToStep = adminAction
     .metadata({actionName:"add client to stepp"}) // ✅ Ajout des métadonnées obligatoires
     .schema(addClientToStepSchema)
-    .action(async ({ clientInput }) => {
-        const organization = await prisma.organization.findFirst({ });
+    .action(async ({ clientInput,ctx }) => {
+
+        const organization = await prisma.organization.findUnique({
+            where: {
+                id: ctx.user.userDetails?.organizationId ?? "",
+            },
+            select: {
+                id: true,
+            },
+         });
         if (!organization) {
             throw new Error("Organization not found");
+        }
+        const existCLientStep = await prisma.clientStep.findFirst({
+            where:{
+                status: {
+                    in: ["PENDING", "IN_PROGRESS", "COMPLETED", "WAITING"]
+                },
+                stepId: clientInput.stepId,
+                clientProcedure:{
+                    client:{
+                        id: clientInput.clientId,
+                        organizationId: organization.id
+                    }
+                }
+            }
+        });
+        if(existCLientStep){
+            throw new Error("Client step already exist");
         }
         
         const client = await prisma.client.findUniqueOrThrow({
@@ -47,6 +72,7 @@ export const doAddClientToStep = adminAction
                     price: clientInput.price,
                     status: "PENDING",
                   //TODO:   processedById:
+                   processedById: ctx.user.userDetails?.id,
                 }
             })
 
