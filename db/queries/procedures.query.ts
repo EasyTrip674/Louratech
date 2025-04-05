@@ -1,8 +1,11 @@
 import { Prisma, ProcedureStatus } from "@prisma/client";
 import prisma from "../prisma";
+import { getOrgnaizationId } from "./utils.query";
+
 
 // ===== PROCEDURE QUERIES =====
-export const getAllProcedures = async (organizationId?: string) => {
+export const getAllProcedures = async () => {
+  const organizationId = await getOrgnaizationId();
   return await prisma.procedure.findMany({
     where: organizationId ? { organizationId } : undefined,
     include: {
@@ -22,8 +25,10 @@ export const getAllProcedures = async (organizationId?: string) => {
 };
 
 export const getProcedureById = async (id: string) => {
+  const organizationId = await getOrgnaizationId();
+
   return await prisma.procedure.findUnique({
-    where: { id },
+    where: { id , organizationId},
     include: {
       steps: {
         orderBy: {
@@ -44,7 +49,9 @@ export const getProcedureById = async (id: string) => {
 };
 
 export const getProcedureWithStats = async () => {
+  const organizationId = await getOrgnaizationId();
   const procedures = await prisma.procedure.findMany({
+    where: { organizationId },
     include: {
       clientProcedures: true,
     },
@@ -85,11 +92,13 @@ export const getProcedureWithStats = async () => {
   return proceduresFinal;
 };
 
-export const getActiveProcedures = async (organizationId?: string) => {
+export const getActiveProcedures = async () => {
+  const organizationId = await getOrgnaizationId();
+
   return await prisma.procedure.findMany({
     where: {
       isActive: true,
-      organizationId: organizationId ? organizationId : undefined,
+      organizationId:  organizationId,
     },
     include: {
       steps: {
@@ -105,10 +114,12 @@ export const getActiveProcedures = async (organizationId?: string) => {
 
 
 export async function getProcedureDetails(id: string) {
+  const organizationId = await getOrgnaizationId();
+
   try {
     // Récupération de la procédure avec ses étapes
     const procedure = await prisma.procedure.findUnique({
-      where: { id },
+      where: { id, organizationId },
       include: {
         steps: {
           orderBy: {
@@ -124,8 +135,11 @@ export async function getProcedureDetails(id: string) {
 
     // Récupération de toutes les procédures client liées à cette procédure
     const clientProcedures = await prisma.clientProcedure.findMany({
+    
+
       where: {
         procedureId: id,
+        organizationId,
       },
       include: {
         client: {
@@ -239,9 +253,12 @@ export type procedureDetailsDb = Prisma.PromiseReturnType<typeof getProcedureDet
  * @returns Les détails de la procédure et ses étapes, ou null si non trouvée
  */
 export async function getProcedureWithStepsDb(procedureId: string) {
+  const organizationId = await getOrgnaizationId();
+
   try {
     return await prisma.procedure.findUnique({
       where: {
+        organizationId,
         id: procedureId,
       },
       include: {
@@ -270,10 +287,13 @@ export type ProcedureWithStepsDb = Prisma.PromiseReturnType<typeof getProcedureW
  * @returns Les détails complets de la procédure avec statistiques
  */
 export async function getProcedureDetailsStepsDB(procedureId: string) {
+  const organizationId = await getOrgnaizationId();
+
   try {
     // Récupérer la procédure avec ses étapes
     const procedure = await prisma.procedure.findUnique({
       where: {
+        organizationId,
         id: procedureId,
       },
       include: {
@@ -336,8 +356,10 @@ export type ProcedureDetailsWithStats = Prisma.PromiseReturnType<typeof getProce
 
 
 export const getStepsProcedureDB = async(procedureId:string)=>{
+  const organizationId = await getOrgnaizationId();
+
   return prisma.procedure.findUnique({
-    where:{id:procedureId},
+    where:{id:procedureId , organizationId},
     select:{
       steps:true,
     }
@@ -349,8 +371,10 @@ export type StepsProcedureDB = Prisma.PromiseReturnType<typeof getStepsProcedure
 
 // ===== Details Step Procedure =====
 export const getStepProcedureDetails = async (stepId: string) => {
+  const organizationId = await getOrgnaizationId();
+
   return await prisma.stepProcedure.findUnique({
-    where: { id: stepId },
+    where: { id: stepId},
     include: {
       clientSteps: {
         include: {
@@ -376,9 +400,12 @@ export type StepProcedureDetails = Prisma.PromiseReturnType<typeof getStepProced
 
 export const getClientProcedureWithSteps = async (clientProcedureId: string, procedureId: string) => {
   try {
+  const organizationId = await getOrgnaizationId();
+
     return await prisma.clientProcedure.findFirst({
       where: {
         id: clientProcedureId,
+        organizationId,
       },
       include: {
         procedure: true,
@@ -406,6 +433,7 @@ export type ClientProcedureWithSteps = Prisma.PromiseReturnType<typeof getClient
 // ===== CLIENT STEP PAYMENT QUERIES =====
 export const getClientStepPaymentInfo = async (clientStepId: string) => {
   try {
+  const organizationId = await getOrgnaizationId();
     // Get the client step with related payment info
     const clientStep = await prisma.clientStep.findUnique({
       where: { id: clientStepId },

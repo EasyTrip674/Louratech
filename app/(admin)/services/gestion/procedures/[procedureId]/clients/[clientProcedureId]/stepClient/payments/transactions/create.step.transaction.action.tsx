@@ -12,7 +12,7 @@ import { z } from "zod";
 export const doCreateTransaction = adminAction
     .metadata({actionName:"create Transaction"}) // ✅ Ajout des métadonnées obligatoires
     .schema(createTransactionSchema)
-    .action(async ({ clientInput }) => {
+    .action(async ({ clientInput,ctx }) => {
         console.log("Creating Procedure with data:", clientInput);
 
 
@@ -29,7 +29,13 @@ export const doCreateTransaction = adminAction
 
         console.log(clientStep);
 
-        const organization = await prisma.organization.findFirst({ 
+        const organization = await prisma.organization.findUnique({
+            where: {
+                id: ctx.user.userDetails?.organizationId ?? "",
+            },
+            select: {
+                id: true,
+            }, 
         });
 
         if (!organization) {
@@ -79,12 +85,13 @@ export const doApproveTransaction = adminAction
     .schema(z.object({
         transactionId: z.string(),
     }))
-    .action(async ({ clientInput }) => {
+    .action(async ({ clientInput,ctx }) => {
         console.log("Approve Transaction with data:", clientInput);
 
         const transaction = await prisma.transaction.findUnique({
             where: {
                 id: clientInput.transactionId,
+                organizationId: ctx.user.userDetails?.organizationId ?? "",
             },
         });
 
@@ -97,6 +104,7 @@ export const doApproveTransaction = adminAction
         await prisma.transaction.update({
             where: {
                 id: transaction.id,
+                organizationId: ctx.user.userDetails?.organizationId ?? "",
             },
             data: {
                 status: "APPROVED",

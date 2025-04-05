@@ -1,16 +1,14 @@
 "use server"
-import bcrypt from "bcrypt";
 
 import { adminAction } from "@/lib/safe-action"
 import prisma from "@/db/prisma";
-import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { createStepProcedureSchema } from "./step.create.shema";
 
 export const doCreateStep = adminAction
     .metadata({actionName:"step client"}) // ✅ Ajout des métadonnées obligatoires
     .schema(createStepProcedureSchema)
-    .action(async ({ clientInput }) => {
+    .action(async ({ clientInput ,ctx}) => {
         console.log("Creating step with data:", clientInput);
 
 
@@ -19,7 +17,8 @@ export const doCreateStep = adminAction
 
         const procedure  = await prisma.procedure.findUnique({
             where:{
-                id: clientInput.procedureId
+                id: clientInput.procedureId,
+                organizationId: ctx.user.userDetails?.organizationId,
             },
             select:{
                 id:true

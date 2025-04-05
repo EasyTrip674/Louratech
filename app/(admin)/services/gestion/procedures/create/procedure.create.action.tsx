@@ -9,15 +9,27 @@ import { revalidatePath } from "next/cache";
 export const doCreateProcedure = adminAction
     .metadata({actionName:"create Procedure"}) // ✅ Ajout des métadonnées obligatoires
     .schema(createProcedureScheme)
-    .action(async ({ clientInput }) => {
+    .action(async ({ clientInput ,ctx}) => {
         console.log("Creating Procedure with data:", clientInput);
+
+        const existProcedure = await prisma.procedure.findFirst({
+            where: {
+                name: clientInput.name,
+                organizationId: ctx.user.userDetails?.organizationId,
+            }
+        });
+        if (existProcedure) {
+            throw new Error("Procedure already exist");
+        }
 
         const procedure = await prisma.procedure.create({
             data: {
                 name: clientInput.name,
                 description: "",
+                organizationId: ctx.user.userDetails?.organizationId,
             },
         });
+        
 
         // create category for the procedure
         await prisma.category.create({
@@ -25,6 +37,7 @@ export const doCreateProcedure = adminAction
                 name: clientInput.name,
                 type: "REVENUE",
                 description: "Categorie de transaction pour la procedure : " + clientInput.name,
+                organizationId: ctx.user.userDetails?.organizationId,
             },
         });
 

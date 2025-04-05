@@ -61,15 +61,12 @@ export default function CreateProcedureFormModal() {
     
   });
 
-  const onSubmit = (data: ProcedureFormData) => {
+  const onSubmit = async (data: ProcedureFormData) => {
     console.log("Saving Procedure data:", data);
     // TODO: Save Procedure data to the database
     // INFO: You can use the `data` object to send the form data to the server
-    if (data) {
-     createMutation.mutate(data);
-    }else{
-      console.log("No data to save");
-    }
+     await createMutation.mutateAsync(data);
+    
   };
 
   return (

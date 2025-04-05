@@ -7,6 +7,7 @@ import { createOrganizationSchema } from "./create.organization.shema";
 import { authClient } from "@/lib/auth-client";
 import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 
 export const doCreateOrganization = actionClient
     .metadata({actionName:"create organization"}) // ✅ Ajout des métadonnées obligatoires
@@ -34,18 +35,27 @@ export const doCreateOrganization = actionClient
         }
        
          // create user admin for the organization
-         const userAuth = await authClient.signUp.email({
+         const userAuth = await auth.api.signUpEmail({
+         body: {
             email: clientInput.email,
             password: clientInput.password,
             name: clientInput.firstName + " " + clientInput.lastName,
+            options: {
+                emailVerification: false,
+                data: {
+                    firstName: clientInput.firstName,
+                    lastName: clientInput.lastName,
+                }
+              }
+            }
         });
-        if(userAuth.error && userAuth.error.message){
-            throw new Error(userAuth.error.message);
+        if(!userAuth.user){
+            throw new Error("User already exist");
         }
 
         const user = await prisma.user.findUniqueOrThrow({
             where:{
-                id: userAuth.data?.user.id
+                id: userAuth.user.id
             }
         });
 

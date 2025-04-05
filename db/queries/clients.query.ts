@@ -1,9 +1,14 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../prisma";
+import { getOrgnaizationId } from "./utils.query";
 
 
-export const clientsTableOrganizationDB = async (organizationId?: string) => {
+export const clientsTableOrganizationDB = async () => {
+  const organizationId = await getOrgnaizationId();
   const clients = await prisma.client.findMany({
+    where: {
+      organizationId: organizationId,
+    },
     select: {
         id: true,
         address: true,
@@ -31,9 +36,11 @@ export type clientsTableOrganizationDB =  Prisma.PromiseReturnType<typeof client
 
 
 export const clientProfileDB = async (clientId: string) => {
+  const organizationId = await getOrgnaizationId();
   const client = await prisma.client.findUnique({
     where: {
       id: clientId,
+      organizationId: organizationId,
     },
     select: {
         id: true,
@@ -64,6 +71,9 @@ export type clientProfileDB =  Prisma.PromiseReturnType<typeof clientProfileDB>;
 
 // for AddCLientTOProcedureModal
 export const getCLientsIdWithNameDB = async () => prisma.client.findMany({
+  where: {
+    organizationId: await getOrgnaizationId(),
+  },
   select: {
     id: true,
     user: {
