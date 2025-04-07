@@ -1,10 +1,9 @@
 "use server"
 
-import { actionClient, adminAction } from "@/lib/safe-action"
+import { actionClient } from "@/lib/safe-action"
 import prisma from "@/db/prisma";
 import { revalidatePath } from "next/cache";
 import { createOrganizationSchema } from "./create.organization.shema";
-import { authClient } from "@/lib/auth-client";
 import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
@@ -33,7 +32,6 @@ export const doCreateOrganization = actionClient
         if(existUser){
             throw new Error("User already exist");
         }
-       
          // create user admin for the organization
          const userAuth = await auth.api.signUpEmail({
          body: {
@@ -49,6 +47,7 @@ export const doCreateOrganization = actionClient
               }
             }
         });
+        
         if(!userAuth.user){
             throw new Error("User already exist");
         }
@@ -59,7 +58,7 @@ export const doCreateOrganization = actionClient
             }
         });
 
-        console.log("User created:", user);
+        // console.log("User created:", user);
 
         const userUpdated = await prisma.user.update({
             where:{

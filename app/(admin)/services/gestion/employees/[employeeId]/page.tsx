@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import React from "react";
-import UserCredentialsManage from "@/components/user/UserCredentials";
+import UserCredentialsManage from "@/components/user/ChangePasswordFormModal";
 import UserProfileCard from "../../../../../../components/user/UserProfileCard";
 import { employeeProfileDB } from "@/db/queries/employees.query";
 import { Role } from "@prisma/client";

@@ -6,7 +6,7 @@ import prisma from "@/db/prisma";
 
 import { revalidatePath } from "next/cache";
 import { passwordSchema } from "./user.password.shema";
-import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
 
 export const doChangePassword = adminAction
     .metadata({actionName:"change password"}) // ✅ Ajout des métadonnées obligatoires
@@ -28,17 +28,25 @@ export const doChangePassword = adminAction
             throw new Error("Utilisateur introuvable");
         }
 
-            const data =  await auth.api.changePassword({
-            body: {
-                newPassword: newPassword,
-                currentPassword: currentPassword,
-                revokeOtherSessions: false,     
-            }});
-            console.log("data",data);
-            
+       const data =  await authClient.changePassword({
+            newPassword: newPassword,
+            currentPassword: currentPassword,
+            revokeOtherSessions: false, // revoke all other sessions the user is signed into
+        });
+
+      if(data.error){
+        throw new Error(JSON.stringify(data.error));
+      }
+    
+
+        if (!data) {
+            throw new Error("Erreur lors du changement de mot de passe");
+        }
+        
 
         revalidatePath("/app/(admin)/services/gestion");
 
         return { success: true };
+   
     });
        

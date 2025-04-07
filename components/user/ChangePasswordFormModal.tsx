@@ -24,7 +24,7 @@ interface UserCredentialsManageProps {
   role: Role;
 }
 
-export default function UserCredentialsManage({ userId, email, active = true ,role=Role.CLIENT }: UserCredentialsManageProps) {
+export default function UserCredentialsManage({ userId, email, active = true }: UserCredentialsManageProps) {
   const { isOpen, openModal, closeModal } = useModal();
     const successModal = useModal();
     const errorModal = useModal();
@@ -145,7 +145,9 @@ export default function UserCredentialsManage({ userId, email, active = true ,ro
             </div>
             <div className="flex justify-end mt-6 space-x-2">
               <Button variant="outline" onClick={closeModal} type="button">Annuler</Button>
-              <Button type="submit">Changer le mot de passe</Button>
+              <Button type="submit" disabled={changePasswordMutation.isPending}>{
+                changePasswordMutation.isPending ? "En cours..." : "Changer le mot de passe"
+                }</Button>
             </div>
           </form>
         </div>

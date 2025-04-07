@@ -1,20 +1,51 @@
 import { ProcedureCard } from '@/components/procedures/ProcedureCard'
 import React from 'react'
-import { Users, Plane, FileCheck, Filter, Plus, Search } from 'lucide-react'
+import { Users, Plane, FileCheck, Filter,  Search } from 'lucide-react'
 import CreateProcedureFormModal from './create/CreateProcedureModalForm'
 import { getProcedureWithStats } from '@/db/queries/procedures.query'
 import { notFound } from 'next/navigation'
+import { getOrgnaizationId } from '@/db/queries/utils.query'
+import prisma from '@/db/prisma'
 
-type Props = {}
 
-const ProceduresPage = async (props: Props) => {
+const ProceduresPage = async () => {
   // Données simulées pour les procédures
   const procedureData = await getProcedureWithStats();
   if (!procedureData) {
     return notFound()
   }
 
-  console.log(procedureData);
+  const organizationId = await getOrgnaizationId()
+
+  const totalClients = await prisma.client.count({
+    where: {
+      organizationId,
+    },
+  });
+  const pendingServices = await prisma.clientProcedure.count({
+    where: {
+      status: {
+        in: ["IN_PROGRESS","ON_HOLD"],
+      },
+        procedure: {
+          organizationId,
+      }
+    },
+  });
+
+  const finishServices = await prisma.clientProcedure.count({
+    where: {
+      status: {
+        in: ["COMPLETED"],
+      },
+        procedure: {
+          organizationId,
+      }
+    },
+  });
+
+  // taux de réussite
+  const successRate = (finishServices / (pendingServices + finishServices) == 0 ? 1: (pendingServices +finishServices)) * 100;
   
 
   return (
@@ -48,7 +79,7 @@ const ProceduresPage = async (props: Props) => {
               <Users className="h-6 w-6 text-blue-500" />
             </div>
             <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm">Total Clients</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">10,310</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalClients}</p>
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
@@ -56,7 +87,7 @@ const ProceduresPage = async (props: Props) => {
               <Plane className="h-6 w-6 text-green-500" />
             </div>
             <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm">Procédures en cours</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">675</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{pendingServices}</p>
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
@@ -64,7 +95,7 @@ const ProceduresPage = async (props: Props) => {
               <FileCheck className="h-6 w-6 text-amber-500" />
             </div>
             <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm">Terminées ce mois</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">9,065</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{finishServices}</p>
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
@@ -72,7 +103,7 @@ const ProceduresPage = async (props: Props) => {
               <FileCheck className="h-6 w-6 text-red-500" />
             </div>
             <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm">Taux de réussite</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">87.9%</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{successRate ?? 0}%</p>
           </div>
         </div>
       </div>

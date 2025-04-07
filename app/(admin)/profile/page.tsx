@@ -1,4 +1,4 @@
-import UserCredentialsManage from "@/components/user/UserCredentials";
+import UserCredentialsManage from "@/components/user/ChangePasswordFormModal";
 import { UserElementInfo } from "@/components/user/UserElementInfo";
 import UserProfileCard from "@/components/user/UserProfileCard";
 import { auth } from "@/lib/auth";

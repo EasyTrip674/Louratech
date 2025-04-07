@@ -58,7 +58,8 @@ export const doAddClientToStep = adminAction
                 data:{
                     procedureId:clientInput.procedureId,
                     clientId: client.id,
-                    organizationId: organization.id
+                    organizationId: organization.id,
+                    status: "IN_PROGRESS",
                 }
             })
            
@@ -70,7 +71,7 @@ export const doAddClientToStep = adminAction
                     clientProcedureId:clientProcedure.id,
                     stepId:clientInput.stepId,
                     price: clientInput.price,
-                    status: "PENDING",
+                    status: "IN_PROGRESS",
                   //TODO:   processedById:
                    processedById: ctx.user.userDetails?.id,
                 }

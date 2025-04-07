@@ -5,7 +5,6 @@ import { customSession, organization } from "better-auth/plugins";
  
 const prisma = new PrismaClient();
 export const auth = betterAuth({
-    
     plugins: [
         organization(
             {

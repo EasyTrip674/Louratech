@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 import { clientProfileDB } from "@/db/queries/clients.query";
 import ClientInfoCard from "./ClientInfoCard";
-import UserCredentialsManage from "@/components/user/UserCredentials";
+import UserCredentialsManage from "@/components/user/ChangePasswordFormModal";
 import UserProfileCard from "../../../../../../components/user/UserProfileCard";
 import { Role } from "@prisma/client";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
