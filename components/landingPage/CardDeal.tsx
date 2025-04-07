@@ -1,6 +1,5 @@
 import styles, { layout } from "@/utils/style";
 import Button from "./Button";
-import resources from "@/utils/ressources";
 import UsageCard from "./UsageCard";
 
 const CardDeal = () => (

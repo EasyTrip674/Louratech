@@ -1,28 +1,21 @@
 import { stats } from "@/utils/constants";
 import styles from "@/utils/style";
 import GradientBackground from "./GradientBackground";
-import { motion } from "framer-motion";
 
 const Stats = () => (
   <section className={`${styles.flexCenter} flex-col sm:mb-20 mb-6 text-center relative overflow-hidden`}>
     <div className="max-w-3xl mx-auto mb-6 sm:mb-10">
-      <motion.h2 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <h2 
         className="text-gray-900 dark:text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl bg-gradient-to-r from-brand-600 to-brand-800 dark:from-brand-400 dark:to-brand-600 bg-clip-text "
       >
         Une solution complète pour votre agence
-      </motion.h2>
+      </h2>
     </div>
 
     <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
       {stats.map((stat, index) => (
-        <motion.div
+        <div
           key={stat.id}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
           className="flex-1 min-w-[250px] flex flex-col items-center p-6 rounded-2xl bg-white/10 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105"
         >
           <h4 className="font-bold text-3xl sm:text-4xl md:text-5xl text-brand-600 dark:text-brand-400 mb-2">
@@ -31,14 +24,11 @@ const Stats = () => (
           <p className="font-medium text-sm sm:text-base md:text-lg text-gray-700 dark:text-gray-300 uppercase tracking-wider">
             {stat.title}
           </p>
-        </motion.div>
+        </div>
       ))}
     </div>
 
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+    <div
       className="max-w-3xl mx-auto mt-12 sm:mt-16 relative"
     >
       <h3 className="text-gray-900 dark:text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-4">
@@ -48,7 +38,7 @@ const Stats = () => (
         Leader de la digitalisation des agences en Afrique
       </p>
       <GradientBackground />
-    </motion.div>
+    </div>
   </section>
 );
 
