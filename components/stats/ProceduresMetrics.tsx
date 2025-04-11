@@ -56,7 +56,6 @@ export const ProceduresMetrics = async () => {
               {servicesCount}
             </h4>
           </div>
-
           <Badge color="error">
             <ArrowDownIcon className="text-error-500" />
             9.05%

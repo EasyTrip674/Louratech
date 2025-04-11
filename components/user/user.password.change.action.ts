@@ -1,52 +1,51 @@
-"use server"
-
-import { adminAction } from "@/lib/safe-action"
-
+"use server";
+import { auth } from "@/lib/auth"; // Votre instance Better Auth
 import prisma from "@/db/prisma";
-
+import { adminAction } from "@/lib/safe-action";
 import { revalidatePath } from "next/cache";
 import { passwordSchema } from "./user.password.shema";
-import { authClient } from "@/lib/auth-client";
 
 export const doChangePassword = adminAction
-    .metadata({actionName:"change password"}) // ✅ Ajout des métadonnées obligatoires
-    .schema(passwordSchema)
-    .action(async ({clientInput:{userId,newPassword, confirmPassword,currentPassword}}) => {  
-        console.log("changing password for user:", userId);
+  .metadata({ actionName: "change password" })
+  .schema(passwordSchema)
+  .action(async ({ clientInput: { userId, newPassword, confirmPassword, currentPassword }, ctx }) => {
+    console.log("Changing password for user:", userId);
 
-        if (newPassword !== confirmPassword) {
-            throw new Error("les mots de passe ne correspondent pas");      
-        }
+    if (newPassword !== confirmPassword) {
+      throw new Error("Les mots de passe ne correspondent pas");
+    }
 
-        // Check if the current password is correct
-        const user = await prisma.user.findUnique({
-            where: {
-                id: userId,
-            },
-        });
-        if (!user) {
-            throw new Error("Utilisateur introuvable");
-        }
-
-       const data =  await authClient.changePassword({
-            newPassword: newPassword,
-            currentPassword: currentPassword,
-            revokeOtherSessions: false, // revoke all other sessions the user is signed into
-        });
-
-      if(data.error){
-        throw new Error(JSON.stringify(data.error));
-      }
-    
-
-        if (!data) {
-            throw new Error("Erreur lors du changement de mot de passe");
-        }
-        
-
-        revalidatePath("/app/(admin)/services/gestion");
-
-        return { success: true };
-   
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { account: true },
     });
-       
+
+    if (!user || !user.account || user.account.length === 0) {
+      throw new Error("Utilisateur introuvable ou sans compte associé");
+    }
+
+    const email = user.email;
+    if (!email) {
+      throw new Error("L'utilisateur n'a pas d'email associé");
+    }
+
+    // Vérifier le mot de passe actuel
+    const signInResponse = await auth.api.signInEmail({
+      body: { email, password: currentPassword },
+    });
+
+    if (signInResponse.user.email === null) {
+      throw new Error("Mot de passe actuel incorrect");
+    }
+
+    // Hacher le nouveau mot de passe
+    const ctxAuth = await auth.$context;
+    const hashPassword = await ctxAuth.password.hash(newPassword);
+
+    // Mettre à jour le mot de passe dans la base de données
+    await ctxAuth.internalAdapter.updatePassword(userId, hashPassword);
+
+    revalidatePath("/app/(admin)/services/gestion");
+
+    return { success: true };
+  });

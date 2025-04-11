@@ -10,6 +10,8 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
+    <>
+    
     <div className="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
 
       {children}
@@ -17,5 +19,8 @@ export default function AuthLayout({
             <ThemeTogglerTwo />
           </div>
     </div>
+   
+    </>
+    
   );
 }

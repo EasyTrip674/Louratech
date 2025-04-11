@@ -18,6 +18,8 @@ export const metadata: Metadata = {
 
 export default async function  DashboardPage() {
 
+  
+
   const MonthlyTargetData = await getMonthlyTargetStats();
   const monthlySalesData = await getMonthlySalesData();
    const statisticsData = await getStatisticsData()

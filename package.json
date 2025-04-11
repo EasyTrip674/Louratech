@@ -15,8 +15,9 @@
     "prisma:push": "prisma db push"
   },
   "dependencies": {
-    "@copilotkit/react-core": "^1.6.0",
-    "@copilotkit/react-ui": "^1.6.0",
+    "@copilotkit/react-core": "1.8.4",
+    "@copilotkit/react-textarea": "1.8.4",
+    "@copilotkit/react-ui": "1.8.4",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
