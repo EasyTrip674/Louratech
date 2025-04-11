@@ -78,7 +78,7 @@ export default function CreateProcedureFormModal() {
         message="Error during creation user" />
        <button className="flex items-center gap-2 bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 text-sm font-medium" onClick={openModal}>
               <Plus className="h-4 w-4" />
-              Nouvelle service
+              Nouveau service
         </button>
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
         <form onSubmit={handleSubmit(onSubmit)}>
