@@ -6,65 +6,44 @@ import {
   TableRow,
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
+import prisma from "@/db/prisma";
+import Link from "next/link";
+import { getOrgnaizationId } from "@/db/queries/utils.query";
 
-interface ClientRegistration {
-  id: string;
-  clientName: string;
-  email: string;
-  registrationDate: Date;
-  step: "INITIAL" | "PROFILE" | "VERIFICATION" | "COMPLETED";
-}
 
-const clientData: ClientRegistration[] = [
-  {
-    id: "1",
-    clientName: "John Doe",
-    email: "john@example.com",
-    registrationDate: new Date("2024-03-15"),
-    step: "COMPLETED",
-  },
-  {
-    id: "2",
-    clientName: "Jane Smith",
-    email: "jane@example.com",
-    registrationDate: new Date("2024-03-14"),
-    step: "VERIFICATION",
-  },
-  {
-    id: "3",
-    clientName: "Bob Johnson",
-    email: "bob@example.com",
-    registrationDate: new Date("2024-03-13"),
-    step: "PROFILE",
-  },
-  {
-    id: "4",
-    clientName: "Alice Brown",
-    email: "alice@example.com",
-    registrationDate: new Date("2024-03-12"),
-    step: "INITIAL",
-  },
-  {
-    id: "5",
-    clientName: "Charlie Wilson",
-    email: "charlie@example.com",
-    registrationDate: new Date("2024-03-11"),
-    step: "COMPLETED",
-  },
-];
 
-export default function RecentOrders() {
+
+export default async function  RecentOrders() {
+  const organizationId = await getOrgnaizationId()
+  const clientData = await prisma.client.findMany({
+    where:{
+      user:{
+        organizationId: organizationId,
+        role: "CLIENT",
+      }
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 5,
+include: {
+      user: true,}
+  });
+
+  
+
+
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Recent Client Registrations
+            Derniers clients
           </h3>
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+          {/* <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
             <svg
               className="stroke-current fill-white dark:fill-gray-800"
               width="20"
@@ -101,10 +80,10 @@ export default function RecentOrders() {
               />
             </svg>
             Filter
-          </button>
-          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-            See all
-          </button>
+          </button> */}
+          <Link href="/services/gestion/clients" className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+            Voir plus
+          </Link>
         </div>
       </div>
       <div className="max-w-full overflow-x-auto">
@@ -115,7 +94,7 @@ export default function RecentOrders() {
                 isHeader
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
-                Client Name
+                Prenom et Nom
               </TableCell>
               <TableCell
                 isHeader
@@ -127,13 +106,13 @@ export default function RecentOrders() {
                 isHeader
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
-                Registration Date
+                Date d&apos;inscription
               </TableCell>
               <TableCell
                 isHeader
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
-                Step
+                Statut
               </TableCell>
             </TableRow>
           </TableHeader>
@@ -144,30 +123,29 @@ export default function RecentOrders() {
                 <TableCell className="py-3">
                   <div className="flex flex-col">
                     <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                      {client.clientName}
+                    {client.user.firstName} {client.user.lastName}
                     </p>
                   </div>
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                  {client.email}
+                  {client.user.email}
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                  {client.registrationDate.toLocaleDateString()}
+                    {new Date(client.createdAt).toLocaleDateString("fr-FR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })}
                 </TableCell>
                 <TableCell className="py-3">
                   <Badge
-                    size="sm"
                     color={
-                      client.step === "COMPLETED"
+                      client.user.active
                         ? "success"
-                        : client.step === "VERIFICATION"
-                        ? "warning"
-                        : client.step === "PROFILE"
-                        ? "info"
-                        : "default"
+                        : "error"
                     }
                   >
-                    {client.step}
+                    {client.user.active ? "Actif" : "Inactif"}
                   </Badge>
                 </TableCell>
               </TableRow>

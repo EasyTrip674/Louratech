@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 export default function SidebarWidget() {
@@ -6,17 +7,13 @@ export default function SidebarWidget() {
       className={`
         mx-auto mb-10 w-full max-w-60 rounded-2xl bg-gray-50 px-4 py-5 text-center dark:bg-white/[0.03]`}
     >
-      <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">
-       Gestion d'agence
-      </h3>
-      <p className="mb-4 text-gray-500 text-theme-sm dark:text-gray-400">
-        Gérez vos agences et vos agents
-      </p>
-      <a
-        className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-brand-500 text-theme-sm hover:bg-brand-600"
-      >
-        Chat
-      </a>
+      <Image
+        src="/a/2.png"
+        alt="Illustration"
+        width={300}
+        height={300}
+        className="mx-auto mb-4 h-full w-full max-w-[200px] rounded-2xl object-cover object-center dark:opacity-80 lg:max-w-[300px]"
+       />
     </div>
   );
 }

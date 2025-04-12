@@ -4,6 +4,7 @@ import { ArrowDownIcon, ArrowUpIcon } from "@/icons";
 import { BoxIcon, Users2 } from "lucide-react";
 import { getOrgnaizationId } from "@/db/queries/utils.query";
 import prisma from "@/db/prisma";
+import Button from "../ui/button/Button";
 
 export const ProceduresMetrics = async () => {
   const organisation = await getOrgnaizationId();
@@ -34,10 +35,13 @@ export const ProceduresMetrics = async () => {
               {clientsCount}
             </h4>
           </div>
-          <Badge color="success">
+          {/* <Badge color="success">
             <ArrowUpIcon />
             11.01%
-          </Badge>
+          </Badge> */}
+          <Button variant={"outline"} href="/services/gestion/clients">
+            Voir
+          </Button>
         </div>
       </div>
       {/* <!-- Métrique Item Fin --> */}
@@ -56,10 +60,13 @@ export const ProceduresMetrics = async () => {
               {servicesCount}
             </h4>
           </div>
-          <Badge color="error">
+          {/* <Badge color="error">
             <ArrowDownIcon className="text-error-500" />
             9.05%
-          </Badge>
+          </Badge> */}
+          <Button variant={"outline"} href="/services/gestion/procedures">
+            Voir
+          </Button>
         </div>
       </div>
       {/* <!-- Métrique Item Fin --> */}

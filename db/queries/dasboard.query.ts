@@ -66,29 +66,33 @@ export async function getMonthlyTargetStats() {
     ? ((currentMonthAmount - lastMonthAmount) / lastMonthAmount) * 100 
     : 0;
 
-  // Calculer le pourcentage de progression
-  const target = 20000; // Cette valeur pourrait être récupérée depuis les paramètres de l'organisation
-  const progress = Math.min(Math.round((currentMonthAmount / target) * 100), 100);
 
+  const target = 1000; // Objectif mensuel en unités monétaires
+  const progress = percentageChange;
   // Générer un message en fonction de la progression
   let message = "";
-  if (progress >= 100) {
-    message = "Félicitations ! Vous avez dépassé votre objectif mensuel !";
-  } else if (progress >= 75) {
-    message = "Excellent travail ! Vous êtes sur la bonne voie pour atteindre votre objectif mensuel.";
-  } else if (progress >= 50) {
-    message = "Vous êtes à mi-chemin ! Continuez comme ça.";
+  // comparer le pourcentage de changement par rapport au mois précedent
+  if (percentageChange > 0) {
+    message = `📈 Vous avez augmenté votre revenu de ${Math.round(percentageChange)}% par rapport au mois dernier.`;
+  } else if (percentageChange < 0) {
+    message = `📉 Vous avez diminué votre revenu de ${Math.abs(Math.round(percentageChange))}% par rapport au mois dernier.`;
+  } else if (percentageChange === 0 && lastMonthAmount === 0) {
+    message = `⚖️ Vous n'avez pas fait de chiffre le mois dernier.`;
+  }else if (percentageChange === 0 && lastMonthAmount > 0) {
+    message = `⚖️ Vous n'avez pas fait de chiffre ce mois-ci.`;
   } else {
-    message = "Travaillons plus dur pour atteindre votre objectif mensuel.";
+    message = `⚖️ Vous avez le même revenu que le mois dernier.`;
   }
 
   return {
-    target: target / 1000, // Convertir en K pour l'affichage
-    revenue: currentMonthAmount / 1000, // Convertir en K pour l'affichage
+    target: target , // Convertir en K pour l'affichage
+    lastMonthAmount: lastMonthAmount , // Convertir en K pour l'affichage
+    revenue: currentMonthAmount , // Convertir en K pour l'affichage
     progress: progress,
     growth: Math.round(percentageChange),
     message: message,
-    today: (todayRevenue._sum.amount || 0) / 1000, // Convertir en K pour l'affichage
+    currentMonthAmount: currentMonthAmount , // Convertir en K pour l'affichage
+    today: (todayRevenue._sum.amount || 0) , // Convertir en K pour l'affichage
   };
 }
 

@@ -23,7 +23,7 @@ export default async function  DashboardPage() {
   const MonthlyTargetData = await getMonthlyTargetStats();
   const monthlySalesData = await getMonthlySalesData();
    const statisticsData = await getStatisticsData()
-   const demographicData = await getDemographicData();
+  //  const demographicData = await getDemographicData();
 
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
@@ -40,11 +40,11 @@ export default async function  DashboardPage() {
         <StatisticsChart statisticsData={statisticsData} />
       </div>
 
-      <div className="col-span-12 xl:col-span-5">
-        <DemographicCard demographicData={demographicData} />
-      </div>
+      {/* <div className="col-span-12 xl:col-span-5"> */}
+        {/* <DemographicCard demographicData={demographicData} /> */}
+      {/* </div> */}
 
-      <div className="col-span-12 xl:col-span-7">
+      <div className="col-span-12 ">
         <RecentOrders />
       </div>
     </div>
