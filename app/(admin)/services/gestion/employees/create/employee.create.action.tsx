@@ -44,7 +44,7 @@ export const doCreateEmployee = adminAction
             body: {
                 organizationId: organization.id,
                 userId: user.user.id,
-                role: Role.EMPLOYEE,
+                role: "admin" ,
             },
         });
 
@@ -67,6 +67,81 @@ export const doCreateEmployee = adminAction
                             }
                         }
                     }
+                },
+                authorize:{
+                    create:{
+                        // Permissions générales
+                        canChangeUserAuthorization: false,
+                        canChangeUserPassword: false,
+
+                        // Permissions de création
+                        canCreateOrganization: false,
+                        canCreateClient: true,
+                        canCreateProcedure: true,
+                        canCreateTransaction: true,
+                        canCreateInvoice: true,
+                        canCreateExpense: true,
+                        canCreateRevenue: true,
+                        canCreateComptaSettings: true,
+                        canCreateTeam: false,
+                        canCreateMember: false,
+                        canCreateInvitation: true,
+                        canCreateClientProcedure: true,
+                        canCreateClientStep: true,
+                        canCreateClientDocument: true,
+                        canCreateAdmin: false,
+
+                        // Permissions de lecture
+                        canReadOrganization: true,
+                        canReadClient: true,
+                        canReadProcedure: true,
+                        canReadTransaction: true,
+                        canReadInvoice: true,
+                        canReadExpense: true,
+                        canReadRevenue: true,
+                        canReadComptaSettings: true,
+                        canReadTeam: true,
+                        canReadMember: true,
+                        canReadInvitation: true,
+                        canReadClientProcedure: true,
+                        canReadClientStep: true,
+                        canReadClientDocument: true,
+                        canReadAdmin: true,
+
+                        // Permissions de modification
+                        canEditOrganization: false,
+                        canEditClient: true,
+                        canEditProcedure: true,
+                        canEditTransaction: true,
+                        canEditInvoice: true,
+                        canEditExpense: true,
+                        canEditRevenue: true,
+                        canEditComptaSettings: true,
+                        canEditTeam: false,
+                        canEditMember: false,
+                        canEditInvitation: false,
+                        canEditClientProcedure: true,
+                        canEditClientStep: true,
+                        canEditClientDocument: true,
+                        canEditAdmin: false,
+
+                        // Permissions de suppression
+                        canDeleteOrganization: false,
+                        canDeleteClient: true,
+                        canDeleteProcedure: true,
+                        canDeleteTransaction: true,
+                        canDeleteInvoice: true,
+                        canDeleteExpense: true,
+                        canDeleteRevenue: true,
+                        canDeleteComptaSettings: false,
+                        canDeleteTeam: false,
+                        canDeleteMember: false,
+                        canDeleteInvitation: false,
+                        canDeleteClientProcedure: true,
+                        canDeleteClientStep: true,
+                        canDeleteClientDocument: true,
+                        canDeleteAdmin: false,
+                    }
                 }
             },
         });
@@ -74,5 +149,5 @@ export const doCreateEmployee = adminAction
       
         revalidatePath("/app/(admin)/services/gestion/clients");
         
-        return { success: true, admin };
+        return { success: false, admin };
     });

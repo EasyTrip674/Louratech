@@ -218,9 +218,9 @@ export default function CreationOrganisationFormulaire() {
                 
               />
               <p className="inline-block text-sm text-gray-600 dark:text-gray-400">
-                J'accepte les{" "}
+                J&apos;accepte les{" "}
                 <span className="text-gray-800 dark:text-white">
-                  Conditions d'Utilisation
+                  Conditions d&apos;Utilisation
                 </span>
               </p>
             </div>

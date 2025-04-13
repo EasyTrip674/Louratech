@@ -69,6 +69,81 @@ export const doCreateOrganization = actionClient
                 firstName: clientInput.firstName,
                 lastName: clientInput.lastName,
                 email: clientInput.email,
+                authorize:{
+                    create:{
+                        // Permissions générales
+                        canChangeUserAuthorization: true,
+                        canChangeUserPassword: true,
+
+                        // Permissions de création
+                        canCreateOrganization: false,
+                        canCreateClient: true,
+                        canCreateProcedure: true,
+                        canCreateTransaction: true,
+                        canCreateInvoice: true,
+                        canCreateExpense: true,
+                        canCreateRevenue: true,
+                        canCreateComptaSettings: true,
+                        canCreateTeam: true,
+                        canCreateMember: true,
+                        canCreateInvitation: true,
+                        canCreateClientProcedure: true,
+                        canCreateClientStep: true,
+                        canCreateClientDocument: true,
+                        canCreateAdmin: true,
+
+                        // Permissions de lecture
+                        canReadOrganization: true,
+                        canReadClient: true,
+                        canReadProcedure: true,
+                        canReadTransaction: true,
+                        canReadInvoice: true,
+                        canReadExpense: true,
+                        canReadRevenue: true,
+                        canReadComptaSettings: true,
+                        canReadTeam: true,
+                        canReadMember: true,
+                        canReadInvitation: true,
+                        canReadClientProcedure: true,
+                        canReadClientStep: true,
+                        canReadClientDocument: true,
+                        canReadAdmin: true,
+
+                        // Permissions de modification
+                        canEditOrganization: true,
+                        canEditClient: true,
+                        canEditProcedure: true,
+                        canEditTransaction: true,
+                        canEditInvoice: true,
+                        canEditExpense: true,
+                        canEditRevenue: true,
+                        canEditComptaSettings: true,
+                        canEditTeam: true,
+                        canEditMember: true,
+                        canEditInvitation: true,
+                        canEditClientProcedure: true,
+                        canEditClientStep: true,
+                        canEditClientDocument: true,
+                        canEditAdmin: true,
+
+                        // Permissions de suppression
+                        canDeleteOrganization: true,
+                        canDeleteClient: true,
+                        canDeleteProcedure: true,
+                        canDeleteTransaction: true,
+                        canDeleteInvoice: true,
+                        canDeleteExpense: true,
+                        canDeleteRevenue: true,
+                        canDeleteComptaSettings: true,
+                        canDeleteTeam: true,
+                        canDeleteMember: true,
+                        canDeleteInvitation: true,
+                        canDeleteClientProcedure: true,
+                        canDeleteClientStep: true,
+                        canDeleteClientDocument: true,
+                        canDeleteAdmin: true,
+                    }
+                }
             }
         });
 

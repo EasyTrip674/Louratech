@@ -51,3 +51,4 @@ Cette structure vous permettra de gérer l'ensemble des opérations comptables d
  - Gestion des transactions status (on ne peut qu'Approuvées) 
  - ajout des autorizations avec better auth !
  - change mot de passe !!
+ - gestion des autorizations!!

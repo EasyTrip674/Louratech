@@ -148,7 +148,7 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <div className="min-w-full">
-           <TableClientsProcedure procedureDetails={procedure} />
+             <TableClientsProcedure procedureDetails={procedure} />
             </div>
           </div>
         </div>
