@@ -5,6 +5,7 @@ import { getClientStepPaymentInfo } from "@/db/queries/procedures.query";
 import { Suspense } from "react";
 import CreateTransactionModalStep from "./transactions/CreateTransactionModalStep";
 import ApprovedTransactionModal from "./transactions/ApprovedTransactionModal";
+import DownloadPdf from "@/components/pdf/DowloadPdf";
 
 // Types pour les données de facturation liées à un ClientStep
 interface PaymentInfoModalProps {
@@ -251,7 +252,7 @@ export default async function PaymentStepDetails({
                             </td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{formatDate(String(transaction.approvedAt)) ?? "-"} </td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300 cursor-pointer">
-                              <Download className="w-4 h-4" />
+                            <DownloadPdf transaction={transaction} />
                             </td>
                           </tr>
                         ))}
@@ -265,7 +266,7 @@ export default async function PaymentStepDetails({
                     </div>
                     <h3 className="text-gray-500 dark:text-gray-400 text-sm mb-2">Aucune transaction</h3>
                     <p className="text-gray-400 dark:text-gray-500 text-xs max-w-sm mx-auto mb-4">
-                      Aucune transaction n'a encore été enregistrée pour cette étape de procédure.
+                      Aucune transaction n&apos;a encore été enregistrée pour cette étape de procédure.
                     </p>
                   </div>
                 )}

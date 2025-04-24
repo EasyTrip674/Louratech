@@ -1,4 +1,3 @@
-
 "use client";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -11,7 +10,7 @@ import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import PhoneInput from "@/components/form/group-input/PhoneInput";
 import { countriesCode } from "@/lib/countries";
-import { EyeIcon, Pencil, Plus } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
@@ -21,12 +20,10 @@ import { doEditEmployee } from "./employee.edit.action";
 import { editEmployeeSheme } from "./employee.edit.shema";
 import { employeeProfileDB, employeesTableOrganizationDB } from "@/db/queries/employees.query";
 
-// Zod validation schema
-
 // Infer the TypeScript type from the Zod schema
 type EmployeeFormData = z.infer<typeof editEmployeeSheme>;
 
-export default function EditEmployeeFormModal({ admin , inPageProfile=false }: { admin: employeesTableOrganizationDB[0] | employeeProfileDB , inPageProfile?: boolean }) {
+export default function EditEmployeeFormModal({ admin, inPageProfile = false }: { admin: employeesTableOrganizationDB[0] | employeeProfileDB, inPageProfile?: boolean }) {
   const { isOpen, openModal, closeModal } = useModal();
   const router = useRouter();
   const successModal = useModal();
@@ -43,60 +40,64 @@ export default function EditEmployeeFormModal({ admin , inPageProfile=false }: {
     resolver: zodResolver(editEmployeeSheme),
     defaultValues: {
       id: admin?.id,
-      lastName: admin?.user.lastName  ?? "" ,
-      firstName: admin?.user.firstName ?? "" ,
-      phone: admin?.phone ?? "" ,
-      address: admin?.address ?? "" ,
+      lastName: admin?.user?.lastName ?? "",
+      firstName: admin?.user?.firstName ?? "",
+      phone: admin?.phone ?? "",
+      address: admin?.address ?? "",
     },
-  
   });
 
-  // Watch form values in real-time
-  // const watchedValues = watch();
-
-  const EditMutation = useMutation({
+  const editMutation = useMutation({
     mutationFn: async (data: EmployeeFormData) => {
-    const result = await doEditEmployee(data);
-    if (result?.data?.success) {
-      closeModal();
-      reset();
-      successModal.openModal();
-      router.refresh();
-    } else {
-      closeModal();
-      errorModal.openModal();
-    }
-  },
-    onSuccess: () => {
-      console.log("Employee Editd successfully");
+      try {
+        const result = await doEditEmployee(data);
+        return result;
+      } catch (error) {
+        throw error;
+      }
+    },
+    onSuccess: (result) => {
+      if (result?.data?.success) {
+        closeModal();
+        reset();
+        successModal.openModal();
+        router.refresh();
+      } else {
+        setServerError(result?.serverError || "Une erreur est survenue");
+        errorModal.openModal();
+      }
     },
     onError: (error) => {
-      console.error("Failed to Edit Employee");
+      console.error("Failed to Edit Employee", error);
+      setServerError(error?.message || "Une erreur est survenue");
+      errorModal.openModal();
     },
-    
   });
 
   const onSubmit = (data: EmployeeFormData) => {
     console.log("Saving Employee data:", data);
-    // TODO: Save Employee data to the database
-    // INFO: You can use the `data` object to send the form data to the server
-    if (data) {
-     EditMutation.mutate(data);
-    }else{
-      console.log("No data to save");
-    }
+    editMutation.mutate(data);
   };
 
   return (
     <>
-    <SuccessModal successModal={successModal}
-               message='Employee Editd successfully'
-               title="" />
-    <ErrorModal errorModal={errorModal} onRetry={openModal}
-        message={serverError ? serverError:"Erreur"} />
-    {inPageProfile ?   <button
+      <SuccessModal 
+        successModal={successModal}
+        message='Employé modifié avec succès'
+        title="" 
+      />
+      
+      <ErrorModal 
+        errorModal={errorModal} 
+        onRetry={openModal}
+        message={serverError || "Erreur lors de la modification"} 
+      />
+      
+      {inPageProfile ? (
+        <button
           onClick={openModal}
           className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
+          type="button"
         >
           <svg
             className="fill-current"
@@ -114,29 +115,39 @@ export default function EditEmployeeFormModal({ admin , inPageProfile=false }: {
             />
           </svg>
           Modifier
-        </button> : <Button variant="outline" size="sm" onClick={openModal}>
-           <Pencil className="w-4 h-4 dark:text-white" />
-       </Button> }
+        </button>
+      ) : (
+        <Button variant="outline" size="sm" onClick={openModal} type="button">
+          <Pencil className="w-4 h-4 dark:text-white" />
+        </Button>
+      )}
+      
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Modifier ce Employee</h4>
+          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Modifier cet employé</h4>
           
+          {errors.firstName && (
+            <div className="mb-4 text-sm text-red-600 dark:text-red-400">
+              {errors.firstName.message}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 border-b border-gray-200 dark:border-gray-800 pb-6">
             {/* firstName */}
             <div className="col-span-1">
-              <Label>Prenom</Label>
-              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message}  type="text" placeholder="Enter full name" />
+              <Label>Prénom</Label>
+              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message} type="text" placeholder="Entrer le prénom" />
             </div>
+            
             {/* lastName */}
             <div className="col-span-1">
               <Label>Nom</Label>
-              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message}  type="text" placeholder="Enter full name" />
+              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message} type="text" placeholder="Entrer le nom" />
             </div>
-          
 
             {/* Phone */}
             <div className="col-span-1">
-              <Label>Phone</Label>
+              <Label>Téléphone</Label>
               <Controller
                 name="phone"
                 control={control}
@@ -146,31 +157,22 @@ export default function EditEmployeeFormModal({ admin , inPageProfile=false }: {
               />
             </div>
 
-           
-
             {/* Address */}
             <div className="col-span-1 sm:col-span-2">
-              <Label>Address</Label>
-              <Input {...register("address")} type="text" placeholder="Enter full address" />
+              <Label>Adresse</Label>
+              <Input {...register("address")} type="text" placeholder="Entrer l'adresse complète" />
             </div>
-         
           </div>
 
-
-        
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button type="button" size="sm" variant="outline" onClick={() => { closeModal(); reset(); }}>
               Annuler
             </Button>
-            <Button type="submit" size="sm" disabled={EditMutation.isPending}>
-              {EditMutation.isPending ? "En cours..." : "Editer"}
+            <Button type="submit" size="sm" disabled={editMutation.isPending}>
+              {editMutation.isPending ? "En cours..." : "Modifier"}
             </Button>
           </div>
         </form>
-        {/* Debugging: Display watched values */}
-        {/* <pre className="mt-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs text-gray-700 dark:text-gray-300">
-          {JSON.stringify(watchedValues, null, 2)}
-        </pre> */}
       </Modal>
     </>
   );

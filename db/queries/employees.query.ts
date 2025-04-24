@@ -47,6 +47,7 @@ export const employeeProfileDB = async (employeeId: string) => {
                 lastName: true,
                 email: true,
                 active: true,
+                authorize:true,
             }
         }
   }});

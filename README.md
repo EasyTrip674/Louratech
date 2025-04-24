@@ -52,3 +52,4 @@ Cette structure vous permettra de gérer l'ensemble des opérations comptables d
  - ajout des autorizations avec better auth !
  - change mot de passe !!
  - gestion des autorizations!!
+ - gestion de la creation d'un employee

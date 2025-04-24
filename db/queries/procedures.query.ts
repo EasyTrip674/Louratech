@@ -371,7 +371,6 @@ export type StepsProcedureDB = Prisma.PromiseReturnType<typeof getStepsProcedure
 
 // ===== Details Step Procedure =====
 export const getStepProcedureDetails = async (stepId: string) => {
-  const organizationId = await getOrgnaizationId();
 
   return await prisma.stepProcedure.findUnique({
     where: { id: stepId},
@@ -428,12 +427,9 @@ export const getClientProcedureWithSteps = async (clientProcedureId: string, pro
 
 export type ClientProcedureWithSteps = Prisma.PromiseReturnType<typeof getClientProcedureWithSteps>;
 
-
-
 // ===== CLIENT STEP PAYMENT QUERIES =====
 export const getClientStepPaymentInfo = async (clientStepId: string) => {
   try {
-  const organizationId = await getOrgnaizationId();
     // Get the client step with related payment info
     const clientStep = await prisma.clientStep.findUnique({
       where: { id: clientStepId },

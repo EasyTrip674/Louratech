@@ -47,32 +47,30 @@ export default function CreateEmployeeFormModal() {
 
   const createMutation = useMutation({
     mutationFn: async (data: EmployeeFormData) => {
-    const result = await doCreateEmployee(data);
-    if (result?.data?.success) {
-      closeModal();
-      reset();
-      successModal.openModal();
-    } else {
+      return await doCreateEmployee(data);
+    },
+    onSuccess: (result) => {
+      console.log("result", result);
+      if (result?.data?.success) {
+        closeModal();
+        reset();
+        successModal.openModal();
+        console.log("Employé créé avec succès");
+      } else {
+        closeModal();
+        errorModal.openModal();
+        console.error("Échec de la création de l'employé:", result?.data?.error);
+      }
+    },
+    onError: (error) => {
       closeModal();
       errorModal.openModal();
-    }
-  },
-    onSuccess: () => {
-      console.log("Employé créé avec succès");
+      console.error("Erreur lors de la création de l'employé:", error);
     },
-    onError: () => {
-      console.error("Échec de la création de l'employé");
-    },
-    
   });
 
   const onSubmit = (data: EmployeeFormData) => {
-    console.log("Enregistrement des données de l'employé:", data);
-    if (data) {
-     createMutation.mutate(data);
-    }else{
-      console.log("Aucune donnée à enregistrer");
-    }
+     createMutation.mutateAsync(data);
   };
 
   return (
@@ -83,7 +81,7 @@ export default function CreateEmployeeFormModal() {
     <ErrorModal errorModal={errorModal} onRetry={openModal}
         message="Erreur lors de la création de l'utilisateur" />
       <Button variant="outline" size="sm" onClick={openModal} className="bg-gray-200">
-        <Plus className="w-4 h-4 dark:text-white" />
+        <Plus className="w-4 h-4 dark:text-white" /> Ajouter un employé
       </Button>
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
         <form onSubmit={handleSubmit(onSubmit)}>

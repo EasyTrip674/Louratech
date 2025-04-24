@@ -1,3 +1,4 @@
+
 import UserCredentialsManage from "@/components/user/ChangePasswordFormModal";
 import { UserElementInfo } from "@/components/user/UserElementInfo";
 import UserProfileCard from "@/components/user/UserProfileCard";
@@ -100,11 +101,13 @@ export default async function  profilePage() {
       
       </div>
 
-    </div>
+        </div>
           <UserCredentialsManage
            role={user.userDetails?.role as Role}
            userId={user.user.id} email={user.user.email} active={user.userDetails?.active} />
         </div>
+
+       
       </div>
     </div>
     )

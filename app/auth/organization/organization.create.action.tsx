@@ -57,7 +57,6 @@ export const doCreateOrganization = actionClient
                 id: userAuth.user.id
             }
         });
-
         // console.log("User created:", user);
 
         const userUpdated = await prisma.user.update({

@@ -26,25 +26,25 @@ const navItems: NavItem[] = [
     name: "Gestion",
     path: "/services/gestion",
     subItems: [
-      { name: "Services", path: "/services/gestion/procedures", pro: false, new:true },
+      { name: "Services", path: "/services/gestion/procedures", pro: false,  },
       { name: "Employees", path: "/services/gestion/employees", pro: false },
       { name: "Clients", path: "/services/gestion/clients", pro: false },
     ],
   },
 
-  {
-    name: "Comptabilites",
-    icon: <ListIcon />,
-    subItems: [{ name: "Statistiques", path: "/", pro: false }],
-  },
-  {
-    name: "Ai",
-    icon: <Book />,
-    subItems: [
-      { name: "Chat", path: "/blank", pro: true },
-      { name: "Historique", path: "/error-404", pro: true },
-    ],
-  },
+  // {
+  //   name: "Comptabilites",
+  //   icon: <ListIcon />,
+  //   subItems: [{ name: "Statistiques", path: "/", pro: false }],
+  // },
+  // {
+  //   name: "Ai",
+  //   icon: <Book />,
+  //   subItems: [
+  //     { name: "Chat", path: "/blank", pro: true },
+  //     { name: "Historique", path: "/error-404", pro: true },
+  //   ],
+  // },
 ];
 
 const othersItems: NavItem[] = [

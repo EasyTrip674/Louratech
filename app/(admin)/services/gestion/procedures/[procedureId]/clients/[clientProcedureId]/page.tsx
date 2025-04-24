@@ -114,7 +114,7 @@ export default async function ClientProcedurePage({
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex items-center gap-4">
-            {getStatusIcon(clientProcedure.status)}
+            {getStatusIcon(clientProcedure?.status)}
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Statut global</p>
               <p className="font-medium text-gray-900 dark:text-white">{getStepStatusBadge(clientProcedure.status)}</p>
@@ -294,13 +294,6 @@ export default async function ClientProcedurePage({
                        </PaymentStepModal>
 
 
-                        {/*  */}
-                       <Button variant="outline" size="sm" className="flex items-center">
-                        <Plus className="w-4 h-4 mr-1" />
-                          Nouveau Payement
-                      </Button>
-
-
                       {/* Ajouter une note */}
                       {/* <Button variant="outline" size="sm" className="flex items-center">
                         <FileText className="w-4 h-4 mr-1" />
@@ -339,10 +332,10 @@ export default async function ClientProcedurePage({
                       </Button> */}
 
                       {/* Télécharger documents */}
-                      <Button variant="outline" size="sm" className="flex items-center">
+                      {/* <Button variant="outline" size="sm" className="flex items-center">
                         <FileCheck className="w-4 h-4 mr-1" />
                         Factures
-                      </Button>
+                      </Button> */}
                     </div>
                   </div>
                 </div>

@@ -21,7 +21,7 @@ model SuperAdmin {
 model organization {
   id          String   @id @default(cuid())
   name        String
-  slug        String   
+  slug        String  
   description String?
   logo        String?
   metadata    String

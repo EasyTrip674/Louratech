@@ -46,7 +46,7 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
       phone: client?.phone ?? "" ,
       passport: client?.passport ?? "" ,
       address: client?.address ?? "" ,
-      birthDate: String(client?.birthDate) ?? "" ,
+      birthDate: (client?.birthDate) ?? "" ,
       fatherLastName: client?.fatherLastName ?? "" ,
       fatherFirstName: client?.fatherFirstName ?? "" ,
       motherLastName: client?.motherLastName ?? "" ,
@@ -170,21 +170,21 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
 
             {/* Father's Information */}
             <div className="col-span-1">
-              <Label>Father's First Name</Label>
+              <Label>Prenom du pere</Label>
               <Input {...register("fatherFirstName")} type="text" placeholder="Enter father's first name" />
             </div>
             <div className="col-span-1">
-              <Label>Father's Last Name</Label>
+              <Label>Nom du pere</Label>
               <Input {...register("fatherLastName")} type="text" placeholder="Enter father's last name" />
             </div>
 
             {/* Mother's Information */}
             <div className="col-span-1">
-              <Label>Mother's First Name</Label>
+              <Label>Prenom de la mere</Label>
               <Input {...register("motherFirstName")} type="text" placeholder="Enter mother's first name" />
             </div>
             <div className="col-span-1">
-              <Label>Mother's Last Name</Label>
+              <Label>Nom de la mere</Label>
               <Input {...register("motherLastName")} type="text" placeholder="Enter mother's last name" />
             </div>
           </div>

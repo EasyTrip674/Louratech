@@ -1,5 +1,4 @@
 "use server"
-import bcrypt from "bcrypt";
 
 import { adminAction } from "@/lib/safe-action"
 import prisma from "@/db/prisma";

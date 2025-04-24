@@ -7,7 +7,6 @@ import Link from "next/link";
 import Button from "../ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import Checkbox from "@/components/form/input/Checkbox";
 import { ChevronLeftIcon, EyeIcon, EyeCloseIcon } from "@/icons";
 
 // Schéma de validation Zod pour la création d'organisation

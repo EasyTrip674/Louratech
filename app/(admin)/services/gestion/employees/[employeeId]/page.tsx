@@ -6,6 +6,8 @@ import UserProfileCard from "../../../../../../components/user/UserProfileCard";
 import { employeeProfileDB } from "@/db/queries/employees.query";
 import { Role } from "@prisma/client";
 import EmployeetInfoCard from "./EmployeeInfoCard";
+import Authorization from "@/components/user/Authorization";
+import prisma from "@/db/prisma";
 
 export const metadata: Metadata = {
     title: "employee",
@@ -44,6 +46,10 @@ export default async function Profile(
           <UserCredentialsManage userId={employee.user.id} email={employee.user.email} active={employee.user.active} role={Role.EMPLOYEE} />
         </div>
       </div>
+
+      <div>
+          <Authorization initialAuthorizations={employee.user.authorize} />
+        </div>
     </div>
   );
 }
