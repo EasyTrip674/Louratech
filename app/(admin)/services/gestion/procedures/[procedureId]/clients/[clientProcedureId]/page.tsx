@@ -3,11 +3,11 @@ import { ClientProcedureWithSteps, getClientProcedureWithSteps } from "@/db/quer
 import { 
   Clock, CheckCircle, FileText, AlertCircle,  
    User,  Clipboard,   
-  ChevronRight, Calendar, FileCheck, 
+  ChevronRight, Calendar, 
   XCircle, AlertTriangle,  ArrowLeft, 
   CircleDashed, CircleDot,
 } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import { calculateProgress, formatCurrency, formatDate } from "@/lib/utils";
 import Button from "@/components/ui/button/Button";
 import Link from "next/link";
 import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
@@ -16,15 +16,6 @@ import PaymentStepModal from "./stepClient/payments/PayementStepModal";
 import PaymentStepDetails from "./stepClient/payments/PayementStepDetails";
 import BackButton from "@/layout/BackButton";
 
-// Helper function to format dates
-const formatDate = (dateString: string | null | Date) => {
-  if (!dateString) return "N/A";
-  return new Date(dateString).toLocaleDateString('fr-FR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
-};
 
 // Helper function to get step status badge
 
@@ -35,11 +26,6 @@ const formatDate = (dateString: string | null | Date) => {
 // Helper function to calculate progress percentage
   // });
 // Property '0' does not exist on type '({ client: { user: { id: string; organizationId: string | null; createdAt: Date; updatedAt: Date; name: string; email: string; emailVerified: boolean; image: string | null; firstName: string | null; lastName: string | null; password: string | null; role: Role; active: boolean; }; } & { ...; }; procedure: { ...; }; s...'.ts(2339)
-const calculateProgress = (steps: ClientProcedureWithSteps['steps']) => {
-  if (!steps.length) return 0;
-  const completed = steps.filter(step => step.status === "COMPLETED").length;
-  return Math.round((completed / steps.length) * 100);
-};
 
 export default async function ClientProcedurePage({
   params

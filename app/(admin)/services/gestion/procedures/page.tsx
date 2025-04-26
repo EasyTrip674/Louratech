@@ -1,6 +1,6 @@
 import { ProcedureCard } from '@/components/procedures/ProcedureCard'
 import React from 'react'
-import { Users, Plane, FileCheck, Filter, Search, PlusCircle, ArrowRight } from 'lucide-react'
+import { Users, Plane, FileCheck } from 'lucide-react'
 import CreateProcedureFormModal from './create/CreateProcedureModalForm'
 import { getProcedureWithStats } from '@/db/queries/procedures.query'
 import { notFound } from 'next/navigation'

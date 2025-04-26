@@ -15,9 +15,9 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
 
   const { 
     data: session, 
-    isPending, //loading state
-    error, //error object
-    refetch //refetch the session
+    // isPending, //loading state
+    // error, //error object
+    // refetch //refetch the session
   } = authClient.useSession();
 
   function closeDropdown() {
@@ -104,7 +104,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
              Profil 
             </DropdownItem>
           </li>
-          <li>
+          {/* <li>
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
@@ -153,7 +153,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
               </svg>
               Support
             </DropdownItem>
-          </li>
+          </li> */}
         </ul>
         <SignOutButton />
       </Dropdown>

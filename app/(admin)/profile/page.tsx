@@ -25,7 +25,7 @@ export default async function  profilePage() {
 
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
         <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">
-          user.userDetails
+          Mon Profil
         </h3>
         <div className="space-y-6">
 
@@ -41,9 +41,11 @@ export default async function  profilePage() {
             <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-            Personal Information
+        <div>
+          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
+            Informations Personnelles
           </h4>
+        </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <UserElementInfo 

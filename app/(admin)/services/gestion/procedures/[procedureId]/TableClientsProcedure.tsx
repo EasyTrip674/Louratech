@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { procedureDetailsDb } from "@/db/queries/procedures.query";
 import Link from "next/link";
+import { calculateProgress } from "@/lib/utils";
 
 type TableClientsProcedureProps = {
   procedureDetails: procedureDetailsDb;
@@ -91,12 +92,6 @@ const getInvoiceStatus = (status: string) => {
 };
 
 // Calculate procedure progress
-const calculateProgress = (steps: any[]) => {
-  if (!steps || steps.length === 0) return 0;
-  
-  const completedSteps = steps.filter(step => step.status === "COMPLETED").length;
-  return Math.round((completedSteps / steps.length) * 100);
-};
 
 export default function TableClientsProcedure({ 
   procedureDetails,
@@ -280,7 +275,7 @@ export default function TableClientsProcedure({
                           <div className="flex flex-col p-3 bg-gray-50 rounded-lg dark:bg-gray-800/50">
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-medium">#{clientProc.invoice.invoiceNumber}</span>
-                              <Badge color={getInvoiceStatus(clientProc.invoice.status).color as any}>
+                              <Badge color={getInvoiceStatus(clientProc.invoice.status).color}>
                                 {getInvoiceStatus(clientProc.invoice.status).label}
                               </Badge>
                             </div>

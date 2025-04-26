@@ -1,4 +1,4 @@
-import {  Info, FileText, CreditCard, Calendar, Clock, Receipt, Plus, CircleCheckIcon, ChevronRight, AlertCircle, DockIcon, Download } from "lucide-react";
+import {  Info, FileText, CreditCard, Calendar, Receipt, CircleCheckIcon,  AlertCircle, DockIcon, Download } from "lucide-react";
 import { InvoiceStatus, PaymentMethod, StepStatus, TransactionStatus } from "@prisma/client";
 import { formatDate } from "@fullcalendar/core/index.js";
 import { getClientStepPaymentInfo } from "@/db/queries/procedures.query";
@@ -24,6 +24,7 @@ export default async function PaymentStepDetails({
 
   // Récupération des données de paiement
   const data = await getClientStepPaymentInfo(clientStepId);
+
   
   // Formatage pour affichage de la monnaie
   const formatCurrency = (amount: number) => {

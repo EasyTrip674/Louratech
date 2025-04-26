@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 
 import SidebarWidget from "./SidebarWidget";
-import { Book, CalendarHeartIcon, ChevronDownIcon, GridIcon, ListIcon } from "lucide-react";
+import {  CalendarHeartIcon, ChevronDownIcon, GridIcon } from "lucide-react";
 import { HorizontaLDots } from "@/icons";
 
 type NavItem = {
@@ -29,6 +29,7 @@ const navItems: NavItem[] = [
       { name: "Services", path: "/services/gestion/procedures", pro: false,  },
       { name: "Employees", path: "/services/gestion/employees", pro: false },
       { name: "Clients", path: "/services/gestion/clients", pro: false },
+      { name: "Finances", path: "/services/gestion/finances", pro: false },
     ],
   },
 

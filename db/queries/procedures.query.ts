@@ -70,7 +70,7 @@ export const getProcedureWithStats = async () => {
       const failed = clientProcedures.filter(
         (cp) =>
           cp.status === ProcedureStatus.CANCELLED ||
-          cp.status === ProcedureStatus.REJECTED
+          cp.status === ProcedureStatus.FAILED
       ).length;
 
       // Calculate change compared to previous month (mock data, replace with actual calculation)
@@ -135,8 +135,6 @@ export async function getProcedureDetails(id: string) {
 
     // Récupération de toutes les procédures client liées à cette procédure
     const clientProcedures = await prisma.clientProcedure.findMany({
-    
-
       where: {
         procedureId: id,
         organizationId,
@@ -179,6 +177,26 @@ export async function getProcedureDetails(id: string) {
       },
     });
 
+    const clientSteps = await prisma.clientStep.findMany({
+      where: {
+        clientProcedure: {
+          procedureId: id,
+          organizationId,
+        },
+      },
+      select: {
+        id: true,
+        status: true,
+        transactions: {
+          select: {
+            id: true,
+            amount: true,
+            paymentMethod: true,
+            status: true,}
+        },
+      } 
+    });
+
     // Calcul des statistiques
     const totalClients = clientProcedures.length;
     const inProgressCount = clientProcedures.filter(cp => cp.status === 'IN_PROGRESS').length;
@@ -186,16 +204,22 @@ export async function getProcedureDetails(id: string) {
     const cancelledCount = clientProcedures.filter(cp => cp.status === 'CANCELLED').length;
 
     // Calcul des revenus
-    const totalRevenue = clientProcedures.reduce((sum, cp) => {
-      return sum + (cp.invoice?.totalAmount || 0);
+    const totalRevenue = clientSteps.reduce((sum, cp) => {
+      return sum + (cp.transactions?.reduce((acc, transaction) => {
+        if(transaction.status === "APPROVED" && transaction.amount){
+          return acc + transaction.amount;
+        }
+        return acc;
+      }, 0) || 0);
     }, 0);
 
-    const pendingRevenue = clientProcedures.reduce((sum, cp) => {
-      // On considère comme "pending" tous les revenus de factures qui ne sont pas "PAID"
-      if (cp.invoice && cp.invoice.status !== 'PAID') {
-        return sum + cp.invoice.totalAmount;
-      }
-      return sum;
+    const pendingRevenue = clientSteps.reduce((sum, cp) => {
+      return sum + (cp.transactions?.reduce((acc, transaction) => {
+        if(transaction.status === "PENDING" && transaction.amount){
+          return acc + transaction.amount;
+        }
+        return acc;
+      }, 0) || 0);
     }, 0);
 
     // Calcul du pourcentage de progression pour chaque procédure client
@@ -241,12 +265,7 @@ export async function getProcedureDetails(id: string) {
 }
 
 export type procedureDetailsDb = Prisma.PromiseReturnType<typeof getProcedureDetails>
-
-
-
-// ===== STEP QUERIES =====
-
-
+// ===== PROCEDURE WITH STEPS QUERIES =====
 /**
  * Récupère les détails d'une procédure avec toutes ses étapes
  * @param procedureId - L'identifiant unique de la procédure
@@ -324,7 +343,7 @@ export async function getProcedureDetailsStepsDB(procedureId: string) {
     ).length;
     
     const cancelledCount = procedure.clientProcedures.filter(cp => 
-      cp.status === 'CANCELLED' || cp.status === 'REJECTED'
+      cp.status === 'CANCELLED' || cp.status === "FAILED"
     ).length;
     
     // Calculer les revenus
@@ -444,8 +463,24 @@ export const getClientStepPaymentInfo = async (clientStepId: string) => {
         transactions: {
           select: {
             reference:true,
+            clientProcedure:{
+              select:{
+                 client:{
+                  include:{
+                    user:{
+                      select:{
+                        firstName:true,
+                        lastName:true,
+                        email:true,
+                        name:true,
+                      }
+                    }
+                  }
+                 }
+              }
+            },
             id: true,
-          
+            organization:true,
             amount: true,
             paymentMethod: true,
             approvedBy: true,
