@@ -53,3 +53,4 @@ Cette structure vous permettra de gérer l'ensemble des opérations comptables d
  - change mot de passe !!
  - gestion des autorizations!!
  - gestion de la creation d'un employee
+ - gestion des finances : ajout d'une depense etc ...
