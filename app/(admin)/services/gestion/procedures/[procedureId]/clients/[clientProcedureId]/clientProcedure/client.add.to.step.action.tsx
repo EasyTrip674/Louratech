@@ -53,6 +53,8 @@ export const doAddClientToStep = adminAction
             }
         })
 
+
+
         if(!clientProcedure){
             clientProcedure = await prisma.clientProcedure.create({
                 data:{
@@ -63,7 +65,18 @@ export const doAddClientToStep = adminAction
                 }
             })
            
+        }else{
+            clientProcedure = await prisma.clientProcedure.update({
+                where:{
+                    id:clientProcedure.id
+                },
+                data:{
+                    status: "IN_PROGRESS",
+                }
+            })
         }
+
+
 
          const clientStep = await prisma.clientStep.create({
             
@@ -77,6 +90,7 @@ export const doAddClientToStep = adminAction
                 }
             })
 
+        
 
 
         revalidatePath("/app/(admin)/services/gestion/");

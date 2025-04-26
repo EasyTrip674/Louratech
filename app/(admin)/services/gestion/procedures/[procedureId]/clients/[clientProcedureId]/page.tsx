@@ -1,5 +1,5 @@
 import React from "react";
-import { getClientProcedureWithSteps } from "@/db/queries/procedures.query";
+import { ClientProcedureWithSteps, getClientProcedureWithSteps } from "@/db/queries/procedures.query";
 import { 
   Clock, CheckCircle, FileText, AlertCircle,  
    User,  Clipboard,   
@@ -33,7 +33,9 @@ const formatDate = (dateString: string | null | Date) => {
 
 
 // Helper function to calculate progress percentage
-const calculateProgress = (steps: any[]) => {
+  // });
+// Property '0' does not exist on type '({ client: { user: { id: string; organizationId: string | null; createdAt: Date; updatedAt: Date; name: string; email: string; emailVerified: boolean; image: string | null; firstName: string | null; lastName: string | null; password: string | null; role: Role; active: boolean; }; } & { ...; }; procedure: { ...; }; s...'.ts(2339)
+const calculateProgress = (steps: ClientProcedureWithSteps['steps']) => {
   if (!steps.length) return 0;
   const completed = steps.filter(step => step.status === "COMPLETED").length;
   return Math.round((completed / steps.length) * 100);
@@ -57,7 +59,7 @@ export default async function ClientProcedurePage({
       <div className="flex flex-col items-center justify-center h-screen p-6">
         <AlertCircle className="w-16 h-16 text-red-500 dark:text-red-400 mb-4" />
         <h1 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-white">Procédure client non trouvée</h1>
-        <p className="text-gray-500 dark:text-gray-400">La procédure demandée n'existe pas ou a été supprimée.</p>
+        <p className="text-gray-500 dark:text-gray-400">La procédure demandée n&apos;existe pas ou a été supprimée.</p>
         <Link href={`/services/gestion/procedures/${procedureId}`} className="mt-6">
           <Button variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -343,5 +345,4 @@ export default async function ClientProcedurePage({
       </div>
   </div>
 );
-
 }

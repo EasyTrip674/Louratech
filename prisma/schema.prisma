@@ -195,12 +195,8 @@ model StepProcedure {
 
 // Statut d'avancement d'une procédure client
 enum ProcedureStatus {
-  NOT_STARTED  // Pas encore commencée
   IN_PROGRESS  // En cours de traitement
-  ON_HOLD      // En attente (documents manquants, etc.)
   COMPLETED    // Terminée avec succès
-  CANCELLED    // Annulée
-  REJECTED     // Rejetée
 }
 
 // Statut d'une étape spécifique
@@ -246,7 +242,7 @@ model ClientProcedure {
   procedureId     String          // Procédure suivie
   procedure       Procedure       @relation(fields: [procedureId], references: [id])
   
-  status          ProcedureStatus @default(NOT_STARTED)
+  status          ProcedureStatus @default(IN_PROGRESS)
   startDate       DateTime        @default(now())
   completionDate  DateTime?       // Date réelle de fin
   dueDate         DateTime?       // Date prévue de fin

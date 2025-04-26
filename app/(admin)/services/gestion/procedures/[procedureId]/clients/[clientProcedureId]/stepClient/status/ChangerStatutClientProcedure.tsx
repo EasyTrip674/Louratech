@@ -13,7 +13,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { z } from "zod";
 import Button from "@/components/ui/button/Button";
-import { ChangeStatusSchema } from "./change.status.clientStep.sheme";
+import { ChangeStatusSchema, Status } from "./change.status.clientStep.sheme";
 import { doChangeStepStatus } from "./change.status.client.step.action";
 
 type ChangeStatusInput = z.infer<typeof ChangeStatusSchema>;
@@ -48,8 +48,6 @@ export default function ChangerStatutClientProcedure({
     'WAITING': { icon: Clock3, text: 'En attente', color: 'text-yellow-500' }
   };
 
-  const CurrentStatusIcon = statusConfig[currentStatus].icon;
-  const currentStatusText = statusConfig[currentStatus].text;
   const currentStatusColor = statusConfig[currentStatus].color;
 
   // Close dropdown when clicking outside

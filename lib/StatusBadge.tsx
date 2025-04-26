@@ -17,7 +17,7 @@ type StepStatus =
   | "WAITING"|
   "CANCELLED";
 
-export const getStepStatusBadge = (status: StepStatus) => {
+export const getStepStatusBadge = (status: StepStatus | string) => {
     switch (status) {
       case "COMPLETED":
         return <Badge color="success">Terminée</Badge>;
@@ -42,7 +42,7 @@ export const getStepStatusBadge = (status: StepStatus) => {
   };
 
 
-export const getStatusIcon = (status: StepStatus) => {
+export const getStatusIcon = (status: StepStatus | string) => {
   switch (status) {
     case "COMPLETED":
       return <CheckCircle className="w-6 h-6 text-green-500 dark:text-green-400" />;

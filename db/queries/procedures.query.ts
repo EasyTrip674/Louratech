@@ -405,6 +405,7 @@ export const getClientProcedureWithSteps = async (clientProcedureId: string, pro
       where: {
         id: clientProcedureId,
         organizationId,
+        procedureId,
       },
       include: {
         procedure: true,
@@ -425,6 +426,7 @@ export const getClientProcedureWithSteps = async (clientProcedureId: string, pro
   }
 };
 
+// je veux que le type soit le même que celui de la requête getClientProcedureWithSteps
 export type ClientProcedureWithSteps = Prisma.PromiseReturnType<typeof getClientProcedureWithSteps>;
 
 // ===== CLIENT STEP PAYMENT QUERIES =====
