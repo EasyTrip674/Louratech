@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Button from "@/components/ui/button/Button";
-import { Eye, Edit, Trash, Clock, ChevronRight } from "lucide-react";
+import { Eye, Trash, Clock, ChevronRight } from "lucide-react";
 import { ProcedureWithStepsDb } from "@/db/queries/procedures.query";
 import EditStepFormModal from "./steps/step/edit/EditStepFormModal";
 

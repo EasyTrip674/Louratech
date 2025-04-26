@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Users, CheckCircle, XCircle, Clock, BarChart, Eye } from "lucide-react";
+import {  CheckCircle, XCircle, Clock, Eye, Hammer } from "lucide-react";
 import Link from "next/link";
 
 export const ProcedureCard = ({
@@ -25,24 +25,14 @@ export const ProcedureCard = ({
   
   // Calculate completion rate
   const total = inProgress + completed + failed;
-  
-  // Choose icon based on service type or name
-  const getServiceIcon = () => {
-    if (title?.toLowerCase().includes('visa')) {
-      return <Users className="text-black size-6 dark:text-black" />;
-    } else if (title?.toLowerCase().includes('document')) {
-      return <BarChart className="text-black size-6 dark:text-black" />;
-    } else {
-      return <Users className="text-black size-6 dark:text-black" />;
-    }
-  };
+
 
   return (
     <div className={`rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-black dark:border-gray-800 dark:bg-white/[0.03] dark:hover:border-black/40 md:p-6 relative${className ? ` ${className}` : ""}`}>
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center justify-center w-12 h-12 bg-blackrounded-xl dark:bg-black/20">
-            {getServiceIcon()}
+          <Hammer className="text-black size-6 dark:text-white" />
           </div>
           <div>
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400">

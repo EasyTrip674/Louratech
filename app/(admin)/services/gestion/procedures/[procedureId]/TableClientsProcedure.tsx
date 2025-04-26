@@ -323,7 +323,7 @@ export default function TableClientsProcedure({
             Aucun client enregistré
           </h3>
           <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-            Cette procédure n'a pas encore de clients associés. Veuillez ajouter des clients pour commencer.
+            Cette procédure n&apos;a pas encore de clients associés. Veuillez ajouter des clients pour commencer.
           </p>
         </div>
       )}

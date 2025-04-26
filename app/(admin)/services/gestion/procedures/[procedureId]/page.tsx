@@ -1,17 +1,16 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { Users, Clock, CheckCircle, AlertCircle, CreditCard, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Users, Clock, CheckCircle, CreditCard, ArrowLeft, Edit } from 'lucide-react';
 
 
 import Button from "@/components/ui/button/Button";
 import Link from 'next/link';
 import { ProcedureFinancialSummary } from '@/components/procedures/ProcedureFinancialSummary';
 import TableClientsProcedure from './TableClientsProcedure';
-import { getProcedureDetails, getProcedureDetailsStepsDB, getProcedureWithStepsDb, getStepsProcedureDB } from '@/db/queries/procedures.query';
+import { getProcedureDetails,  getProcedureWithStepsDb, getStepsProcedureDB } from '@/db/queries/procedures.query';
 import { getCLientsIdWithNameDB } from '@/db/queries/clients.query';
 import AddClientToStepModal from './clients/[clientProcedureId]/clientProcedure/AddClientToStepModal';
 import TableProcedureSteps from './CardsStepProcedure';
-import CreateClientFormModal from '../../clients/create/CreateClientFormModal';
 import CreateStepFormModal from './steps/step/create/CreateStepFormModal';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
 
@@ -46,7 +45,7 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
       {/* En-tête de la page */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div className="flex items-start gap-2 ">
-          <Link href="/procedures">
+          <Link href="/services/gestion/procedures">
             <Button variant="outline" size="sm" className='text-xs'>
               <ArrowLeft className="w-2 h-2 mr-2" />
               Retour
@@ -59,9 +58,7 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         </div>
         
         <div className="flex items-center gap-3 mt-4 md:mt-0">
-          <Button href={`/procedures/${params.procedureId}/edit`} variant="outline">
-            Modifier
-          </Button>
+        {/* <EditProcedureFormModal procedureId={procedure.id} /> */}
         </div>
       </div>
       

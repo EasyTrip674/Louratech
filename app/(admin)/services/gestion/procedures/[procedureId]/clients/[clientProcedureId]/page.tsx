@@ -6,7 +6,6 @@ import {
   ChevronRight, Calendar, FileCheck, 
   XCircle, AlertTriangle,  ArrowLeft, 
   CircleDashed, CircleDot,
-  Plus
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import Button from "@/components/ui/button/Button";
@@ -15,6 +14,7 @@ import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
 import ChangerStatutClientProcedure from "./stepClient/status/ChangerStatutClientProcedure";
 import PaymentStepModal from "./stepClient/payments/PayementStepModal";
 import PaymentStepDetails from "./stepClient/payments/PayementStepDetails";
+import BackButton from "@/layout/BackButton";
 
 // Helper function to format dates
 const formatDate = (dateString: string | null | Date) => {
@@ -61,7 +61,7 @@ export default async function ClientProcedurePage({
         <Link href={`/services/gestion/procedures/${procedureId}`} className="mt-6">
           <Button variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour aux procédures
+            Retour à la procédure
           </Button>
         </Link>
       </div>
@@ -80,7 +80,7 @@ export default async function ClientProcedurePage({
           </Link>
           <ChevronRight className="w-4 h-4 mx-2" />
           <Link href={`/services/gestion/procedures/${procedureId}`} className="hover:text-gray-700 dark:hover:text-gray-300">
-            Procédures
+            Procédure
           </Link>
           <ChevronRight className="w-4 h-4 mx-2" />
           <span className="text-gray-700 dark:text-gray-300">Détails</span>
@@ -97,15 +97,12 @@ export default async function ClientProcedurePage({
           </div>
           <div className="flex flex-wrap gap-2">
             <Link href={`/services/gestion/procedures/${procedureId}`}>
-              <Button variant="outline" size="sm">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour
-              </Button>
+            <BackButton />
             </Link>
-            <Button variant="outline" size="sm">
+            {/* <Button variant="outline" size="sm">
               <FileCheck className="w-4 h-4 mr-2" />
               Exporter PDF
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
@@ -117,7 +114,7 @@ export default async function ClientProcedurePage({
             {getStatusIcon(clientProcedure?.status)}
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Statut global</p>
-              <p className="font-medium text-gray-900 dark:text-white">{getStepStatusBadge(clientProcedure.status)}</p>
+              <p className="font-medium text-gray-900 dark:text-white">{getStepStatusBadge(String(clientProcedure.status))}</p>
             </div>
           </div>
           
