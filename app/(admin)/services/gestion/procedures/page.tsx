@@ -58,7 +58,7 @@ const ProceduresPage = async () => {
             </div>
             
             <div className="flex items-center gap-3 mt-6 md:mt-0">
-              <div className="relative flex-grow md:w-64">
+              {/* <div className="relative flex-grow md:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input 
                   type="text" 
@@ -68,7 +68,7 @@ const ProceduresPage = async () => {
               </div>
               <button className="p-3 text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors dark:border-gray-700 dark:hover:bg-gray-800 dark:text-gray-300">
                 <Filter className="h-5 w-5" />
-              </button>
+              </button> */}
               <CreateProcedureFormModal />
             </div>
           </div>
@@ -126,9 +126,9 @@ const ProceduresPage = async () => {
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Liste des Services</h2>
-            <button className="flex items-center gap-2 text-brand-600 hover:text-brand-800 dark:text-brand-400 font-medium transition-colors">
+            {/* <button className="flex items-center gap-2 text-brand-600 hover:text-brand-800 dark:text-brand-400 font-medium transition-colors">
               Voir tout <ArrowRight className="h-4 w-4" />
-            </button>
+            </button> */}
           </div>
           
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-2">
@@ -138,7 +138,6 @@ const ProceduresPage = async () => {
                 key={index}
                 title={procedure.title}
                 totalClients={procedure.totalClients}
-                change={procedure.change}
                 inProgress={procedure.inProgress}
                 completed={procedure.completed}
                 failed={procedure.failed}

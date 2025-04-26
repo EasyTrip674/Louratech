@@ -1,16 +1,13 @@
 "use client";
 
 import React from "react";
-import Badge from "../ui/badge/Badge";
-import { ArrowDownIcon, ArrowUpIcon } from "@/icons";
-import { Users, CheckCircle, XCircle, Clock, ChevronRight, BarChart, ExternalLink } from "lucide-react";
+import { Users, CheckCircle, XCircle, Clock, BarChart, Eye } from "lucide-react";
 import Link from "next/link";
 
 export const ProcedureCard = ({
   procedureId,
   title,
   totalClients = 0,
-  change = 0,
   inProgress = 0,
   completed = 0,
   failed = 0,
@@ -25,28 +22,26 @@ export const ProcedureCard = ({
   procedureId: string;
   className?: string;
 }) => {
-  const isPositive = change >= 0;
   
   // Calculate completion rate
   const total = inProgress + completed + failed;
-  const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
   
   // Choose icon based on service type or name
   const getServiceIcon = () => {
     if (title?.toLowerCase().includes('visa')) {
-      return <Users className="text-purple-600 size-6 dark:text-purple-400" />;
+      return <Users className="text-black size-6 dark:text-black" />;
     } else if (title?.toLowerCase().includes('document')) {
-      return <BarChart className="text-purple-600 size-6 dark:text-purple-400" />;
+      return <BarChart className="text-black size-6 dark:text-black" />;
     } else {
-      return <Users className="text-purple-600 size-6 dark:text-purple-400" />;
+      return <Users className="text-black size-6 dark:text-black" />;
     }
   };
 
   return (
-    <div className={`rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-purple-200 dark:border-gray-800 dark:bg-white/[0.03] dark:hover:border-purple-900/40 md:p-6 relative${className ? ` ${className}` : ""}`}>
+    <div className={`rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-black dark:border-gray-800 dark:bg-white/[0.03] dark:hover:border-black/40 md:p-6 relative${className ? ` ${className}` : ""}`}>
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex items-center justify-center w-12 h-12 bg-purple-50 rounded-xl dark:bg-purple-900/20">
+          <div className="flex items-center justify-center w-12 h-12 bg-blackrounded-xl dark:bg-black/20">
             {getServiceIcon()}
           </div>
           <div>
@@ -54,28 +49,19 @@ export const ProcedureCard = ({
               {title}
             </span>
             <h4 className="mt-1 font-bold text-gray-800 text-2xl dark:text-white/90">
-              {typeof totalClients === 'number' ? totalClients.toLocaleString() : totalClients}
+              {typeof totalClients === 'number' ? totalClients.toLocaleString() : totalClients} <span className="text-sm">clients</span>
             </h4>
           </div>
         </div>
-        {change !== 0 && (
+        {/* {change !== 0 && (
           <Badge color={isPositive ? "success" : "error"}>
             {isPositive ? <ArrowUpIcon /> : <ArrowDownIcon />}
             {Math.abs(change).toFixed(1)}%
           </Badge>
-        )}
+        )} */}
       </div>
       
-      {/* Progress bar */}
-      <div className="mt-4">
-        <div className="flex justify-between items-center mb-1">
-          <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Progression</span>
-          <span className="text-xs font-medium text-purple-600 dark:text-purple-400">{completionRate}%</span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-          <div className="bg-purple-600 h-2 rounded-full" style={{ width: `${completionRate}%` }}></div>
-        </div>
-      </div>
+   
       
       <div className="grid grid-cols-3 gap-4 mt-4">
         <div className="flex flex-col items-center p-3 bg-amber-50 rounded-lg dark:bg-amber-900/20">
@@ -105,15 +91,15 @@ export const ProcedureCard = ({
         {/* Prominent "Voir les détails" button */}
         <Link 
           href={`/services/gestion/procedures/${procedureId}`} 
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition-colors dark:bg-purple-700 dark:hover:bg-purple-800 dark:focus:ring-purple-900"
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-black focus:ring-4 focus:ring-black transition-colors dark:bg-black dark:hover:bg-black dark:focus:ring-black"
         >
           Voir les détails
-          <ExternalLink className="size-4 ml-2" />
+          <Eye className="size-4 ml-2" />
         </Link>
       </div>
       
       {/* Floating action indicator */}
-      <div className="absolute -top-2 -right-2 w-4 h-4 bg-purple-600 rounded-full animate-pulse hidden md:block"></div>
+      <div className="absolute -top-2 -right-2 w-4 h-4 bg-black rounded-full animate-pulse hidden md:block"></div>
     </div>
   );
 };

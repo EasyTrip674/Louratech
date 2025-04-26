@@ -5,8 +5,7 @@ import MonthlyTarget from "@/components/stats/MonthlyTarget";
 import MonthlySalesChart from "@/components/stats/MonthlySalesChart";
 import StatisticsChart from "@/components/stats/StatisticsChart";
 import RecentOrders from "@/components/stats/RecentOrders";
-import DemographicCard from "@/components/stats/DemographicCard";
-import { getDemographicData, getMonthlySalesData, getMonthlyTargetStats, getStatisticsData } from "@/db/queries/dasboard.query";
+import {  getMonthlySalesData, getMonthlyTargetStats, getStatisticsData } from "@/db/queries/dasboard.query";
 
 export const metadata: Metadata = {
   title:
