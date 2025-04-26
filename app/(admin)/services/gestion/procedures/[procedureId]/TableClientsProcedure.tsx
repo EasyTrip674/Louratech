@@ -42,6 +42,8 @@ const getStepStatusBadge = (status: string) => {
       return <Badge color="success">Terminée</Badge>;
     case "IN_PROGRESS":
       return <Badge color="info">En cours</Badge>;
+    case "FAILED":
+      return <Badge color="error">Échouée</Badge>;
     case "PENDING":
       return <Badge color="info">En attente</Badge>;
     case "NOT_STARTED":
@@ -49,7 +51,7 @@ const getStepStatusBadge = (status: string) => {
     case "ON_HOLD":
       return <Badge color="warning">En pause</Badge>;
     default:
-      return <Badge color="secondary">Inconnue</Badge>;
+      return <Badge>Inconnue</Badge>;
   }
 };
 

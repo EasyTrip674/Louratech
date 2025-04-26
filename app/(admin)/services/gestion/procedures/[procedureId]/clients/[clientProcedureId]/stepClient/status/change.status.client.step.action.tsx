@@ -46,7 +46,28 @@ export const doChangeStepStatus = adminAction
         }
       });
 
-      if (notCompletedSteps.length === 0) {
+      const canceledSteps = await tx.clientStep.findMany({
+        where: {
+          clientProcedureId: updatedStep.clientProcedureId,
+          status: "FAILED"
+        },
+        select: {
+          id: true
+        }
+      });
+
+
+
+      if(canceledSteps.length > 0){
+        await tx.clientProcedure.update({
+          where: {
+            id: updatedStep.clientProcedureId
+          },
+          data: {
+            status: 'FAILED',
+          }
+        });
+      }else if (notCompletedSteps.length === 0) {
         await tx.clientProcedure.update({
           where: {
             id: updatedStep.clientProcedureId

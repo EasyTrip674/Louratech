@@ -197,11 +197,12 @@ model StepProcedure {
 enum ProcedureStatus {
   IN_PROGRESS  // En cours de traitement
   COMPLETED    // Terminée avec succès
+  CANCELLED    // Annulée
+  FAILED      // En attente
 }
 
 // Statut d'une étape spécifique
 enum StepStatus {
-  PENDING      // En attente de traitement
   IN_PROGRESS  // En cours de traitement
   WAITING      // En attente d'éléments externes
   COMPLETED    // Terminée
@@ -279,7 +280,7 @@ model ClientStep {
   stepId          String      // Étape de référence
   step            StepProcedure @relation(fields: [stepId], references: [id])
   
-  status          StepStatus  @default(PENDING)
+  status          StepStatus  @default(IN_PROGRESS)
   startDate       DateTime?   // Date de début réel
   completionDate  DateTime?   // Date de fin réel
   

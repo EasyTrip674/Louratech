@@ -152,22 +152,33 @@ export default async function ClientProcedurePage({
           </h2>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div>
+            { clientProcedure.client?.user.firstName &&
+                <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Client</p>
-                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.user.firstName || "N/A"}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.user.firstName}</p>
               </div>
+            }
+            {
+              clientProcedure.client?.user.lastName &&
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Téléphone</p>
-                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.phone || "N/A"}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Nom</p>
+                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.user.lastName}</p>
               </div>
+            }
+             {
+              clientProcedure.client?.user.email &&
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
-                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.user.email || "N/A"}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.user.email}</p>
               </div>
+             }
+             {
+              clientProcedure.reference &&
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Référence</p>
-                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.reference || "N/A"}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Reference</p>
+                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.reference}</p>
               </div>
+             }
             </div>
           </div>
         </div>
@@ -175,21 +186,24 @@ export default async function ClientProcedurePage({
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
           <h2 className="text-lg font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
             <Clipboard className="w-5 h-5 mr-2 text-blue-500 dark:text-blue-400" />
-            Détails de la procédure
+            Détails du service pour ce client
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Type de procédure</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Type de service</p>
               <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.procedure.category || "Standard"}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Prix</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Prix totale</p>
               <p className="font-medium text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(clientProcedure.procedure.price || 0)}
+                {/* somme de tous les prix des etapes */}
+                {formatCurrency(
+                  clientProcedure.steps.reduce((total, step) => total + (step.step.price || 0), 0)
+                )} 
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Nombre d'étapes</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Nombre d&apos;étapes</p>
               <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.steps.length}</p>
             </div>
             <div>
@@ -206,7 +220,7 @@ export default async function ClientProcedurePage({
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="text-xl font-semibold mb-6 flex items-center text-gray-900 dark:text-white">
           <FileText className="w-5 h-5 mr-2 text-blue-500 dark:text-blue-400" />
-          Étapes de la procédure
+          Modules du service pour ce client
         </h2>
 
         <div className="relative">

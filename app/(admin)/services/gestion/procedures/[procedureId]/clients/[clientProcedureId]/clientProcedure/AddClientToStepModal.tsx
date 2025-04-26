@@ -8,7 +8,7 @@ import { StepsProcedureDB } from '@/db/queries/procedures.query'
 import { useModal } from '@/hooks/useModal'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus } from 'lucide-react'
-import React, { useState, useEffect } from 'react'
+import React, {  useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { addClientToStepSchema } from './client.add.to.step.scheme'
@@ -128,7 +128,7 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
             <ErrorModal errorModal={errorModal} onRetry={openModal}
         message="Error during adding client to module" />
             <Button onClick={handleOpen} size='sm' variant="outline">
-                <Plus className="h-5 w-5" />
+               Inscrire un nouveau client <Plus className="h-5 w-5" />
             </Button>
             <Modal isOpen={isOpen} onClose={closeModal} className='max-w-[584px] p-5 lg:p-10'>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

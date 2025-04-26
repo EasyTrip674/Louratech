@@ -81,7 +81,7 @@ export default function CreateStepFormModal({procedureId}:{
         onClick={openModal} 
         className="bg-gray-200 hover:bg-gray-300 transition-colors"
       >
-        <Plus className="w-4 h-4 dark:text-white" />
+       Creer un module <Plus className="w-4 h-4 dark:text-white" />
       </Button>
       
       <Modal 

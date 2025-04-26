@@ -24,7 +24,7 @@ export const doAddClientToStep = adminAction
         const existCLientStep = await prisma.clientStep.findFirst({
             where:{
                 status: {
-                    in: ["PENDING", "IN_PROGRESS", "COMPLETED", "WAITING"]
+                    in: ["IN_PROGRESS", "COMPLETED", "WAITING"]
                 },
                 stepId: clientInput.stepId,
                 clientProcedure:{
@@ -65,15 +65,6 @@ export const doAddClientToStep = adminAction
                 }
             })
            
-        }else{
-            clientProcedure = await prisma.clientProcedure.update({
-                where:{
-                    id:clientProcedure.id
-                },
-                data:{
-                    status: "IN_PROGRESS",
-                }
-            })
         }
 
 

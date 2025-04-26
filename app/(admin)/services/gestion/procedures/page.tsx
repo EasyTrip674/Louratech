@@ -24,7 +24,7 @@ const ProceduresPage = async () => {
   const pendingServices = await prisma.clientProcedure.count({
     where: {
       status: {
-        in: ["IN_PROGRESS","ON_HOLD"],
+        in: ["IN_PROGRESS"],
       },
       procedure: {
         organizationId,
