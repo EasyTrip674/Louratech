@@ -445,7 +445,6 @@ export const getClientProcedureWithSteps = async (clientProcedureId: string, pro
   }
 };
 
-// je veux que le type soit le même que celui de la requête getClientProcedureWithSteps
 export type ClientProcedureWithSteps = Prisma.PromiseReturnType<typeof getClientProcedureWithSteps>;
 
 // ===== CLIENT STEP PAYMENT QUERIES =====
@@ -522,3 +521,4 @@ export const getClientStepPaymentInfo = async (clientStepId: string) => {
 };
 
 export type ClientStepPaymentInfo = Prisma.PromiseReturnType<typeof getClientStepPaymentInfo>;
+

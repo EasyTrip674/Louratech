@@ -1,5 +1,5 @@
-import {  Info, FileText, CreditCard, Calendar, Receipt, CircleCheckIcon,  AlertCircle, DockIcon, Download } from "lucide-react";
-import { InvoiceStatus, PaymentMethod, StepStatus, TransactionStatus } from "@prisma/client";
+import {  Info, FileText, CreditCard, Calendar, Receipt, CircleCheckIcon,  AlertCircle, Download } from "lucide-react";
+import {  PaymentMethod, TransactionStatus } from "@prisma/client";
 import { formatDate } from "@fullcalendar/core/index.js";
 import { getClientStepPaymentInfo } from "@/db/queries/procedures.query";
 import { Suspense } from "react";
@@ -36,10 +36,9 @@ export default async function PaymentStepDetails({
   const totalPaid = allTransactions.reduce((acc, transaction) => 
     transaction.status === "APPROVED" ? acc + transaction.amount : acc, 0);
   const remainingAmount = (data?.clientStep?.price ?? 0) - totalPaid;
-  type Status = InvoiceStatus | TransactionStatus | StepStatus
 
   // Fonction pour obtenir la couleur du badge selon le statut
-  const getStatusColor = (status:Status) => {
+  const getStatusColor = (status:TransactionStatus) => {
     const statusColors = {
       // Statuts de facture
       DRAFT: "bg-gray-100 text-gray-800 border border-gray-200",
@@ -59,7 +58,7 @@ export default async function PaymentStepDetails({
   };
 
   // Traduction des statuts pour l'affichage
-  const translateStatus = (status: string) => {
+  const translateStatus = (status: TransactionStatus) => {
     const translations = {
       // Statuts de facture
       DRAFT: "Brouillon",
@@ -253,7 +252,12 @@ export default async function PaymentStepDetails({
                             </td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{formatDate(String(transaction.approvedAt)) ?? "-"} </td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300 cursor-pointer">
-                            <DownloadPdf transaction={transaction} />
+                            <DownloadPdf transaction={transaction} >
+                              <div className="flex items-center dark:text-white text-gray-500 hover:text-brand-600" >
+                                <Download className="mr-2" />
+                                facture
+                              </div>
+                            </DownloadPdf>
                             </td>
                           </tr>
                         ))}

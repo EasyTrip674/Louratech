@@ -14,8 +14,6 @@ import {
   ArrowDownCircle,
   ArrowUpCircle,
   Download,
-  Edit,
-  Trash,
   CheckCircle,
   XCircle,
   CreditCard,
@@ -34,6 +32,7 @@ import {
 import { getTransactionById } from "@/db/queries/finances.query";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
+import DownloadPdf from "@/components/pdf/DowloadPdf";
 
 // Composant pour afficher les détails d'une transaction
 export default function TransactionDetails(
@@ -150,22 +149,7 @@ export default function TransactionDetails(
     }
   };
 
-  const handleApproveTransaction = async () => {
-    // Logique pour approuver la transaction
-    alert("Fonctionnalité d'approbation à implémenter");
-  };
 
-  const handleRejectTransaction = async () => {
-    // Logique pour rejeter la transaction  
-    alert("Fonctionnalité de rejet à implémenter");
-  };
-
-  const handleDeleteTransaction = async () => {
-    // Logique pour supprimer la transaction
-    if (confirm("Êtes-vous sûr de vouloir supprimer cette transaction ?")) {
-      alert("Fonctionnalité de suppression à implémenter");
-    }
-  };
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pb-12">
@@ -201,41 +185,17 @@ export default function TransactionDetails(
             </div>
 
             <div className="flex flex-wrap gap-2 mt-4 md:mt-0">
-              {transaction.status === "PENDING" && (
+              {transaction.status === "APPROVED" && (
                 <>
-                  <Button
-                    variant="primary"
-                    className="bg-green-600 hover:bg-green-700 text-white shadow-sm"
-                    onClick={handleApproveTransaction}
-                  >
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Approuver
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    onClick={handleRejectTransaction}
-                  >
-                    <XCircle className="w-4 h-4 mr-2" />
-                    Rejeter
-                  </Button>
+                <DownloadPdf transaction={transaction}>
+                    <Button variant="outline" className="flex items-center">
+                        <Download className="w-4 h-4 mr-1" />
+                        Télécharger la facture
+                    </Button>
+                </DownloadPdf>
                 </>
               )}
-              <Button 
-                variant="outline" 
-                className="border-brand-500 text-brand-500 hover:bg-brand-50 dark:hover:bg-brand-900/20"
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Modifier
-              </Button>
-              <Button
-                variant="outline"
-                className="border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                onClick={handleDeleteTransaction}
-              >
-                <Trash className="w-4 h-4 mr-2" />
-                Supprimer
-              </Button>
+            
             </div>
           </div>
         </div>
@@ -271,7 +231,7 @@ export default function TransactionDetails(
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Informations principales */}
           <div className="col-span-2 space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidiven">
               <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-700">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                   <FileText className="w-5 h-5 mr-2 text-brand-500" />
@@ -285,9 +245,9 @@ export default function TransactionDetails(
                       <Calendar className="w-4 h-4 mr-2 text-gray-400" />
                       Date
                     </dt>
-                    <dd className="mt-1 text-gray-900 dark:text-white">
+                    <div className="mt-1 text-gray-900 dark:text-white">
                       {formatDate(transaction.date)}
-                    </dd>
+                    </div>
                   </div>
 
                   <div>
@@ -295,9 +255,9 @@ export default function TransactionDetails(
                       <FileText className="w-4 h-4 mr-2 text-gray-400" />
                       Description
                     </dt>
-                    <dd className="mt-1 text-gray-900 dark:text-white">
+                    <div className="mt-1 text-gray-900 dark:text-white">
                       {transaction.description || "—"}
-                    </dd>
+                    </div>
                   </div>
 
                   {transaction.category && (
@@ -306,11 +266,11 @@ export default function TransactionDetails(
                         <Tag className="w-4 h-4 mr-2 text-gray-400" />
                         Catégorie
                       </dt>
-                      <dd className="mt-1">
+                      <div className="mt-1">
                         <span className="px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-800 dark:text-brand-200 text-sm font-medium">
                           {transaction.category.name}
                         </span>
-                      </dd>
+                      </div>
                     </div>
                   )}
 
@@ -320,9 +280,9 @@ export default function TransactionDetails(
                         <Receipt className="w-4 h-4 mr-2 text-gray-400" />
                         Référence
                       </dt>
-                      <dd className="mt-1 text-gray-900 dark:text-white">
+                      <div className="mt-1 text-gray-900 dark:text-white">
                         {transaction.reference}
-                      </dd>
+                      </div>
                     </div>
                   )}
 
@@ -332,9 +292,9 @@ export default function TransactionDetails(
                         <Building className="w-4 h-4 mr-2 text-gray-400" />
                         Fournisseur
                       </dt>
-                      <dd className="mt-1 text-gray-900 dark:text-white">
+                      <div className="mt-1 text-gray-900 dark:text-white">
                         {transaction.expense.vendor}
-                      </dd>
+                      </div>
                     </div>
                   )}
 
@@ -344,18 +304,18 @@ export default function TransactionDetails(
                         <Building className="w-4 h-4 mr-2 text-gray-400" />
                         Source
                       </dt>
-                      <dd className="mt-1 text-gray-900 dark:text-white">
+                      <div className="mt-1 text-gray-900 dark:text-white">
                         {transaction.revenue.source}
-                      </dd>
+                      </div>
                     </div>
                   )}
                 </dl>
               </div>
             </div>
             
-            {/* Information additionnelles basées sur le type */}
+            {/* Information adivitionnelles basées sur le type */}
             {transaction.type === "EXPENSE" && transaction.expense && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidiven">
                 <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-700">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                     <ArrowDownCircle className="w-5 h-5 mr-2 text-red-500" />
@@ -370,9 +330,9 @@ export default function TransactionDetails(
                           <Receipt className="w-4 h-4 mr-2 text-gray-400" />
                           Numéro de facture
                         </dt>
-                        <dd className="mt-1 text-gray-900 dark:text-white">
+                        <div className="mt-1 text-gray-900 dark:text-white">
                           {transaction.expense.invoiceNumber}
-                        </dd>
+                        </div>
                       </div>
                     )}
                     {transaction.expense.invoiceDate && (
@@ -381,9 +341,9 @@ export default function TransactionDetails(
                           <Calendar className="w-4 h-4 mr-2 text-gray-400" />
                           Date de facture
                         </dt>
-                        <dd className="mt-1 text-gray-900 dark:text-white">
+                        <div className="mt-1 text-gray-900 dark:text-white">
                           {formatDate(transaction.expense.invoiceDate)}
-                        </dd>
+                        </div>
                       </div>
                     )}
                     {transaction.expense.dueDate && (
@@ -392,9 +352,9 @@ export default function TransactionDetails(
                           <Clock className="w-4 h-4 mr-2 text-gray-400" />
                           Date d&apos;échéance
                         </dt>
-                        <dd className="mt-1 text-gray-900 dark:text-white">
+                        <div className="mt-1 text-gray-900 dark:text-white">
                           {formatDate(transaction.expense.dueDate)}
-                        </dd>
+                        </div>
                       </div>
                     )}
                   </dl>
@@ -403,7 +363,7 @@ export default function TransactionDetails(
             )}
 
             {transaction.type === "REVENUE" && transaction.revenue && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidiven">
                 <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-700">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                     <ArrowUpCircle className="w-5 h-5 mr-2 text-green-500" />
@@ -418,9 +378,9 @@ export default function TransactionDetails(
                           <Receipt className="w-4 h-4 mr-2 text-gray-400" />
                           Numéro de référence
                         </dt>
-                        <dd className="mt-1 text-gray-900 dark:text-white">
+                        <div className="mt-1 text-gray-900 dark:text-white">
                           {transaction.revenue.referenceNumber}
-                        </dd>
+                        </div>
                       </div>
                     )}
                     {transaction.revenue.invoice && (
@@ -429,15 +389,16 @@ export default function TransactionDetails(
                           <FileText className="w-4 h-4 mr-2 text-gray-400" />
                           Facture associée
                         </dt>
-                        <dd className="mt-1">
+                        <div className="mt-1">
                           <Link
-                            href={`/finances/invoices/${transaction.revenue.invoice.id}`}
+                            href={"#"}
+                            // href={`/finances/invoices/${transaction.revenue.invoice.id}`}
                             className="text-brand-600 hover:text-brand-800 flex items-center"
                           >
                             <FileCheck className="w-4 h-4 mr-1" />
                             {transaction.revenue.invoice.invoiceNumber}
                           </Link>
-                        </dd>
+                        </div>
                       </div>
                     )}
                   </dl>
@@ -447,7 +408,7 @@ export default function TransactionDetails(
 
             {/* Pièces jointes */}
             {transaction.attachments && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidiven">
                 <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-700">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                     <Paperclip className="w-5 h-5 mr-2 text-brand-500" />
@@ -488,7 +449,7 @@ export default function TransactionDetails(
           <div className="space-y-6">
             {/* Entités liées */}
             {(transaction.clientProcedure || transaction.clientStep) && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidiven">
                 <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-700">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                     <LinkIcon className="w-5 h-5 mr-2 text-brand-500" />
@@ -535,7 +496,7 @@ export default function TransactionDetails(
             )}
 
             {/* Métadonnées */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidiven">
               <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-700">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                   <User className="w-5 h-5 mr-2 text-brand-500" />
@@ -548,7 +509,7 @@ export default function TransactionDetails(
                     <dt className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                       Créée par
                     </dt>
-                    <dd className="mt-1 text-gray-900 dark:text-white flex items-center">
+                    <div className="mt-1 text-gray-900 dark:text-white flex items-center">
                       <div className="flex items-center justify-center w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 mr-2">
                         <User className="w-4 h-4" />
                       </div>
@@ -560,7 +521,7 @@ export default function TransactionDetails(
                           {formatDate(transaction.createdAt)}
                         </span>
                       </div>
-                    </dd>
+                    </div>
                   </div>
 
                   {transaction.approvedBy && (
@@ -568,7 +529,7 @@ export default function TransactionDetails(
                       <dt className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                         Approuvée par
                       </dt>
-                      <dd className="mt-1 text-gray-900 dark:text-white flex items-center">
+                      <div className="mt-1 text-gray-900 dark:text-white flex items-center">
                         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mr-2">
                           <CheckCircle className="w-4 h-4" />
                         </div>
@@ -580,7 +541,7 @@ export default function TransactionDetails(
                             {formatDate(String(transaction.approvedAt))}
                           </span>
                         </div>
-                      </dd>
+                      </div>
                     </div>
                   )}
                 </dl>

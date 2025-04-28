@@ -39,6 +39,7 @@ export async function getTransactionById(id: string) {
             invoice: true,
           },
         },
+        organization: true,
         createdBy: {
           select: {
             id: true,
@@ -46,13 +47,7 @@ export async function getTransactionById(id: string) {
             email: true,
           },
         },
-        approvedBy: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
+        approvedBy:true,
         clientProcedure: {
           include: {
             procedure: true,

@@ -3,17 +3,18 @@ import React, { useState } from "react";
 import { useModal } from "@/hooks/useModal";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
-import { DollarSign, CheckCircle, AlertTriangle } from "lucide-react";
+import {  CheckCircle, AlertTriangle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { doApproveTransaction } from "./step.transaction.action";
+import { TransactionStatus } from "@prisma/client";
 
 interface ApprovedTransactionModalProps {
   transactionId: string;
   amount: number;
   paymentMethod: string;
   date: string;
-  status: "APPROVED" | "PENDING" | "REJECTED";
+  status: TransactionStatus
 }
 
 export default function ApprovedTransactionModal({
@@ -124,7 +125,7 @@ export default function ApprovedTransactionModal({
               className="w-full"
               onClick={handleApproveClick}
             >
-              Procéder à l'approbation
+              Procéder à l&apos;approbation
             </Button>
           )}
         </div>
@@ -141,7 +142,7 @@ export default function ApprovedTransactionModal({
             <AlertTriangle className="text-yellow-500 w-16 h-16" />
           </div>
           <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">
-            Confirmer l'approbation
+            Confirmer l&apos;approbation
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
             Êtes-vous sûr de vouloir approuver cette transaction de{" "}

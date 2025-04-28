@@ -13,7 +13,7 @@ const Stats = () => (
     </div>
 
     <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
-      {stats.map((stat, index) => (
+      {stats.map((stat) => (
         <div
           key={stat.id}
           className="flex-1 min-w-[250px] flex flex-col items-center p-6 rounded-2xl bg-white/10 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105"

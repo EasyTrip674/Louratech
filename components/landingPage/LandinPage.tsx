@@ -4,10 +4,9 @@ import Navbar from "./Navbar";
 import Hero from "./Hero";
 import Stats from "./Stats";
 import Business from "./Business";
-import Billing from "./Billing";
-import CardDeal from "./CardDeal";
-import Testimonials from "./Testimonials";
-import { Clients, CTA, Footer } from ".";
+import CTA from "./CTA";
+import Footer from "./Footer";
+import TargetClients from "./Clients";
 
 
 export default function LandingPage() {
@@ -29,10 +28,7 @@ export default function LandingPage() {
       <div className={`${styles.boxWidth} container`}>
         <Stats />
         <Business />
-        {/* <Billing />
-        <CardDeal />
-        <Testimonials /> */}
-        <Clients />
+        <TargetClients />
         <CTA />
         <Footer />
       </div>
