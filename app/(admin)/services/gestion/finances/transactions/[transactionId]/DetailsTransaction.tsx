@@ -149,15 +149,13 @@ export default function TransactionDetails(
     }
   };
 
-
-
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pb-12">
       {/* Header avec statut et actions */}
       <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4 py-6">
           <Link
-            href="/finances/transactions"
+            href="/services/gestion/finances"
             className="inline-flex items-center text-brand-600 hover:text-brand-800 mb-4 text-sm font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />

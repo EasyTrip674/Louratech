@@ -7,13 +7,13 @@ import {
   ArrowDownCircle,
   ArrowUpCircle,
   Search,
-  Filter,
-  ChevronDown,
   FileText,
   CheckCircle
 } from "lucide-react";
-import { CreateExpenseButton, CreateRevenueButton, TransactionsTable } from "./TransactionsTable";
+import {   TransactionsTable } from "./TransactionsTable";
 import { getTransactionsDB } from "@/db/queries/finances.query";
+import CreateDepenseModal from "./transactions/depenses/DepensesModal";
+import CreateRevenuModal from "./transactions/revenus/RevenuModal";
 
 
 
@@ -149,19 +149,18 @@ export default function FilteredTransactions({
                 className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-white" 
               />
             </div>
-            
-            <button className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors dark:text-white">
+            {/* <button className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors dark:text-white">
               <Filter className="w-4 h-4" />
               Filtres
               <ChevronDown className="w-4 h-4" />
-            </button>
+            </button> */}
           </div>
         </div>
         
         {/* Boutons d'action */}
         <div className="p-4 flex flex-wrap gap-3 justify-end">
-          <CreateExpenseButton />
-          <CreateRevenueButton />
+          <CreateRevenuModal />
+          <CreateDepenseModal />
         </div>
         
         {/* Tableau des transactions */}

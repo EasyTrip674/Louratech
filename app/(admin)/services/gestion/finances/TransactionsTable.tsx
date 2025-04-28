@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -17,26 +17,43 @@ import {
   SlidersHorizontal,
   Clock,
   FileText,
-  CheckCircle
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import { getTransactionsDB } from "@/db/queries/finances.query";
 import { PaymentMethod, TransactionType } from "@prisma/client";
 import { formatDate } from "@/lib/utils";
 import { getStepStatusBadge } from "@/lib/StatusBadge";
+import ApprovedTransactionModal from "../procedures/[procedureId]/clients/[clientProcedureId]/stepClient/payments/transactions/ApprovedTransactionModal";
 
-
-
-// Composant pour afficher les transactions financières
+// Composant pour afficher les transactions financières avec pagination
 export const TransactionsTable = ({ transactions }: { transactions: getTransactionsDB }) => {
+  // État pour la pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  
+  if(!transactions || transactions.length === 0) {
+      return (
+          <div className="flex items-center justify-center h-full">
+              <p className="text-gray-500">Aucune transaction trouvée.</p>
+          </div>
+      );
+  }
 
-    if(!transactions || transactions.length === 0) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">Aucune transaction trouvée.</p>
-            </div>
-        );
+  // Calculer les indices pour la pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTransactions = transactions.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(transactions.length / itemsPerPage);
+
+  // Fonction pour changer de page
+  const paginate = (pageNumber: number) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
     }
+  };
 
   // Obtenir l'icône de type de transaction
   const getTypeIcon = (type: TransactionType) => {
@@ -46,7 +63,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
       case "EXPENSE":
         return <ArrowDownCircle className="w-5 h-5 text-red-500" />;
       case "TRANSFER":
-        return <ArrowUpCircle className="w-5 h-5 text-blue-500" rotate={90} />;
+        return <ArrowUpCircle className="w-5 h-5 text-brand-500" rotate={90} />;
       default:
         return null;
     }
@@ -148,7 +165,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
 
           {/* Corps du tableau */}
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-            {transactions.map((transaction) => (
+            {currentTransactions.map((transaction) => (
               <TableRow 
                 key={transaction.id}
                 className="hover:bg-gray-50 transition-colors dark:hover:bg-white/[0.02]"
@@ -185,6 +202,16 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                 </TableCell>
                 <TableCell className="px-4 py-3 text-start">
                   {getStepStatusBadge(transaction.status)}
+                  {
+                    transaction.status === "PENDING" && (
+                    <ApprovedTransactionModal transactionId={transaction.id}
+                        status={transaction.status}
+                       amount={transaction.amount}
+                       paymentMethod={transaction.paymentMethod}
+                       date={formatDate(transaction.date)}
+                     />
+                    )
+                  }
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                   <span>{getPaymentMethodName(transaction.paymentMethod)}</span>
@@ -201,7 +228,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                   <div className="flex items-center">
                     <Link 
                       href={`/services/gestion/finances/transactions/${transaction.id}`}
-                      className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-colors dark:bg-blue-700 dark:hover:bg-blue-800"
+                      className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 focus:ring-4 focus:ring-brand-300 transition-colors dark:bg-brand-700 dark:hover:bg-brand-800"
                     >
                       <Eye className="w-4 h-4 mr-1" />
                       Détails
@@ -212,28 +239,61 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
             ))}
           </TableBody>
         </Table>
+        
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-4 px-4">
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              Affichage de {indexOfFirstItem + 1} à {Math.min(indexOfLastItem, transactions.length)} sur {transactions.length} transactions
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  // Afficher les pages autour de la page actuelle
+                  let pageNumber;
+                  if (totalPages <= 5) {
+                    pageNumber = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNumber = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNumber = totalPages - 4 + i;
+                  } else {
+                    pageNumber = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => paginate(pageNumber)}
+                      className={`w-8 h-8 flex items-center justify-center rounded-md ${
+                        currentPage === pageNumber
+                          ? "bg-brand-600 text-white"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
-// Bouton de création de dépense
-export const CreateExpenseButton = () => {
-  return (
-    <button className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-colors dark:bg-red-700 dark:hover:bg-red-800">
-      <ArrowDownCircle className="w-4 h-4 mr-2" />
-      Créer une dépense
-    </button>
-  );
-};
-
-
-// Bouton de création de revenu
-export const CreateRevenueButton = () => {
-    return (
-      <button className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 transition-colors dark:bg-green-700 dark:hover:bg-green-800">
-        <ArrowUpCircle className="w-4 h-4 mr-2" />
-        Créer un revenu
-      </button>
-    );
-  };

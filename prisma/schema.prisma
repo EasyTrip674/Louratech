@@ -414,6 +414,8 @@ model Category {
 // Dépense - détails spécifiques pour les transactions de type dépense
 model Expense {
   id              String        @id @default(cuid())
+  title           String?        // Titre ou description de la dépense
+  description     String?       // Description détaillée
   vendor          String?       // Fournisseur ou prestataire
   invoiceNumber   String?       // Numéro de facture fournisseur
   invoiceDate     DateTime?     // Date de la facture

@@ -1,5 +1,5 @@
 import { getTransactionById } from "@/db/queries/finances.query";
-import TransactionDetails from "../DetailsTransaction";
+import TransactionDetails from "./DetailsTransaction";
 
 export default async function TransactionDetailsPage({
     params,

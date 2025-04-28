@@ -1,11 +1,10 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import { PencilIcon, PlusIcon, TrashBinIcon } from "@/icons";
 import { Metadata } from "next";
 import React from "react";
 import TableClients from "./TableClients";
 import CreateClientFormModal from "./create/CreateClientFormModal";
-import Button from "@/components/ui/button/Button";
+import { clientsTableOrganizationDB } from "@/db/queries/clients.query";
 
 export const metadata: Metadata = {
     title: "Clients",
@@ -13,7 +12,9 @@ export const metadata: Metadata = {
     // other metadata
 };
 
-export default function ClientsPage() {
+export default async function  ClientsPage() {
+    const tableClients = await clientsTableOrganizationDB();
+    if (!tableClients) return null;
     return (
         <div>
             <PageBreadcrumb pageTitle="Gestion des clients" />
@@ -26,7 +27,7 @@ export default function ClientsPage() {
                         </div>
                     }
                 >
-                    <TableClients />
+                    <TableClients clients={tableClients} />
                 </ComponentCard>
             </div>
         </div>

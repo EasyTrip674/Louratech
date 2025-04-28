@@ -1,12 +1,11 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import { PencilIcon, PlusIcon, TrashBinIcon } from "@/icons";
 import { Metadata } from "next";
 import React from "react";
 import TableEmployees from "./TableEmployees";
 // import CreateEmployeeFormModal from "./create/CreateEmployeeFormModal";
-import Button from "@/components/ui/button/Button";
 import CreateEmployeeFormModal from "./create/CreateEmployeeFormModal";
+import { employeesTableOrganizationDB } from "@/db/queries/employees.query";
 
 export const metadata: Metadata = {
     title: "Employees",
@@ -14,7 +13,9 @@ export const metadata: Metadata = {
     // other metadata
 };
 
-export default function EmployeesPage() {
+export default async function EmployeesPage() {
+  const employees = await employeesTableOrganizationDB();
+
     return (
         <div>
             <PageBreadcrumb pageTitle="Gestion des Employees" />
@@ -27,7 +28,7 @@ export default function EmployeesPage() {
                         </div>
                     }
                 >
-                    <TableEmployees />
+                    <TableEmployees employees={employees} />
                 </ComponentCard>
             </div>
         </div>

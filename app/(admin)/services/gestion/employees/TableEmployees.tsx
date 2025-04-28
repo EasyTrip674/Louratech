@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,21 +10,41 @@ import {
 } from "@/components/ui/table";
 
 import Badge from "@/components/ui/badge/Badge";
-import Image from "next/image";
 import Button from "@/components/ui/button/Button";
-import {  EyeIcon, PencilIcon, TrashBinIcon } from "@/icons";
 import { employeesTableOrganizationDB } from "@/db/queries/employees.query";
-import { Eye } from "lucide-react";
+import { Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import EditEmployeeFormModal from "./edit/EditEmployeeFormModal";
 
-type TableemployeesProps = {
+type TableEmployeesProps = {
+  employees?: Awaited<ReturnType<typeof employeesTableOrganizationDB>>;
 }
-// Define the table data using the interface
 
+export default function TableEmployees({ employees }: TableEmployeesProps) {
+  // État pour la pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
-export default async function Tableemployees({  }:  TableemployeesProps ) {
-  const tableemployees = await employeesTableOrganizationDB();
-  if (!tableemployees) return null;
+  if (!employees || employees.length === 0) {
+    return (
+      <div className="flex items-center justify-center p-8 text-gray-500 dark:text-gray-400">
+        Aucun employé trouvé.
+      </div>
+    );
+  }
+
+  // Calculer les indices pour la pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentEmployees = employees.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(employees.length / itemsPerPage);
+
+  // Fonction pour changer de page
+  const paginate = (pageNumber: number) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
@@ -55,7 +77,7 @@ export default async function Tableemployees({  }:  TableemployeesProps ) {
                 >
                   Status
                 </TableCell>
-                  <TableCell
+                <TableCell
                   isHeader
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
@@ -66,7 +88,7 @@ export default async function Tableemployees({  }:  TableemployeesProps ) {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {tableemployees.map((employee , index) => (
+              {currentEmployees.map((employee) => (
                 <TableRow key={employee.id}>
                   <TableCell className="px-5 py-4 sm:px-6 text-start">
                     <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
@@ -91,16 +113,75 @@ export default async function Tableemployees({  }:  TableemployeesProps ) {
                       {employee.user.active ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
-                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 flex items-center gap-2">
-                          <Button href={`/services/gestion/employees/${employee.id}`} key={employee.id} variant="outline" size="sm"> <Eye className="w-4 h-4 dark:text-white" /> </Button>
-                          <EditEmployeeFormModal key={employee.id} admin={employee} />
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <div className="flex items-center gap-2">
+                      <Button href={`/services/gestion/employees/${employee.id}`} variant="outline" size="sm">
+                        <Eye className="w-4 h-4 dark:text-white" />
+                      </Button>
+                      <EditEmployeeFormModal admin={employee} />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4 px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-white/[0.05]">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                Affichage de {indexOfFirstItem + 1} à {Math.min(indexOfLastItem, employees.length)} sur {employees.length} employés
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    // Afficher les pages autour de la page actuelle
+                    let pageNumber;
+                    if (totalPages <= 5) {
+                      pageNumber = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNumber = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNumber = totalPages - 4 + i;
+                    } else {
+                      pageNumber = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => paginate(pageNumber)}
+                        className={`w-8 h-8 flex items-center justify-center rounded-md ${
+                          currentPage === pageNumber
+                            ? "bg-brand-600 text-white"
+                            : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                        }`}
+                      >
+                        {pageNumber}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
+
