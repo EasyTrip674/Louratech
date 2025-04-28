@@ -1,6 +1,6 @@
 import { ProcedureCard } from '@/components/procedures/ProcedureCard'
 import React from 'react'
-import { Users, Plane, FileCheck } from 'lucide-react'
+import { Users, FileCheck, Backpack } from 'lucide-react'
 import CreateProcedureFormModal from './create/CreateProcedureModalForm'
 import { getProcedureWithStats } from '@/db/queries/procedures.query'
 import { notFound } from 'next/navigation'
@@ -88,11 +88,11 @@ const ProceduresPage = async () => {
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex justify-between items-start mb-4">
                 <div className="p-3 bg-green-100 dark:bg-green-900 rounded-full">
-                  <Plane className="h-6 w-6 text-green-600 dark:text-green-300" />
+                  <Backpack className="h-6 w-6 text-green-600 dark:text-green-300" />
                 </div>
                 <div className="bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-300 text-xs font-medium px-2.5 py-0.5 rounded-full">En cours</div>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Procédures en cours</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Services actifs</p>
               <p className="text-3xl font-bold text-gray-900 dark:text-white">{pendingServices}</p>
             </div>
             
