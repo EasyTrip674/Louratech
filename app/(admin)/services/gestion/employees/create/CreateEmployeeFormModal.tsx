@@ -59,7 +59,7 @@ export default function CreateEmployeeFormModal() {
       } else {
         closeModal();
         errorModal.openModal();
-        console.error("Échec de la création de l'employé:", result?.data?.error);
+        console.error("Échec de la création de l'employé:", result?.serverError);
       }
     },
     onError: (error) => {

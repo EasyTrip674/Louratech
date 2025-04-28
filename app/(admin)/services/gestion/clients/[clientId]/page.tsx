@@ -6,7 +6,6 @@ import ClientInfoCard from "./ClientInfoCard";
 import UserCredentialsManage from "@/components/user/ChangePasswordFormModal";
 import UserProfileCard from "../../../../../../components/user/UserProfileCard";
 import { Role } from "@prisma/client";
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 
 export const metadata: Metadata = {
     title: "Client",

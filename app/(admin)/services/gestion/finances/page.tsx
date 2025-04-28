@@ -1,10 +1,9 @@
+import { getTransactionsDB } from "@/db/queries/finances.query";
+import FilteredTransactions from "./FilterTransactions";
 
-export default function FinancesPage() {
+export default async function FinancesPage() {
+  const transactions = await getTransactionsDB();
   return (
-   <div>
-        <h1 className="text-2xl font-bold">Finances</h1>
-        <p className="text-gray-500">Gestion des finances de l'application.</p>
-        {/* Add your finance management components here */}
-   </div>
+    <FilteredTransactions transactions={transactions} />
   );
 }

@@ -21,7 +21,8 @@ import {
 } from "lucide-react";
 import { procedureDetailsDb } from "@/db/queries/procedures.query";
 import Link from "next/link";
-import { calculateProgress } from "@/lib/utils";
+import { calculateProgress, formatDate, getInvoiceStatus } from "@/lib/utils";
+import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
 
 type TableClientsProcedureProps = {
   procedureDetails: procedureDetailsDb;
@@ -30,66 +31,12 @@ type TableClientsProcedureProps = {
   showInvoice?: boolean;
 }
 
-// Helper function to format dates
-const formatDate = (dateString: string | null | Date) => {
-  if (!dateString) return "N/A";
-  return new Date(dateString).toLocaleDateString();
-};
 
-// Helper function to get step status badge
-const getStepStatusBadge = (status: string) => {
-  switch (status) {
-    case "COMPLETED":
-      return <Badge color="success">Terminée</Badge>;
-    case "IN_PROGRESS":
-      return <Badge color="info">En cours</Badge>;
-    case "FAILED":
-      return <Badge color="error">Échouée</Badge>;
-    case "PENDING":
-      return <Badge color="info">En attente</Badge>;
-    case "NOT_STARTED":
-      return <Badge color="primary">Non démarrée</Badge>;
-    case "ON_HOLD":
-      return <Badge color="warning">En pause</Badge>;
-    default:
-      return <Badge>Inconnue</Badge>;
-  }
-};
 
-// Helper function to get status icon
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case "COMPLETED":
-      return <CheckCircle className="w-4 h-4 text-green-500" />;
-    case "IN_PROGRESS":
-    case "PENDING":
-      return <Clock className="w-4 h-4 text-blue-500" />;
-    case "NOT_STARTED":
-      return <Calendar className="w-4 h-4 text-purple-500" />;
-    case "ON_HOLD":
-      return <AlertCircle className="w-4 h-4 text-amber-500" />;
-    default:
-      return <Clock className="w-4 h-4 text-gray-500" />;
-  }
-};
+
 
 // Helper function to get invoice status color and label
-const getInvoiceStatus = (status: string) => {
-  switch (status) {
-    case "PAID": 
-      return { color: "success", label: "Payée" };
-    case "PARTIALLY_PAID": 
-      return { color: "warning", label: "Partiellement" };
-    case "OVERDUE": 
-      return { color: "error", label: "En retard" };
-    case "SENT": 
-      return { color: "primary", label: "Envoyée" };
-    case "DRAFT": 
-      return { color: "secondary", label: "Brouillon" };
-    default: 
-      return { color: "secondary", label: status };
-  }
-};
+
 
 // Calculate procedure progress
 
@@ -258,7 +205,7 @@ export default function TableClientsProcedure({
                             <div key={`${stepClient.id}-dates`} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg dark:bg-gray-800/50 text-xs">
                               <span className="font-medium">{stepClient.step.name.substring(0, 15)}{stepClient.step.name.length > 15 ? '...' : ''}</span>
                               <div className="flex items-center gap-1">
-                                <span>{formatDate(stepClient?.startDate)}</span>
+                                <span>{formatDate(String(stepClient?.startDate))}</span>
                                 {stepClient.status === "COMPLETED" && (
                                   <CheckCircle className="w-3 h-3 text-green-500" />
                                 )}

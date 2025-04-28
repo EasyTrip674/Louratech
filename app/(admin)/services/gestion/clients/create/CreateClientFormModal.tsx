@@ -68,7 +68,7 @@ export default function CreateClientFormModal() {
     onSuccess: () => {
       console.log("Client créé avec succès");
     },
-    onError: (error) => {
+    onError: () => {
       console.error("Échec de création du client");
     },
   });

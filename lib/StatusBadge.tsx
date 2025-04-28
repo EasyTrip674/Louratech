@@ -1,8 +1,9 @@
 import Badge from "@/components/ui/badge/Badge";
+import { TransactionStatus } from "@prisma/client";
 import { 
    CheckCircle, Info,  
    AlertTriangle,  
-  CircleDashed, CircleDot,
+  CircleDashed,
   Circle
 } from "lucide-react";
 
@@ -17,9 +18,9 @@ type StepStatus =
   | "WAITING"|
   "CANCELLED";
 
-export const getStepStatusBadge = (status: StepStatus | string) => {
+export const getStepStatusBadge = (status: StepStatus | TransactionStatus | string ) => {
     switch (status) {
-      case "COMPLETED":
+      case "COMPLETED" :
         return <Badge color="success">Terminée</Badge>;
       case "IN_PROGRESS":
       case "PENDING":
@@ -36,6 +37,10 @@ export const getStepStatusBadge = (status: StepStatus | string) => {
         return <Badge color="warning">En cour</Badge>;
       case "CANCELLED":
         return <Badge color="error">Annulée</Badge>;
+      case "APPROVED":
+        return <Badge color="success">Approuvée</Badge>;
+      case "REJECTED":
+        return <Badge color="error">Rejetée</Badge>;
       default:
         return <Badge color="info">Inconnue</Badge>;
     }

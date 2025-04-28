@@ -9,7 +9,7 @@ const CardDeal = () => (
       Voyagez sereinement au Maroc <br className="sm:block hidden" /> avec notre carte prépayée !
     </h2>
     <p className={`${styles.paragraph} max-w-[470px] mt-5`}>
-      Profitez d'un moyen de paiement sécurisé et pratique pour vos dépenses au Maroc. Rechargez votre carte en quelques clics, suivez vos transactions en temps réel et bénéficiez d'offres exclusives chez nos partenaires.
+      Profitez dun moyen de paiement sécurisé et pratique pour vos dépenses au Maroc. Rechargez votre carte en quelques clics, suivez vos transactions en temps réel et bénéficiez d'offres exclusives chez nos partenaires.
     </p>
 
     <Button styles={`mt-10`} />

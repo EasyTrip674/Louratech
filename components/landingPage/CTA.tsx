@@ -6,7 +6,7 @@ const CTA = () => (
     <div className="flex-1 flex flex-col">
       <h2 className={`${styles.heading2} dark:text-white text-gray-900`}>Essayez notre service dès maintenant !</h2>
       <p className={`${styles.paragraph} max-w-[470px] mt-5`}>
-        Découvrez comment notre solution peut transformer la gestion de votre agence. Inscrivez-vous dès aujourd'hui et profitez d'une période d'essai gratuite pour explorer toutes nos fonctionnalités.
+        Découvrez comment notre solution peut transformer la gestion de votre agence. Inscrivez-vous dès aujourd&apos;hui et profitez d&apos;une période dessai gratuite pour explorer toutes nos fonctionnalités.
      </p>
     </div>
 
