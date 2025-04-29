@@ -6,6 +6,8 @@ import ClientInfoCard from "./ClientInfoCard";
 import UserCredentialsManage from "@/components/user/ChangePasswordFormModal";
 import UserProfileCard from "../../../../../../components/user/UserProfileCard";
 import { Role } from "@prisma/client";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
     title: "Client",
@@ -22,6 +24,9 @@ export default async function Profile(
 ) {
 
   const clientId = await params.clientId;
+  const session = await auth.api.getSession({
+    headers: await headers()  
+  })  
 
    const client = await clientProfileDB(clientId);
 
@@ -47,8 +52,9 @@ export default async function Profile(
             address={client.address || ""}
             imageSrc={""}
            />
-          <ClientInfoCard client={client} />
+          <ClientInfoCard client={client} canEditCLient={session?.userDetails?.authorize?.canEditClient} />
           <UserCredentialsManage
+          canEditPassword={session?.userDetails?.authorize?.canChangeUserPassword ?? false}
            role={Role.CLIENT}
            userId={client.user.id} email={client.user.email} active={client.user.active} />
         </div>

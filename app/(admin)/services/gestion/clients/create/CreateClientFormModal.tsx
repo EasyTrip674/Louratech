@@ -95,7 +95,7 @@ export default function CreateClientFormModal() {
         message="Erreur lors de la création du client" 
       />
       <Button variant="outline" size="sm" onClick={openModal} className="bg-gray-200">
-        <Plus className="w-4 h-4 dark:text-white" />
+        <Plus className="w-4 h-4 dark:text-white" /> Creer un client
       </Button>
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
         <form onSubmit={handleSubmit(onSubmit)}>

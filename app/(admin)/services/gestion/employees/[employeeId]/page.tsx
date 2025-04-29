@@ -7,6 +7,9 @@ import { employeeProfileDB } from "@/db/queries/employees.query";
 import { Role } from "@prisma/client";
 import EmployeetInfoCard from "./EmployeeInfoCard";
 import Authorization from "@/components/user/Authorization";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+import prisma from "@/db/prisma";
 
 export const metadata: Metadata = {
     title: "employee",
@@ -19,9 +22,19 @@ export default async function Profile(
 
 ) {
 
-   const employee = await employeeProfileDB(employeeId);
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
 
-    if (!employee) {
+   const employee = await employeeProfileDB(employeeId);
+   const authorization = await prisma.authorization.findUnique({
+    where: {
+      id: employee?.user.authorize?.id
+    }
+  }
+  );
+
+    if (!employee || !authorization) {
         return notFound();
     }
 
@@ -41,13 +54,17 @@ export default async function Profile(
             address={employee.address || ""}
             imageSrc={""}
            />
-          <EmployeetInfoCard employee={employee} />
-          <UserCredentialsManage userId={employee.user.id} email={employee.user.email} active={employee.user.active} role={Role.EMPLOYEE} />
+          <EmployeetInfoCard employee={employee} canEditAdmin={session?.userDetails?.authorize?.canEditAdmin ?? false} />
+          <UserCredentialsManage userId={employee.user.id} email={employee.user.email} active={employee.user.active} role={Role.EMPLOYEE} canEditPassword={session?.userDetails?.authorize?.canChangeUserPassword ?? false} />
         </div>
       </div>
 
       <div>
-          <Authorization initialAuthorizations={employee.user.authorize} />
+          {
+            session?.userDetails?.authorize?.canChangeUserAuthorization && (
+              <Authorization initialAuthorizations={authorization}  />
+            )
+          }
         </div>
     </div>
   );

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { authorization } from '@prisma/client';
 import Switch from '../form/switch/Switch';
+import { authorizationSchema } from './authorization.shema';
+import { doChangeAuthozation } from './authozisation.action';
 
 // Interface pour représenter les autorisations utilisateur
 interface AuthorizationProps {
@@ -15,17 +17,32 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
   const [authorizations, setAuthorizations] = useState<authorization>(initialAuthorizations);
   const [hasChanges, setHasChanges] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
+  // successMessage 
+  const [successMessage , setSuccessMessage] = useState(false);
   
 
   // Configuration de la mutation avec TanStack Query
   const updateMutation = useMutation({
-    mutationFn: async () => {
-      // Appel du server action
-      // return await DoUpdateAuthorization(data);
+    mutationFn: async (authorizations:authorizationSchema) => {
+      
+      console.info('update authorizations', authorizations);
+      return await doChangeAuthozation(authorizations);
     },
     onSuccess: () => {
       // Mise à jour du cache et réinitialisation de l'état local
       setHasChanges(false);
+      setSuccessMessage(true);
+      setTimeout(() => {
+        setSuccessMessage(false);
+      }
+      , 3000);
+    }
+  , onError: (error) => {
+      console.error('Error updating authorizations:', error);
+    }
+  , onSettled: () => {
+      // Réinitialisation de l'état local après la mutation
+      setAuthorizations(initialAuthorizations);
     }
   });
 
@@ -34,7 +51,14 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
 }
 
   const saveAuthorizations = async () => {
-    updateMutation.mutate(authorizations);
+    const data:authorizationSchema ={
+      userId: initialAuthorizations.userId,
+      authozationId: initialAuthorizations.id,
+      authorization:{
+        ...authorizations,
+      }
+    }
+    updateMutation.mutate(data);
   };
 
   const handleToggle = (key: keyof authorization, value: boolean) => {
@@ -62,7 +86,7 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
       { key: 'canChangeUserPassword', label: 'Modifier les mots de passe' },
     ],
     create: [
-      { key: 'canCreateOrganization', label: 'Créer une organisation' },
+      // { key: 'canCreateOrganization', label: 'Créer une organisation' },
       { key: 'canCreateClient', label: 'Créer un client' },
       { key: 'canCreateProcedure', label: 'Créer une procédure' },
       { key: 'canCreateTransaction', label: 'Créer une transaction' },
@@ -178,6 +202,12 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
             Configurez ce que cet utilisateur peut faire dans le système
           </p>
         </div>
+
+        {successMessage && (
+          <div className="mb-4 p-4 bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-50 rounded-md">
+            Les autorisations ont été mises à jour avec succès.
+          </div>
+        )}
 
         {hasChanges && (
           <div className="p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center z-10">

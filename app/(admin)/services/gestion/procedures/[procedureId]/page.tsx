@@ -12,6 +12,8 @@ import { getCLientsIdWithNameDB } from '@/db/queries/clients.query';
 import AddClientToStepModal from './clients/[clientProcedureId]/clientProcedure/AddClientToStepModal';
 import TableProcedureSteps from './CardsStepProcedure';
 import CreateStepFormModal from './steps/step/create/CreateStepFormModal';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
 
 // Type pour les paramètres de la page
@@ -39,6 +41,10 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
   if (!procedure) {
     return notFound();
   }
+
+  const session  = await auth.api.getSession({
+    headers: await headers()
+  })
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -119,8 +125,11 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
           <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-medium text-gray-900 dark:text-white">Modules</h2>
           <div>
-           <CreateStepFormModal procedureId={procedure.id}
-             />
+            {
+              session?.userDetails?.authorize?.canCreateClientStep && (
+                <CreateStepFormModal procedureId={procedure.id} />
+              )
+            }
           </div>
         </div>
         <div className="rounded-lg overflow-hidden">
@@ -142,7 +151,7 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
           <div>
             <AddClientToStepModal
               stepsProcedure={stepsProc}
-            procedureId={params.procedureId} clientsDB={clients}   />
+              procedureId={params.procedureId} clientsDB={clients} />
           </div>
         </div>
         

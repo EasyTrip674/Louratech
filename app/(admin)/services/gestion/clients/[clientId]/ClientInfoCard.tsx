@@ -6,7 +6,7 @@ import { UserElementInfo } from "@/components/user/UserElementInfo";
 
 
 
-export default function ClientInfoCard({ client }: { client: clientProfileDB }) {
+export default function ClientInfoCard({ client , canEditCLient=false}: { client: clientProfileDB , canEditCLient?: boolean }) {
 
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -64,7 +64,11 @@ export default function ClientInfoCard({ client }: { client: clientProfileDB }) 
           </div>
         </div>
 
-        <EditClientFormModal client={client} inPageProfile={true} />
+   {
+        canEditCLient && (
+          <EditClientFormModal client={client} inPageProfile={true} />
+        )
+   }
       
       </div>
 

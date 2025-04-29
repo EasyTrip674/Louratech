@@ -12,6 +12,11 @@ export const doCreateClient = adminAction
     .schema(createClientSchema)
     .action(async ({ clientInput, ctx }) => {
         try {
+            // Check if user is authorized
+            if (ctx.user.userDetails?.authorize?.canCreateClient === false) {
+                throw new Error("Vous n'êtes pas autorisé à créer cet utilisateur");
+            }
+
             // Validate password match
             if (clientInput.password !== clientInput.confirmPassword) {
                 throw new Error("Les mots de passe ne correspondent pas");

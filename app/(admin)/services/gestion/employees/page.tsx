@@ -6,6 +6,8 @@ import TableEmployees from "./TableEmployees";
 // import CreateEmployeeFormModal from "./create/CreateEmployeeFormModal";
 import CreateEmployeeFormModal from "./create/CreateEmployeeFormModal";
 import { employeesTableOrganizationDB } from "@/db/queries/employees.query";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 export const metadata: Metadata = {
     title: "Employees",
@@ -15,6 +17,9 @@ export const metadata: Metadata = {
 
 export default async function EmployeesPage() {
   const employees = await employeesTableOrganizationDB();
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
 
     return (
         <div>
@@ -24,7 +29,11 @@ export default async function EmployeesPage() {
                     title="Employees"
                     actions={
                         <div className="flex items-center space-x-2">
-                            <CreateEmployeeFormModal />
+                         {
+                             session?.userDetails?.authorize?.canCreateAdmin && (
+                                <CreateEmployeeFormModal />
+                                )
+                         }
                         </div>
                     }
                 >

@@ -14,6 +14,7 @@ import Button from "@/components/ui/button/Button";
 import { clientsTableOrganizationDB } from "@/db/queries/clients.query";
 import EditClientFormModal from "./edit/EditClientFormModal";
 import { Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 type TableClientsProps = {
   clients?: Awaited<ReturnType<typeof clientsTableOrganizationDB>>;
@@ -22,6 +23,7 @@ type TableClientsProps = {
 export default function TableClients({ clients }: TableClientsProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const session = authClient.useSession();
 
   if (!clients || clients.length === 0) {
     return (
@@ -114,10 +116,18 @@ export default function TableClients({ clients }: TableClientsProps) {
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <div className="flex items-center gap-2">
-                      <Button href={`/services/gestion/clients/${client.id}`} variant="outline" size="sm">
-                        <Eye className="w-4 h-4 dark:text-white" />
+                     {
+                        session.data?.userDetails?.authorize?.canReadClient && (
+                          <Button href={`/services/gestion/clients/${client.id}`} variant="outline" size="sm">
+                         <Eye className="w-4 h-4 dark:text-white" />
                       </Button>
-                      <EditClientFormModal client={client} />
+                        )
+                     }
+                    {
+                        session.data?.userDetails?.authorize?.canEditClient && (
+                          <EditClientFormModal client={client} />
+                        )
+                    }
                     </div>
                   </TableCell>
                 </TableRow>

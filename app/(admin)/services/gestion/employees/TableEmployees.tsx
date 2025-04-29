@@ -14,6 +14,7 @@ import Button from "@/components/ui/button/Button";
 import { employeesTableOrganizationDB } from "@/db/queries/employees.query";
 import { Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import EditEmployeeFormModal from "./edit/EditEmployeeFormModal";
+import { authClient } from "@/lib/auth-client";
 
 type TableEmployeesProps = {
   employees?: Awaited<ReturnType<typeof employeesTableOrganizationDB>>;
@@ -23,6 +24,7 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
   // État pour la pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const session = authClient.useSession();
 
   if (!employees || employees.length === 0) {
     return (
@@ -115,10 +117,18 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <div className="flex items-center gap-2">
-                      <Button href={`/services/gestion/employees/${employee.id}`} variant="outline" size="sm">
+                     {
+                      session.data?.userDetails?.authorize?.canReadAdmin && (
+                        <Button href={`/services/gestion/employees/${employee.id}`} variant="outline" size="sm">
                         <Eye className="w-4 h-4 dark:text-white" />
                       </Button>
-                      <EditEmployeeFormModal admin={employee} />
+                      )
+                     }
+                     {
+                      session.data?.userDetails?.authorize?.canEditAdmin && (
+                        <EditEmployeeFormModal admin={employee} />
+                      )
+                     }
                     </div>
                   </TableCell>
                 </TableRow>
