@@ -84,7 +84,7 @@ export default function CreationOrganisationFormulaire() {
             {/* Détails de l'Organisation */}
             <div>
               <Label>
-                Nom de l'Organisation<span className="text-error-500">*</span>
+                Nom de l&apos;Organisation<span className="text-error-500">*</span>
               </Label>
               <Input
                 {...register("organizationName")}
@@ -98,7 +98,7 @@ export default function CreationOrganisationFormulaire() {
             </div>
 
             <div>
-              <Label>Description de l'Organisation (Optionnel)</Label>
+              <Label>Description de l&apos;Organisation (Optionnel)</Label>
               <Input
                 {...register("organizationDescription")}
                 placeholder="Décrivez brièvement votre organisation"

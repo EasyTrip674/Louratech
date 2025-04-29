@@ -1,10 +1,6 @@
 "use client";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
-import { Dropdown } from "../ui/dropdown/Dropdown";
-import { MoreDotIcon } from "@/icons";
-import { useState } from "react";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { getMonthlyTargetStatsType } from "@/db/queries/dasboard.query";
 import { formatCurrency } from "@/lib/utils";
 
@@ -62,15 +58,8 @@ export default function MonthlyTarget({MonthlyTargetData}:{MonthlyTargetData:get
     labels: ["Progression"],
   };
 
-  const [isOpen, setIsOpen] = useState(false);
+  
 
-  function toggleDropdown() {
-    setIsOpen(!isOpen);
-  }
-
-  function closeDropdown() {
-    setIsOpen(false);
-  }
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-white/[0.03]">

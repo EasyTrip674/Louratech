@@ -1,5 +1,5 @@
 import React from "react";
-import { ClientProcedureWithSteps, getClientProcedureWithSteps } from "@/db/queries/procedures.query";
+import {  getClientProcedureWithSteps } from "@/db/queries/procedures.query";
 import { 
   Clock, CheckCircle, FileText, AlertCircle,  
    User,  Clipboard,   

@@ -1,8 +1,7 @@
 import React from 'react'
 
-type Props = {}
 
-const DocumentsHomePage = (props: Props) => {
+const DocumentsHomePage = () => {
   return (
     <div>DocumentsHomePage</div>
   )

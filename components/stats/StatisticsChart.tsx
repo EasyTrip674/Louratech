@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { ApexOptions } from "apexcharts";
-import ChartTab from "../common/ChartTab";
 import dynamic from "next/dynamic";
 import { getStatisticsDataType } from "@/db/queries/dasboard.query";
 

@@ -1,6 +1,4 @@
 import React from "react";
-import Badge from "../ui/badge/Badge";
-import { ArrowDownIcon, ArrowUpIcon } from "@/icons";
 import { BoxIcon, Users2 } from "lucide-react";
 import { getOrgnaizationId } from "@/db/queries/utils.query";
 import prisma from "@/db/prisma";

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Role } from "@prisma/client";
 
 
-export default function UserProfileCard({ email, firstName,lastName,phone,address,imageSrc , role = Role.CLIENT }: {
+export default function UserProfileCard({  firstName,lastName,address,imageSrc , role = Role.CLIENT }: {
   email: string;
   firstName?: string;
   lastName?: string;

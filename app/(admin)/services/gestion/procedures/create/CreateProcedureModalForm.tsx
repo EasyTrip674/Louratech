@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useModal } from "@/hooks/useModal";
@@ -55,7 +55,7 @@ export default function CreateProcedureFormModal() {
     onSuccess: () => {
       console.log("Procedure created successfully");
     },
-    onError: (error) => {
+    onError: () => {
       console.error("Failed to create Procedure");
     },
     

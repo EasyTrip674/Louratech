@@ -7,7 +7,6 @@ import { employeeProfileDB } from "@/db/queries/employees.query";
 import { Role } from "@prisma/client";
 import EmployeetInfoCard from "./EmployeeInfoCard";
 import Authorization from "@/components/user/Authorization";
-import prisma from "@/db/prisma";
 
 export const metadata: Metadata = {
     title: "employee",

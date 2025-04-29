@@ -1,6 +1,6 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { Users, Clock, CheckCircle, CreditCard, ArrowLeft, Edit } from 'lucide-react';
+import { Users, Clock, CheckCircle, CreditCard, ArrowLeft } from 'lucide-react';
 
 
 import Button from "@/components/ui/button/Button";

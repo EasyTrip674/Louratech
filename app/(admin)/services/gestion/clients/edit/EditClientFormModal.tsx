@@ -10,7 +10,7 @@ import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import PhoneInput from "@/components/form/group-input/PhoneInput";
 import { countriesCode } from "@/lib/countries";
-import { EyeIcon, Pencil, Plus } from "lucide-react";
+import {  Pencil } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
@@ -29,7 +29,7 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
   const router = useRouter();
   const successModal = useModal();
   const errorModal = useModal();
-  const [serverError, setServerError] = React.useState<string | null>(null);
+  const [serverError] = React.useState<string | null>(null);
 
   const {
     control,
@@ -74,7 +74,7 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
     onSuccess: () => {
       console.log("Client Editd successfully");
     },
-    onError: (error) => {
+    onError: () => {
       console.error("Failed to Edit client");
     },
     

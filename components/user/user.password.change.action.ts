@@ -8,7 +8,7 @@ import { passwordSchema } from "./user.password.shema";
 export const doChangePassword = adminAction
   .metadata({ actionName: "change password" })
   .schema(passwordSchema)
-  .action(async ({ clientInput: { userId, newPassword, confirmPassword, currentPassword }, ctx }) => {
+  .action(async ({ clientInput: { userId, newPassword, confirmPassword, currentPassword } }) => {
     console.log("Changing password for user:", userId);
 
     if (newPassword !== confirmPassword) {

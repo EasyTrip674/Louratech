@@ -124,7 +124,7 @@ export default function CreationOrganisationFormulaire() {
             {/* Détails de l'Organisation */}
             <div>
               <Label>
-                Nom de l'Organisation<span className="text-error-500">*</span>
+                Nom de l&pos;Organisation<span className="text-error-500">*</span>
               </Label>
               <Input
                 {...register("organizationName")}
@@ -138,7 +138,7 @@ export default function CreationOrganisationFormulaire() {
             </div>
 
             <div>
-              <Label>Description de l'Organisation (Optionnel)</Label>
+              <Label>Description de l&pos;Organisation (Optionnel)</Label>
               <Input
                 {...register("organizationDescription")}
                 placeholder="Décrivez brièvement votre organisation"
@@ -257,9 +257,9 @@ export default function CreationOrganisationFormulaire() {
                 className="w-5 h-5"
               />
               <p className="inline-block text-sm text-gray-600 dark:text-gray-400">
-                J'accepte les{" "}
+                J&pos;accepte les{" "}
                 <span className="text-gray-800 dark:text-white">
-                  Conditions d'Utilisation
+                  Conditions d&pos;Utilisation
                 </span>
               </p>
             </div>

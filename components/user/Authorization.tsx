@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { authorization } from '@prisma/client';
 import Switch from '../form/switch/Switch';
 
@@ -15,16 +15,15 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
   const [authorizations, setAuthorizations] = useState<authorization>(initialAuthorizations);
   const [hasChanges, setHasChanges] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
-  const queryClient = useQueryClient();
   
 
   // Configuration de la mutation avec TanStack Query
   const updateMutation = useMutation({
-    mutationFn: async (data: authorization) => {
+    mutationFn: async () => {
       // Appel du server action
       // return await DoUpdateAuthorization(data);
     },
-    onSuccess: (updatedAuthorization) => {
+    onSuccess: () => {
       // Mise à jour du cache et réinitialisation de l'état local
       setHasChanges(false);
     }

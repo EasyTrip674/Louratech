@@ -1,4 +1,3 @@
-import { useModal } from '@/hooks/useModal';
 import React from 'react'
 import { Modal } from '../ui/modal';
 
@@ -14,7 +13,7 @@ type Props = {
     
 }
 
-const SuccessModal = ({successModal, message,title}: Props) => {
+const SuccessModal = ({successModal, message}: Props) => {
     // const successModal = useModal();
   return (
     <Modal

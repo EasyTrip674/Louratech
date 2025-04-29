@@ -1,6 +1,6 @@
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import { CopilotPopup } from "@copilotkit/react-ui";
+// import { CopilotPopup } from "@copilotkit/react-ui";
 
 import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";

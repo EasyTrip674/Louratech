@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from '../ui/modal'
-import { on } from 'events';
+// import { on } from 'events';
 
 type Props = {
        errorModal: {
@@ -14,7 +14,7 @@ type Props = {
     onRetry?: () => void;
 }
 
-const ErrorModal = ({errorModal, message,onRetry,title}: Props) => {
+const ErrorModal = ({errorModal, message}: Props) => {
   return (
     <Modal
            isOpen={errorModal.isOpen}
@@ -69,7 +69,7 @@ const ErrorModal = ({errorModal, message,onRetry,title}: Props) => {
                 onClick={(e)=>{
                     e.preventDefault()
                     errorModal.closeModal()
-                    onRetry && onRetry()
+                    // onRetry && onRetry()
                 }}
                  type="button"
                  className="flex justify-center w-full px-4 py-3 text-sm font-medium text-white rounded-lg bg-error-500 shadow-theme-xs hover:bg-error-600 sm:w-auto"

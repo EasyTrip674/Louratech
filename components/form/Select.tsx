@@ -20,7 +20,7 @@ const Select: React.FC<SelectProps> = ({
   ...props
 }) => {
   // Manage the selected value
-  const [selectedValue, setSelectedValue] = useState<string>(defaultValue);
+  const [selectedValue] = useState<string>(defaultValue);
 
 
   return (

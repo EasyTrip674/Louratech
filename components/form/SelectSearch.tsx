@@ -1,7 +1,6 @@
 "use client"
-import React, { useState, useEffect, useMemo } from 'react'
+// import React, { useState, useEffect, useMemo } from 'react'
 import { Search, X } from 'lucide-react'
-import Button from '@/components/ui/button/Button'
 
 type Option = {
   id: string
@@ -31,44 +30,44 @@ const SelectSearch: React.FC<SelectSearchProps> = ({
   if (!options) {
     return null;
   }
-  const [searchTerm, setSearchTerm] = useState("")
-  const [isOpen, setIsOpen] = useState(false)
+  // const [searchTerm, setSearchTerm] = useState("")
+  // const [isOpen, setIsOpen] = useState(false)
   
-  // Récupérer le libellé de l'option sélectionnée
-  const selectedLabel = useMemo(() => {
-    if (!value) return ""
-    const option = options.find(opt => opt.id === value)
-    return option ? option.label : ""
-  }, [value, options])
+  // // Récupérer le libellé de l'option sélectionnée
+  // const selectedLabel = useMemo(() => {
+  //   if (!value) return ""
+  //   const option = options.find(opt => opt.id === value)
+  //   return option ? option.label : ""
+  // }, [value, options])
   
-  // Filtrer les options selon le terme de recherche
-  const filteredOptions = useMemo(() => {
-    if (!searchTerm) return options
+  // // Filtrer les options selon le terme de recherche
+  // const filteredOptions = useMemo(() => {
+  //   if (!searchTerm) return options
     
-    return options.filter(option => 
-      option.label.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  }, [searchTerm, options])
+  //   return options.filter(option => 
+  //     option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  //   )
+  // }, [searchTerm, options])
   
-  // Fermer le menu déroulant quand on clique ailleurs
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setIsOpen(false)
-    }
+  // // Fermer le menu déroulant quand on clique ailleurs
+  // useEffect(() => {
+  //   const handleClickOutside = () => {
+  //     setIsOpen(false)
+  //   }
     
-    if (isOpen) {
-      document.addEventListener('click', handleClickOutside)
-    }
+  //   if (isOpen) {
+  //     document.addEventListener('click', handleClickOutside)
+  //   }
     
-    return () => {
-      document.removeEventListener('click', handleClickOutside)
-    }
-  }, [isOpen])
+  //   return () => {
+  //     document.removeEventListener('click', handleClickOutside)
+  //   }
+  // }, [isOpen])
   
-  // Réinitialiser la recherche quand la sélection change
-  useEffect(() => {
-    setSearchTerm("")
-  }, [value])
+  // // Réinitialiser la recherche quand la sélection change
+  // useEffect(() => {
+  //   setSearchTerm("")
+  // }, [value])
   
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation()

@@ -14,9 +14,14 @@ export const metadata: Metadata = {
 };
 
 export default async function Profile(
-    {params:{clientId}}: {params: {clientId: string}}
-
+  {
+    params,
+  }: {
+    params: { clientId: string };
+  }
 ) {
+
+  const clientId = await params.clientId;
 
    const client = await clientProfileDB(clientId);
 
