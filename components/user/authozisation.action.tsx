@@ -10,7 +10,7 @@ export const doChangeAuthozation = adminAction
   .action(async ({ clientInput }) => {
 
     console.log("Changing authorization for user:", clientInput.userId);
-    const { userId, authozationId, authorization } = clientInput;
+    const { userId, authorizationId, authorization } = clientInput;
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
@@ -18,14 +18,14 @@ export const doChangeAuthozation = adminAction
       throw new Error("Utilisateur introuvable");
     }
     const userAuthorization = await prisma.authorization.findUnique({
-      where: { id: authozationId },
+      where: { id: authorizationId },
     });
     if (!userAuthorization) {
       throw new Error("Autorisation introuvable");
     }
     // Mettre à jour l'autorisation dans la base de données
     await prisma.authorization.update({
-      where: { id: authozationId },
+      where: { id: authorizationId },
       data: {
         ...authorization,
       },

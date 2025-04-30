@@ -53,7 +53,7 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
   const saveAuthorizations = async () => {
     const data:authorizationSchema ={
       userId: initialAuthorizations.userId,
-      authozationId: initialAuthorizations.id,
+      authorizationId: initialAuthorizations.id,
       authorization:{
         ...authorizations,
       }
@@ -80,77 +80,75 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
   };
 
   // Regroupement des autorisations par catégorie
-  const permissionGroups = {
-    general: [
-      { key: 'canChangeUserAuthorization', label: 'Modifier les autorisations utilisateur' },
-      { key: 'canChangeUserPassword', label: 'Modifier les mots de passe' },
-    ],
-    create: [
-      // { key: 'canCreateOrganization', label: 'Créer une organisation' },
-      { key: 'canCreateClient', label: 'Créer un client' },
-      { key: 'canCreateProcedure', label: 'Créer une service' },
-      { key: 'canCreateTransaction', label: 'Créer une transaction' },
-      { key: 'canCreateInvoice', label: 'Créer une facture' },
-      
-      { key: 'canCreateExpense', label: 'Créer une dépense' },
-      { key: 'canCreateRevenue', label: 'Créer un revenu' },
-      { key: 'canCreateComptaSettings', label: 'Créer des paramètres comptables' },
-      { key: 'canCreateStep', label: 'Créer un module'},
-      { key: 'canCreateClientProcedure', label: 'Créer une service client' },
-      { key: 'canCreateClientStep', label: 'Créer une étape client' },
-      { key: 'canCreateClientDocument', label: 'Créer un document client' },
-    ],
-    read: [
-      { key: 'canReadOrganization', label: 'Lire les organisations' },
-      { key: 'canReadClient', label: 'Lire les clients' },
-      { key: 'canReadStep', label: 'Lire les modules' },
-      { key: 'canReadAdmin', label: 'Lire les administrateurs' },
-      { key: 'canReadProcedure', label: 'Lire les services' },
-      { key: 'canReadTransaction', label: 'Lire les transactions' },
-      { key: 'canReadInvoice', label: 'Lire les factures' },
-      { key: 'canReadExpense', label: 'Lire les dépenses' },
-      { key: 'canReadRevenue', label: 'Lire les revenus' },
-      { key: 'canReadComptaSettings', label: 'Lire les paramètres comptables' },
-      { key: 'canReadClientProcedure', label: 'Lire les services client' },
-      { key: 'canReadClientStep', label: 'Lire les modules client' },
-      { key: 'canReadClientDocument', label: 'Lire les documents client' },
-      
-    ],
-    update: [
-      { key: 'canEditOrganization', label: 'Modifier les organisations' },
-      { key: 'canEditClient', label: 'Modifier les clients' },
-      { key: 'canEditStep', label: 'Modifier les modules' },
-      { key: 'canEditAdmin', label: 'Modifier les administrateurs' },
-      { key: 'canEditProcedure', label: 'Modifier les services' },
-      { key: 'canEditTransaction', label: 'Modifier les transactions' },
-      { key: 'canEditInvoice', label: 'Modifier les factures' },
-      { key: 'canEditExpense', label: 'Modifier les dépenses' },
-      { key: 'canEditRevenue', label: 'Modifier les revenus' },
-      { key: 'canEditComptaSettings', label: 'Modifier les paramètres comptables' },
-      { key: 'canEditClientProcedure', label: 'Modifier les services client' },
-      { key: 'canEditClientStep', label: 'Modifier les modules client' },
-      { key: 'canEditClientDocument', label: 'Modifier les documents client' },
-    ],
-    delete: [
-      { key: 'canDeleteOrganization', label: 'Supprimer les organisations' },
-      { key: 'canDeleteClient', label: 'Supprimer les clients' },
-      { key: 'canDeleteStep', label: 'Supprimer les modules' },
-      { key: 'canDeleteAdmin', label: 'Supprimer les administrateurs' },
-      { key: 'canDeleteProcedure', label: 'Supprimer les services' },
-      { key: 'canDeleteTransaction', label: 'Supprimer les transactions' },
-      { key: 'canDeleteInvoice', label: 'Supprimer les factures' },
-      { key: 'canDeleteExpense', label: 'Supprimer les dépenses' },
-      { key: 'canDeleteRevenue', label: 'Supprimer les revenus' },
-      { key: 'canDeleteComptaSettings', label: 'Supprimer les paramètres comptables' },
-      { key: 'canDeleteTeam', label: 'Supprimer les équipes' },
-      { key: 'canDeleteMember', label: 'Supprimer les membres' },
-      { key: 'canDeleteInvitation', label: 'Supprimer les invitations' },
-      { key: 'canDeleteClientProcedure', label: 'Supprimer les services client' },
-      { key: 'canDeleteClientStep', label: 'Supprimer les modules client' },
-      { key: 'canDeleteClientDocument', label: 'Supprimer les documents client' },
-    ],
-  };
-
+/**
+ * Configuration des groupes de permissions avec labels explicites pour les utilisateurs
+ */
+const permissionGroups = {
+  general: [
+    { key: 'canChangeUserAuthorization', label: 'Modifier les autorisations des autres utilisateurs du système' },
+    { key: 'canChangeUserPassword', label: 'Réinitialiser ou changer les mots de passe des autres utilisateurs' },
+  ],
+  
+  create: [
+    { key: 'canCreateClient', label: 'Enregistrer un nouveau client dans la base de données' },
+    { key: 'canCreateProcedure', label: 'Créer un nouveau service dans le catalogue de l\'entreprise' },
+    { key: 'canCreateTransaction', label: 'Enregistrer une nouvelle transaction financière' },
+    { key: 'canCreateInvoice', label: 'Générer une nouvelle facture pour un client' },
+    { key: 'canCreateExpense', label: 'Enregistrer une nouvelle dépense dans la comptabilité' },
+    { key: 'canCreateRevenue', label: 'Enregistrer un nouveau revenu dans la comptabilité' },
+    { key: 'canCreateComptaSettings', label: 'Configurer de nouveaux paramètres comptables' },
+    { key: 'canCreateStep', label: 'Ajouter un nouveau module aux procédures' },
+    { key: 'canCreateClientProcedure', label: 'Attribuer un service à un client spécifique' },
+    { key: 'canCreateClientStep', label: 'Définir une étape dans le dossier d\'un client' },
+    { key: 'canCreateClientDocument', label: 'Télécharger ou ajouter un document au dossier d\'un client' },
+  ],
+  
+  read: [
+    { key: 'canReadClient', label: 'Voir les dossiers et données des clients' },
+    { key: 'canReadStep', label: 'Visualiser les modules et leurs détails' },
+    { key: 'canReadAdmin', label: 'Voir la liste et les profils des administrateurs' },
+    { key: 'canReadProcedure', label: 'Consulter le catalogue de services de l\'entreprise' },
+    { key: 'canReadTransaction', label: 'Accéder à l\'historique des transactions financières' },
+    { key: 'canReadInvoice', label: 'Consulter les factures émises aux clients' },
+    { key: 'canReadExpense', label: 'Voir les dépenses enregistrées dans la comptabilité' },
+    { key: 'canReadRevenue', label: 'Voir les revenus enregistrés dans la comptabilité' },
+    { key: 'canReadComptaSettings', label: 'Afficher les paramètres de configuration comptable' },
+    { key: 'canReadClientProcedure', label: 'Voir les services associés à chaque client' },
+    { key: 'canReadClientStep', label: 'Consulter les étapes dans les dossiers clients' },
+    { key: 'canReadClientDocument', label: 'Visualiser et télécharger les documents des clients' },
+  ],
+  
+  update: [
+    { key: 'canEditOrganization', label: 'Mettre à jour les informations des organisations' },
+    { key: 'canEditClient', label: 'Modifier les données des fiches clients' },
+    { key: 'canEditStep', label: 'Mettre à jour les modules et leurs détails' },
+    { key: 'canEditAdmin', label: 'Modifier les profils et droits des administrateurs' },
+    { key: 'canEditProcedure', label: 'Modifier les services du catalogue' },
+    { key: 'canEditTransaction', label: 'Modifier les transactions financières existantes' },
+    { key: 'canEditInvoice', label: 'Ajuster ou corriger les factures créées' },
+    { key: 'canEditExpense', label: 'Modifier les dépenses existantes' },
+    { key: 'canEditRevenue', label: 'Modifier les revenus existants' },
+    { key: 'canEditComptaSettings', label: 'Ajuster les paramètres de comptabilité' },
+    { key: 'canEditClientProcedure', label: 'Modifier les services attribués aux clients' },
+    { key: 'canEditClientStep', label: 'Modifier les étapes dans les dossiers clients' },
+    { key: 'canEditClientDocument', label: 'Mettre à jour les documents associés aux clients' },
+  ],
+  
+  delete: [
+    { key: 'canDeleteClient', label: 'Supprimer des clients et leurs données associées' },
+    { key: 'canDeleteStep', label: 'Supprimer des modules d\'un service' },
+    { key: 'canDeleteAdmin', label: 'Retirer des comptes administrateurs' },
+    { key: 'canDeleteProcedure', label: 'Retirer des services du catalogue' },
+    { key: 'canDeleteTransaction', label: 'Effacer des transactions financières du système' },
+    { key: 'canDeleteInvoice', label: 'Supprimer des factures émises' },
+    { key: 'canDeleteExpense', label: 'Effacer des dépenses de la comptabilité' },
+    { key: 'canDeleteRevenue', label: 'Effacer des revenus de la comptabilité' },
+    { key: 'canDeleteComptaSettings', label: 'Supprimer des paramètres de comptabilité' },
+    { key: 'canDeleteClientProcedure', label: 'Désassocier des services attribués aux clients' },
+    { key: 'canDeleteClientStep', label: 'Supprimer des étapes dans les dossiers clients' },
+    { key: 'canDeleteClientDocument', label: 'Supprimer des documents des dossiers clients' },
+  ],
+};
   // Fonction pour obtenir la liste des autorisations à afficher selon la catégorie active
   const getPermissionsToDisplay = () => {
     if (activeCategory === 'all') {
