@@ -5,6 +5,7 @@ export const authorizationSchema = z.object({
   authozationId: z.string().nonempty("L'ID de l'authozation est requis"),
   authorization: z.object({
         canChangeUserAuthorization: z.boolean(),
+        canCreateStep: z.boolean(),
         canChangeUserPassword: z.boolean(),
         canCreateOrganization: z.boolean(),
         canCreateClient: z.boolean(),
@@ -14,8 +15,8 @@ export const authorizationSchema = z.object({
         canCreateExpense: z.boolean(),
         canCreateRevenue: z.boolean(),
         canCreateComptaSettings: z.boolean(),
-        canCreateTeam: z.boolean(),
-        canCreateMember: z.boolean(),
+        canCreateAdmin: z.boolean(),
+        
         canCreateInvitation: z.boolean(),
         canCreateClientProcedure: z.boolean(),
         canCreateClientStep: z.boolean(),
@@ -28,9 +29,10 @@ export const authorizationSchema = z.object({
         canReadExpense: z.boolean(),
         canReadRevenue: z.boolean(),
         canReadComptaSettings: z.boolean(),
-        canReadTeam: z.boolean(),
+        canReadStep: z.boolean(),
+
         canReadAdmin: z.boolean(),
-        canReadMember: z.boolean(),
+
         canReadInvitation: z.boolean(),
         canReadClientProcedure: z.boolean(),
         canReadClientStep: z.boolean(),
@@ -43,9 +45,10 @@ export const authorizationSchema = z.object({
         canEditExpense: z.boolean(),
         canEditRevenue: z.boolean(),
         canEditComptaSettings: z.boolean(),
-        canEditTeam: z.boolean(),
+        canEditStep: z.boolean(),
+
         canEditAdmin: z.boolean(),
-        canEditMember: z.boolean(),
+
         canEditInvitation: z.boolean(),
         canEditClientProcedure: z.boolean(),
         canEditClientStep: z.boolean(),
@@ -59,9 +62,10 @@ export const authorizationSchema = z.object({
         canDeleteAdmin: z.boolean(),
         canDeleteRevenue: z.boolean(),
         canDeleteComptaSettings: z.boolean(),
-        canDeleteTeam: z.boolean(),
-        canDeleteMember: z.boolean(),
+        canDeleteStep: z.boolean(),
         canDeleteInvitation: z.boolean(),
+        
+        
         canDeleteClientProcedure: z.boolean(),
         canDeleteClientStep: z.boolean(),
         canDeleteClientDocument: z.boolean()

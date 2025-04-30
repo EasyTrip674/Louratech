@@ -625,7 +625,6 @@ model authorization {
   canEditExpense Boolean @default(false)
   canEditRevenue Boolean @default(false)
   canEditComptaSettings Boolean @default(false)
-  canEditTeam Boolean @default(false)
   canEditAdmin Boolean @default(false)
   canEditClientProcedure Boolean @default(false)
   canEditClientStep Boolean @default(false)

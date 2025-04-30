@@ -4,6 +4,7 @@ import Button from "@/components/ui/button/Button";
 import { Eye, Trash, Clock, ChevronRight } from "lucide-react";
 import { ProcedureWithStepsDb } from "@/db/queries/procedures.query";
 import EditStepFormModal from "./steps/step/edit/EditStepFormModal";
+import { authClient } from "@/lib/auth-client";
 
 type CardsProcedureStepsProps = {
   procedureDetails: ProcedureWithStepsDb;
@@ -15,6 +16,8 @@ export default function CardsProcedureSteps({
   readOnly = false
 }: CardsProcedureStepsProps) {
   if (!procedureDetails || !procedureDetails.steps) return null;
+
+  const session = authClient.useSession();
 
   // Sort steps by order
   const sortedSteps = [...procedureDetails?.steps].sort((a, b) => Number(a.createdAt) - Number(b.createdAt));
@@ -77,7 +80,9 @@ export default function CardsProcedureSteps({
               {!readOnly && (
                 <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
                   <div className="flex items-center space-x-2">
-                    <EditStepFormModal 
+                  {
+                    session.data?.userDetails?.authorize?.canEditStep && (
+                      <EditStepFormModal 
                       procedureId={step.procedureId} 
                       stepId={step.id} 
                       name={step.name} 
@@ -86,6 +91,8 @@ export default function CardsProcedureSteps({
                       price={step.price}
                       order={step.order} 
                     />
+                    )
+                  }
                     <Button
                       variant="outline"
                       size="sm"

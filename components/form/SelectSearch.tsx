@@ -1,6 +1,7 @@
 "use client"
 // import React, { useState, useEffect, useMemo } from 'react'
 import { Search, X } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 
 type Option = {
   id: string
@@ -27,47 +28,47 @@ const SelectSearch: React.FC<SelectSearchProps> = ({
   emptyMessage = "Aucun résultat trouvé",
   error
 }) => {
-  if (!options) {
-    return null;
-  }
-  // const [searchTerm, setSearchTerm] = useState("")
-  // const [isOpen, setIsOpen] = useState(false)
+
+  const [searchTerm, setSearchTerm] = useState("")
+  const [isOpen, setIsOpen] = useState(false)
   
   // // Récupérer le libellé de l'option sélectionnée
-  // const selectedLabel = useMemo(() => {
-  //   if (!value) return ""
-  //   const option = options.find(opt => opt.id === value)
-  //   return option ? option.label : ""
-  // }, [value, options])
+    const selectedLabel = useMemo(() => {
+      if (!value) return ""
+      const option = options?.find(opt => opt.id === value)
+      return option ? option.label : ""
+    }, [value, options])
+
+  
   
   // // Filtrer les options selon le terme de recherche
-  // const filteredOptions = useMemo(() => {
-  //   if (!searchTerm) return options
+    const filteredOptions = useMemo(() => {
+      if (!searchTerm) return options
+      
+      return options?.filter(option => 
+        option.label.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }, [searchTerm, options])
     
-  //   return options.filter(option => 
-  //     option.label.toLowerCase().includes(searchTerm.toLowerCase())
-  //   )
-  // }, [searchTerm, options])
+    // Fermer le menu déroulant quand on clique ailleurs
+    useEffect(() => {
+      const handleClickOutside = () => {
+        setIsOpen(false)
+      }
+      
+      if (isOpen) {
+        document.addEventListener('click', handleClickOutside)
+      }
+      
+      return () => {
+        document.removeEventListener('click', handleClickOutside)
+      }
+    }, [isOpen])
   
-  // // Fermer le menu déroulant quand on clique ailleurs
-  // useEffect(() => {
-  //   const handleClickOutside = () => {
-  //     setIsOpen(false)
-  //   }
-    
-  //   if (isOpen) {
-  //     document.addEventListener('click', handleClickOutside)
-  //   }
-    
-  //   return () => {
-  //     document.removeEventListener('click', handleClickOutside)
-  //   }
-  // }, [isOpen])
-  
-  // // Réinitialiser la recherche quand la sélection change
-  // useEffect(() => {
-  //   setSearchTerm("")
-  // }, [value])
+  // Réinitialiser la recherche quand la sélection change
+  useEffect(() => {
+    setSearchTerm("")
+  }, [value])
   
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -88,6 +89,10 @@ const SelectSearch: React.FC<SelectSearchProps> = ({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value)
     setIsOpen(true)
+  }
+
+  if (!options) {
+    return null;
   }
 
   return (
@@ -128,8 +133,8 @@ const SelectSearch: React.FC<SelectSearchProps> = ({
           {/* Menu déroulant des résultats */}
           {isOpen && (
             <div className="absolute z-10 mt-1 w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm bg-white dark:bg-gray-800 max-h-40 overflow-y-auto">
-              {filteredOptions.length > 0 ? (
-                filteredOptions.map(option => (
+              {filteredOptions &&  filteredOptions.length > 0 ? (
+                filteredOptions?.map(option => (
                   <div 
                     key={option.id} 
                     className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer dark:text-warning-25"

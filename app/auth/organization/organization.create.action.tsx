@@ -76,6 +76,7 @@ export const doCreateOrganization = actionClient
 
                         // Permissions de création
                         canCreateOrganization: false,
+                        canCreateStep: true,
                         canCreateClient: true,
                         canCreateProcedure: true,
                         canCreateTransaction: true,
@@ -83,9 +84,6 @@ export const doCreateOrganization = actionClient
                         canCreateExpense: true,
                         canCreateRevenue: true,
                         canCreateComptaSettings: true,
-                        canCreateTeam: true,
-                        canCreateMember: true,
-                        canCreateInvitation: true,
                         canCreateClientProcedure: true,
                         canCreateClientStep: true,
                         canCreateClientDocument: true,
@@ -93,6 +91,7 @@ export const doCreateOrganization = actionClient
 
                         // Permissions de lecture
                         canReadOrganization: true,
+                        canReadStep: true,
                         canReadClient: true,
                         canReadProcedure: true,
                         canReadTransaction: true,
@@ -100,9 +99,6 @@ export const doCreateOrganization = actionClient
                         canReadExpense: true,
                         canReadRevenue: true,
                         canReadComptaSettings: true,
-                        canReadTeam: true,
-                        canReadMember: true,
-                        canReadInvitation: true,
                         canReadClientProcedure: true,
                         canReadClientStep: true,
                         canReadClientDocument: true,
@@ -110,6 +106,7 @@ export const doCreateOrganization = actionClient
 
                         // Permissions de modification
                         canEditOrganization: true,
+                        canEditStep: true,
                         canEditClient: true,
                         canEditProcedure: true,
                         canEditTransaction: true,
@@ -117,9 +114,6 @@ export const doCreateOrganization = actionClient
                         canEditExpense: true,
                         canEditRevenue: true,
                         canEditComptaSettings: true,
-                        canEditTeam: true,
-                        canEditMember: true,
-                        canEditInvitation: true,
                         canEditClientProcedure: true,
                         canEditClientStep: true,
                         canEditClientDocument: true,
@@ -127,6 +121,7 @@ export const doCreateOrganization = actionClient
 
                         // Permissions de suppression
                         canDeleteOrganization: true,
+                        canDeleteStep: true,
                         canDeleteClient: true,
                         canDeleteProcedure: true,
                         canDeleteTransaction: true,
@@ -134,9 +129,6 @@ export const doCreateOrganization = actionClient
                         canDeleteExpense: true,
                         canDeleteRevenue: true,
                         canDeleteComptaSettings: true,
-                        canDeleteTeam: true,
-                        canDeleteMember: true,
-                        canDeleteInvitation: true,
                         canDeleteClientProcedure: true,
                         canDeleteClientStep: true,
                         canDeleteClientDocument: true,

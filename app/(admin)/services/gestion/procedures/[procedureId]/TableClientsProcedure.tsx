@@ -7,12 +7,10 @@ import {
   TableRow
 } from "@/components/ui/table";
 
-import Badge from "@/components/ui/badge/Badge";
 import { 
   Eye, 
   Clock, 
   CheckCircle, 
-  FileText, 
   User, 
   Calendar, 
   AlertCircle, 
@@ -21,8 +19,9 @@ import {
 } from "lucide-react";
 import { procedureDetailsDb } from "@/db/queries/procedures.query";
 import Link from "next/link";
-import { calculateProgress, formatDate, getInvoiceStatus } from "@/lib/utils";
+import { calculateProgress, formatDate } from "@/lib/utils";
 import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
+import { auth } from "@/lib/auth";
 
 type TableClientsProcedureProps = {
   procedureDetails: procedureDetailsDb;
@@ -40,15 +39,18 @@ type TableClientsProcedureProps = {
 
 // Calculate procedure progress
 
-export default function TableClientsProcedure({ 
+export default async function TableClientsProcedure({ 
   procedureDetails,
   showDates = true,
-  showInvoice = true,
   showProgress = true
 }: TableClientsProcedureProps) {
   if (!procedureDetails || !procedureDetails.clientProcedures) return null;
   
   const clientProcedures = procedureDetails.clientProcedures;
+
+  const session = await auth.api.getSession({
+    headers: new Headers()
+  })
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -117,17 +119,7 @@ export default function TableClientsProcedure({
                     </div>
                   </TableCell>
                 )}
-                {showInvoice && (
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                  >
-                    <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4" />
-                      Facture
-                    </div>
-                  </TableCell>
-                )}
+              
                 <TableCell
                   isHeader
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -216,30 +208,11 @@ export default function TableClientsProcedure({
                       </TableCell>
                     )}
                     
-                    {showInvoice && (
-                      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                        {clientProc.invoice ? (
-                          <div className="flex flex-col p-3 bg-gray-50 rounded-lg dark:bg-gray-800/50">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-medium">#{clientProc.invoice.invoiceNumber}</span>
-                              <Badge color={getInvoiceStatus(clientProc.invoice.status).color}>
-                                {getInvoiceStatus(clientProc.invoice.status).label}
-                              </Badge>
-                            </div>
-                            <div className="text-lg font-bold text-gray-800 dark:text-white">
-                              {clientProc.invoice.totalAmount.toLocaleString()} €
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-center p-3 bg-gray-50 rounded-lg dark:bg-gray-800/50">
-                            <span className="text-gray-400">Aucune facture</span>
-                          </div>
-                        )}
-                      </TableCell>
-                    )}
                     
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                      <div className="flex items-center">
+                    {
+                      session?.userDetails?.authorize?.canReadClientProcedure && (
+                        <div className="flex items-center">
                         <Link 
                           href={`/services/gestion/procedures/${clientProc.procedureId}/clients/${clientProc.id}`}
                           className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition-colors dark:bg-purple-700 dark:hover:bg-purple-800"
@@ -249,6 +222,8 @@ export default function TableClientsProcedure({
                           <ChevronRight className="w-4 h-4 ml-1" />
                         </Link>
                       </div>
+                      )
+                    }
                     </TableCell>
                   </TableRow>
                 );

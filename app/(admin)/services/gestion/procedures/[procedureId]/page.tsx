@@ -126,7 +126,7 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
           <h2 className="text-2xl font-medium text-gray-900 dark:text-white">Modules</h2>
           <div>
             {
-              session?.userDetails?.authorize?.canCreateClientStep && (
+              session?.userDetails?.authorize?.canCreateStep && (
                 <CreateStepFormModal procedureId={procedure.id} />
               )
             }
@@ -135,7 +135,7 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         <div className="rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
            {/* les modules */}
-
+            
             <TableProcedureSteps
               procedureDetails={procedureDataStep}
             />
@@ -149,9 +149,12 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-medium text-gray-900 dark:text-white">Clients inscrits</h2>
           <div>
-            <AddClientToStepModal
+           {
+            session?.userDetails?.authorize?.canCreateClientProcedure && ( <AddClientToStepModal
               stepsProcedure={stepsProc}
               procedureId={params.procedureId} clientsDB={clients} />
+            )
+           }
           </div>
         </div>
         
