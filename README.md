@@ -41,16 +41,35 @@ Cette structure vous permettra de gérer l'ensemble des opérations comptables d
 
 
 
-## NEXT OBJECTIF A:
+## NEXT OBJECTIF A: FINISH
   - Modifier le nom et le prix par defaut d'un step (module)
   - page client step() procedures
   - page client details with procedures
   - edit , add, change status step
 
-## NEXT OBJECTIF B:
+## NEXT OBJECTIF B:FINISH
  - Gestion des transactions status (on ne peut qu'Approuvées) 
  - ajout des autorizations avec better auth !
  - change mot de passe !!
  - gestion des autorizations!!
  - gestion de la creation d'un employee
  - gestion des finances : ajout d'une depense etc ...
+ -  gestion des authorizations
+
+ ### NEXT OBJECTIF C: PENDING
+  - gerer les stats du dasboard pour avoir les bonnes
+  - gerer les suspenses chargements
+  - gerer les differentes suppressions
+  - gerer la modification d'une organization et sa suppression
+  - gerer l'activation d'une organization
+
+
+  ### NEXT OBJECTIF D 
+  - INTEGRER LES PAYMENTS POUR LES ABONNEMENTS
+
+      ### NEXT OBJECTIF F
+  - GESTION DE LA COMPTABILITE
+
+    ### NEXT OBJECTIF E 
+  - INTEGRER L'AGENT IA
+
