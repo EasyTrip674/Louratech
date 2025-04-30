@@ -59,16 +59,19 @@ export async function getMonthlyTargetStats() {
     },
   });
 
-  // Calculer le pourcentage de changement par rapport au mois dernier
+
+
+  // Définir un objectif mensuel basé sur les derniers résultats ou sur une valeur par défaut
+  // Ici, on utilise 120% du revenu du mois dernier ou 1000 par défaut
   const lastMonthAmount = lastMonthRevenue._sum.amount || 0;
+  const target =  Math.max(1000, Math.round(lastMonthAmount * 1.2));
   const currentMonthAmount = currentMonthRevenue._sum.amount || 0;
+  
+  // Calculer le pourcentage de changement par rapport au mois dernier
   const percentageChange = lastMonthAmount > 0 
     ? ((currentMonthAmount - lastMonthAmount) / lastMonthAmount) * 100 
     : 0;
 
-
-  const target = 1000; // Objectif mensuel en unités monétaires
-  const progress = percentageChange;
   // Générer un message en fonction de la progression
   let message = "";
   // comparer le pourcentage de changement par rapport au mois précedent
@@ -85,14 +88,14 @@ export async function getMonthlyTargetStats() {
   }
 
   return {
-    target: target , // Convertir en K pour l'affichage
-    lastMonthAmount: lastMonthAmount , // Convertir en K pour l'affichage
-    revenue: currentMonthAmount , // Convertir en K pour l'affichage
-    progress: progress,
+    target: target, 
+    lastMonthAmount: lastMonthAmount, 
+    revenue: currentMonthAmount, 
+    progress: Math.min(100, Math.round((currentMonthAmount / target) * 100)),
     growth: Math.round(percentageChange),
     message: message,
-    currentMonthAmount: currentMonthAmount , // Convertir en K pour l'affichage
-    today: (todayRevenue._sum.amount || 0) , // Convertir en K pour l'affichage
+    currentMonthAmount: currentMonthAmount, 
+    today: (todayRevenue._sum.amount || 0), 
   };
 }
 
@@ -133,7 +136,7 @@ export async function getMonthlySalesData() {
 
   return {
     series: [{
-      name: "Sales",
+      name: "Revenue",
       data: monthlyData,
     }],
   };
@@ -142,6 +145,7 @@ export async function getMonthlySalesData() {
 export type getMonthlySalesDataType = Prisma.PromiseReturnType<
   typeof getMonthlySalesData
 >;
+
 
 
 export async function getStatisticsData() {
@@ -203,73 +207,106 @@ export type getStatisticsDataType = Prisma.PromiseReturnType<
 >;
 
 
-export async function getDemographicData() {
-  const organizationId = await getOrgnaizationId();
-  const currentYear = new Date().getFullYear();
 
-  // Récupérer les clients avec leurs procédures pour l'année en cours
-  const clients = await prisma.client.findMany({
+
+
+
+export async function getClientServiceData(timeRange: 'month' | 'year' | 'all' = 'all' ) {
+  const organizationId = await getOrgnaizationId();
+  const now = new Date();
+  
+  // Define the time range based on the parameter
+  let startDate;
+  switch (timeRange) {
+    case 'month':
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      break;
+    case 'year':
+      startDate = new Date(now.getFullYear(), 0, 1);
+      break;
+    case 'all':
+    default:
+      startDate = new Date(2000, 0, 1); // Going far back to include all data
+      break;
+  }
+
+  // Get all procedures in the organization
+  const procedures = await prisma.procedure.findMany({
     where: {
       organizationId,
-      user: {
-       client:{
-        clientProcedures: {
-            some: {
-              startDate: {
-                gte: new Date(currentYear, 0, 1),
-                lte: new Date(currentYear, 11, 31),
-              }
-            }
-          }
-       }
-      }
+      isActive: true
     },
-    include: {
-      user: {
-        include: {
-          client: {
-            include:{
-                clientProcedures:{
-                    where: {
-                        startDate: {
-                          gte: new Date(currentYear, 0, 1),
-                          lte: new Date(currentYear, 11, 31),
-                        }
-                      },
-                      include: {
-                        procedure: true
-                      }
-                }
-            }
-          }
-        }
-      }
+    select: {
+      id: true,
+      name: true
     }
   });
 
-  // Compter les clients par pays (utilisant l'adresse comme indicateur)
-  const countryStats = clients.reduce((acc, client) => {
-    const country = client.address?.split(',')?.pop()?.trim() || 'Unknown';
-    acc[country] = (acc[country] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  // For each procedure, get the client registration data over time
+  const seriesData = await Promise.all(
+    procedures.map(async (procedure) => {
+      // Get client procedures for this specific procedure
+      const clientProcedures = await prisma.clientProcedure.findMany({
+        where: {
+          organizationId,
+          procedureId: procedure.id,
+          startDate: {
+            gte: startDate
+          }
+        },
+        orderBy: {
+          startDate: 'asc'
+        },
+        select: {
+          startDate: true,
+          procedureId: true
+        }
+      });
 
-  // Calculer le total des clients
-  const totalClients = Object.values(countryStats).reduce((sum, count) => sum + count, 0);
+      // Group the data by date - count registrations on each date
+      const groupedByDate = clientProcedures.reduce((acc, cp) => {
+        // Format the date to YYYY-MM-DD for grouping
+        const dateKey = cp.startDate.toISOString().split('T')[0];
+        
+        if (!acc[dateKey]) {
+          acc[dateKey] = 0;
+        }
+        acc[dateKey]++;
+        
+        return acc;
+      }, {} as Record<string, number>);
 
-  // Convertir en pourcentages et formater pour le graphique
-  const formattedData = Object.entries(countryStats).map(([country, count]) => ({
-    country,
-    customers: count,
-    percentage: Math.round((count / totalClients) * 100)
-  }));
+      // Convert to cumulative data for showing total clients over time
+      const cumulativeData : Array<{
+          x: Date;
+          y: number;
+        }> = [];
+      let cumulativeCount = 0;
+      
+      Object.keys(groupedByDate).sort().forEach(date => {
+        cumulativeCount += groupedByDate[date];
+        cumulativeData.push({
+          x: new Date(date),
+          y: cumulativeCount
+        });
+      });
+
+      // Return the series data in format required by ApexCharts
+      return {
+        name: procedure.name,
+        data: cumulativeData
+      };
+    })
+  );
+
+  // Filter out procedures with no client data
+  const filteredSeriesData = seriesData.filter(series => series.data.length > 0);
 
   return {
-    total: totalClients,
-    data: formattedData
+    series: filteredSeriesData
   };
 }
 
-export type getDemographicDataType = Prisma.PromiseReturnType<
-  typeof getDemographicData
+export type getClientServiceDataType = Prisma.PromiseReturnType<
+  typeof getClientServiceData
 >;

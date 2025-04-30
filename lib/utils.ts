@@ -2,9 +2,15 @@
 
 import { BadgeColor } from "@/components/ui/badge/Badge";
 import { ClientProcedureWithSteps } from "@/db/queries/procedures.query";
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'FNG' }).format(value);
+  if (value >= 1_000_000) {
+    const millions = value / 1_000_000;
+    return `${millions.toFixed(2)} M FNG`;
+  }
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'FNG', maximumFractionDigits: 0 }).format(value);
 }
 
 
@@ -15,7 +21,6 @@ export function formatDate(date?: Date | string): string {
     date = new Date(date);
   }
   if (isNaN(date.getTime())) return '';
-  // Format the date to 'dd/MM/yyyy'
   return new Intl.DateTimeFormat('fr-FR', {
     year: 'numeric',
     month: '2-digit',
@@ -46,3 +51,9 @@ export const getInvoiceStatus = (status: string) : {color:BadgeColor, label:stri
       return { color: "info", label: status };
   }
 };
+
+
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
