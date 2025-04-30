@@ -21,13 +21,14 @@ import { procedureDetailsDb } from "@/db/queries/procedures.query";
 import Link from "next/link";
 import { calculateProgress, formatDate } from "@/lib/utils";
 import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
-import { auth } from "@/lib/auth";
+
 
 type TableClientsProcedureProps = {
   procedureDetails: procedureDetailsDb;
   showProgress?: boolean;
   showDates?: boolean;
   showInvoice?: boolean;
+  canEditClientProcedure?: boolean;
 }
 
 
@@ -42,15 +43,13 @@ type TableClientsProcedureProps = {
 export default async function TableClientsProcedure({ 
   procedureDetails,
   showDates = true,
-  showProgress = true
+  showProgress = true,
+  canEditClientProcedure = false,
 }: TableClientsProcedureProps) {
   if (!procedureDetails || !procedureDetails.clientProcedures) return null;
   
   const clientProcedures = procedureDetails.clientProcedures;
 
-  const session = await auth.api.getSession({
-    headers: new Headers()
-  })
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -211,7 +210,7 @@ export default async function TableClientsProcedure({
                     
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {
-                      session?.userDetails?.authorize?.canReadClientProcedure && (
+                      canEditClientProcedure && (
                         <div className="flex items-center">
                         <Link 
                           href={`/services/gestion/procedures/${clientProc.procedureId}/clients/${clientProc.id}`}

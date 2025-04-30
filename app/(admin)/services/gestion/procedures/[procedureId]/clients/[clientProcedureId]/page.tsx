@@ -15,17 +15,9 @@ import ChangerStatutClientProcedure from "./stepClient/status/ChangerStatutClien
 import PaymentStepModal from "./stepClient/payments/PayementStepModal";
 import PaymentStepDetails from "./stepClient/payments/PayementStepDetails";
 import BackButton from "@/layout/BackButton";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-
-// Helper function to get step status badge
-
-
-// Helper function to get status icon
-
-
-// Helper function to calculate progress percentage
-  // });
-// Property '0' does not exist on type '({ client: { user: { id: string; organizationId: string | null; createdAt: Date; updatedAt: Date; name: string; email: string; emailVerified: boolean; image: string | null; firstName: string | null; lastName: string | null; password: string | null; role: Role; active: boolean; }; } & { ...; }; procedure: { ...; }; s...'.ts(2339)
 
 export default async function ClientProcedurePage({
   params
@@ -55,6 +47,10 @@ export default async function ClientProcedurePage({
       </div>
     );
   }
+
+  const session  = await auth.api.getSession({
+    headers: await headers()
+  })
 
   const progressPercentage = calculateProgress(clientProcedure.steps);
 
@@ -285,12 +281,20 @@ export default async function ClientProcedurePage({
                   <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex flex-wrap gap-2">
                       {/* Changement de statut */}
-                    <ChangerStatutClientProcedure clientStepId={stepClient.id} />
+                    {
+                      session?.userDetails?.authorize?.canEditClientStep && (
+                        <ChangerStatutClientProcedure clientStepId={stepClient.id} />
+                      )
+                    }
                       {/* Paiement pour les étapes impliquant un paiement */}
-                       <PaymentStepModal >
-                          <PaymentStepDetails  clientStepId={stepClient.id} stepName={stepClient.step.name} 
-                          clientName={`${clientProcedure.client.user.firstName} ${clientProcedure.client.user.lastName}`} procedureName={clientProcedure.procedure.name}  />
-                       </PaymentStepModal>
+                     {
+                      session?.userDetails?.authorize?.canReadTransaction && (
+                        <PaymentStepModal >
+                        <PaymentStepDetails  clientStepId={stepClient.id} stepName={stepClient.step.name} 
+                        clientName={`${clientProcedure.client.user.firstName} ${clientProcedure.client.user.lastName}`} procedureName={clientProcedure.procedure.name}  />
+                     </PaymentStepModal>
+                      )
+                     }
 
 
                       {/* Ajouter une note */}

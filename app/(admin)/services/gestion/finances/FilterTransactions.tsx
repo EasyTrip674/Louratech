@@ -14,6 +14,7 @@ import {   TransactionsTable } from "./TransactionsTable";
 import { getTransactionsDB } from "@/db/queries/finances.query";
 import CreateDepenseModal from "./transactions/depenses/DepensesModal";
 import CreateRevenuModal from "./transactions/revenus/RevenuModal";
+import { authClient } from "@/lib/auth-client";
 
 
 
@@ -27,6 +28,7 @@ export default function FilteredTransactions({
 }) {
   const [selectedTab, setSelectedTab] = useState<"all" | "expenses" | "revenues">("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const session = authClient.useSession();
   
   // Filtrage des transactions en fonction de l'onglet sélectionné
   const filteredTransactions = transactions.filter(transaction => {
@@ -159,8 +161,17 @@ export default function FilteredTransactions({
         
         {/* Boutons d'action */}
         <div className="p-4 flex flex-wrap gap-3 justify-end">
+       {
+        session.data?.userDetails?.authorize?.canCreateTransaction && session?.data?.userDetails?.authorize?.canCreateExpense && (
           <CreateRevenuModal />
+        )
+       }
+        {
+        session.data?.userDetails?.authorize?.canCreateTransaction && session?.data?.userDetails?.authorize?.canCreateRevenue && (
           <CreateDepenseModal />
+        )
+       }
+       
         </div>
         
         {/* Tableau des transactions */}

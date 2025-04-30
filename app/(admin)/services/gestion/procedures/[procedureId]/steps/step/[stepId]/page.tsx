@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { getStepProcedureDetails } from '@/db/queries/procedures.query';
 import EditStepFormModal from '../edit/EditStepFormModal';
 import { formatDate } from '@/lib/utils';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 type PageProps = {
   params: {
@@ -20,9 +22,11 @@ export default async function StepDetailPage({ params }: PageProps) {
   if (!step) {
     return notFound();
   }
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
 
   // Calculate stats for the dashboard
-  const pendingCount = step.clientSteps?.filter(cs => cs.status === 'PENDING').length || 0;
   const inProgressCount = step.clientSteps?.filter(cs => cs.status === 'IN_PROGRESS').length || 0;
   const completedCount = step.clientSteps?.filter(cs => cs.status === 'COMPLETED').length || 0;
   const waitingCount = step.clientSteps?.filter(cs => cs.status === 'WAITING').length || 0;
@@ -71,7 +75,9 @@ export default async function StepDetailPage({ params }: PageProps) {
         </div>
         
         <div className="flex items-center">
-          <EditStepFormModal 
+        {
+          session?.userDetails?.authorize?.canEditStep && (
+            <EditStepFormModal 
             procedureId={params.procedureId}
             stepId={step.id}
             name={step.name}
@@ -81,6 +87,8 @@ export default async function StepDetailPage({ params }: PageProps) {
             order={step.order}
             isRequired={step.required}
           />
+          )
+        }
         </div>
       </div>
 
@@ -168,7 +176,6 @@ export default async function StepDetailPage({ params }: PageProps) {
                 <div className="h-3 w-3 rounded-full bg-gray-400 dark:bg-gray-500"></div>
                 <span className="text-sm font-medium dark:text-white">En attente</span>
               </div>
-              <span className="text-2xl font-bold dark:text-white">{pendingCount}</span>
             </div>
             
             <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800/80 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -313,7 +320,6 @@ export default async function StepDetailPage({ params }: PageProps) {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClasses(clientStep.status)}`}>
-                      {clientStep.status === 'PENDING' && 'En attente'}
                       {clientStep.status === 'IN_PROGRESS' && 'En cours'}
                       {clientStep.status === 'COMPLETED' && 'Complété'}
                       {clientStep.status === 'WAITING' && 'En attente externe'}
@@ -330,14 +336,18 @@ export default async function StepDetailPage({ params }: PageProps) {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <Link href={`/services/gestion/procedures/${clientStep.clientProcedure.procedureId}/clients/${clientStep.clientProcedure.id}`}>
-                      <Button
+                   {
+                      session?.userDetails?.authorize?.canReadClientProcedure && (
+                        <Button
                         size="sm"
                         variant="outline"
                         className="hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all"
-                      >
-                        <Eye className="w-4 h-4 mr-1" />
-                        <span className="hidden sm:inline">Détails</span>
-                      </Button>
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          <span className="hidden sm:inline">Détails</span>
+                        </Button>
+                      )
+                   }
                     </Link>
                   </td>
                 </tr>

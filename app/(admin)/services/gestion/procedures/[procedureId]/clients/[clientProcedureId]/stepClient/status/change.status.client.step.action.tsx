@@ -8,8 +8,13 @@ import { ChangeStatusSchema } from "./change.status.clientStep.sheme";
 export const doChangeStepStatus = adminAction
   .metadata({ actionName: "change client step status" })
   .schema(ChangeStatusSchema)
-  .action(async ({ clientInput: { clientStepId, status } }) => {
+  .action(async ({ clientInput: { clientStepId, status },ctx }) => {
     console.log("Changing step status:", { clientStepId, status });
+
+      // verifffier l'autorisation de l'utilisateur
+      if(!ctx.user.userDetails?.authorize?.canEditClientStep){
+        throw new Error("Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
+      }
     
     return await prisma.$transaction(async (tx) => {
       const clientStep = await tx.clientStep.findUnique({

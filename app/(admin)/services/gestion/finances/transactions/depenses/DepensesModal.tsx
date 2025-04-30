@@ -15,6 +15,7 @@ import ErrorModal from '@/components/alerts/ErrorModal'
 import { formatCurrency } from '@/lib/utils'
 import { createExpenseSchema } from './depense.shema'
 import { doCreateDepense } from './depense.create.action'
+import { authClient } from '@/lib/auth-client'
 
 
 type CreateExpenseSchema = z.infer<typeof createExpenseSchema>
@@ -40,6 +41,7 @@ const CreateExpenseModal = ({}: Props) => {
   const { isOpen, closeModal, openModal } = useModal()
   const successModal = useModal()
   const errorModal = useModal()
+  const session = authClient.useSession()
 
   const { 
     control,
@@ -87,6 +89,10 @@ const CreateExpenseModal = ({}: Props) => {
     } catch (error) {
       console.error("Error creating expense:", error)
     }
+  }
+
+  if (!session?.data?.userDetails?.authorize?.canCreateExpense) {
+    return null
   }
 
   return (

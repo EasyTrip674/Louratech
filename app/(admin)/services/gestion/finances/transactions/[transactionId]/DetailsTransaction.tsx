@@ -33,6 +33,7 @@ import { getTransactionById } from "@/db/queries/finances.query";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import DownloadPdf from "@/components/pdf/DowloadPdf";
+import { authClient } from "@/lib/auth-client";
 
 // Composant pour afficher les détails d'une transaction
 export default function TransactionDetails(
@@ -41,6 +42,7 @@ export default function TransactionDetails(
   const router = useRouter();
   const [transaction] = React.useState<getTransactionById>(baseTransaction);
   const [error] = React.useState<string | null>(null);
+  const session = authClient.useSession();
 
   if (error || !transaction) {
     return (
@@ -185,7 +187,7 @@ export default function TransactionDetails(
             <div className="flex flex-wrap gap-2 mt-4 md:mt-0">
               {transaction.status === "APPROVED" && (
                 <>
-                <DownloadPdf transaction={transaction}>
+                <DownloadPdf transaction={transaction} canReadInvoice={session?.data?.userDetails?.authorize?.canReadInvoice ?? false}>
                     <Button variant="outline" className="flex items-center">
                         <Download className="w-4 h-4 mr-1" />
                         Télécharger la facture
@@ -446,7 +448,7 @@ export default function TransactionDetails(
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Entités liées */}
-            {(transaction.clientProcedure || transaction.clientStep) && (
+            {((transaction.clientProcedure || transaction.clientStep) && (session.data?.userDetails?.authorize?.canReadClientProcedure)) && (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidiven">
                 <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-700">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -472,7 +474,7 @@ export default function TransactionDetails(
                         </Link>
                       </li>
                     )}
-                    {transaction.clientStep && (
+                    {transaction.clientStep && session.data.userDetails.authorize.canReadStep && (
                       <li>
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400 block mb-1">
                          Module

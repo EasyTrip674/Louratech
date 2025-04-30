@@ -15,6 +15,11 @@ export const doCreateRevenu = adminAction
     .schema(createRevenuSchema)
     .action(async ({ clientInput,ctx }) => {
         console.log("Creating Procedure with data:", clientInput);
+
+        if (!ctx.user.userDetails?.authorize?.canCreateRevenue) {
+            throw new Error("Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
+        }
+        
         
     //   verifier si une transaction existe creer le 5 secondes avant
         const existingTransaction = await prisma.transaction.findFirst({

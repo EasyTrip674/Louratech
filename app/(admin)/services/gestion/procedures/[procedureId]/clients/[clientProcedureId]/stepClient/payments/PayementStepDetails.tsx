@@ -6,6 +6,8 @@ import { Suspense } from "react";
 import CreateTransactionModalStep from "./transactions/CreateTransactionModalStep";
 import ApprovedTransactionModal from "./transactions/ApprovedTransactionModal";
 import DownloadPdf from "@/components/pdf/DowloadPdf";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 // Types pour les données de facturation liées à un ClientStep
 interface PaymentInfoModalProps {
@@ -24,6 +26,9 @@ export default async function PaymentStepDetails({
 
   // Récupération des données de paiement
   const data = await getClientStepPaymentInfo(clientStepId);
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
 
   
   // Formatage pour affichage de la monnaie
@@ -197,7 +202,11 @@ export default async function PaymentStepDetails({
                       {data.transactions.length}
                     </span>
                   </h4>
-                  <CreateTransactionModalStep clientStepId={clientStepId} haveToPay={remainingAmount > 0 ? remainingAmount : 0} />
+                 {
+                  session?.userDetails?.authorize?.canCreateTransaction && (
+                    <CreateTransactionModalStep clientStepId={clientStepId} haveToPay={remainingAmount > 0 ? remainingAmount : 0} />
+                  )
+                 }
                 </div>
                 
                 {data.transactions.length > 0 ? (
@@ -232,12 +241,16 @@ export default async function PaymentStepDetails({
                               <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(transaction.status)}`}>
                                 {translateStatus(transaction.status)}
                               </span>
-                            <ApprovedTransactionModal transactionId={transaction.id}
-                               status={transaction.status}
-                              amount={transaction.amount}
-                              paymentMethod={transaction.paymentMethod}
-                              date={formatReadableDate(transaction.date)}
-                            />
+                          {
+                            session?.userDetails?.authorize?.canEditTransaction && (
+                              <ApprovedTransactionModal transactionId={transaction.id}
+                              status={transaction.status}
+                             amount={transaction.amount}
+                             paymentMethod={transaction.paymentMethod}
+                             date={formatReadableDate(transaction.date)}
+                           />
+                            )
+                          }
                             </td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300 font-mono text-xs">{transaction.reference || "-"}</td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
@@ -252,12 +265,16 @@ export default async function PaymentStepDetails({
                             </td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{formatDate(String(transaction.approvedAt)) ?? "-"} </td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300 cursor-pointer">
-                            <DownloadPdf transaction={transaction} >
-                              <div className="flex items-center dark:text-white text-gray-500 hover:text-brand-600" >
-                                <Download className="mr-2" />
-                                facture
-                              </div>
-                            </DownloadPdf>
+                           {
+                              session?.userDetails?.authorize?.canReadInvoice && (
+                                <DownloadPdf transaction={transaction} canReadInvoice={session?.userDetails?.authorize?.canReadInvoice} >
+                                <div className="flex items-center dark:text-white text-gray-500 hover:text-brand-600" >
+                                  <Download className="mr-2" />
+                                  facture
+                                </div>
+                              </DownloadPdf>
+                              )
+                           }
                             </td>
                           </tr>
                         ))}

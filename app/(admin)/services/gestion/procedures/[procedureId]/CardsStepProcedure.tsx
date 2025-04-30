@@ -93,23 +93,31 @@ export default function CardsProcedureSteps({
                     />
                     )
                   }
-                    <Button
+                  {
+                    session.data?.userDetails?.authorize?.canDeleteStep && (
+                      <Button
                       variant="outline"
                       size="sm"
                     >
                       <Trash className="w-4 h-4" />
                     </Button>
+                    )
+                  }
                   </div>
+               {
+                session.data?.userDetails?.authorize?.canReadStep && (
                   <Button
-                    variant="outline"
-                    size="sm"
-                    href={`/services/gestion/procedures/${step.procedureId}/steps/step/${step.id}`}
-                    className="flex items-center"
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    Détails
-                    <ChevronRight className="w-4 h-4 ml-1" />
-                  </Button>
+                  variant="outline"
+                  size="sm"
+                  href={`/services/gestion/procedures/${step.procedureId}/steps/step/${step.id}`}
+                  className="flex items-center"
+                >
+                  <Eye className="w-4 h-4 mr-1" />
+                  Détails
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
+                )
+               }
                 </div>
               )}
             </div>

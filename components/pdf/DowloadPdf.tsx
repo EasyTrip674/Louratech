@@ -5,9 +5,13 @@ import { ClientStepPaymentInfo } from "@/db/queries/procedures.query";
 import { PropsWithChildren } from "react";
 
 export default function DownloadPdf(
-  {transaction,children}:PropsWithChildren<{  transaction: ClientStepPaymentInfo["transactions"][0] }>
+  {transaction,canReadInvoice=false, children}:PropsWithChildren<{  transaction: ClientStepPaymentInfo["transactions"][0] , canReadInvoice?: boolean }>
 ) {
  
+  if (!transaction || !canReadInvoice) {
+    return null;
+  }
+
   return (
     <PDFDownloadLink
     document={

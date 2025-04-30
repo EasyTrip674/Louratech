@@ -10,6 +10,11 @@ export const doAddClientToStep = adminAction
     .schema(addClientToStepSchema)
     .action(async ({ clientInput,ctx }) => {
 
+        // verifffier l'autorisation de l'utilisateur
+        if(!ctx.user.userDetails?.authorize?.canCreateClientStep){
+            throw new Error("Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
+        }
+
         const organization = await prisma.organization.findUnique({
             where: {
                 id: ctx.user.userDetails?.organizationId ?? "",
