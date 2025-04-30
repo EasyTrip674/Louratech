@@ -26,7 +26,6 @@ type PageProps = {
 
 
 
-// Composant principal de la page
 export default async function ProcedureDetailPage({ params }: PageProps) {
   const procedure = await getProcedureDetails(params?.procedureId);
   const clients = await getCLientsIdWithNameDB();

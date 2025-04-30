@@ -1,8 +1,8 @@
 import React from "react";
 import { BoxIcon, Users2 } from "lucide-react";
-import { getOrgnaizationId } from "@/db/queries/utils.query";
 import prisma from "@/db/prisma";
-import Button from "../ui/button/Button";
+import { getOrgnaizationId } from "@/db/queries/utils.query";
+import Button from "@/components/ui/button/Button";
 
 export const ProceduresMetrics = async () => {
   const organisation = await getOrgnaizationId();

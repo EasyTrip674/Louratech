@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { ProceduresMetrics } from "@/components/stats/ProceduresMetrics";
-import React from "react";
-import MonthlyTarget from "@/components/stats/MonthlyTarget";
-import RecentOrders from "@/components/stats/RecentOrders";
-import {  getClientServiceData,  getMonthlyTargetStats, getStatisticsData } from "@/db/queries/dasboard.query";
-import StatisticsServiceClient from "@/components/stats/StatisticsServicesClient";
-import MonthlySalesChart from "@/components/stats/MonthlySalesChart";
+import React, { Suspense } from "react";
+import { MonthSalesChartLayout } from "@/components/dasboard/MonthlySalesChart/MonthSalesChartLayout";
+import { MonthlyTargetLayout } from "@/components/dasboard/MonthlyTarget/MonthlyTargetLayout";
+import MonthlyTargetSkeleton from "@/components/dasboard/MonthlyTarget/MonthlyTargetSkeleton";
+import { StatisticsServiceLayout } from "@/components/dasboard/StatisticsChart/StatisticsChartLayout";
+import { ProceduresMetrics } from "@/components/dasboard/ProcedureMetrics/ProceduresMetrics";
+import StatisticsServiceSkeleton from "@/components/dasboard/StatisticsChart/StatisticsChartSkeleton";
+import RecentOrdersSkeleton from "@/components/dasboard/RecentsOrders/RecentOrdersSkeleton";
+import { RecentOrdersLayout } from "@/components/dasboard/RecentsOrders/RecentOrdersLayout";
+import MonthlySalesChartSkeleton from "@/components/dasboard/MonthlySalesChart/MonthySalesChartSkeleton";
+import { ProceduresMetricsSkeleton } from "@/components/dasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
 
 export const metadata: Metadata = {
   title:
@@ -19,39 +23,40 @@ export default async function  DashboardPage() {
 
   
 
-  const MonthlyTargetData = await getMonthlyTargetStats();
-  const monthlySalesData = await getStatisticsData();
-   const ClientServiceData = await getClientServiceData("all");
 
    
 
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12 space-y-6 xl:col-span-7">
-        <ProceduresMetrics />
-        {
-          monthlySalesData && (
-            <MonthlySalesChart statisticsData={monthlySalesData}/>
-          )
-        }
+
+        <Suspense fallback={<ProceduresMetricsSkeleton />}>
+          <ProceduresMetrics />
+        </Suspense>
+        
+        <Suspense fallback={<MonthlySalesChartSkeleton />}>
+          <MonthSalesChartLayout />
+        </Suspense>
       </div>
 
       <div className="col-span-12 xl:col-span-5">
-        <MonthlyTarget MonthlyTargetData={MonthlyTargetData} />
+        <Suspense fallback={<MonthlyTargetSkeleton />}>
+          <MonthlyTargetLayout />
+        </Suspense>
       </div>
 
       <div className="col-span-12">
-        {/* <StatisticsChart statisticsData={statisticsData} />
-         */}
-         <StatisticsServiceClient servicesClientData={ClientServiceData} />
+        <Suspense fallback={<StatisticsServiceSkeleton />}>
+        <StatisticsServiceLayout />
+        </Suspense>
       </div>
 
-      {/* <div className="col-span-12 xl:col-span-5"> */}
-        {/* <DemographicCard demographicData={demographicData} /> */}
-      {/* </div> */}
+
 
       <div className="col-span-12 ">
-        <RecentOrders />
+        <Suspense fallback={<RecentOrdersSkeleton />}>
+          <RecentOrdersLayout />
+        </Suspense>
       </div>
     </div>
   );

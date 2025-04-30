@@ -4,31 +4,23 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import Badge from "../ui/badge/Badge";
-import prisma from "@/db/prisma";
+} from "../../ui/table";
 import Link from "next/link";
-import { getOrgnaizationId } from "@/db/queries/utils.query";
+import { recentOrdersType } from "@/db/queries/dasboard.query";
+import Badge from "@/components/ui/badge/Badge";
 
 
 
 
-export default async function  RecentOrders() {
-  const organizationId = await getOrgnaizationId()
-  const clientData = await prisma.client.findMany({
-    where:{
-      user:{
-        organizationId: organizationId,
-        role: "CLIENT",
-      }
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: 5,
-include: {
-      user: true,}
-  });
+export default async function  RecentOrders(
+
+  {
+    clientData,
+  }: {
+    clientData: recentOrdersType
+  }
+) {
+  
 
   
 

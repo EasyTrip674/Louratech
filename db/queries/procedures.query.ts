@@ -92,6 +92,8 @@ export const getProcedureWithStats = async () => {
   return proceduresFinal;
 };
 
+export type gProcedureWithStat = Prisma.PromiseReturnType<typeof getProcedureWithStats>;
+
 export const getActiveProcedures = async () => {
   const organizationId = await getOrgnaizationId();
 

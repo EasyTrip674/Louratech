@@ -310,3 +310,27 @@ export async function getClientServiceData(timeRange: 'month' | 'year' | 'all' =
 export type getClientServiceDataType = Prisma.PromiseReturnType<
   typeof getClientServiceData
 >;
+
+export const recentOrders = async () => {
+  const organizationId = await getOrgnaizationId()
+  return await prisma.client.findMany({
+    where:{
+      user:{
+        organizationId: organizationId,
+        role: "CLIENT",
+      }
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 5,
+include: {
+      user: true,
+    }
+  });
+
+}
+
+export type recentOrdersType = Prisma.PromiseReturnType<
+  typeof recentOrders
+>;
