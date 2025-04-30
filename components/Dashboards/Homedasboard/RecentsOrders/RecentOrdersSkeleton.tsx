@@ -4,7 +4,7 @@ import {
     TableCell,
     TableHeader,
     TableRow,
-  } from "../../ui/table";
+  } from "../../../ui/table";
 import { Skeleton } from "@/components/ui/Skeleton";
 import Link from "next/link";
 

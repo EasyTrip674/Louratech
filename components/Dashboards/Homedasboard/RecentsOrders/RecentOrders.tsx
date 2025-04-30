@@ -4,7 +4,7 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from "../../ui/table";
+} from "../../../ui/table";
 import Link from "next/link";
 import { recentOrdersType } from "@/db/queries/dasboard.query";
 import Badge from "@/components/ui/badge/Badge";

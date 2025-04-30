@@ -1,16 +1,12 @@
 import React, { Suspense } from 'react'
 import CreateProcedureFormModal from './create/CreateProcedureModalForm'
-import StatsServices from '@/components/ServicesDasboard/StatsServices/StatsServices'
-import StatsServicesSkeleton from '@/components/ServicesDasboard/StatsServices/StatsServicesSkeleton'
-import ServicesCardLayout from '@/components/ServicesDasboard/ServicesCards/ServicesCardLayout'
-import ServicesCardsSkeleton from '@/components/ServicesDasboard/ServicesCards/ServicesCardSkeleton'
+import StatsServices from '@/components/Dashboards/ServicesDasboard/StatsServices/StatsServices'
+import StatsServicesSkeleton from '@/components/Dashboards/ServicesDasboard/StatsServices/StatsServicesSkeleton'
+import ServicesCardLayout from '@/components/Dashboards/ServicesDasboard/ServicesCards/ServicesCardLayout'
+import ServicesCardsSkeleton from '@/components/Dashboards/ServicesDasboard/ServicesCards/ServicesCardSkeleton'
 
 const ProceduresPage = async () => {
   // Données simulées pour les procédures
-
-
-
-
 
 
   return (

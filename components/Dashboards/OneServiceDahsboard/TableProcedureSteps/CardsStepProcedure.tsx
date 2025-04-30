@@ -3,7 +3,7 @@ import React from "react";
 import Button from "@/components/ui/button/Button";
 import { Eye, Trash, Clock, ChevronRight } from "lucide-react";
 import { ProcedureWithStepsDb } from "@/db/queries/procedures.query";
-import EditStepFormModal from "./steps/step/edit/EditStepFormModal";
+import EditStepFormModal from "../../../../app/(admin)/services/gestion/procedures/[procedureId]/steps/step/edit/EditStepFormModal";
 import { authClient } from "@/lib/auth-client";
 
 type CardsProcedureStepsProps = {

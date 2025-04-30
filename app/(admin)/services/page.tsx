@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import React, { Suspense } from "react";
-import { MonthSalesChartLayout } from "@/components/dasboard/MonthlySalesChart/MonthSalesChartLayout";
-import { MonthlyTargetLayout } from "@/components/dasboard/MonthlyTarget/MonthlyTargetLayout";
-import MonthlyTargetSkeleton from "@/components/dasboard/MonthlyTarget/MonthlyTargetSkeleton";
-import { StatisticsServiceLayout } from "@/components/dasboard/StatisticsChart/StatisticsChartLayout";
-import { ProceduresMetrics } from "@/components/dasboard/ProcedureMetrics/ProceduresMetrics";
-import StatisticsServiceSkeleton from "@/components/dasboard/StatisticsChart/StatisticsChartSkeleton";
-import RecentOrdersSkeleton from "@/components/dasboard/RecentsOrders/RecentOrdersSkeleton";
-import { RecentOrdersLayout } from "@/components/dasboard/RecentsOrders/RecentOrdersLayout";
-import MonthlySalesChartSkeleton from "@/components/dasboard/MonthlySalesChart/MonthySalesChartSkeleton";
-import { ProceduresMetricsSkeleton } from "@/components/dasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
+import { MonthSalesChartLayout } from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthSalesChartLayout";
+import { MonthlyTargetLayout } from "@/components/Dashboards/Homedasboard/MonthlyTarget/MonthlyTargetLayout";
+import MonthlyTargetSkeleton from "@/components/Dashboards/Homedasboard/MonthlyTarget/MonthlyTargetSkeleton";
+import { StatisticsServiceLayout } from "@/components/Dashboards/Homedasboard/StatisticsChart/StatisticsChartLayout";
+import { ProceduresMetrics } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetrics";
+import StatisticsServiceSkeleton from "@/components/Dashboards/Homedasboard/StatisticsChart/StatisticsChartSkeleton";
+import RecentOrdersSkeleton from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersSkeleton";
+import { RecentOrdersLayout } from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersLayout";
+import MonthlySalesChartSkeleton from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthySalesChartSkeleton";
+import { ProceduresMetricsSkeleton } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
 
 export const metadata: Metadata = {
   title:
