@@ -12,9 +12,10 @@ export const createClientSchema = z.object({
     fatherFirstName: z.string().optional(),
     motherLastName: z.string().optional(),
     motherFirstName: z.string().optional(),
-    password: z.string().min(8, { message: "Le mot de passe doit comporter au moins 8 caractères" }),
-    confirmPassword: z.string().min(8, { message: "La confirmation du mot de passe doit comporter au moins 8 caractères" }),
-}).refine(data => data.password === data.confirmPassword, {
-    message: "Les mots de passe ne correspondent pas",
-    path: ["confirmPassword"],
-});
+    // password: z.string().min(8, { message: "Le mot de passe doit comporter au moins 8 caractères" }),
+    // confirmPassword: z.string().min(8, { message: "La confirmation du mot de passe doit comporter au moins 8 caractères" }),
+})
+// .refine(data => data.password === data.confirmPassword, {
+//     message: "Les mots de passe ne correspondent pas",
+//     path: ["confirmPassword"],
+// });

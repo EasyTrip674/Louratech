@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, {  } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +9,7 @@ import { Modal } from "@/components/ui/modal";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import PhoneInput from "@/components/form/group-input/PhoneInput";
-import {  EyeIcon, EyeCloseIcon } from "@/icons";
+// import {  EyeIcon, EyeCloseIcon } from "@/icons";
 import { countriesCode } from "@/lib/countries";
 import { Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
@@ -25,8 +25,8 @@ export default function CreateClientFormModal() {
   const { isOpen, openModal, closeModal } = useModal();
   const successModal = useModal();
   const errorModal = useModal();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // const [showPassword, setShowPassword] = useState(false);
+  // const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     control,
@@ -48,8 +48,6 @@ export default function CreateClientFormModal() {
       fatherFirstName: "",
       motherLastName: "",
       motherFirstName: "",
-      password: "",
-      confirmPassword: "",
     },
   });
 
@@ -172,7 +170,7 @@ export default function CreateClientFormModal() {
             </div>
             
             {/* Mot de passe */}
-            <div className="col-span-1">
+            {/* <div className="col-span-1">
               <Label>Mot de passe</Label>
               <div className="relative">
                 <Input 
@@ -193,10 +191,10 @@ export default function CreateClientFormModal() {
                   )}
                 </span>
               </div>
-            </div>
+            </div> */}
 
             {/* Confirmer le mot de passe */}
-            <div className="col-span-1">
+            {/* <div className="col-span-1">
               <Label>Confirmer le mot de passe</Label>
               <div className="relative">
                 <Input 
@@ -217,7 +215,7 @@ export default function CreateClientFormModal() {
                   )}
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">

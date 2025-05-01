@@ -18,9 +18,9 @@ export const doCreateClient = adminAction
             }
 
             // Validate password match
-            if (clientInput.password !== clientInput.confirmPassword) {
-                throw new Error("Les mots de passe ne correspondent pas");
-            }
+            // if (clientInput.password !== clientInput.confirmPassword) {
+            //     throw new Error("Les mots de passe ne correspondent pas");
+            // }
 
             // Check if client already exists
             const existingClient = await prisma.user.findFirst({
@@ -40,7 +40,7 @@ export const doCreateClient = adminAction
             const user = await auth.api.signUpEmail({
                 body: {
                     email: clientInput.email,
-                    password: clientInput.password,
+                    password: "00000000",
                     name: `${clientInput.firstName} ${clientInput.lastName}`,
                     options: {
                         emailVerification: false,
