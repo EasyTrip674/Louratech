@@ -19,7 +19,8 @@ import {
   FileText,
   CheckCircle,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Download
 } from "lucide-react";
 import Link from "next/link";
 import { getTransactionsDB } from "@/db/queries/finances.query";
@@ -27,6 +28,8 @@ import { PaymentMethod, TransactionType } from "@prisma/client";
 import { formatDate } from "@/lib/utils";
 import { getStepStatusBadge } from "@/lib/StatusBadge";
 import ApprovedTransactionModal from "../../../../app/(admin)/services/gestion/procedures/[procedureId]/clients/[clientProcedureId]/stepClient/payments/transactions/ApprovedTransactionModal";
+import DownloadPdf from "@/components/pdf/DowloadPdf";
+import { authClient } from "@/lib/auth-client";
 
 // Composant pour afficher les transactions financières avec pagination
 export const TransactionsTable = ({ transactions }: { transactions: getTransactionsDB }) => {
@@ -94,6 +97,9 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
     }
   };
 
+  // const
+  const session = authClient.useSession();
+
   return (
     <div className="max-w-full overflow-x-auto">
       <div className="min-w-[1102px]">
@@ -119,15 +125,19 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                   Description
                 </div>
               </TableCell>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="w-4 h-4" />
-                  Catégorie
-                </div>
-              </TableCell>
+           {
+                session?.data?.userDetails?.authorize?.canReadInvoice && (
+                  <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal className="w-4 h-4" />
+                    Facture
+                  </div>
+                </TableCell>
+                )
+           }
               <TableCell
                 isHeader
                 className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -195,11 +205,21 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  <div className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-center">
-                    {transaction.category?.name || "Non catégorisé"}
+               {
+                session?.data?.userDetails?.authorize?.canReadInvoice && (
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                  <div className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center hover:text-brand-500">
+                    {/* {transaction.category?.name || "Non catégorisé"} */}
+                    <DownloadPdf transaction={transaction} canReadInvoice={session?.data?.userDetails?.authorize?.canReadInvoice }>
+                      <span className="flex items-center text-gray-500 dark:text-gray-400">
+                      <Download className="w-4 h-4 mr-1" />
+                      Télécharger
+                      </span>
+                    </DownloadPdf>
                   </div>
                 </TableCell>
+                )
+               }
                 <TableCell className="px-4 py-3 text-start">
                   {getStepStatusBadge(transaction.status)}
                   {

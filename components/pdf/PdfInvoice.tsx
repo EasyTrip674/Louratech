@@ -1,5 +1,6 @@
 "use client";
 
+import { getTransactionsDB } from '@/db/queries/finances.query';
 import { ClientStepPaymentInfo } from '@/db/queries/procedures.query';
 import { formatDate } from '@/lib/utils';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
 
 // PDF Document Component
 const InvoicePDF = ({ transaction }: {
-  transaction: ClientStepPaymentInfo["transactions"][0]
+  transaction: ClientStepPaymentInfo["transactions"][0] | getTransactionsDB[0]
 }) => {
   // Statut en français
   const getStatusText = (status?:  ClientStepPaymentInfo["transactions"][0]['status']) => {

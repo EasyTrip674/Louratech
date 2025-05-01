@@ -1,14 +1,16 @@
+import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import React from "react";
 
 export default function SidebarWidget() {
+  const session = authClient.useSession();
   return (
     <div
       className={`
         mx-auto mb-10 w-full max-w-60 rounded-2xl bg-gray-50 px-4 py-5 text-center dark:bg-white/[0.03]`}
     >
       <Image
-        src="/a/2.png"
+        src={session.data?.userDetails?.organization?.logo ?? "/a/2.png"}
         alt="Illustration"
         width={300}
         height={300}

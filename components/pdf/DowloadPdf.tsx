@@ -3,9 +3,10 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import InvoicePDF from "./PdfInvoice";
 import { ClientStepPaymentInfo } from "@/db/queries/procedures.query";
 import { PropsWithChildren } from "react";
+import { getTransactionsDB } from "@/db/queries/finances.query";
 
 export default function DownloadPdf(
-  {transaction,canReadInvoice=false, children}:PropsWithChildren<{  transaction: ClientStepPaymentInfo["transactions"][0] , canReadInvoice?: boolean }>
+  {transaction,canReadInvoice=false, children}:PropsWithChildren<{  transaction: ClientStepPaymentInfo["transactions"][0] | getTransactionsDB[0] , canReadInvoice?: boolean }>
 ) {
  
   if (!transaction || !canReadInvoice) {

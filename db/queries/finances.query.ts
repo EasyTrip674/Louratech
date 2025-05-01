@@ -11,10 +11,23 @@ export const getTransactionsDB = async () => {
     },
     include: {
         createdBy:true,
+        organization: true,
         approvedBy:true,
         category:true,
         expense:true,
         revenue:true,
+        clientProcedure:
+        {
+          include:{
+            client:
+            {
+              include:{
+                user:true,
+              }
+            },
+            procedure:true,
+          }
+        },
     }
   });
   return transactions;

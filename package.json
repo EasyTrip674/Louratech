@@ -13,7 +13,7 @@
     "prisma:studio": "prisma studio",
     "prisma:seed": "prisma db seed",
     "prisma:push": "prisma db push",
-     "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@copilotkit/react-core": "1.8.4",
@@ -33,6 +33,7 @@
     "@tailwindcss/postcss": "^4.0.9",
     "@tanstack/react-query": "^5.67.1",
     "@types/bcrypt": "^5.0.2",
+    "@vercel/blob": "^1.0.0",
     "apexcharts": "^4.5.0",
     "bcrypt": "^5.1.1",
     "better-auth": "^1.2.5",
@@ -62,6 +63,6 @@
     "typescript": "^5"
   },
   "prisma": {
-  "seed": "node --loader ts-node/esm prisma/seed.ts"
-}
+    "seed": "node --loader ts-node/esm prisma/seed.ts"
+  }
 }

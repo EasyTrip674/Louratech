@@ -270,7 +270,7 @@ export default function FilteredTransactions({
             )}
             {dateRange.to && (
               <span className="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs dark:bg-blue-800 dark:text-blue-200">
-                Jusqu'à: {new Date(dateRange.to).toLocaleDateString()}
+                Jusqu&apos;à: {new Date(dateRange.to).toLocaleDateString()}
                 <button onClick={() => setDateRange({...dateRange, to: ""})} className="ml-1 hover:text-blue-600">
                   <X className="w-3 h-3" />
                 </button>
@@ -278,7 +278,7 @@ export default function FilteredTransactions({
             )}
             {amountRange.min && (
               <span className="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs dark:bg-blue-800 dark:text-blue-200">
-                Min: {amountRange.min}€
+                Min: {amountRange.min}fng
                 <button onClick={() => setAmountRange({...amountRange, min: ""})} className="ml-1 hover:text-blue-600">
                   <X className="w-3 h-3" />
                 </button>
@@ -286,7 +286,7 @@ export default function FilteredTransactions({
             )}
             {amountRange.max && (
               <span className="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs dark:bg-blue-800 dark:text-blue-200">
-                Max: {amountRange.max}€
+                Max: {amountRange.max}fng
                 <button onClick={() => setAmountRange({...amountRange, max: ""})} className="ml-1 hover:text-blue-600">
                   <X className="w-3 h-3" />
                 </button>
