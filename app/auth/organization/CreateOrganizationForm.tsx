@@ -6,12 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import { ChevronLeftIcon, EyeIcon, EyeCloseIcon } from "@/icons";
 import Button from "@/components/ui/button/Button";
 import { createOrganizationSchema } from "./create.organization.shema";
 import { doCreateOrganization } from "./organization.create.action";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { ChevronLeftIcon, Eye, EyeOff } from "lucide-react";
 
 
 type OrganizationFormData = z.infer<typeof createOrganizationSchema>;
@@ -169,9 +169,9 @@ export default function CreationOrganisationFormulaire() {
                   className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                 >
                   {showPassword ? (
-                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                    <Eye className="fill-gray-500 dark:fill-gray-400" />
                   ) : (
-                    <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                    <EyeOff className="fill-gray-500 dark:fill-gray-400" />
                   )}
                 </span>
               </div>
@@ -197,9 +197,9 @@ export default function CreationOrganisationFormulaire() {
                   className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                 >
                   {showConfirmPassword ? (
-                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                    <Eye className="fill-gray-500 dark:fill-gray-400" />
                   ) : (
-                    <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                    <EyeOff className="fill-gray-500 dark:fill-gray-400" />
                   )}
                 </span>
               </div>

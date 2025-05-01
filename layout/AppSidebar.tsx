@@ -5,8 +5,7 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 
 import SidebarWidget from "./SidebarWidget";
-import {  CalendarHeartIcon, ChevronDownIcon, GridIcon } from "lucide-react";
-import { HorizontaLDots } from "@/icons";
+import {  ChevronDownIcon, Ellipsis, GripHorizontal, LayoutDashboard, MonitorDot } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 type NavItem = {
@@ -25,12 +24,12 @@ const AppSidebar: React.FC = () => {
 
   const navItems: NavItem[] = [
     {
-      icon: <GridIcon />,
+      icon: <LayoutDashboard />,
       path: "/services",
       name: "Dashboard",
     },
     {
-      icon: <CalendarHeartIcon />,
+      icon: <MonitorDot />,
       name: "Gestion",
       path: "/services/gestion",
       subItems: [
@@ -349,7 +348,7 @@ const AppSidebar: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Menu"
                 ) : (
-                  <HorizontaLDots />
+                  <GripHorizontal />
                 )}
               </h2>
               {renderMenuItems(navItems, "main")}
@@ -366,7 +365,7 @@ const AppSidebar: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Others"
                 ) : (
-                  <HorizontaLDots />
+                  <Ellipsis />
                 )}
               </h2>
               {renderMenuItems(othersItems, "others")}
