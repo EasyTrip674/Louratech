@@ -26,7 +26,7 @@ import { getTransactionsDB } from "@/db/queries/finances.query";
 import { PaymentMethod, TransactionType } from "@prisma/client";
 import { formatDate } from "@/lib/utils";
 import { getStepStatusBadge } from "@/lib/StatusBadge";
-import ApprovedTransactionModal from "../procedures/[procedureId]/clients/[clientProcedureId]/stepClient/payments/transactions/ApprovedTransactionModal";
+import ApprovedTransactionModal from "../../../../app/(admin)/services/gestion/procedures/[procedureId]/clients/[clientProcedureId]/stepClient/payments/transactions/ApprovedTransactionModal";
 
 // Composant pour afficher les transactions financières avec pagination
 export const TransactionsTable = ({ transactions }: { transactions: getTransactionsDB }) => {

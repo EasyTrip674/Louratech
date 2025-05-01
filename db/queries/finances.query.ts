@@ -20,6 +20,8 @@ export const getTransactionsDB = async () => {
   return transactions;
 }
 
+
+
 export type getTransactionsDB =  Prisma.PromiseReturnType<typeof getTransactionsDB>;
 
 

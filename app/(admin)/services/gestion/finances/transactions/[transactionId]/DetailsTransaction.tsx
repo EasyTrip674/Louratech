@@ -300,10 +300,11 @@ export default function TransactionDetails(
 
                   {transaction.type === "REVENUE" && transaction.revenue?.source && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                      {/* description */}
+                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
                         <Building className="w-4 h-4 mr-2 text-gray-400" />
                         Source
-                      </dt>
+                      </div>
                       <div className="mt-1 text-gray-900 dark:text-white">
                         {transaction.revenue.source}
                       </div>

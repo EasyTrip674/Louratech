@@ -1,13 +1,12 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { Metadata } from "next";
-import React from "react";
-import TableEmployees from "./TableEmployees";
-// import CreateEmployeeFormModal from "./create/CreateEmployeeFormModal";
+import React, { Suspense } from "react";
 import CreateEmployeeFormModal from "./create/CreateEmployeeFormModal";
-import { employeesTableOrganizationDB } from "@/db/queries/employees.query";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
+import TableEmployeesLayout from "./TableEmployeesLayout";
+import TableEmployeesSkeleton from "./TableEmployeesSkeleton";
 
 export const metadata: Metadata = {
     title: "Employees",
@@ -16,7 +15,6 @@ export const metadata: Metadata = {
 };
 
 export default async function EmployeesPage() {
-  const employees = await employeesTableOrganizationDB();
   const session = await auth.api.getSession({
     headers: await headers()
   })
@@ -37,7 +35,9 @@ export default async function EmployeesPage() {
                         </div>
                     }
                 >
-                    <TableEmployees employees={employees} />
+                    <Suspense fallback={<TableEmployeesSkeleton />}>
+                        <TableEmployeesLayout />
+                    </Suspense>
                 </ComponentCard>
             </div>
         </div>
