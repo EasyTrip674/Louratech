@@ -2,13 +2,13 @@
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { authClient } from "@/lib/auth-client";
+import { Eye, EyeClosed, MoveLeft } from "lucide-react";
 
 // Définir le schéma avec Zod
 const signInSchema = z.object({
@@ -47,6 +47,7 @@ export default function SignInForm() {
         rememberMe: data.rememberMe,
         callbackURL: "/services"
       });
+      
 
       console.log(result);
       console.log(error);
@@ -66,7 +67,7 @@ export default function SignInForm() {
           href="/"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
-          <ChevronLeftIcon />
+          <MoveLeft />
           Retour au tableau de bord
         </Link>
       </div>
@@ -170,9 +171,9 @@ export default function SignInForm() {
                       className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                     >
                       {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                        <Eye className="fill-gray-500 dark:fill-gray-400" />
                       ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                        <EyeClosed className="fill-gray-500 dark:fill-gray-400" />
                       )}
                     </span>
                   </div>
@@ -180,7 +181,7 @@ export default function SignInForm() {
                     <p className="mt-1 text-xs text-error-500">{errors.password.message}</p>
                   )}
                 </div>
-                <div className="flex items-center justifier-between">
+                <div className="flex flex-col  justifier-between">
                   <div className="flex items-center gap-3">
                     <input
                     type="checkbox"  
@@ -194,12 +195,15 @@ export default function SignInForm() {
                       Garder ma session ouverte
                     </label>
                   </div>
-                  <Link
+               
+                <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
+                <Link
                     href="/reset-password"
                     className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                   >
                     Mot de passe oublié?
                   </Link>
+                </span>
                 </div>
                 <div>
                   <Button 
@@ -218,10 +222,10 @@ export default function SignInForm() {
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
                 Vous n&pos;avez pas de compte? {""}
                 <Link
-                  href="/signup"
+                  href="/auth/organization"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
                 >
-                  Inscrivez-vous
+                 Creer une agence
                 </Link>
               </p>
             </div>

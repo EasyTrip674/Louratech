@@ -80,6 +80,7 @@ export const getProcedureWithStats = async () => {
         id: proc.id,
         title: proc.name,
         totalClients,
+        description: proc.description,
         change,
         inProgress,
         completed,

@@ -1,11 +1,17 @@
 import { getProcedureDetails } from "@/db/queries/procedures.query";
+import { auth } from "@/lib/auth";
+import { formatCurrency } from "@/lib/utils";
 import { CheckCircle, Clock, CreditCard, Users } from "lucide-react";
+import { headers } from "next/headers";
 
 export default async function StatsService(
 {procedureId}: { procedureId: string },
 ) {
 
   const procedure = await getProcedureDetails(procedureId);
+  const serverSession = await auth.api.getSession({
+    headers: await headers()
+  })
 
     return (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
@@ -38,7 +44,9 @@ export default async function StatsService(
             <CreditCard className="h-6 w-6 text-purple-500" />
           </div>
           <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm">Revenu total</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{procedure?.totalRevenue} FNG</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{
+            formatCurrency(procedure?.totalRevenue ?? 0, serverSession?.userDetails?.organization?.comptaSettings?.currency)
+            }</p>
         </div>
       </div>
     )

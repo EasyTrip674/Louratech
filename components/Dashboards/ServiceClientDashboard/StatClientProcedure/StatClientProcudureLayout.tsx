@@ -1,9 +1,11 @@
 import Button from "@/components/ui/button/Button";
 import { getClientProcedureWithSteps } from "@/db/queries/procedures.query";
 import BackButton from "@/layout/BackButton";
+import { auth } from "@/lib/auth";
 import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
 import { calculateProgress, formatCurrency, formatDate } from "@/lib/utils";
 import { AlertCircle, ArrowLeft, Calendar, ChevronRight, Clipboard, User } from "lucide-react"
+import { headers } from "next/headers";
 import Link from "next/link"
 
 export  const StatClientProcedureLayout = async ({clientProcedureId,procedureId}:{    clientProcedureId: string;    procedureId: string;}) => {
@@ -28,6 +30,10 @@ export  const StatClientProcedureLayout = async ({clientProcedureId,procedureId}
 
 
   const progressPercentage = calculateProgress(clientProcedure.steps);
+
+  const serverSession = await auth.api.getSession({
+    headers: await headers()
+  })
 
 
     return (
@@ -157,7 +163,7 @@ export  const StatClientProcedureLayout = async ({clientProcedureId,procedureId}
                 {/* somme de tous les prix des etapes */}
                 {formatCurrency(
                   clientProcedure.steps.reduce((total, step) => total + (step.step.price || 0), 0)
-                )} 
+                , serverSession?.userDetails?.organization?.comptaSettings?.currency)} 
               </p>
             </div>
             <div>

@@ -164,7 +164,7 @@ const OrganizationSettings = () => {
     } finally {
       setSaving(false);
       router.refresh();
-    //   window.location.reload();
+      window.location.reload();
     }
   };
 

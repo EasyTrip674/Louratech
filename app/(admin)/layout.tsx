@@ -9,6 +9,8 @@ import React from "react";
 // import Loading from "../try";
 import { CopilotPopup } from "@copilotkit/react-ui";
 import "@copilotkit/react-ui/styles.css";
+import { authClient } from "@/lib/auth-client";
+import Loading from "../try";
 
 
 export default function AdminLayout({
@@ -26,13 +28,13 @@ export default function AdminLayout({
     : "lg:ml-[90px]";
 
     // redirect user to login page if not authenticated
-    // const { data: session, isPending, error } = authClient.useSession();
-    // if (isPending) return <Loading />;
-    // if (error) return <div>{error.message}</div>;
-    // if (!session) {
-    //   window.location.href = "/auth/signin";
-    //   return null;
-    // }
+    const { data: session ,isPending,error } = authClient.useSession();
+    if (isPending) return <Loading />;
+    if (error) return <div>{error.message}</div>;
+    if (!session) {
+      window.location.href = "/auth/signin";
+      return null;
+    }
 
   return (
    <>

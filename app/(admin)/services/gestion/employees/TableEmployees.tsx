@@ -15,6 +15,7 @@ import { employeesTableOrganizationDB } from "@/db/queries/employees.query";
 import { Eye, ChevronLeft, ChevronRight, Search, Filter, X } from "lucide-react";
 import EditEmployeeFormModal from "./edit/EditEmployeeFormModal";
 import { authClient } from "@/lib/auth-client";
+import DeleteemployeeFormModal from "./[employeeId]/delete/DeleteEmployeeFormModal";
 
 type TableEmployeesProps = {
   employees?: Awaited<ReturnType<typeof employeesTableOrganizationDB>>;
@@ -226,6 +227,14 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
                           {
                             session.data?.userDetails?.authorize?.canEditAdmin && (
                               <EditEmployeeFormModal admin={employee} />
+                            )
+                          }
+                          {
+                            session.data?.userDetails?.authorize?.canDeleteAdmin && (
+                             <DeleteemployeeFormModal
+                                employee={employee}
+                                inPageProfile={false} 
+                                />
                             )
                           }
                         </div>

@@ -30,13 +30,9 @@ export default function FilteredTransactions({
   const [filteredTransactions, setFilteredTransactions] = useState(transactions);
   const session = authClient.useSession();
   
-  // Appliquer tous les filtres lorsque les critères changent
-  useEffect(() => {
-    applyFilters();
-  }, [selectedTab, searchTerm, dateRange, amountRange, transactions]);
 
-  // Fonction pour appliquer tous les filtres
-  const applyFilters = () => {
+   // Fonction pour appliquer tous les filtres
+   const applyFilters = () => {
     let filtered = [...transactions];
     
     // Filtre par type (onglet)
@@ -89,6 +85,14 @@ export default function FilteredTransactions({
     
     setFilteredTransactions(filtered);
   };
+
+  
+
+  useEffect(() => {
+    applyFilters();
+  }, [selectedTab, searchTerm, dateRange, amountRange]);
+
+ 
 
   // Réinitialiser tous les filtres
   const resetFilters = () => {
@@ -313,7 +317,11 @@ export default function FilteredTransactions({
       </div>
       
       {/* Tableau des transactions */}
-      <TransactionsTable transactions={filteredTransactions} />
+      {
+        filteredTransactions.length > 0 && (
+            <TransactionsTable transactions={filteredTransactions} />
+        )
+      }
       
       {/* Message si aucune transaction */}
       {filteredTransactions.length === 0 && (

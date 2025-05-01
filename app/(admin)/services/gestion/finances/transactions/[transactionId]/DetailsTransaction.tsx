@@ -23,7 +23,7 @@ import {
   Paperclip,
   FileCheck,
 } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatAmount, formatDate } from "@/lib/utils";
 import {
   PaymentMethod,
   TransactionStatus,
@@ -72,11 +72,6 @@ export default function TransactionDetails(
     }
   };
 
-  // Format du montant avec le signe approprié
-  const formatAmount = (amount: number, type: TransactionType) => {
-    const sign = type === "EXPENSE" ? "-" : "+";
-    return `${sign} ${amount.toLocaleString("fr-FR")} FNG`;
-  };
 
   // Obtenir la classe de couleur pour le montant
   const getAmountClass = (type: TransactionType) => {
@@ -151,6 +146,8 @@ export default function TransactionDetails(
     }
   };
 
+  // const session = authClient.useSession();
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pb-12">
       {/* Header avec statut et actions */}
@@ -210,7 +207,7 @@ export default function TransactionDetails(
                 Montant total
               </span>
               <div className={`text-3xl font-bold ${getAmountClass(transaction.type)}`}>
-                {formatAmount(transaction.amount, transaction.type)}
+              {formatAmount(transaction.amount, transaction.type, session.data?.userDetails?.organization?.comptaSettings?.currency)}
               </div>
             </div>
             <div className="text-right">

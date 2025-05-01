@@ -1,7 +1,7 @@
 import Button from "@/components/ui/button/Button";
 import { getStepProcedureDetails } from "@/db/queries/procedures.query";
 import { auth } from "@/lib/auth";
-import { formatDate, getStatusBadgeClasses } from "@/lib/utils";
+import { formatCurrency, formatDate, getStatusBadgeClasses } from "@/lib/utils";
 import { Eye,  Users } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -83,7 +83,7 @@ stepId
                     {formatDate(String(clientStep.completionDate))}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                    {clientStep.price ? `${clientStep.price.toLocaleString()} FNG` : '-'}
+                    {clientStep.price ? `${formatCurrency(clientStep.price,session?.userDetails?.organization?.comptaSettings?.currency)}` : '-'}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <Link href={`/services/gestion/procedures/${clientStep.clientProcedure.procedureId}/clients/${clientStep.clientProcedure.id}`}>

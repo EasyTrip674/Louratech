@@ -25,17 +25,18 @@ import {
 import Link from "next/link";
 import { getTransactionsDB } from "@/db/queries/finances.query";
 import { PaymentMethod, TransactionType } from "@prisma/client";
-import { formatDate } from "@/lib/utils";
 import { getStepStatusBadge } from "@/lib/StatusBadge";
 import ApprovedTransactionModal from "../../../../app/(admin)/services/gestion/procedures/[procedureId]/clients/[clientProcedureId]/stepClient/payments/transactions/ApprovedTransactionModal";
 import DownloadPdf from "@/components/pdf/DowloadPdf";
 import { authClient } from "@/lib/auth-client";
+import { formatAmount, formatDate } from "@/lib/utils";
 
 // Composant pour afficher les transactions financières avec pagination
 export const TransactionsTable = ({ transactions }: { transactions: getTransactionsDB }) => {
   // État pour la pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
   
   if(!transactions || transactions.length === 0) {
       return (
@@ -72,11 +73,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
     }
   };
 
-  // Format du montant avec le signe approprié
-  const formatAmount = (amount: number, type: TransactionType) => {
-    const sign = type === "EXPENSE" ? "-" : "+";
-    return `${sign} ${amount.toLocaleString('fr-FR')} FNG`;
-  };
+
 
   // Obtenir la classe de couleur pour le montant
   const getAmountClass = (type: TransactionType) => {
@@ -99,6 +96,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
 
   // const
   const session = authClient.useSession();
+
 
   return (
     <div className="max-w-full overflow-x-auto">
@@ -242,7 +240,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                   )}
                 </TableCell>
                 <TableCell className={`px-4 py-3 text-start text-lg ${getAmountClass(transaction.type)}`}>
-                  {formatAmount(transaction.amount, transaction.type)}
+                  {formatAmount(transaction.amount, transaction.type, session.data?.userDetails?.organization?.comptaSettings?.currency)}
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                   <div className="flex items-center">

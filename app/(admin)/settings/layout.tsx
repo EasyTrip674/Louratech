@@ -1,12 +1,24 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowLeftFromLine } from 'lucide-react';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 interface SettingsLayoutProps {
   children: ReactNode;
 }
 
-export default function SettingsLayout({ children }: SettingsLayoutProps) {
+export default async function SettingsLayout({ children }: SettingsLayoutProps) {
+    const  session = await auth.api.getSession({
+        headers: await headers()
+    }) 
+    if (!session?.userDetails?.authorize?.canEditOrganization) {
+        return (
+          <div className="flex items-center justify-center h-screen">
+            <h1 className="text-2xl font-bold">Accès refusé</h1>
+          </div>
+        );
+    }
   return (
     <div className="">
       <header className="">

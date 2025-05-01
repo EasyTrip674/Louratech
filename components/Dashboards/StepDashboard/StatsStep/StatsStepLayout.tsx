@@ -2,7 +2,7 @@ import EditStepFormModal from "@/app/(admin)/services/gestion/procedures/[proced
 import Button from "@/components/ui/button/Button";
 import { getStepProcedureDetails } from "@/db/queries/procedures.query";
 import { auth } from "@/lib/auth";
-import { formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import { ArrowLeft, Calendar, CheckCircle, Clock, CreditCard, FileText, ListChecks, Users } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -96,7 +96,7 @@ export default async function StatsStepLayout(
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Revenu total</p>
-              <p className="text-3xl font-bold mt-2 dark:text-white">{totalRevenue.toLocaleString()} FNG</p>
+              <p className="text-3xl font-bold mt-2 dark:text-white">{formatCurrency(totalRevenue,session?.userDetails?.organization?.comptaSettings?.currency)}</p>
             </div>
             <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
               <CreditCard className="w-6 h-6 text-green-600 dark:text-green-400" />
@@ -104,7 +104,7 @@ export default async function StatsStepLayout(
           </div>
           <div className="mt-4 flex justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Prix moyen :</span>
-            <span className="text-green-600 dark:text-green-400 font-medium">{averagePrice.toLocaleString()} FNG</span>
+            <span className="text-green-600 dark:text-green-400 font-medium">{formatCurrency(averagePrice,session?.userDetails?.organization?.comptaSettings?.currency)}</span>
           </div>
         </div>
 
@@ -112,7 +112,7 @@ export default async function StatsStepLayout(
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Prix de base</p>
-              <p className="text-3xl font-bold mt-2 dark:text-white">{step.price ? `${step.price.toLocaleString()} FNG` : 'Non défini'}</p>
+              <p className="text-3xl font-bold mt-2 dark:text-white">{step.price ? formatCurrency(step.price,session?.userDetails?.organization?.comptaSettings?.currency) : 'Non défini'}</p>
             </div>
             <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
               <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
@@ -196,7 +196,7 @@ export default async function StatsStepLayout(
                 <h3 className="text-sm font-medium text-green-800 dark:text-green-300">Revenu total</h3>
                 <CreditCard className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
-              <p className="text-3xl font-bold text-green-700 dark:text-green-300">{totalRevenue.toLocaleString()} FNG</p>
+              <p className="text-3xl font-bold text-green-700 dark:text-green-300">{formatCurrency(totalRevenue,session?.userDetails?.organization?.comptaSettings?.currency)} </p>
               <p className="text-sm text-green-600 dark:text-green-400 mt-2">
                 {totalClients} client{totalClients > 1 ? 's' : ''}
               </p>
@@ -207,9 +207,9 @@ export default async function StatsStepLayout(
                 <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300">Prix moyen facturé</h3>
                 <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">{averagePrice.toLocaleString()} FNG</p>
+              <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">{formatCurrency(averagePrice,session?.userDetails?.organization?.comptaSettings?.currency)}</p>
               <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">
-                {step.price ? `Prix de base: ${step.price.toLocaleString()} FNG` : 'Prix de base non défini'}
+                {step.price ? `Prix de base: ${formatCurrency(step.price,session?.userDetails?.organization?.comptaSettings?.currency)}` : 'Prix de base non défini'}
               </p>
             </div>
             

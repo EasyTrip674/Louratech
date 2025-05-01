@@ -20,6 +20,7 @@ import { ProcedureFinancialSummarySkeleton } from '@/components/Dashboards/OneSe
 import TableClientsProcedureSkeleton from '@/components/Dashboards/OneServiceDahsboard/TableClientsProcedure/TableClientsProcedureSkeleton';
 import TableProcedureStepsSkeleton from '@/components/Dashboards/OneServiceDahsboard/TableProcedureSteps/TableProcedureStepsSkeleton';
 import TableProcedureStepsLayout from '@/components/Dashboards/OneServiceDahsboard/TableProcedureSteps/TableProcedureStepsLayout';
+import EditProcedureFormModal from './edit/CreateEditModalForm';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
 
 // Type pour les paramètres de la page
@@ -76,6 +77,13 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{procedure.name}</h1>
             <p className="text-gray-500 dark:text-gray-400">{procedure.description}</p>
           </div>
+         {
+          session?.userDetails?.authorize?.canEditProcedure && (
+            <EditProcedureFormModal procedure={
+              { procedureId: procedure.id, name:procedure.name ?? "", description: procedure.description ?? "" }
+            } />
+          )
+         }
         </div>
         
         <div className="flex items-center gap-3 mt-4 md:mt-0">

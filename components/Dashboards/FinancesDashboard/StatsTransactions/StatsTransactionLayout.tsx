@@ -1,5 +1,8 @@
 import { getTransactionsDB } from "@/db/queries/finances.query";
+import { auth } from "@/lib/auth";
+import { formatCurrency } from "@/lib/utils";
 import { ArrowDownCircle, ArrowUpCircle, CheckCircle } from "lucide-react";
+import { headers } from "next/headers";
 
 export default async function StatsTransactionLayout() {
 
@@ -15,6 +18,10 @@ const totalExpenses = transactions
 
 const balance = totalRevenues - totalExpenses;
 
+const session = await auth.api.getSession({
+  headers: await headers()
+})
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -24,7 +31,7 @@ const balance = totalRevenues - totalExpenses;
         <ArrowUpCircle className="w-6 h-6 text-green-500" />
       </div>
       <div className="text-2xl font-bold text-gray-900 dark:text-white">
-        {totalRevenues.toLocaleString('fr-FR')} FNG
+        {formatCurrency(totalRevenues,session?.userDetails?.organization?.comptaSettings?.currency)}
       </div>
       <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
         Total des revenus approuvés
@@ -37,7 +44,7 @@ const balance = totalRevenues - totalExpenses;
         <ArrowDownCircle className="w-6 h-6 text-red-500" />
       </div>
       <div className="text-2xl font-bold text-gray-900 dark:text-white">
-        {totalExpenses.toLocaleString('fr-FR')} FNG
+      {formatCurrency(totalExpenses,session?.userDetails?.organization?.comptaSettings?.currency)}
       </div>
       <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
         Total des dépenses approuvées
@@ -50,7 +57,7 @@ const balance = totalRevenues - totalExpenses;
         <CheckCircle className="w-6 h-6 text-blue-500" />
       </div>
       <div className={`text-2xl font-bold ${balance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-        {balance.toLocaleString('fr-FR')} FNG
+      {formatCurrency(balance,session?.userDetails?.organization?.comptaSettings?.currency)}
       </div>
       <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
         Différence entrées/sorties

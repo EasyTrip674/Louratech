@@ -5,6 +5,7 @@ import { Eye, Trash, Clock, ChevronRight } from "lucide-react";
 import { ProcedureWithStepsDb } from "@/db/queries/procedures.query";
 import EditStepFormModal from "../../../../app/(admin)/services/gestion/procedures/[procedureId]/steps/step/edit/EditStepFormModal";
 import { authClient } from "@/lib/auth-client";
+import { formatCurrency } from "@/lib/utils";
 
 type CardsProcedureStepsProps = {
   procedureDetails: ProcedureWithStepsDb;
@@ -44,7 +45,7 @@ export default function CardsProcedureSteps({
               {/* Prix du module */}
               {step.price !== null && (
                 <div className="bg-green-100 dark:bg-green-900/30 py-1 px-3 rounded-full">
-                  <span className="text-green-700 dark:text-green-300 text-sm font-medium">{step.price.toLocaleString()} FNG</span>
+                  <span className="text-green-700 dark:text-green-300 text-sm font-medium">{formatCurrency(step.price, session.data?.userDetails?.organization?.comptaSettings?.currency)}</span>
                 </div>
               )}
             </div>

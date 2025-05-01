@@ -8,6 +8,7 @@ import ApprovedTransactionModal from "./transactions/ApprovedTransactionModal";
 import DownloadPdf from "@/components/pdf/DowloadPdf";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { formatCurrency } from "@/lib/utils";
 
 // Types pour les données de facturation liées à un ClientStep
 interface PaymentInfoModalProps {
@@ -31,10 +32,6 @@ export default async function PaymentStepDetails({
   })
 
   
-  // Formatage pour affichage de la monnaie
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('fr-GN', { style: 'currency', currency: 'GNF' }).format(amount);
-  };
 
   // Calcul du montant total payé et du montant restant à payer
   const allTransactions = data.transactions;
@@ -165,7 +162,7 @@ export default async function PaymentStepDetails({
                   <Receipt className="h-4 w-4 mr-1.5 text-primary/70" />
                   Prix de l&apos;étape
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(data.clientStep.price || 0)}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(data.clientStep.price || 0, session?.userDetails?.organization?.comptaSettings?.currency)}</p>
               </div>
               
               <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
@@ -173,7 +170,7 @@ export default async function PaymentStepDetails({
                   <CircleCheckIcon className="h-4 w-4 mr-1.5 text-emerald-500" />
                   Déjà payé
                 </p>
-                <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(totalPaid)}</p>
+                <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(totalPaid,session?.userDetails?.organization?.comptaSettings?.currency)}</p>
               </div>
               
               <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
@@ -181,7 +178,7 @@ export default async function PaymentStepDetails({
                   <AlertCircle className="h-4 w-4 mr-1.5 text-amber-500" />
                   Reste à payer
                 </p>
-                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{formatCurrency(Math.max(remainingAmount,0))}</p>
+                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{formatCurrency(Math.max(remainingAmount,0),session?.userDetails?.organization?.comptaSettings?.currency)}</p>
                 {remainingAmount <= 0 && (
                   <span className="inline-flex items-center mt-2 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800">
                     <CircleCheckIcon className="h-3 w-3 mr-1" />
@@ -228,7 +225,7 @@ export default async function PaymentStepDetails({
                         {data.transactions.map((transaction) => (
                           <tr key={transaction.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{formatReadableDate(transaction.date)}</td>
-                            <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200">{formatCurrency(transaction.amount)}</td>
+                            <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200">{formatCurrency(transaction.amount,session?.userDetails?.organization?.comptaSettings?.currency)}</td>
                             <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
                               <div className="flex items-center">
                                 <span className="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 dark:bg-gray-700 mr-2">

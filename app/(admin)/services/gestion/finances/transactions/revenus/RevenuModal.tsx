@@ -216,7 +216,7 @@ const CreateRevenuModal = ({}: Props) => {
             )}
             {currentAmount > 0 && (
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {formatCurrency(currentAmount)}
+                {formatCurrency(currentAmount,session.data?.userDetails?.organization?.comptaSettings?.currency)}
               </p>
             )}
           </div>

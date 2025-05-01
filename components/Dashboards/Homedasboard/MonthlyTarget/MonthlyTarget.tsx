@@ -3,6 +3,7 @@ import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { getMonthlyTargetStatsType } from "@/db/queries/dasboard.query";
 import { formatCurrency } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -11,6 +12,8 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 export default function MonthlyTarget({MonthlyTargetData}:{MonthlyTargetData:getMonthlyTargetStatsType}) {
   // Calculer le pourcentage de progression vers l'objectif (au lieu du pourcentage de changement)
   const progressToTarget = Math.min(100, Math.round((MonthlyTargetData.currentMonthAmount / MonthlyTargetData.target) * 100));
+
+  const session = authClient.useSession()
   
   const series = [progressToTarget];
   const options: ApexOptions = {
@@ -79,7 +82,7 @@ export default function MonthlyTarget({MonthlyTargetData}:{MonthlyTargetData:get
     const remainingDays = daysInMonth - currentDay;
     
     if (MonthlyTargetData.currentMonthAmount >= MonthlyTargetData.target) {
-      return `🎉 Bravo! Vous avez atteint votre objectif mensuel de ${formatCurrency(MonthlyTargetData.target)}.`;
+      return `🎉 Bravo! Vous avez atteint votre objectif mensuel de ${formatCurrency(MonthlyTargetData.target,session.data?.userDetails?.organization?.comptaSettings?.currency)}.`;
     } else {
       return `🎯 Il vous reste ${formatCurrency(remaining)} pour atteindre votre objectif mensuel (${remainingDays} jours restants).`;
     }
@@ -96,7 +99,7 @@ export default function MonthlyTarget({MonthlyTargetData}:{MonthlyTargetData:get
               Objectif Mensuel
             </h3>
             <p className="mt-1 font-normal text-gray-500 text-theme-sm dark:text-gray-400">
-              Progression vers l&apos;objectif de {formatCurrency(MonthlyTargetData.target)}
+              Progression vers l&apos;objectif de {formatCurrency(MonthlyTargetData.target,session.data?.userDetails?.organization?.comptaSettings?.currency)}
             </p>
             <p className="mt-1 font-normal text-gray-500 text-theme-xs dark:text-gray-400">
               Objectif de {formatCurrency(MonthlyTargetData.target)} basé sur le <span className="text-brand-300">120% </span> du Chiffre d&apos;Affaire du mois dernier 
@@ -128,7 +131,7 @@ export default function MonthlyTarget({MonthlyTargetData}:{MonthlyTargetData:get
             Objectif
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            {formatCurrency(MonthlyTargetData.target)}
+            {formatCurrency(MonthlyTargetData.target,session.data?.userDetails?.organization?.comptaSettings?.currency)}
           </p>
         </div>
 
@@ -139,7 +142,7 @@ export default function MonthlyTarget({MonthlyTargetData}:{MonthlyTargetData:get
             Actuel
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            {formatCurrency(MonthlyTargetData.currentMonthAmount)}
+            {formatCurrency(MonthlyTargetData.currentMonthAmount,session.data?.userDetails?.organization?.comptaSettings?.currency)}
           </p>
         </div>
 
@@ -150,7 +153,7 @@ export default function MonthlyTarget({MonthlyTargetData}:{MonthlyTargetData:get
             Aujourd&apos;hui
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            {formatCurrency(MonthlyTargetData.today)}
+            {formatCurrency(MonthlyTargetData.today,session.data?.userDetails?.organization?.comptaSettings?.currency)}
           </p>
         </div>
       </div>

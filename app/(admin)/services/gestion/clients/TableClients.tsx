@@ -15,6 +15,7 @@ import { clientsTableOrganizationDB } from "@/db/queries/clients.query";
 import EditClientFormModal from "./edit/EditClientFormModal";
 import { Eye, ChevronLeft, ChevronRight, Search, Filter, X } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import DeleteClientFormModal from "./[clientId]/delete/DeleteClientFormModal";
 
 type TableClientsProps = {
   clients?: Awaited<ReturnType<typeof clientsTableOrganizationDB>>;
@@ -225,6 +226,12 @@ export default function TableClients({ clients }: TableClientsProps) {
                           {
                             session.data?.userDetails?.authorize?.canEditClient && (
                               <EditClientFormModal client={client} />
+                            )
+                          }
+
+                          {
+                            session.data?.userDetails?.authorize?.canDeleteClient && (
+                              <DeleteClientFormModal client={client} inPageProfile={false} />
                             )
                           }
                         </div>

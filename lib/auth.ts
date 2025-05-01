@@ -23,10 +23,15 @@ export const auth = betterAuth({
                 },
                 include:{
                   admin:true,
-                    organization:true,
+                    organization:{
+                       include:{
+                        comptaSettings:true,
+                       }
+                    },
                     authorize:true,
                     member:true,
                     client:true,
+                   
                 }
             });
             return {

@@ -2,15 +2,16 @@
 
 import { BadgeColor } from "@/components/ui/badge/Badge";
 import { ClientProcedureWithSteps } from "@/db/queries/procedures.query";
+import { TransactionType } from "@prisma/client";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-export function formatCurrency(value: number): string {
+export function formatCurrency(value: number, devise:string = "FNG"): string {
   if (value >= 1_000_000) {
     const millions = value / 1_000_000;
-    return `${millions.toFixed(2)} M FNG`;
+    return `${millions.toFixed(2)} M ${devise}`;
   }
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'FNG', maximumFractionDigits: 0 }).format(value);
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: devise, maximumFractionDigits: 0 }).format(value);
 }
 
 
@@ -71,3 +72,9 @@ export  const getStatusBadgeClasses = (status:string) => {
       return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700';
   }
 };
+
+    // Format du montant avec le signe approprié
+    export const formatAmount = (amount: number, type: TransactionType, devise:string = 'FNG') => {
+      const sign = type === "EXPENSE" ? "-" : "+";
+      return `${sign} ${formatCurrency(amount, devise)}`;
+    };
