@@ -5,13 +5,14 @@ import ClientsStepLayoutSkeleton from '@/components/Dashboards/StepDashboard/Cli
 import StatsStepSkeleton from '@/components/Dashboards/StepDashboard/StatsStep/StatsStepSkeleton';
 
 type PageProps = {
-  params: {
+  params: Promise<{
     procedureId: string;
     stepId: string;
-  };
+  }>
 };
 
-export default async function StepDetailPage({ params }: PageProps) {
+export default async function StepDetailPage(props: PageProps) {
+  const params = await props.params;
   
   return (
     <div className="py-8 px-4 sm:px-6 max-w-7xl mx-auto space-y-8">
