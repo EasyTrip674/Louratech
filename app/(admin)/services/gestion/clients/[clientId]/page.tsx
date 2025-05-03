@@ -12,8 +12,8 @@ import { headers } from "next/headers";
 export const metadata: Metadata = {
     title: "Client",
     description: "Client page",
-    // other metadata
 };
+
 
 export default async function Profile(
   {
@@ -23,7 +23,7 @@ export default async function Profile(
   }
 ) {
 
-  const clientId = await params.clientId;
+  const clientId = params.clientId;
   const session = await auth.api.getSession({
     headers: await headers()  
   })  
