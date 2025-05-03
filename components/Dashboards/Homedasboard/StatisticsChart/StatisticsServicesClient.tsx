@@ -20,7 +20,7 @@ export default function StatisticsServiceClient(
     setClientServicesData({
       series: servicesClientData.series
     });
-  }, []);
+  }, [servicesClientData.series]);
 
   if (!clientServicesData) {
     return null;

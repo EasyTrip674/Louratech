@@ -9,7 +9,7 @@ import { revalidatePath } from 'next/cache';
 // Met à jour les informations de l'organisation
 export async function PUT(
   request: NextRequest,
-  props: { params: Promise< { id: string }> }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
     const params = await props.params;
