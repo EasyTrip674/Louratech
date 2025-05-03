@@ -2,12 +2,11 @@ import { Suspense } from "react";
 import TransactionDetailsLayout from "./DetailsTransactionLayout";
 import TransactionDetailsSkeleton from "./TransactionDetailsSkeleton";
 
-export default async function TransactionDetailsPage({
-    params,
-    }: {
-    params: { transactionId: string };
+export default async function TransactionDetailsPage(props: {
+    params: Promise<{ transactionId: string }>;
 }) {
 
+  const params = await props.params;
     const transactionId = params.transactionId;
 
 return (
