@@ -17,8 +17,12 @@ export const metadata: Metadata = {
     // other metadata
 };
 
+type PageProps = {
+  params: { employeeId: string };
+};
+
 export default async function Profile(
-    {params:{employeeId}}: {params: {employeeId: string}}
+    {params:{employeeId}}: PageProps
 
 ) {
 

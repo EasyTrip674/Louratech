@@ -15,34 +15,28 @@ export const metadata: Metadata = {
     // other metadata
 };
 
-export default async function Profile(
-  {
-    params,
-  }: {
-    params: { clientId: string };
-  }
-) {
+type PageProps = {
+  params: { clientId: string };
+};
 
-  const { clientId } = params;
+export default async function Profile({ params }: PageProps) {
   const session = await auth.api.getSession({
     headers: await headers()  
-  })  
+  });
 
-   const client = await clientProfileDB(clientId);
+  const client = await clientProfileDB(params.clientId);
 
-    if (!client) {
-        return notFound();
-    }
+  if (!client) {
+    return notFound();
+  }
 
   return (
     <div>
-
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
         <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">
           Client
         </h3>
         <div className="space-y-6">
-
           <UserProfileCard 
             role={Role.CLIENT}
             email={client.user.email}
@@ -51,12 +45,15 @@ export default async function Profile(
             phone={client.phone || ""}
             address={client.address || ""}
             imageSrc={""}
-           />
+          />
           <ClientInfoCard client={client} canEditCLient={session?.userDetails?.authorize?.canEditClient} />
           <UserCredentialsManage
-          canEditPassword={session?.userDetails?.authorize?.canChangeUserPassword ?? false}
-           role={Role.CLIENT}
-           userId={client.user.id} email={client.user.email} active={client.user.active} />
+            canEditPassword={session?.userDetails?.authorize?.canChangeUserPassword ?? false}
+            role={Role.CLIENT}
+            userId={client.user.id} 
+            email={client.user.email} 
+            active={client.user.active} 
+          />
         </div>
       </div>
     </div>
