@@ -33,13 +33,6 @@ type TableClientsProcedureProps = {
 
 
 
-
-
-// Helper function to get invoice status color and label
-
-
-// Calculate procedure progress
-
 export default async function TableClientsProcedure({ 
   procedureDetails,
   showDates = true,
@@ -131,7 +124,7 @@ export default async function TableClientsProcedure({
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {clientProcedures.map((clientProc) => {
-                const progress = calculateProgress(clientProc.steps);
+                const progress = clientProc.steps ? calculateProgress(clientProc.steps) : 0;
                 
                 return (
                   <TableRow 

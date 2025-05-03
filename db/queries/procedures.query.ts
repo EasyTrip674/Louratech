@@ -288,6 +288,9 @@ export async function getProcedureWithStepsDb(procedureId: string) {
           orderBy: {
             order: 'asc',
           },
+          include: {
+            clientSteps: true,
+          }
         },
       },
     });

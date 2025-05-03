@@ -1,7 +1,7 @@
 // create formatCurrency
 
 import { BadgeColor } from "@/components/ui/badge/Badge";
-import { ClientProcedureWithSteps } from "@/db/queries/procedures.query";
+import { ClientProcedureWithSteps, procedureDetailsDb } from "@/db/queries/procedures.query";
 import { TransactionType } from "@prisma/client";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
@@ -75,7 +75,7 @@ export function formatDate(date?: Date | string): string {
   }).format(date);
 }
 
-export const calculateProgress = (steps: NonNullable<ClientProcedureWithSteps>["steps"]) => {
+export const calculateProgress = (steps: NonNullable<ClientProcedureWithSteps>["steps"] | NonNullable<procedureDetailsDb>["clientProcedures"][0]["steps"]) => {
   if (!steps.length) return 0;
   const completed = steps.filter(step => step.status === "COMPLETED").length;
   return Math.round((completed / steps.length) * 100);
