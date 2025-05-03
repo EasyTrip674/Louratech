@@ -17,14 +17,12 @@ export const metadata: Metadata = {
 // We need to use the generated Next.js types for this file
 // Rather than creating our own PageProps type
 type PageProps = {
-  params: {
-    clientId: string;
-  };
+  params:  Promise<{ clientId: string }>
   searchParams: Record<string, string | string[] | undefined>;
 };
 
 export default async function Profile(props: PageProps) {
-  const { params } = props;
+  const  params  = await props.params;
   const clientId = params.clientId;
   
   const session = await auth.api.getSession({

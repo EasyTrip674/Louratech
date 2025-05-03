@@ -5,17 +5,12 @@ import { StatClientProcedureLayoutSkeleton } from "@/components/Dashboards/Servi
 import StepsClientProcedureSkeleton from "@/components/Dashboards/ServiceClientDashboard/StepsClientProcedure/StepsClientProcedureSkeleton";
 
 
-export default async function ClientProcedurePage({
-  params
-}: {
-  params: {
-    procedureId: string;
-    clientProcedureId: string;
-  }
+export default async function ClientProcedurePage(props: {
+  params: Promise<{ procedureId: string; clientProcedureId: string }>;
 }) {
+  const params = await props.params;
   const procedureId = params.procedureId;
   const clientProcedureId = params.clientProcedureId;
-
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
