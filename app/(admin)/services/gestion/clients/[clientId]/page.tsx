@@ -18,7 +18,6 @@ export const metadata: Metadata = {
 // Rather than creating our own PageProps type
 type PageProps = {
   params:  Promise<{ clientId: string }>
-  searchParams: Record<string, string | string[] | undefined>;
 };
 
 export default async function Profile(props: PageProps) {

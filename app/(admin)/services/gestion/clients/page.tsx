@@ -11,7 +11,6 @@ import TableClientsSkeleton from "./TableClientsSkeleton";
 export const metadata: Metadata = {
     title: "Clients",
     description: "Gestion des clients de l'entreprise",
-    // other metadata
 };
 
 export default async function  ClientsPage() {
