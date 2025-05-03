@@ -15,8 +15,6 @@ export default async function AdminLayout({
     })
 
 
-    // une page d'erreur 403
-
     if (!user?.userDetails?.authorize?.canReadTransaction) {
         return (
           <NotAuthorized />     
