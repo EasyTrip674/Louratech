@@ -11,14 +11,25 @@ export const getTransactionsDB = async () => {
     },
     include: {
         createdBy:true,
+        organization: true,
         approvedBy:true,
         category:true,
         expense:true,
         revenue:true,
-<<<<<<< main
-    }
-=======
         clientProcedure:
+        {
+          include:{
+            client:
+            {
+              include:{
+                user:true,
+              }
+            },
+            procedure:true,
+          }
+        },
+        clientProcedure:
+        
         {
           include:{
             client:
@@ -34,10 +45,11 @@ export const getTransactionsDB = async () => {
     orderBy: {
       createdAt: "desc",
     },
->>>>>>> local
   });
   return transactions;
 }
+
+
 
 export type getTransactionsDB =  Prisma.PromiseReturnType<typeof getTransactionsDB>;
 

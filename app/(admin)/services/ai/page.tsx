@@ -1,8 +1,7 @@
 import React from 'react'
 
-type Props = {}
 
-const AiPage = (props: Props) => {
+const AiPage = () => {
   return (
     <div>AiPage</div>
   )

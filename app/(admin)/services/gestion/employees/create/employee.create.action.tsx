@@ -13,6 +13,10 @@ export const doCreateEmployee = adminAction
     .schema(createEmployeeSheme)
     .action(async ({ clientInput, ctx }) => {
         try {
+               // verifiier s'il est authorisé
+            if (ctx.user.userDetails?.authorize?.canCreateAdmin === false) {
+                throw new Error("Vous n'êtes pas autorisé à créer cet utilisateur");
+            }
             // Validate password match
             if (clientInput.password !== clientInput.confirmPassword) {
                 throw new Error("Les mots de passe ne correspondent pas");
@@ -96,6 +100,7 @@ export const doCreateEmployee = adminAction
                     
                     // Permissions de création
                     canCreateOrganization: false,
+                    canCreateStep: true,
                     canCreateClient: true,
                     canCreateProcedure: true,
                     canCreateTransaction: true,
@@ -103,9 +108,6 @@ export const doCreateEmployee = adminAction
                     canCreateExpense: true,
                     canCreateRevenue: true,
                     canCreateComptaSettings: true,
-                    canCreateTeam: false,
-                    canCreateMember: false,
-                    canCreateInvitation: true,
                     canCreateClientProcedure: true,
                     canCreateClientStep: true,
                     canCreateClientDocument: true,
@@ -114,15 +116,13 @@ export const doCreateEmployee = adminAction
                     // Permissions de lecture
                     canReadOrganization: true,
                     canReadClient: true,
+                    canReadStep: true,
                     canReadProcedure: true,
                     canReadTransaction: true,
                     canReadInvoice: true,
                     canReadExpense: true,
                     canReadRevenue: true,
                     canReadComptaSettings: true,
-                    canReadTeam: true,
-                    canReadMember: true,
-                    canReadInvitation: true,
                     canReadClientProcedure: true,
                     canReadClientStep: true,
                     canReadClientDocument: true,
@@ -131,15 +131,13 @@ export const doCreateEmployee = adminAction
                     // Permissions de modification
                     canEditOrganization: false,
                     canEditClient: true,
+                    canEditStep:true,
                     canEditProcedure: true,
                     canEditTransaction: true,
                     canEditInvoice: true,
                     canEditExpense: true,
                     canEditRevenue: true,
                     canEditComptaSettings: true,
-                    canEditTeam: false,
-                    canEditMember: false,
-                    canEditInvitation: false,
                     canEditClientProcedure: true,
                     canEditClientStep: true,
                     canEditClientDocument: true,
@@ -154,9 +152,6 @@ export const doCreateEmployee = adminAction
                     canDeleteExpense: true,
                     canDeleteRevenue: true,
                     canDeleteComptaSettings: false,
-                    canDeleteTeam: false,
-                    canDeleteMember: false,
-                    canDeleteInvitation: false,
                     canDeleteClientProcedure: true,
                     canDeleteClientStep: true,
                     canDeleteClientDocument: true,

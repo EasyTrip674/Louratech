@@ -6,12 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import { ChevronLeftIcon, EyeIcon, EyeCloseIcon } from "@/icons";
 import Button from "@/components/ui/button/Button";
 import { createOrganizationSchema } from "./create.organization.shema";
 import { doCreateOrganization } from "./organization.create.action";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { ChevronLeftIcon, Eye, EyeOff } from "lucide-react";
 
 
 type OrganizationFormData = z.infer<typeof createOrganizationSchema>;
@@ -19,7 +19,6 @@ type OrganizationFormData = z.infer<typeof createOrganizationSchema>;
 export default function CreationOrganisationFormulaire() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   const { 
@@ -33,28 +32,26 @@ export default function CreationOrganisationFormulaire() {
     }
   });
 
+  // Utiliser uniquement la mutation pour gérer l'état de soumission
   const creationOrganiozationMutation = useMutation({
     mutationFn: async (data: OrganizationFormData) => {
+      // Appeler directement l'action serveur
       const result = await doCreateOrganization(data);
-      if (result?.data?.success) {
+      if (result?.data) {
         router.push("/auth/signin");
-      } else {
       }
+      return result;
     },
+    // Gestion des erreurs dans la mutation
+    onError: (error) => {
+      console.error("Échec de la création de l'organisation:", error);
+    }
   });
 
-  const onSubmit = async (data: OrganizationFormData) => {
-    setIsSubmitting(true);
-    try {
-      // TODO: Implémenter la logique de création d'organisation et d'administrateur
-      
-      
-    await creationOrganiozationMutation.mutate(data);
-    } catch (error) {
-      console.error("Échec de la création de l'organisation:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+  // Simplifier la fonction onSubmit
+  const onSubmit = (data: OrganizationFormData) => {
+    // Appeler la mutation sans try/catch supplémentaire
+    creationOrganiozationMutation.mutate(data);
   };
 
   return (
@@ -84,7 +81,7 @@ export default function CreationOrganisationFormulaire() {
             {/* Détails de l'Organisation */}
             <div>
               <Label>
-                Nom de l'Organisation<span className="text-error-500">*</span>
+                Nom de l&apos;Organisation<span className="text-error-500">*</span>
               </Label>
               <Input
                 {...register("organizationName")}
@@ -98,7 +95,7 @@ export default function CreationOrganisationFormulaire() {
             </div>
 
             <div>
-              <Label>Description de l'Organisation (Optionnel)</Label>
+              <Label>Description de l&apos;Organisation (Optionnel)</Label>
               <Input
                 {...register("organizationDescription")}
                 placeholder="Décrivez brièvement votre organisation"
@@ -169,9 +166,9 @@ export default function CreationOrganisationFormulaire() {
                   className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                 >
                   {showPassword ? (
-                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                    <Eye className="fill-gray-500 dark:fill-gray-400" />
                   ) : (
-                    <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                    <EyeOff className="fill-gray-500 dark:fill-gray-400" />
                   )}
                 </span>
               </div>
@@ -197,9 +194,9 @@ export default function CreationOrganisationFormulaire() {
                   className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                 >
                   {showConfirmPassword ? (
-                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                    <Eye className="fill-gray-500 dark:fill-gray-400" />
                   ) : (
-                    <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                    <EyeOff className="fill-gray-500 dark:fill-gray-400" />
                   )}
                 </span>
               </div>
@@ -215,7 +212,6 @@ export default function CreationOrganisationFormulaire() {
               <input type="checkbox"
                 {...register("agreesToTerms")}
                 className="w-5 h-5 text-primary-500 border-gray-300 rounded checked:bg-primary-500 checked:border-transparent"
-                
               />
               <p className="inline-block text-sm text-gray-600 dark:text-gray-400">
                 J&apos;accepte les{" "}
@@ -230,14 +226,21 @@ export default function CreationOrganisationFormulaire() {
               </p>
             )}
 
-            {/* Bouton de Soumission */}
+            {/* Bouton de Soumission - Utilisez uniquement l'état de la mutation */}
             <Button
               type="submit" 
               className="w-full"
-              disabled={isSubmitting || creationOrganiozationMutation.isPending}
+              disabled={creationOrganiozationMutation.isPending}
             >
-              {(isSubmitting ||  creationOrganiozationMutation.isPending ) ? "Création en cours..." : "Créer mon Organisation"}
+              {creationOrganiozationMutation.isPending ? "Création en cours..." : "Créer mon Organisation"}
             </Button>
+            
+            {/* Afficher les erreurs de mutation */}
+            {creationOrganiozationMutation.isError && (
+              <p className="mt-2 text-sm text-error-500">
+                Une erreur est survenue lors de la création de votre organisation. Veuillez réessayer.
+              </p>
+            )}
           </div>
         </form>
       </div>

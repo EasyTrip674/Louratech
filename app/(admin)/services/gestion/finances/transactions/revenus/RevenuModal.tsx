@@ -15,6 +15,7 @@ import ErrorModal from '@/components/alerts/ErrorModal'
 import { formatCurrency } from '@/lib/utils'
 import { createRevenuSchema } from './revenu.shema'
 import { doCreateRevenu } from './revenu.create.action'
+import { authClient } from '@/lib/auth-client'
 
 
 type CreateRevenuSchema = z.infer<typeof createRevenuSchema>
@@ -40,6 +41,9 @@ const CreateRevenuModal = ({}: Props) => {
   const { isOpen, closeModal, openModal } = useModal()
   const successModal = useModal()
   const errorModal = useModal()
+
+  const session = authClient.useSession()
+
 
   const { 
     control,
@@ -88,6 +92,11 @@ const CreateRevenuModal = ({}: Props) => {
       console.error("Error creating Revenu:", error)
     }
   }
+
+  if (!session.data?.userDetails?.authorize?.canCreateRevenue) {
+    return null
+  }
+
 
   return (
     <>
@@ -207,7 +216,7 @@ const CreateRevenuModal = ({}: Props) => {
             )}
             {currentAmount > 0 && (
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {formatCurrency(currentAmount)}
+                {formatCurrency(currentAmount,session.data?.userDetails?.organization?.comptaSettings?.currency)}
               </p>
             )}
           </div>

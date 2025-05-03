@@ -14,6 +14,11 @@ export const doCreateTransaction = adminAction
     .schema(createTransactionSchema)
     .action(async ({ clientInput,ctx }) => {
         console.log("Creating Procedure with data:", clientInput);
+
+          // verifffier l'autorisation de l'utilisateur
+          if(!ctx.user.userDetails?.authorize?.canEditTransaction){
+            throw new Error("Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
+        }
         
         // Vérifier si une transaction existe déjà pour ce clientStep
         const existingTransaction = await prisma.transaction.findFirst({
@@ -37,7 +42,7 @@ export const doCreateTransaction = adminAction
         });
 
         if (!clientStep) {
-            throw new Error("Client step not found");
+            throw new Error("ce module n'existe pas");
         }
 
         const organization = await prisma.organization.findUnique({
@@ -50,7 +55,7 @@ export const doCreateTransaction = adminAction
         });
 
         if (!organization) {
-            throw new Error("Organization not found");
+            throw new Error("Vous n'etes pas autorisé");
         }
         const numberTransaction = await prisma.transaction.count({
             where: {

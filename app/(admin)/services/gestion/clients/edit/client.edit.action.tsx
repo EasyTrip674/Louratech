@@ -8,10 +8,12 @@ import { editClientSchema } from "./client.edit.shema";
 export const doEditClient = adminAction
     .metadata({actionName:"edit client"}) // ✅ Ajout des métadonnées obligatoires
     .schema(editClientSchema)
-    .action(async ({ clientInput }) => {
+    .action(async ({ clientInput ,ctx}) => {
         console.log("editing client with data:", clientInput);
-
-
+        // TODO: Vérifier si l'utilisateur est autorisé à modifier le client
+        if (ctx.user.userDetails?.authorize?.canEditClient === false) {
+            throw new Error("Vous n'êtes pas autorisé à modifier cet utilisateur");
+        }
         // TODO: Mettre a jour les données du client dans la base de données
         const client = await prisma.client.update({
             where: {

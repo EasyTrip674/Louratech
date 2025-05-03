@@ -105,6 +105,7 @@ export default async function  profilePage() {
 
         </div>
           <UserCredentialsManage
+          canEditPassword={true}
            role={user.userDetails?.role as Role}
            userId={user.user.id} email={user.user.email} active={user.userDetails?.active} />
         </div>

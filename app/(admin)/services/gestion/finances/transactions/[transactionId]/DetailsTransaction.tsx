@@ -23,7 +23,7 @@ import {
   Paperclip,
   FileCheck,
 } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatAmount, formatDate } from "@/lib/utils";
 import {
   PaymentMethod,
   TransactionStatus,
@@ -33,6 +33,7 @@ import { getTransactionById } from "@/db/queries/finances.query";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import DownloadPdf from "@/components/pdf/DowloadPdf";
+import { authClient } from "@/lib/auth-client";
 
 // Composant pour afficher les détails d'une transaction
 export default function TransactionDetails(
@@ -41,6 +42,7 @@ export default function TransactionDetails(
   const router = useRouter();
   const [transaction] = React.useState<getTransactionById>(baseTransaction);
   const [error] = React.useState<string | null>(null);
+  const session = authClient.useSession();
 
   if (error || !transaction) {
     return (
@@ -70,11 +72,6 @@ export default function TransactionDetails(
     }
   };
 
-  // Format du montant avec le signe approprié
-  const formatAmount = (amount: number, type: TransactionType) => {
-    const sign = type === "EXPENSE" ? "-" : "+";
-    return `${sign} ${amount.toLocaleString("fr-FR")} FNG`;
-  };
 
   // Obtenir la classe de couleur pour le montant
   const getAmountClass = (type: TransactionType) => {
@@ -149,6 +146,8 @@ export default function TransactionDetails(
     }
   };
 
+  // const session = authClient.useSession();
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pb-12">
       {/* Header avec statut et actions */}
@@ -185,7 +184,7 @@ export default function TransactionDetails(
             <div className="flex flex-wrap gap-2 mt-4 md:mt-0">
               {transaction.status === "APPROVED" && (
                 <>
-                <DownloadPdf transaction={transaction}>
+                <DownloadPdf transaction={transaction} canReadInvoice={session?.data?.userDetails?.authorize?.canReadInvoice ?? false}>
                     <Button variant="outline" className="flex items-center">
                         <Download className="w-4 h-4 mr-1" />
                         Télécharger la facture
@@ -208,7 +207,7 @@ export default function TransactionDetails(
                 Montant total
               </span>
               <div className={`text-3xl font-bold ${getAmountClass(transaction.type)}`}>
-                {formatAmount(transaction.amount, transaction.type)}
+              {formatAmount(transaction.amount, transaction.type, session.data?.userDetails?.organization?.comptaSettings?.currency)}
               </div>
             </div>
             <div className="text-right">
@@ -298,10 +297,11 @@ export default function TransactionDetails(
 
                   {transaction.type === "REVENUE" && transaction.revenue?.source && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                      {/* description */}
+                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
                         <Building className="w-4 h-4 mr-2 text-gray-400" />
                         Source
-                      </dt>
+                      </div>
                       <div className="mt-1 text-gray-900 dark:text-white">
                         {transaction.revenue.source}
                       </div>
@@ -446,7 +446,7 @@ export default function TransactionDetails(
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Entités liées */}
-            {(transaction.clientProcedure || transaction.clientStep) && (
+            {((transaction.clientProcedure || transaction.clientStep) && (session.data?.userDetails?.authorize?.canReadClientProcedure)) && (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidiven">
                 <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-700">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -472,7 +472,7 @@ export default function TransactionDetails(
                         </Link>
                       </li>
                     )}
-                    {transaction.clientStep && (
+                    {transaction.clientStep && session.data.userDetails.authorize.canReadStep && (
                       <li>
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400 block mb-1">
                          Module

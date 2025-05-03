@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from '../ui/modal'
-import { on } from 'events';
+// import { on } from 'events';
 
 type Props = {
        errorModal: {
@@ -14,7 +14,7 @@ type Props = {
     onRetry?: () => void;
 }
 
-const ErrorModal = ({errorModal, message,onRetry,title}: Props) => {
+const ErrorModal = ({errorModal, message}: Props) => {
   return (
     <Modal
            isOpen={errorModal.isOpen}
@@ -58,7 +58,7 @@ const ErrorModal = ({errorModal, message,onRetry,title}: Props) => {
              </div>
    
              <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
-               Danger Alert!
+               Oupps !
              </h4>
              <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
              {message || "Une erreur s'est produite. Veuillez réessayer."}
@@ -69,7 +69,7 @@ const ErrorModal = ({errorModal, message,onRetry,title}: Props) => {
                 onClick={(e)=>{
                     e.preventDefault()
                     errorModal.closeModal()
-                    onRetry && onRetry()
+                    // onRetry && onRetry()
                 }}
                  type="button"
                  className="flex justify-center w-full px-4 py-3 text-sm font-medium text-white rounded-lg bg-error-500 shadow-theme-xs hover:bg-error-600 sm:w-auto"

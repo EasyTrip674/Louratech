@@ -18,7 +18,7 @@ const UserElementInfo = ({ label, value }: { label: string, value?: string | nul
   );
 };
 
-export default function EmployeetInfoCard({ employee }: { employee: employeeProfileDB }) {
+export default function EmployeetInfoCard({ employee, canEditAdmin = false }: { employee: employeeProfileDB ,canEditAdmin: boolean }) {
 
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -57,8 +57,11 @@ export default function EmployeetInfoCard({ employee }: { employee: employeeProf
           </div>
         </div>
 
-        <EditEmployeeFormModal admin={employee} inPageProfile={true} />
-      
+      {
+        canEditAdmin && (
+          <EditEmployeeFormModal admin={employee} inPageProfile={true} />
+        ) 
+      }
       </div>
 
     </div>

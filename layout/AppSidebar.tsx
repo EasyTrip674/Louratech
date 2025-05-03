@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 
 import SidebarWidget from "./SidebarWidget";
-import {  CalendarHeartIcon, ChevronDownIcon, GridIcon } from "lucide-react";
-import { HorizontaLDots } from "@/icons";
+import {  ChevronDownIcon, Ellipsis, GripHorizontal, LayoutDashboard, MonitorDot } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 type NavItem = {
   name: string;
@@ -15,73 +15,85 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
-const navItems: NavItem[] = [
-  {
-    icon: <GridIcon />,
-    path: "/services",
-    name: "Dashboard",
-  },
-  {
-    icon: <CalendarHeartIcon />,
-    name: "Gestion",
-    path: "/services/gestion",
-    subItems: [
-      { name: "Services", path: "/services/gestion/procedures", pro: false,  },
-      { name: "Employees", path: "/services/gestion/employees", pro: false },
-      { name: "Clients", path: "/services/gestion/clients", pro: false },
-      { name: "Finances", path: "/services/gestion/finances", pro: false },
-    ],
-  },
-
-  // {
-  //   name: "Comptabilites",
-  //   icon: <ListIcon />,
-  //   subItems: [{ name: "Statistiques", path: "/", pro: false }],
-  // },
-  // {
-  //   name: "Ai",
-  //   icon: <Book />,
-  //   subItems: [
-  //     { name: "Chat", path: "/blank", pro: true },
-  //     { name: "Historique", path: "/error-404", pro: true },
-  //   ],
-  // },
-];
-
-const othersItems: NavItem[] = [
-  // {
-  //   icon: <PieChartIcon />,
-  //   name: "Charts",
-  //   subItems: [
-  //     { name: "Line Chart", path: "/line-chart", pro: false },
-  //     { name: "Bar Chart", path: "/bar-chart", pro: false },
-  //   ],
-  // },
-  // {
-  //   icon: <BoxIcon />,
-  //   name: "UI Elements",
-  //   subItems: [
-  //     { name: "Alerts", path: "/alerts", pro: false },
-  //     { name: "Avatar", path: "/avatars", pro: false },
-  //     { name: "Badge", path: "/badge", pro: false },
-  //     { name: "Buttons", path: "/buttons", pro: false },
-  //     { name: "Images", path: "/images", pro: false },
-  //     { name: "Videos", path: "/videos", pro: false },
-  //   ],
-  // },
-  // {
-  //   icon: <PlugIcon />,
-  //   name: "Authentication",
-  //   subItems: [
-  //     { name: "Sign In", path: "/signin", pro: false },
-  //     { name: "Sign Up", path: "/signup", pro: false },
-  //   ],
-  // },
-];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
+  const session = authClient.useSession();
+  const user = session?.data?.userDetails;
+
+  const navItems: NavItem[] = [
+    {
+      icon: <LayoutDashboard />,
+      path: "/services",
+      name: "Dashboard",
+    },
+    {
+      icon: <MonitorDot />,
+      name: "Gestion",
+      path: "/services/gestion",
+      subItems: [
+        ...(user?.authorize?.canReadProcedure
+          ? [{ name: "Services", path: "/services/gestion/procedures", pro: false }]
+          : []),
+        ...(user?.authorize?.canReadAdmin
+          ? [{ name: "Admin", path: "/services/gestion/employees", pro: false }]
+          : []),
+        ...(user?.authorize?.canReadClient
+          ? [{ name: "Clients", path: "/services/gestion/clients", pro: false }]
+          : []),
+        ...(user?.authorize?.canReadTransaction ? 
+          [{ name: "Finances", path: "/services/gestion/finances", pro: false }] 
+          : [])
+      ],
+    },
+  
+    // {
+    //   name: "Comptabilites",
+    //   icon: <ListIcon />,
+    //   subItems: [{ name: "Statistiques", path: "/", pro: false }],
+    // },
+    // {
+    //   name: "Ai",
+    //   icon: <Book />,
+    //   subItems: [
+    //     { name: "Chat", path: "/blank", pro: true },
+    //     { name: "Historique", path: "/error-404", pro: true },
+    //   ],
+    // },
+  ];
+  
+  const othersItems: NavItem[] = [
+    // {
+    //   icon: <PieChartIcon />,
+    //   name: "Charts",
+    //   subItems: [
+    //     { name: "Line Chart", path: "/line-chart", pro: false },
+    //     { name: "Bar Chart", path: "/bar-chart", pro: false },
+    //   ],
+    // },
+    // {
+    //   icon: <BoxIcon />,
+    //   name: "UI Elements",
+    //   subItems: [
+    //     { name: "Alerts", path: "/alerts", pro: false },
+    //     { name: "Avatar", path: "/avatars", pro: false },
+    //     { name: "Badge", path: "/badge", pro: false },
+    //     { name: "Buttons", path: "/buttons", pro: false },
+    //     { name: "Images", path: "/images", pro: false },
+    //     { name: "Videos", path: "/videos", pro: false },
+    //   ],
+    // },
+    // {
+    //   icon: <PlugIcon />,
+    //   name: "Authentication",
+    //   subItems: [
+    //     { name: "Sign In", path: "/signin", pro: false },
+    //     { name: "Sign Up", path: "/signup", pro: false },
+    //   ],
+    // },
+  ];
+  
 
   const renderMenuItems = (
     navItems: NavItem[],
@@ -336,7 +348,7 @@ const AppSidebar: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Menu"
                 ) : (
-                  <HorizontaLDots />
+                  <GripHorizontal />
                 )}
               </h2>
               {renderMenuItems(navItems, "main")}
@@ -353,7 +365,7 @@ const AppSidebar: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Others"
                 ) : (
-                  <HorizontaLDots />
+                  <Ellipsis />
                 )}
               </h2>
               {renderMenuItems(othersItems, "others")}
@@ -364,6 +376,7 @@ const AppSidebar: React.FC = () => {
       </div>
     </aside>
   );
+
 };
 
 export default AppSidebar;

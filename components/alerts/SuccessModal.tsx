@@ -1,4 +1,3 @@
-import { useModal } from '@/hooks/useModal';
 import React from 'react'
 import { Modal } from '../ui/modal';
 
@@ -14,7 +13,7 @@ type Props = {
     
 }
 
-const SuccessModal = ({successModal, message,title}: Props) => {
+const SuccessModal = ({successModal, message}: Props) => {
     // const successModal = useModal();
   return (
     <Modal
@@ -58,7 +57,7 @@ const SuccessModal = ({successModal, message,title}: Props) => {
                </span>
              </div>
              <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
-               Well Done!
+               Félicitations !
              </h4>
              <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
              {message ? message : "Your request has been successfully processed."}

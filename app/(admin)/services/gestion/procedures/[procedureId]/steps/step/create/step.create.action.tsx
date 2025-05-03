@@ -11,6 +11,13 @@ export const doCreateStep = adminAction
     .action(async ({ clientInput ,ctx}) => {
         console.log("Creating step with data:", clientInput);
 
+           // verifffier l'autorisation de l'utilisateur
+           if(!ctx.user.userDetails?.authorize?.canCreateStep){
+            throw new Error("Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
+        }
+
+
+
         const existStep = await prisma.stepProcedure.findFirst({
             where: {
                 name: clientInput.name,

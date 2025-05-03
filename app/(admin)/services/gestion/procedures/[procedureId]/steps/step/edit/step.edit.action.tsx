@@ -8,8 +8,13 @@ import {  editStepProcedureSchema } from "./step.edit.shema";
 export const doEditStep = adminAction
     .metadata({actionName:"step client"}) // ✅ Ajout des métadonnées obligatoires
     .schema(editStepProcedureSchema)
-    .action(async ({ clientInput }) => {
+    .action(async ({ clientInput,ctx}) => {
         console.log("Creating step with data:", clientInput);
+
+        // verifffier l'autorisation de l'utilisateur
+        if(!ctx.user.userDetails?.authorize?.canEditStep){
+            throw new Error("Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
+        }
 
 
 

@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { ProceduresMetrics } from "@/components/stats/ProceduresMetrics";
-import React from "react";
-import MonthlyTarget from "@/components/stats/MonthlyTarget";
-import MonthlySalesChart from "@/components/stats/MonthlySalesChart";
-import StatisticsChart from "@/components/stats/StatisticsChart";
-import RecentOrders from "@/components/stats/RecentOrders";
-import {  getMonthlySalesData, getMonthlyTargetStats, getStatisticsData } from "@/db/queries/dasboard.query";
+import React, { Suspense } from "react";
+import { MonthSalesChartLayout } from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthSalesChartLayout";
+import { MonthlyTargetLayout } from "@/components/Dashboards/Homedasboard/MonthlyTarget/MonthlyTargetLayout";
+import MonthlyTargetSkeleton from "@/components/Dashboards/Homedasboard/MonthlyTarget/MonthlyTargetSkeleton";
+import { StatisticsServiceLayout } from "@/components/Dashboards/Homedasboard/StatisticsChart/StatisticsChartLayout";
+import { ProceduresMetrics } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetrics";
+import StatisticsServiceSkeleton from "@/components/Dashboards/Homedasboard/StatisticsChart/StatisticsChartSkeleton";
+import RecentOrdersSkeleton from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersSkeleton";
+import { RecentOrdersLayout } from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersLayout";
+import MonthlySalesChartSkeleton from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthySalesChartSkeleton";
+import { ProceduresMetricsSkeleton } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
 
 export const metadata: Metadata = {
   title:
@@ -19,32 +23,40 @@ export default async function  DashboardPage() {
 
   
 
-  const MonthlyTargetData = await getMonthlyTargetStats();
-  const monthlySalesData = await getMonthlySalesData();
-   const statisticsData = await getStatisticsData()
-  //  const demographicData = await getDemographicData();
+
+   
 
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12 space-y-6 xl:col-span-7">
-        <ProceduresMetrics />
-        <MonthlySalesChart monthlySalesData={monthlySalesData}/>
+
+        <Suspense fallback={<ProceduresMetricsSkeleton />}>
+          <ProceduresMetrics />
+        </Suspense>
+        
+        <Suspense fallback={<MonthlySalesChartSkeleton />}>
+          <MonthSalesChartLayout />
+        </Suspense>
       </div>
 
       <div className="col-span-12 xl:col-span-5">
-        <MonthlyTarget MonthlyTargetData={MonthlyTargetData} />
+        <Suspense fallback={<MonthlyTargetSkeleton />}>
+          <MonthlyTargetLayout />
+        </Suspense>
       </div>
 
       <div className="col-span-12">
-        <StatisticsChart statisticsData={statisticsData} />
+        <Suspense fallback={<StatisticsServiceSkeleton />}>
+        <StatisticsServiceLayout />
+        </Suspense>
       </div>
 
-      {/* <div className="col-span-12 xl:col-span-5"> */}
-        {/* <DemographicCard demographicData={demographicData} /> */}
-      {/* </div> */}
+
 
       <div className="col-span-12 ">
-        <RecentOrders />
+        <Suspense fallback={<RecentOrdersSkeleton />}>
+          <RecentOrdersLayout />
+        </Suspense>
       </div>
     </div>
   );

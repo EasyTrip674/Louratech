@@ -1,5 +1,6 @@
-import { getTransactionById } from "@/db/queries/finances.query";
-import TransactionDetails from "./DetailsTransaction";
+import { Suspense } from "react";
+import TransactionDetailsLayout from "./DetailsTransactionLayout";
+import TransactionDetailsSkeleton from "./TransactionDetailsSkeleton";
 
 export default async function TransactionDetailsPage({
     params,
@@ -8,17 +9,16 @@ export default async function TransactionDetailsPage({
 }) {
 
     const transactionId = params.transactionId;
-    const transaction = await getTransactionById(transactionId);
-    if (!transaction) {
-        return <div>Transaction non trouvée</div>;
-    }
+
 return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Transaction</h1>
       <p className="text-gray-500">
         Détails de la transaction
       </p>
-      <TransactionDetails baseTransaction={transaction} />
+     <Suspense fallback={<TransactionDetailsSkeleton />}>
+      <TransactionDetailsLayout transactionId={transactionId} />
+     </Suspense>
     </div>
   );
 }

@@ -12,10 +12,15 @@ export const doCreateClient = adminAction
     .schema(createClientSchema)
     .action(async ({ clientInput, ctx }) => {
         try {
-            // Validate password match
-            if (clientInput.password !== clientInput.confirmPassword) {
-                throw new Error("Les mots de passe ne correspondent pas");
+            // Check if user is authorized
+            if (ctx.user.userDetails?.authorize?.canCreateClient === false) {
+                throw new Error("Vous n'êtes pas autorisé à créer cet utilisateur");
             }
+
+            // Validate password match
+            // if (clientInput.password !== clientInput.confirmPassword) {
+            //     throw new Error("Les mots de passe ne correspondent pas");
+            // }
 
             // Check if client already exists
             const existingClient = await prisma.user.findFirst({
@@ -35,7 +40,7 @@ export const doCreateClient = adminAction
             const user = await auth.api.signUpEmail({
                 body: {
                     email: clientInput.email,
-                    password: clientInput.password,
+                    password: "00000000",
                     name: `${clientInput.firstName} ${clientInput.lastName}`,
                     options: {
                         emailVerification: false,

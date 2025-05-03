@@ -21,6 +21,7 @@ model SuperAdmin {
 model organization {
   id          String   @id @default(cuid())
   name        String
+  active     Boolean @default(false)
   slug        String  
   description String?
   logo        String?
@@ -37,13 +38,61 @@ model organization {
   invoices    Invoice[]
   comptaSettings ComptaSettings?
   clientProcedures ClientProcedure[]
-
   team team[]
-
   invitation invitation[]
 
   member member[]
 }
+
+// Modèle d'abonnement pour les organisations
+// Chaque organisation peut avoir un abonnement avec un plan spécifique
+// et une période de validité. Cela permet de gérer les fonctionnalités
+// disponibles pour chaque organisation en fonction de son abonnement.
+// Le modèle d'abonnement peut être utilisé pour gérer les paiements,
+
+// enum PlanSubscription {
+//   FREE
+//   BASIC
+//   PREMIUM
+//   ENTERPRISE
+// }
+
+// abonnement d'une organisation
+// model subscription {
+//   id          String   @id @default(cuid())
+//   organizationId String
+//   plan        PlanSubscription @default(FREE)
+//   status      String
+//   startDate   DateTime
+//   endDate     DateTime
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+//   organization organization @relation(fields: [organizationId], references: [id])
+// }
+
+// model subscriptionPrice {
+//   id          String   @id @default(cuid())
+//   name        String
+//   price       Float
+//   currency    String
+//   billingCycle String // Mensuel, Annuel, etc.
+//   features    String[] // Liste des fonctionnalités incluses dans l'abonnement
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+//   organization organization? @relation(fields: [organizationId], references: [id])
+//   organizationId String?
+// }
+
+// model coupons {
+//   id          String   @id @default(cuid())
+//   code        String   @unique
+//   discount    Float
+//   expirationDate DateTime
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
+
 
 model member{
   id          String   @id @default(cuid())
@@ -587,6 +636,7 @@ model authorization {
 
   // Permissions de création
   canCreateOrganization Boolean @default(false)
+  canCreateStep Boolean @default(false)
   canCreateClient Boolean @default(false)
   canCreateProcedure Boolean @default(false)
   canCreateTransaction Boolean @default(false)
@@ -595,15 +645,13 @@ model authorization {
   canCreateExpense Boolean @default(false)
   canCreateRevenue Boolean @default(false)
   canCreateComptaSettings Boolean @default(false)
-  canCreateTeam Boolean @default(false)
-  canCreateMember Boolean @default(false)
-  canCreateInvitation Boolean @default(false)
   canCreateClientProcedure Boolean @default(false)
   canCreateClientStep Boolean @default(false)
   canCreateClientDocument Boolean @default(false)
 
   // Permissions de lecture
   canReadOrganization Boolean @default(false)
+  canReadStep Boolean @default(false)
   canReadClient Boolean @default(false)
   canReadProcedure Boolean @default(false)
   canReadTransaction Boolean @default(false)
@@ -611,16 +659,14 @@ model authorization {
   canReadExpense Boolean @default(false)
   canReadRevenue Boolean @default(false)
   canReadComptaSettings Boolean @default(false)
-  canReadTeam Boolean @default(false)
   canReadAdmin Boolean @default(false)
-  canReadMember Boolean @default(false)
-  canReadInvitation Boolean @default(false)
   canReadClientProcedure Boolean @default(false)
   canReadClientStep Boolean @default(false)
   canReadClientDocument Boolean @default(false)
 
   // Permissions de modification
   canEditOrganization Boolean @default(false)
+  canEditStep Boolean @default(false)
   canEditClient Boolean @default(false)
   canEditProcedure Boolean @default(false)
   canEditTransaction Boolean @default(false)
@@ -628,16 +674,14 @@ model authorization {
   canEditExpense Boolean @default(false)
   canEditRevenue Boolean @default(false)
   canEditComptaSettings Boolean @default(false)
-  canEditTeam Boolean @default(false)
   canEditAdmin Boolean @default(false)
-  canEditMember Boolean @default(false)
-  canEditInvitation Boolean @default(false)
   canEditClientProcedure Boolean @default(false)
   canEditClientStep Boolean @default(false)
   canEditClientDocument Boolean @default(false)
 
   // Permissions de suppression
   canDeleteOrganization Boolean @default(false)
+  canDeleteStep Boolean @default(false)
   canDeleteClient Boolean @default(false)
   canDeleteProcedure Boolean @default(false)
   canDeleteTransaction Boolean @default(false)
@@ -646,9 +690,6 @@ model authorization {
   canDeleteAdmin Boolean @default(false)
   canDeleteRevenue Boolean @default(false)
   canDeleteComptaSettings Boolean @default(false)
-  canDeleteTeam Boolean @default(false)
-  canDeleteMember Boolean @default(false)
-  canDeleteInvitation Boolean @default(false)
   canDeleteClientProcedure Boolean @default(false)
   canDeleteClientStep Boolean @default(false)
   canDeleteClientDocument Boolean @default(false)

@@ -1,8 +1,7 @@
 import React from 'react'
 
-type Props = {}
 
-const stepPage = (props: Props) => {
+const stepPage = () => {
   return (
     <div>stepPage</div>
   )

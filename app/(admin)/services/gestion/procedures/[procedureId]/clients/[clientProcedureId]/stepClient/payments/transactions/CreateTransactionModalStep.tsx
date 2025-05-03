@@ -16,6 +16,7 @@ import SuccessModal from '@/components/alerts/SuccessModal'
 import ErrorModal from '@/components/alerts/ErrorModal'
 import { useEffect } from 'react'
 import { formatCurrency } from '@/lib/utils'
+import { authClient } from '@/lib/auth-client'
 
 type Props = {
   clientStepId: string,
@@ -48,6 +49,7 @@ const CreateTransactionModalStep = ({
   const errorModal = useModal()
   const queryClient = useQueryClient()
 
+
   const { 
     control,
     register, 
@@ -65,6 +67,8 @@ const CreateTransactionModalStep = ({
       status: 'PENDING',
     }
   })
+
+  const session = authClient.useSession()
 
   const currentAmount = watch('amount')
 
@@ -140,7 +144,7 @@ const CreateTransactionModalStep = ({
       <ErrorModal 
         errorModal={errorModal} 
         onRetry={openModal}
-        message="Une erreur est survenue lors de la création du paiement" 
+        message={"Soit vous n'avez pas les autorisations ou qu'il existe dejà une transaction non approuvé !!"}
       />
 
       <Button
@@ -180,7 +184,7 @@ const CreateTransactionModalStep = ({
           <div className="mb-6 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
             <p className="text-sm flex items-center text-blue-800 dark:text-blue-300">
               <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
-              Montant restant à payer: <span className="font-medium ml-1">{formatCurrency(haveToPay)}</span>
+              Montant restant à payer: <span className="font-medium ml-1">{formatCurrency(haveToPay,session.data?.userDetails?.organization?.comptaSettings?.currency)}</span>
             </p>
           </div>
         )}
@@ -234,11 +238,10 @@ const CreateTransactionModalStep = ({
             )}
             {currentAmount > 0 && (
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {formatCurrency(currentAmount)}
+                {formatCurrency(currentAmount,session.data?.userDetails?.organization?.comptaSettings?.currency)}
               </p>
             )}
           </div>
-
           <div>
             <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Méthode de paiement

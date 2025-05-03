@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { authorization } from '@prisma/client';
 import Switch from '../form/switch/Switch';
+import { authorizationSchema } from './authorization.shema';
+import { doChangeAuthozation } from './authozisation.action';
 
 // Interface pour représenter les autorisations utilisateur
 interface AuthorizationProps {
@@ -15,18 +17,32 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
   const [authorizations, setAuthorizations] = useState<authorization>(initialAuthorizations);
   const [hasChanges, setHasChanges] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
-  const queryClient = useQueryClient();
+  // successMessage 
+  const [successMessage , setSuccessMessage] = useState(false);
   
 
   // Configuration de la mutation avec TanStack Query
   const updateMutation = useMutation({
-    mutationFn: async (data: authorization) => {
-      // Appel du server action
-      // return await DoUpdateAuthorization(data);
+    mutationFn: async (authorizations:authorizationSchema) => {
+      
+      console.info('update authorizations', authorizations);
+      return await doChangeAuthozation(authorizations);
     },
-    onSuccess: (updatedAuthorization) => {
+    onSuccess: () => {
       // Mise à jour du cache et réinitialisation de l'état local
       setHasChanges(false);
+      setSuccessMessage(true);
+      setTimeout(() => {
+        setSuccessMessage(false);
+      }
+      , 3000);
+    }
+  , onError: (error) => {
+      console.error('Error updating authorizations:', error);
+    }
+  , onSettled: () => {
+      // Réinitialisation de l'état local après la mutation
+      setAuthorizations(initialAuthorizations);
     }
   });
 
@@ -35,7 +51,14 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
 }
 
   const saveAuthorizations = async () => {
-    updateMutation.mutate(authorizations);
+    const data:authorizationSchema ={
+      userId: initialAuthorizations.userId,
+      authorizationId: initialAuthorizations.id,
+      authorization:{
+        ...authorizations,
+      }
+    }
+    updateMutation.mutate(data);
   };
 
   const handleToggle = (key: keyof authorization, value: boolean) => {
@@ -57,77 +80,75 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
   };
 
   // Regroupement des autorisations par catégorie
-  const permissionGroups = {
-    general: [
-      { key: 'canChangeUserAuthorization', label: 'Modifier les autorisations utilisateur' },
-      { key: 'canChangeUserPassword', label: 'Modifier les mots de passe' },
-    ],
-    create: [
-      { key: 'canCreateOrganization', label: 'Créer une organisation' },
-      { key: 'canCreateClient', label: 'Créer un client' },
-      { key: 'canCreateProcedure', label: 'Créer une procédure' },
-      { key: 'canCreateTransaction', label: 'Créer une transaction' },
-      { key: 'canCreateInvoice', label: 'Créer une facture' },
-      { key: 'canCreateExpense', label: 'Créer une dépense' },
-      { key: 'canCreateRevenue', label: 'Créer un revenu' },
-      { key: 'canCreateComptaSettings', label: 'Créer des paramètres comptables' },
-      { key: 'canCreateTeam', label: 'Créer une équipe' },
-      { key: 'canCreateMember', label: 'Créer un membre' },
-      { key: 'canCreateInvitation', label: 'Créer une invitation' },
-      { key: 'canCreateClientProcedure', label: 'Créer une procédure client' },
-      { key: 'canCreateClientStep', label: 'Créer une étape client' },
-      { key: 'canCreateClientDocument', label: 'Créer un document client' },
-    ],
-    read: [
-      { key: 'canReadOrganization', label: 'Lire les organisations' },
-      { key: 'canReadClient', label: 'Lire les clients' },
-      { key: 'canReadProcedure', label: 'Lire les procédures' },
-      { key: 'canReadTransaction', label: 'Lire les transactions' },
-      { key: 'canReadInvoice', label: 'Lire les factures' },
-      { key: 'canReadExpense', label: 'Lire les dépenses' },
-      { key: 'canReadRevenue', label: 'Lire les revenus' },
-      { key: 'canReadComptaSettings', label: 'Lire les paramètres comptables' },
-      { key: 'canReadTeam', label: 'Lire les équipes' },
-      { key: 'canReadMember', label: 'Lire les membres' },
-      { key: 'canReadInvitation', label: 'Lire les invitations' },
-      { key: 'canReadClientProcedure', label: 'Lire les procédures client' },
-      { key: 'canReadClientStep', label: 'Lire les étapes client' },
-      { key: 'canReadClientDocument', label: 'Lire les documents client' },
-    ],
-    update: [
-      { key: 'canEditOrganization', label: 'Modifier les organisations' },
-      { key: 'canEditClient', label: 'Modifier les clients' },
-      { key: 'canEditProcedure', label: 'Modifier les procédures' },
-      { key: 'canEditTransaction', label: 'Modifier les transactions' },
-      { key: 'canEditInvoice', label: 'Modifier les factures' },
-      { key: 'canEditExpense', label: 'Modifier les dépenses' },
-      { key: 'canEditRevenue', label: 'Modifier les revenus' },
-      { key: 'canEditComptaSettings', label: 'Modifier les paramètres comptables' },
-      { key: 'canEditTeam', label: 'Modifier les équipes' },
-      { key: 'canEditMember', label: 'Modifier les membres' },
-      { key: 'canEditInvitation', label: 'Modifier les invitations' },
-      { key: 'canEditClientProcedure', label: 'Modifier les procédures client' },
-      { key: 'canEditClientStep', label: 'Modifier les étapes client' },
-      { key: 'canEditClientDocument', label: 'Modifier les documents client' },
-    ],
-    delete: [
-      { key: 'canDeleteOrganization', label: 'Supprimer les organisations' },
-      { key: 'canDeleteClient', label: 'Supprimer les clients' },
-      { key: 'canDeleteProcedure', label: 'Supprimer les procédures' },
-      { key: 'canDeleteTransaction', label: 'Supprimer les transactions' },
-      { key: 'canDeleteInvoice', label: 'Supprimer les factures' },
-      { key: 'canDeleteExpense', label: 'Supprimer les dépenses' },
-      { key: 'canDeleteRevenue', label: 'Supprimer les revenus' },
-      { key: 'canDeleteComptaSettings', label: 'Supprimer les paramètres comptables' },
-      { key: 'canDeleteTeam', label: 'Supprimer les équipes' },
-      { key: 'canDeleteMember', label: 'Supprimer les membres' },
-      { key: 'canDeleteInvitation', label: 'Supprimer les invitations' },
-      { key: 'canDeleteClientProcedure', label: 'Supprimer les procédures client' },
-      { key: 'canDeleteClientStep', label: 'Supprimer les étapes client' },
-      { key: 'canDeleteClientDocument', label: 'Supprimer les documents client' },
-    ],
-  };
-
+/**
+ * Configuration des groupes de permissions avec labels explicites pour les utilisateurs
+ */
+const permissionGroups = {
+  general: [
+    { key: 'canChangeUserAuthorization', label: 'Modifier les autorisations des autres utilisateurs du système' },
+    { key: 'canChangeUserPassword', label: 'Réinitialiser ou changer les mots de passe des autres utilisateurs' },
+  ],
+  
+  create: [
+    { key: 'canCreateClient', label: 'Enregistrer un nouveau client dans la base de données' },
+    { key: 'canCreateProcedure', label: 'Créer un nouveau service dans le catalogue de l\'entreprise' },
+    { key: 'canCreateTransaction', label: 'Enregistrer une nouvelle transaction financière' },
+    { key: 'canCreateInvoice', label: 'Générer une nouvelle facture pour un client' },
+    { key: 'canCreateExpense', label: 'Enregistrer une nouvelle dépense dans la comptabilité' },
+    { key: 'canCreateRevenue', label: 'Enregistrer un nouveau revenu dans la comptabilité' },
+    { key: 'canCreateComptaSettings', label: 'Configurer de nouveaux paramètres comptables' },
+    { key: 'canCreateStep', label: 'Ajouter un nouveau module aux procédures' },
+    { key: 'canCreateClientProcedure', label: 'Attribuer un service à un client spécifique' },
+    { key: 'canCreateClientStep', label: 'Définir une étape dans le dossier d\'un client' },
+    { key: 'canCreateClientDocument', label: 'Télécharger ou ajouter un document au dossier d\'un client' },
+  ],
+  
+  read: [
+    { key: 'canReadClient', label: 'Voir les dossiers et données des clients' },
+    { key: 'canReadStep', label: 'Visualiser les modules et leurs détails' },
+    { key: 'canReadAdmin', label: 'Voir la liste et les profils des administrateurs' },
+    { key: 'canReadProcedure', label: 'Consulter le catalogue de services de l\'entreprise' },
+    { key: 'canReadTransaction', label: 'Accéder à l\'historique des transactions financières' },
+    { key: 'canReadInvoice', label: 'Consulter les factures émises aux clients' },
+    { key: 'canReadExpense', label: 'Voir les dépenses enregistrées dans la comptabilité' },
+    { key: 'canReadRevenue', label: 'Voir les revenus enregistrés dans la comptabilité' },
+    { key: 'canReadComptaSettings', label: 'Afficher les paramètres de configuration comptable' },
+    { key: 'canReadClientProcedure', label: 'Voir les services associés à chaque client' },
+    { key: 'canReadClientStep', label: 'Consulter les étapes dans les dossiers clients' },
+    { key: 'canReadClientDocument', label: 'Visualiser et télécharger les documents des clients' },
+  ],
+  
+  update: [
+    { key: 'canEditOrganization', label: 'Mettre à jour les informations des organisations' },
+    { key: 'canEditClient', label: 'Modifier les données des fiches clients' },
+    { key: 'canEditStep', label: 'Mettre à jour les modules et leurs détails' },
+    { key: 'canEditAdmin', label: 'Modifier les profils et droits des administrateurs' },
+    { key: 'canEditProcedure', label: 'Modifier les services du catalogue' },
+    { key: 'canEditTransaction', label: 'Modifier les transactions financières existantes' },
+    { key: 'canEditInvoice', label: 'Ajuster ou corriger les factures créées' },
+    { key: 'canEditExpense', label: 'Modifier les dépenses existantes' },
+    { key: 'canEditRevenue', label: 'Modifier les revenus existants' },
+    { key: 'canEditComptaSettings', label: 'Ajuster les paramètres de comptabilité' },
+    { key: 'canEditClientProcedure', label: 'Modifier les services attribués aux clients' },
+    { key: 'canEditClientStep', label: 'Modifier les étapes dans les dossiers clients' },
+    { key: 'canEditClientDocument', label: 'Mettre à jour les documents associés aux clients' },
+  ],
+  
+  delete: [
+    { key: 'canDeleteClient', label: 'Supprimer des clients et leurs données associées' },
+    { key: 'canDeleteStep', label: 'Supprimer des modules d\'un service' },
+    { key: 'canDeleteAdmin', label: 'Retirer des comptes administrateurs' },
+    { key: 'canDeleteProcedure', label: 'Retirer des services du catalogue' },
+    { key: 'canDeleteTransaction', label: 'Effacer des transactions financières du système' },
+    { key: 'canDeleteInvoice', label: 'Supprimer des factures émises' },
+    { key: 'canDeleteExpense', label: 'Effacer des dépenses de la comptabilité' },
+    { key: 'canDeleteRevenue', label: 'Effacer des revenus de la comptabilité' },
+    { key: 'canDeleteComptaSettings', label: 'Supprimer des paramètres de comptabilité' },
+    { key: 'canDeleteClientProcedure', label: 'Désassocier des services attribués aux clients' },
+    { key: 'canDeleteClientStep', label: 'Supprimer des étapes dans les dossiers clients' },
+    { key: 'canDeleteClientDocument', label: 'Supprimer des documents des dossiers clients' },
+  ],
+};
   // Fonction pour obtenir la liste des autorisations à afficher selon la catégorie active
   const getPermissionsToDisplay = () => {
     if (activeCategory === 'all') {
@@ -179,6 +200,12 @@ export default function Authorization({ initialAuthorizations }: AuthorizationPr
             Configurez ce que cet utilisateur peut faire dans le système
           </p>
         </div>
+
+        {successMessage && (
+          <div className="mb-4 p-4 bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-50 rounded-md">
+            Les autorisations ont été mises à jour avec succès.
+          </div>
+        )}
 
         {hasChanges && (
           <div className="p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center z-10">

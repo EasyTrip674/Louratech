@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useModal } from "@/hooks/useModal";
@@ -14,6 +14,7 @@ import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
 import { createProcedureScheme } from "./procedure.create.sheme";
 import { doCreateProcedure } from "./procedure.create.action";
+import { authClient } from "@/lib/auth-client";
 
 // Zod validation schema
 
@@ -24,6 +25,7 @@ export default function CreateProcedureFormModal() {
   const { isOpen, openModal, closeModal } = useModal();
   const successModal = useModal();
   const errorModal = useModal();
+
 
   const {
     register,
@@ -36,6 +38,8 @@ export default function CreateProcedureFormModal() {
      name: "",
     },
   });
+
+
 
   // Watch form values in real-time
   // const watchedValues = watch();
@@ -55,11 +59,13 @@ export default function CreateProcedureFormModal() {
     onSuccess: () => {
       console.log("Procedure created successfully");
     },
-    onError: (error) => {
+    onError: () => {
       console.error("Failed to create Procedure");
     },
     
   });
+
+
 
   const onSubmit = async (data: ProcedureFormData) => {
     console.log("Saving Procedure data:", data);
@@ -68,6 +74,10 @@ export default function CreateProcedureFormModal() {
      await createMutation.mutateAsync(data);
     
   };
+
+  const session = authClient.useSession();
+  if (!session.data?.userDetails?.authorize?.canEditProcedure) return null;
+
 
   return (
     <>

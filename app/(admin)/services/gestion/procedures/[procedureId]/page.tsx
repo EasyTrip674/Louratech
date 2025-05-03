@@ -1,17 +1,26 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import { Users, Clock, CheckCircle, CreditCard, ArrowLeft, Edit } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 
 import Button from "@/components/ui/button/Button";
 import Link from 'next/link';
-import { ProcedureFinancialSummary } from '@/components/procedures/ProcedureFinancialSummary';
-import TableClientsProcedure from './TableClientsProcedure';
-import { getProcedureDetails,  getProcedureWithStepsDb, getStepsProcedureDB } from '@/db/queries/procedures.query';
+import {  getStepsProcedureDB } from '@/db/queries/procedures.query';
 import { getCLientsIdWithNameDB } from '@/db/queries/clients.query';
 import AddClientToStepModal from './clients/[clientProcedureId]/clientProcedure/AddClientToStepModal';
-import TableProcedureSteps from './CardsStepProcedure';
 import CreateStepFormModal from './steps/step/create/CreateStepFormModal';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import prisma from '@/db/prisma';
+import StatsServiceSkeleton from '@/components/Dashboards/OneServiceDahsboard/StatsService/StatsServiceSkeleton';
+import ProcedureFinancialSummaryLayout from '@/components/Dashboards/OneServiceDahsboard/ProcedureFinancialSummary/ProcedureFinancialSummaryLayout';
+import TableClientsProcedureLayout from '@/components/Dashboards/OneServiceDahsboard/TableClientsProcedure/TableClientsProcedureLayout';
+import StatsService from '@/components/Dashboards/OneServiceDahsboard/StatsService/StatsService';
+import { ProcedureFinancialSummarySkeleton } from '@/components/Dashboards/OneServiceDahsboard/ProcedureFinancialSummary/ProcedureFinancialSummarySkeleton';
+import TableClientsProcedureSkeleton from '@/components/Dashboards/OneServiceDahsboard/TableClientsProcedure/TableClientsProcedureSkeleton';
+import TableProcedureStepsSkeleton from '@/components/Dashboards/OneServiceDahsboard/TableProcedureSteps/TableProcedureStepsSkeleton';
+import TableProcedureStepsLayout from '@/components/Dashboards/OneServiceDahsboard/TableProcedureSteps/TableProcedureStepsLayout';
+import EditProcedureFormModal from './edit/CreateEditModalForm';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
 
 // Type pour les paramètres de la page
@@ -24,12 +33,21 @@ type PageProps = {
 
 
 
-// Composant principal de la page
 export default async function ProcedureDetailPage({ params }: PageProps) {
-  const procedure = await getProcedureDetails(params?.procedureId);
+  const procedure = await prisma.procedure.findUnique({
+    where: {
+      id: params.procedureId,
+    },
+    select: {
+      id:true,
+      name: true,
+      description: true,
+    }
+    });
+
+
   const clients = await getCLientsIdWithNameDB();
   // Données de test pour les étapes d'une procédure
-  const procedureDataStep = await getProcedureWithStepsDb(params?.procedureId);
 
   const stepsProc = await getStepsProcedureDB(params?.procedureId);
 
@@ -39,6 +57,10 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
   if (!procedure) {
     return notFound();
   }
+
+  const session  = await auth.api.getSession({
+    headers: await headers()
+  })
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -55,6 +77,13 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{procedure.name}</h1>
             <p className="text-gray-500 dark:text-gray-400">{procedure.description}</p>
           </div>
+         {
+          session?.userDetails?.authorize?.canEditProcedure && (
+            <EditProcedureFormModal procedure={
+              { procedureId: procedure.id, name:procedure.name ?? "", description: procedure.description ?? "" }
+            } />
+          )
+         }
         </div>
         
         <div className="flex items-center gap-3 mt-4 md:mt-0">
@@ -63,75 +92,35 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
       </div>
       
       {/* Statistiques générales */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-          <div className="flex justify-between items-start">
-            <Users className="h-6 w-6 text-blue-500" />
-          </div>
-          <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm">Total Clients</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{procedure.totalClients}</p>
-        </div>
-        
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-          <div className="flex justify-between items-start">
-            <Clock className="h-6 w-6 text-amber-500" />
-          </div>
-          <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm">En cours</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{procedure.inProgressCount}</p>
-        </div>
-        
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-          <div className="flex justify-between items-start">
-            <CheckCircle className="h-6 w-6 text-green-500" />
-          </div>
-          <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm">Complétées</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{procedure.completedCount}</p>
-        </div>
-        
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-          <div className="flex justify-between items-start">
-            <CreditCard className="h-6 w-6 text-purple-500" />
-          </div>
-          <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm">Revenu total</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{procedure.totalRevenue} FNG</p>
-        </div>
-      </div>
+      <Suspense fallback={<StatsServiceSkeleton />}>
+        {/* <StatsService procedureId={params.procedureId} /> */}
+        <StatsService procedureId={params.procedureId} />
+      </Suspense>
+     
       
       {/* Résumé financier */}
-      <div className="mb-8">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Résumé financier</h2>
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5">
-          <ProcedureFinancialSummary 
-            totalRevenue={
-              procedure.totalRevenue
-            }
-            pendingRevenue={
-              procedure.pendingRevenue
-            }
-            procedurePrice={procedure.steps.reduce((acc, step) => acc + (step.price || 0), 0)}
-            totalClients={procedure.totalClients}
-          />
-        </div>
-      </div>
-      
+      <Suspense
+      fallback={<ProcedureFinancialSummarySkeleton />}
+      >
+        <ProcedureFinancialSummaryLayout procedureId={params.procedureId} />
+      </Suspense>
+     
       {/* les modules */}
       <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-medium text-gray-900 dark:text-white">Modules</h2>
           <div>
-           <CreateStepFormModal procedureId={procedure.id}
-             />
+            {
+              session?.userDetails?.authorize?.canCreateStep && (
+                <CreateStepFormModal procedureId={procedure.id} />
+              )
+            }
           </div>
         </div>
         <div className="rounded-lg overflow-hidden">
-          <div className="overflow-x-auto">
-           {/* les modules */}
-
-            <TableProcedureSteps
-              procedureDetails={procedureDataStep}
-            />
-
-          </div>
+            <Suspense fallback={<TableProcedureStepsSkeleton />}>
+              <TableProcedureStepsLayout procedureId={params.procedureId} />
+            </Suspense>
         </div>
       </div>
       
@@ -140,19 +129,18 @@ export default async function ProcedureDetailPage({ params }: PageProps) {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-medium text-gray-900 dark:text-white">Clients inscrits</h2>
           <div>
-            <AddClientToStepModal
+           {
+            session?.userDetails?.authorize?.canCreateClientProcedure && ( <AddClientToStepModal
               stepsProcedure={stepsProc}
-            procedureId={params.procedureId} clientsDB={clients}   />
+              procedureId={params.procedureId} clientsDB={clients} />
+            )
+           }
           </div>
         </div>
         
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            <div className="min-w-full">
-             <TableClientsProcedure procedureDetails={procedure} />
-            </div>
-          </div>
-        </div>
+        <Suspense fallback={<TableClientsProcedureSkeleton />} >
+          <TableClientsProcedureLayout procedureId={params.procedureId} />
+        </Suspense>
       </div>
     </div>
   );

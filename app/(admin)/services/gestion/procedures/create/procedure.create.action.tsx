@@ -10,7 +10,14 @@ export const doCreateProcedure = adminAction
     .metadata({actionName:"create Procedure"}) // ✅ Ajout des métadonnées obligatoires
     .schema(createProcedureScheme)
     .action(async ({ clientInput ,ctx}) => {
+
+
         console.log("Creating Procedure with data:", clientInput);
+
+        // TODO: Vérifier si l'utilisateur est autorisé à créer une procédure
+        if (ctx.user.userDetails?.authorize?.canCreateProcedure === false) {
+            throw new Error("Vous n'êtes pas autorisé à créer un service");
+        }
 
         const existProcedure = await prisma.procedure.findFirst({
             where: {

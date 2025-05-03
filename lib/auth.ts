@@ -11,7 +11,7 @@ export const auth = betterAuth({
                 allowUserToCreateOrganization: async (user) => {
                     // check if user is an admin
                     console.log("User:", user);
-                    return true;   
+                    return true;
                 }
             }
         ),
@@ -23,9 +23,15 @@ export const auth = betterAuth({
                 },
                 include:{
                   admin:true,
-                    organization:true,
+                    organization:{
+                       include:{
+                        comptaSettings:true,
+                       }
+                    },
+                    authorize:true,
                     member:true,
                     client:true,
+                   
                 }
             });
             return {

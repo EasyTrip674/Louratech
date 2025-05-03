@@ -1,10 +1,12 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { Metadata } from "next";
-import React from "react";
-import TableClients from "./TableClients";
+import React, { Suspense } from "react";
 import CreateClientFormModal from "./create/CreateClientFormModal";
-import { clientsTableOrganizationDB } from "@/db/queries/clients.query";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import TableClientsLayout from "./TableClientLayout";
+import TableClientsSkeleton from "./TableClientsSkeleton";
 
 export const metadata: Metadata = {
     title: "Clients",
@@ -13,8 +15,11 @@ export const metadata: Metadata = {
 };
 
 export default async function  ClientsPage() {
-    const tableClients = await clientsTableOrganizationDB();
-    if (!tableClients) return null;
+
+    const user = await  auth.api.getSession({
+        headers: await headers()
+    })
+    
     return (
         <div>
             <PageBreadcrumb pageTitle="Gestion des clients" />
@@ -23,11 +28,17 @@ export default async function  ClientsPage() {
                     title="Clients"
                     actions={
                         <div className="flex items-center space-x-2">
-                            <CreateClientFormModal />
+                            {
+                                user?.userDetails?.authorize?.canCreateClient && (
+                                    <CreateClientFormModal />
+                                )
+                            }
                         </div>
                     }
                 >
-                    <TableClients clients={tableClients} />
+                    <Suspense fallback={<TableClientsSkeleton />}>
+                        <TableClientsLayout />
+                    </Suspense>
                 </ComponentCard>
             </div>
         </div>

@@ -118,7 +118,7 @@ export default function CreateStepFormModal({procedureId}:{
                 error={!!errors.description} 
                 hint={errors.description?.message} 
                 placeholder="Entrez une description détaillée du module" 
-                onChangeValue={(e)=>register("description").onChange}
+                onChangeValue={()=>register("description").onChange}
               />
             </div>
 

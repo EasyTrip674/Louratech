@@ -72,8 +72,8 @@ const OrganizationSettings = () => {
           setTaxId(data.comptaSettings.taxIdentification || '');
           setCurrency(data.comptaSettings.currency || 'FNG');
           setDefaultTaxRate(data.comptaSettings.defaultTaxRate?.toString() ?? '0');
-          setInvoicePrefix(data.comptaSettings.invoicePrefix || "TRX-");
-          setInvoiceFormat(data.comptaSettings.invoiceNumberFormat || "{YEAR}-{MONTH}-{NUM}");
+          setInvoicePrefix(data.comptaSettings.invoicePrefix || '');
+          setInvoiceFormat(data.comptaSettings.invoiceNumberFormat || '');
         }
         
         setLoading(false);
@@ -375,7 +375,7 @@ const OrganizationSettings = () => {
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 sm:text-sm"
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                  Utilisez {'{YEAR}'} pour l&apos;année, {'{MONTH}'} pour le mois, {'{DAY}'} pour le jour et {'{NUM}'} pour un nombre séquentiel
+                  Utilisez {'{YEAR}'} pour l&apos;année, {'{MONTH}'} pour le mois, {'{NUM}'} pour un nombre séquentiel
                 </p>
               </div>
             </div>
