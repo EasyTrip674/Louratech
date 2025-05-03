@@ -47,11 +47,11 @@ export async function POST(
     const comptaSettings = await prisma.comptaSettings.create({
       data: {
         fiscalYear: new Date(data.fiscalYear),
-        taxIdentification: data.taxIdentification || null,
-        currency: data.currency || 'FNG',
-        defaultTaxRate: data.defaultTaxRate || null,
-        invoicePrefix: data.invoicePrefix || null,
-        invoiceNumberFormat: data.invoiceNumberFormat || null,
+        taxIdentification: data.taxIdentification ?? 0,
+        currency: data.currency ?? 'FNG',
+        defaultTaxRate: data.defaultTaxRate || 0,
+        invoicePrefix: data.invoicePrefix || "FTX-",
+        invoiceNumberFormat: data.invoiceNumberFormat ?? "{YEAR}-{MONTH}-{DAY}-{NUM}",
         organizationId: params.id,
       },
     });

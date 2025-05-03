@@ -71,7 +71,7 @@ const OrganizationSettings = () => {
           setFiscalYearStart(new Date(data.comptaSettings.fiscalYear).toISOString().split('T')[0]);
           setTaxId(data.comptaSettings.taxIdentification || '');
           setCurrency(data.comptaSettings.currency || 'FNG');
-          setDefaultTaxRate(data.comptaSettings.defaultTaxRate?.toString() || '');
+          setDefaultTaxRate(data.comptaSettings.defaultTaxRate?.toString() ?? '0');
           setInvoicePrefix(data.comptaSettings.invoicePrefix || '');
           setInvoiceFormat(data.comptaSettings.invoiceNumberFormat || '');
         }

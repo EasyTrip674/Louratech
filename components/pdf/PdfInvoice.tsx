@@ -170,11 +170,11 @@ const InvoicePDF = ({ transaction }: {
           </View>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Informations bancaires</Text>
-          <Text style={styles.sectionText}>IBAN: FR76 1234 5678 9101 1121 3141 516</Text>
+        {/* <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Informations supplémentaire</Text>
+          <Text style={styles.sectionText}>Tax: {transaction.organization.co}</Text>
           <Text style={styles.sectionText}>BIC: AGRIFRPP</Text>
-        </View>
+        </View> */}
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Merci pour votre confiance !</Text>

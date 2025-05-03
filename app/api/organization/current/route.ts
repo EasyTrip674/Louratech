@@ -30,6 +30,8 @@ export async function GET() {
       where: { organizationId: user.organizationId },
     });
 
+
+
     return NextResponse.json({
       organization: user.organization,
       comptaSettings: comptaSettings,

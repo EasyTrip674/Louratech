@@ -17,11 +17,11 @@ export const ProcedureFinancialSummary: React.FC<ProcedureFinancialSummaryProps>
   totalClients
 }) => {
   // Calcul des revenus potentiels si tous les clients payaient le prix complet
-  const potentialRevenue = procedurePrice * totalClients;
   
-  // Calcul du taux de recouvrement (revenus perçus / revenus potentiels)
-  const recoveryRate = potentialRevenue > 0 ? Math.round((totalRevenue / potentialRevenue) * 100) : 0;
+  // un taux de récupération basé sur le revenu total et le revenu potentiel
   const session = authClient.useSession();
+  const avgRevenuePerClient = totalClients > 0 ? totalRevenue / totalClients : 0;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
       <div>
@@ -30,7 +30,6 @@ export const ProcedureFinancialSummary: React.FC<ProcedureFinancialSummaryProps>
           formatCurrency(procedurePrice, session?.data?.userDetails?.organization?.comptaSettings?.currency)
           }</p>
       </div>
-      
       <div>
         <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Revenus Perçus</h3>
         <p className="text-2xl font-bold text-green-600 dark:text-green-400">{formatCurrency(totalRevenue, session?.data?.userDetails?.organization?.comptaSettings?.currency)}</p>
@@ -42,8 +41,8 @@ export const ProcedureFinancialSummary: React.FC<ProcedureFinancialSummaryProps>
       </div>
       
       <div>
-        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Taux de Recouvrement</h3>
-        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{recoveryRate}%</p>
+        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Revenue Moyen</h3>
+        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{formatCurrency(avgRevenuePerClient, session?.data?.userDetails?.organization?.comptaSettings?.currency)}</p>
       </div>
     </div>
   );

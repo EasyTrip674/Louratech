@@ -48,14 +48,14 @@ export const authActionClient = actionClient
   .use(async ({ next,metadata }) => {
 
     if (!metadata?.actionName) {
-      throw new ActionError("Missing required metadata: actionName");
+      throw new ActionError("l'action n'as pas de nom");
     }
 
     const user = await auth.api.getSession({
       headers: await headers() //some endpoint might require headers
     })
     if (!user) {
-      throw new ActionError("User not authenticated");
+      throw new ActionError("Vous n'êtes pas connecté");
     }
 
 
@@ -71,7 +71,7 @@ export const superAdminAction = authActionClient
 
 // ✅ Client pour les admins avec validation de `metadata`
 export const adminAction = authActionClient
-  .use(async ({ next,ctx }) => {
+  .use(async ({ next,ctx}) => {
     // Vérification que `metadata` est bien défini avant d'exécuter l'action
-    return next({ ctx });
+    return next({ ctx, });
   });

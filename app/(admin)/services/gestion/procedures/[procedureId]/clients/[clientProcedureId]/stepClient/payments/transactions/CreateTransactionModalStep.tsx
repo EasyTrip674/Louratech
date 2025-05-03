@@ -49,6 +49,7 @@ const CreateTransactionModalStep = ({
   const errorModal = useModal()
   const queryClient = useQueryClient()
 
+
   const { 
     control,
     register, 
@@ -143,7 +144,7 @@ const CreateTransactionModalStep = ({
       <ErrorModal 
         errorModal={errorModal} 
         onRetry={openModal}
-        message="Une erreur est survenue lors de la création du paiement" 
+        message={"Soit vous n'avez pas les autorisations ou qu'il existe dejà une transaction non approuvé !!"}
       />
 
       <Button

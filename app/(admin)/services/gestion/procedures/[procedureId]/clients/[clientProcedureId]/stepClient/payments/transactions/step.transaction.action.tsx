@@ -42,7 +42,7 @@ export const doCreateTransaction = adminAction
         });
 
         if (!clientStep) {
-            throw new Error("Client step not found");
+            throw new Error("ce module n'existe pas");
         }
 
         const organization = await prisma.organization.findUnique({
@@ -55,7 +55,7 @@ export const doCreateTransaction = adminAction
         });
 
         if (!organization) {
-            throw new Error("Organization not found");
+            throw new Error("Vous n'etes pas autorisé");
         }
 
         // create transaction

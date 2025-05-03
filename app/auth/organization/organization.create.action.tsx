@@ -8,10 +8,35 @@ import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 
+// Map to track last execution time for each user email
+const lastExecutionMap = new Map();
+
 export const doCreateOrganization = actionClient
     .metadata({actionName:"create organization"}) // ✅ Ajout des métadonnées obligatoires
     .schema(createOrganizationSchema)
     .action(async ({ clientInput }) => {
+        // Debounce implementation: prevent multiple executions within 3 seconds
+        const currentTime = Date.now();
+        const userEmail = clientInput.email;
+        
+        if (lastExecutionMap.has(userEmail)) {
+            const lastTime = lastExecutionMap.get(userEmail);
+            const timeDiff = currentTime - lastTime;
+            
+            // If less than 5 seconds have passed since last execution
+            if (timeDiff < 5000) {
+                console.log(`Request throttled for ${userEmail}. Time since last request: ${timeDiff}ms`);
+                throw new Error("Please wait before submitting again");
+            }
+        }
+        
+        // Update the last execution time for this user
+        lastExecutionMap.set(userEmail, currentTime);
+        
+        // Set a timeout to remove the entry after 3 seconds to prevent memory leaks
+        setTimeout(() => {
+            lastExecutionMap.delete(userEmail);
+        }, 3000);
 
         if(clientInput.password !== clientInput.confirmPassword){
             throw new Error("Passwords do not match");
@@ -23,156 +48,189 @@ export const doCreateOrganization = actionClient
 
         // create slug based on organization name
         const slug = clientInput.organizationName.toLowerCase().replace(/ /g, "-");
+        
         const existUser = await prisma.user.findFirst({
             where:{
                 email: clientInput.email
             }
         });
 
-        if(existUser){
-            throw new Error("User already exist");
-        }
-         // create user admin for the organization
-         const userAuth = await auth.api.signUpEmail({
-         body: {
-            email: clientInput.email,
-            password: clientInput.password,
-            name: clientInput.firstName + " " + clientInput.lastName,
-            options: {
-                emailVerification: false,
-                data: {
-                    firstName: clientInput.firstName,
-                    lastName: clientInput.lastName,
-                }
-              }
-            }
-        });
+        if(!existUser){
+            
+       
+
+        console.log("A en cours....");
+
         
-        if(!userAuth.user){
-            throw new Error("User already exist");
-        }
-
-        const user = await prisma.user.findUniqueOrThrow({
-            where:{
-                id: userAuth.user.id
-            }
-        });
-        // console.log("User created:", user);
-
-        const userUpdated = await prisma.user.update({
-            where:{
-                id: user.id
-            },
-            data:{
-                role: Role.ADMIN,
-                firstName: clientInput.firstName,
-                lastName: clientInput.lastName,
+        // create user admin for the organization
+        const userAuth = await auth.api.signUpEmail({
+            body: {
                 email: clientInput.email,
-                authorize:{
-                    create:{
-                        // Permissions générales
-                        canChangeUserAuthorization: true,
-                        canChangeUserPassword: true,
-
-                        // Permissions de création
-                        canCreateOrganization: false,
-                        canCreateStep: true,
-                        canCreateClient: true,
-                        canCreateProcedure: true,
-                        canCreateTransaction: true,
-                        canCreateInvoice: true,
-                        canCreateExpense: true,
-                        canCreateRevenue: true,
-                        canCreateComptaSettings: true,
-                        canCreateClientProcedure: true,
-                        canCreateClientStep: true,
-                        canCreateClientDocument: true,
-                        canCreateAdmin: true,
-
-                        // Permissions de lecture
-                        canReadOrganization: true,
-                        canReadStep: true,
-                        canReadClient: true,
-                        canReadProcedure: true,
-                        canReadTransaction: true,
-                        canReadInvoice: true,
-                        canReadExpense: true,
-                        canReadRevenue: true,
-                        canReadComptaSettings: true,
-                        canReadClientProcedure: true,
-                        canReadClientStep: true,
-                        canReadClientDocument: true,
-                        canReadAdmin: true,
-
-                        // Permissions de modification
-                        canEditOrganization: true,
-                        canEditStep: true,
-                        canEditClient: true,
-                        canEditProcedure: true,
-                        canEditTransaction: true,
-                        canEditInvoice: true,
-                        canEditExpense: true,
-                        canEditRevenue: true,
-                        canEditComptaSettings: true,
-                        canEditClientProcedure: true,
-                        canEditClientStep: true,
-                        canEditClientDocument: true,
-                        canEditAdmin: true,
-
-                        // Permissions de suppression
-                        canDeleteOrganization: true,
-                        canDeleteStep: true,
-                        canDeleteClient: true,
-                        canDeleteProcedure: true,
-                        canDeleteTransaction: true,
-                        canDeleteInvoice: true,
-                        canDeleteExpense: true,
-                        canDeleteRevenue: true,
-                        canDeleteComptaSettings: true,
-                        canDeleteClientProcedure: true,
-                        canDeleteClientStep: true,
-                        canDeleteClientDocument: true,
-                        canDeleteAdmin: true,
+                password: clientInput.password,
+                name: clientInput.firstName + " " + clientInput.lastName,
+                options: {
+                    emailVerification: false,
+                    data: {
+                        firstName: clientInput.firstName,
+                        lastName: clientInput.lastName,
                     }
                 }
             }
         });
 
-        const organization = await prisma.organization.create({
-            data:{
-                name: clientInput.organizationName,
-                description: clientInput.organizationDescription,
-                slug: slug,
-                logo:'',
-                metadata:'',
-                users:{
-                   connect:{
-                          id: userUpdated.id
-                   }
-                },
-                member:{
-                    create:{
-                        user:{
-                            connect:{
-                                id: userUpdated.id
-                            }
-                        },
-                        role: Role.ADMIN
-                        
-                },
-              
-            }
+        console.log("B en cours....");
+
+        
+        if(!userAuth.user){
+            throw new Error("User already exist");
         }
+
+        // Wrap all database operations in a transaction
+        const result = await prisma.$transaction(async (tx) => {
+            const user = await tx.user.findUniqueOrThrow({
+                where:{
+                    id: userAuth.user.id
+                }
+            });
+            
+            
+            const userUpdated = await tx.user.update({
+                where:{
+                    id: user.id
+                },
+                data:{
+                    role: Role.ADMIN,
+                    firstName: clientInput.firstName,
+                    lastName: clientInput.lastName,
+                    email: clientInput.email,
+                    authorize:{
+                        create:{
+                            // Permissions générales
+                            canChangeUserAuthorization: true,
+                            canChangeUserPassword: true,
+
+                            // Permissions de création
+                            canCreateOrganization: false,
+                            canCreateStep: true,
+                            canCreateClient: true,
+                            canCreateProcedure: true,
+                            canCreateTransaction: true,
+                            canCreateInvoice: true,
+                            canCreateExpense: true,
+                            canCreateRevenue: true,
+                            canCreateComptaSettings: true,
+                            canCreateClientProcedure: true,
+                            canCreateClientStep: true,
+                            canCreateClientDocument: true,
+                            canCreateAdmin: true,
+
+                            // Permissions de lecture
+                            canReadOrganization: true,
+                            canReadStep: true,
+                            canReadClient: true,
+                            canReadProcedure: true,
+                            canReadTransaction: true,
+                            canReadInvoice: true,
+                            canReadExpense: true,
+                            canReadRevenue: true,
+                            canReadComptaSettings: true,
+                            canReadClientProcedure: true,
+                            canReadClientStep: true,
+                            canReadClientDocument: true,
+                            canReadAdmin: true,
+
+                            // Permissions de modification
+                            canEditOrganization: true,
+                            canEditStep: true,
+                            canEditClient: true,
+                            canEditProcedure: true,
+                            canEditTransaction: true,
+                            canEditInvoice: true,
+                            canEditExpense: true,
+                            canEditRevenue: true,
+                            canEditComptaSettings: true,
+                            canEditClientProcedure: true,
+                            canEditClientStep: true,
+                            canEditClientDocument: true,
+                            canEditAdmin: true,
+
+                            // Permissions de suppression
+                            canDeleteOrganization: true,
+                            canDeleteStep: true,
+                            canDeleteClient: true,
+                            canDeleteProcedure: true,
+                            canDeleteTransaction: true,
+                            canDeleteInvoice: true,
+                            canDeleteExpense: true,
+                            canDeleteRevenue: true,
+                            canDeleteComptaSettings: true,
+                            canDeleteClientProcedure: true,
+                            canDeleteClientStep: true,
+                            canDeleteClientDocument: true,
+                            canDeleteAdmin: true,
+                        }
+                    }
+                }
+            });
+
+            const organization = await tx.organization.create({
+                data:{
+                    name: clientInput.organizationName,
+                    description: clientInput.organizationDescription,
+                    slug: slug,
+                    logo:'',
+                    metadata:'',
+                    users:{
+                        connect:{
+                            id: userUpdated.id
+                        }
+                    },
+                    member:{
+                        create:{
+                            user:{
+                                connect:{
+                                    id: userUpdated.id
+                                }
+                            },
+                            role: Role.ADMIN
+                        },
+                    }
+                }
+            });
+
+
+        // create a organization settings
+        await tx.comptaSettings.create({
+            data:{
+                organization:{
+                    connect:organization
+                },
+                invoiceNumberFormat: "{YEAR}-{MONTH}-{NUM}",
+                invoicePrefix: "FACT-",
+                taxIdentification: "",
+                defaultTaxRate: 0,
+                fiscalYear: new Date(Date.now()),
+                currency: "FNG"
+            }
+        })
+
+
+            return { userUpdated, organization };
         });
 
+    
 
-        
-        
-        console.log("Creating organization with data:", organization);
+        console.log("Creating organization with data:", result.organization);
 
         revalidatePath("/app/auth/organization");
 
         redirect("/auth/signin");
         
-        return { success: true };
+        }else{
+            console.log(existUser);
+            
+            throw new Error("User already exist");
+        }
     });
+
+
