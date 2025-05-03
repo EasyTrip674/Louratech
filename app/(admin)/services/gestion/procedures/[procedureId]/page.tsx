@@ -25,15 +25,14 @@ import EditProcedureFormModal from './edit/CreateEditModalForm';
 
 // Type pour les paramètres de la page
 type PageProps = {
-  params: {
-    procedureId: string;
-  };
+  params: Promise<{ procedureId: string }>;
 };
 
 
 
 
-export default async function ProcedureDetailPage({ params }: PageProps) {
+export default async function ProcedureDetailPage(props: PageProps) {
+  const params = await props.params;
   const procedure = await prisma.procedure.findUnique({
     where: {
       id: params.procedureId,
