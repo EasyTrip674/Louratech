@@ -7,7 +7,7 @@ import Backdrop from "@/layout/Backdrop";
 import React from "react";
 // import { authClient } from "@/lib/auth-client";
 // import Loading from "../try";
-import { CopilotPopup } from "@copilotkit/react-ui";
+// import { CopilotPopup } from "@copilotkit/react-ui";
 import "@copilotkit/react-ui/styles.css";
 import { authClient } from "@/lib/auth-client";
 import Loading from "../try";
@@ -52,13 +52,13 @@ export default function AdminLayout({
         <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">{children}</div>
       </div>
       </div>
-      <CopilotPopup
+      {/* <CopilotPopup
         instructions={"You are assisting the user as best as you can. Answer in the best way possible given the data you have."}
         labels={{
           title: "Gestion Agence IA",
           initial: "Ici pour vous aider ! Je suis à votre disposition pour répondre à vos questions. Faire des actions sur l'application ou vous aider à trouver des informations. Fournir des indications sur les fonctionnalités de l'application. Faire des bilans sur les actions effectuées. Je suis là pour vous aider !",
         }}
-      />
+      /> */}
    </>
   );
 }

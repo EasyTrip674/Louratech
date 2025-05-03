@@ -28,19 +28,7 @@ export const getTransactionsDB = async () => {
             procedure:true,
           }
         },
-        clientProcedure:
         
-        {
-          include:{
-            client:
-            {
-              include:{
-                user:true,
-              }
-            },
-            procedure:true,
-          }
-        },
     },
     orderBy: {
       createdAt: "desc",

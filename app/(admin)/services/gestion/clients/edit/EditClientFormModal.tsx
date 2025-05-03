@@ -46,7 +46,7 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
       phone: client?.phone ?? "" ,
       passport: client?.passport ?? "" ,
       address: client?.address ?? "" ,
-      birthDate: (client?.birthDate) ?? "" ,
+      birthDate: String(client?.birthDate) ?? "" ,
       fatherLastName: client?.fatherLastName ?? "" ,
       fatherFirstName: client?.fatherFirstName ?? "" ,
       motherLastName: client?.motherLastName ?? "" ,

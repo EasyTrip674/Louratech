@@ -19,7 +19,7 @@ export const doCreateDepense = adminAction
         if (!ctx.user.userDetails?.authorize?.canCreateExpense) {
             throw new Error("Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
         }
-        
+
     //   verifier si une transaction existe creer le 5 secondes avant
         const existingTransaction = await prisma.transaction.findFirst({
             where: {
