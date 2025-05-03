@@ -29,7 +29,7 @@ export default function SidebarWidget() {
             </svg>
           </div>
           <Link
-            href="/organization/settings"
+            href="/settings"
             className="text-yellow-500 hover:text-yellow-300 text-sm font-medium text-center group transition-all duration-300 ease-in-out"
           >
             <div className="flex items-center space-x-1">
