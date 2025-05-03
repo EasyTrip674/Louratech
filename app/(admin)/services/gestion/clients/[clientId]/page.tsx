@@ -12,19 +12,26 @@ import { headers } from "next/headers";
 export const metadata: Metadata = {
     title: "Client",
     description: "Client page",
-    // other metadata
 };
 
-type PageProps = {
-  params: { clientId: string };
+// We need to use the generated Next.js types for this file
+// Rather than creating our own PageProps type
+type Props = {
+  params: {
+    clientId: string;
+  };
+  searchParams: Record<string, string | string[] | undefined>;
 };
 
-export default async function Profile({ params }: PageProps) {
+export default async function Profile(props: Props) {
+  const { params } = props;
+  const clientId = params.clientId;
+  
   const session = await auth.api.getSession({
     headers: await headers()  
   });
 
-  const client = await clientProfileDB(params.clientId);
+  const client = await clientProfileDB(clientId);
 
   if (!client) {
     return notFound();
