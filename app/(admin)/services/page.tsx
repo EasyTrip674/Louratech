@@ -10,6 +10,9 @@ import RecentOrdersSkeleton from "@/components/Dashboards/Homedasboard/RecentsOr
 import { RecentOrdersLayout } from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersLayout";
 import MonthlySalesChartSkeleton from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthySalesChartSkeleton";
 import { ProceduresMetricsSkeleton } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title:
@@ -21,10 +24,13 @@ export const metadata: Metadata = {
 
 export default async function  DashboardPage() {
 
-  
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-
-   
+  if (!session?.userDetails) {
+    redirect("/auth/signin");
+  }
 
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
