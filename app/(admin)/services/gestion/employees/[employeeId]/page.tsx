@@ -17,12 +17,15 @@ export const metadata: Metadata = {
     // other metadata
 };
 
-type PageProps = {
-  params: { employeeId: string };
+// Rather than creating our own PageProps type
+type Props = {
+  params: {
+    employeeId: string;
+  };
+  searchParams: Record<string, string | string[] | undefined>;
 };
-
 export default async function Profile(
-    {params:{employeeId}}: PageProps
+    props: Props
 
 ) {
 
@@ -30,7 +33,7 @@ export default async function Profile(
     headers: await headers()
   })
 
-   const employee = await employeeProfileDB(employeeId);
+   const employee = await employeeProfileDB(props.params.employeeId);
    const authorization = await prisma.authorization.findUnique({
     where: {
       id: employee?.user.authorize?.id
