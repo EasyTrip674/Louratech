@@ -18,14 +18,14 @@ export const metadata: Metadata = {
 };
 
 // Rather than creating our own PageProps type
-type Props = {
+type PageProps = {
   params: {
     employeeId: string;
   };
   searchParams: Record<string, string | string[] | undefined>;
 };
 export default async function Profile(
-    props: Props
+    props: PageProps
 
 ) {
 
