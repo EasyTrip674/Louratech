@@ -23,7 +23,7 @@ export default async function Profile(
   }
 ) {
 
-  const clientId = await params.clientId;
+  const { clientId } = params;
   const session = await auth.api.getSession({
     headers: await headers()  
   })  
