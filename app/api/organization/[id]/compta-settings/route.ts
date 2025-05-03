@@ -6,9 +6,10 @@ import prisma from '@/db/prisma';
 // Crée les paramètres comptables de l'organisation
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await props.params;
     // Vérifier l'authentification
     const session = await auth.api.getSession({
       headers: request.headers,

@@ -9,9 +9,10 @@ import { revalidatePath } from 'next/cache';
 // Met à jour les informations de l'organisation
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise< { id: string }> }
 ) {
   try {
+    const params = await props.params;
     // Vérifier l'authentification
     const session = await auth.api.getSession({
       headers: request.headers,
