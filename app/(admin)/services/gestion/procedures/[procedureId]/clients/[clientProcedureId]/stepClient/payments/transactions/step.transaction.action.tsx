@@ -52,16 +52,26 @@ export const doCreateTransaction = adminAction
         if (!organization) {
             throw new Error("Organization not found");
         }
-
-        // create transaction
+        const numberTransaction = await prisma.transaction.count({
+            where: {
+                clientStepId: clientInput.clientStepId,
+                organizationId: ctx.user.userDetails?.organizationId ?? "",
+                status: {
+                    in: ["PENDING"]
+                }
+            },
+        });
+        const reference = (ctx?.user.userDetails.organization?.comptaSettings?.invoicePrefix ?? "FTX-") +  ctx?.user?.userDetails?.organization?.comptaSettings?.invoiceNumberFormat
+                ?.replaceAll("{YEAR}", new Date().getFullYear().toString())
+                ?.replaceAll("{MONTH}", (new Date().getMonth() + 1).toString().padStart(2, "0"))
+                ?.replaceAll("{DAY}", new Date().getDate().toString().padStart(2, "0"))
+                ?.replaceAll("{NUM}", (numberTransaction + 1).toString()) + Math.floor(Math.random() * 1000).toString().padStart(3, "0"); 
+      
+        
         await prisma.transaction.create({
             data: {
                 amount: clientInput.amount,
-                reference:
-                    "TRX-" +
-                    new Date().getTime() +
-                    "-" +
-                    Math.floor(Math.random() * 1000),
+                reference: reference,
                 type: "REVENUE",
                 status: clientInput.status as TransactionStatus,
                 clientStepId: clientStep.id,

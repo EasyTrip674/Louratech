@@ -15,7 +15,26 @@ export const getTransactionsDB = async () => {
         category:true,
         expense:true,
         revenue:true,
+<<<<<<< main
     }
+=======
+        clientProcedure:
+        {
+          include:{
+            client:
+            {
+              include:{
+                user:true,
+              }
+            },
+            procedure:true,
+          }
+        },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+>>>>>>> local
   });
   return transactions;
 }

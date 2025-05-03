@@ -28,17 +28,25 @@ export const doCreateDepense = adminAction
         if (existingTransaction) {
             throw new Error("Une transaction existe déjà pour cette étape client");
         }
-       
-       
+       const numberTransaction = await prisma.transaction.count({
+            where: {
+                organizationId: ctx.user.userDetails?.organizationId ?? "",
+                type: "EXPENSE",
+            },
+        });
+            
+        const reference = (ctx?.user.userDetails.organization?.comptaSettings?.invoicePrefix ?? "FTX-") +  ctx?.user?.userDetails?.organization?.comptaSettings?.invoiceNumberFormat
+        ?.replaceAll("{YEAR}", new Date().getFullYear().toString())
+        ?.replaceAll("{MONTH}", (new Date().getMonth() + 1).toString().padStart(2, "0"))
+        ?.replaceAll("{DAY}", new Date().getDate().toString().padStart(2, "0"))
+        ?.replaceAll("{NUM}", (numberTransaction + 1).toString()) + Math.floor(Math.random() * 1000).toString().padStart(3, "0");
+
+        console.log("reference", reference);
         // create Depense
         await prisma.transaction.create({
             data: {
                 amount: clientInput.amount,
-                reference:
-                    "TRX-" +
-                    new Date().getTime() +
-                    "-" +
-                    Math.floor(Math.random() * 1000),
+                reference: reference,
                 type: "EXPENSE",
                 status: clientInput.status,
                 paymentMethod: clientInput.paymentMethod as PaymentMethod,
