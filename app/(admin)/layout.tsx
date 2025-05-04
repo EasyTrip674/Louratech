@@ -11,7 +11,6 @@ import React from "react";
 import "@copilotkit/react-ui/styles.css";
 import { authClient } from "@/lib/auth-client";
 import Loading from "../try";
-import { useRouter } from "next/navigation";
 
 
 export default function AdminLayout({
@@ -20,7 +19,6 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-  const router = useRouter();
   // Dynamic class for main content margin based on sidebar state
   const mainContentMargin = isMobileOpen
     ? "ml-0"
@@ -34,7 +32,6 @@ export default function AdminLayout({
     if (error) return <div>{error.message}</div>;
     if (!session) {
       window.location.href = "/auth/signin";
-      router.push("/auth/signin");
       return null;
     }
 

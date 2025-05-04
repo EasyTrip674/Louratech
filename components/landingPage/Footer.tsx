@@ -14,7 +14,7 @@ const Footer = () => (
         </div>
       </Link>
         <p className={`${styles.paragraph} mt-4 max-w-[312px] dark:text-white`}>
-          La solution de gestion complète pour les agences de communication et de marketing.
+          la solution de gestion d&agence pour les professionnels qui automatise vos tâches
         </p>
       </div>
 
