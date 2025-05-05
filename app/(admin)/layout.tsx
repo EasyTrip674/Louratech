@@ -48,8 +48,13 @@ export default function AdminLayout({
         {/* Header */}
         <AppHeader />
         {/* Page Content */}
-        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">{children}</div>
+        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">{children}
+  
+
+
+        </div>
       </div>
+
       </div>
       {/* <CopilotPopup
         instructions={"You are assisting the user as best as you can. Answer in the best way possible given the data you have."}
@@ -58,6 +63,7 @@ export default function AdminLayout({
           initial: "Ici pour vous aider ! Je suis à votre disposition pour répondre à vos questions. Faire des actions sur l'application ou vous aider à trouver des informations. Fournir des indications sur les fonctionnalités de l'application. Faire des bilans sur les actions effectuées. Je suis là pour vous aider !",
         }}
       /> */}
+
    </>
   );
 }

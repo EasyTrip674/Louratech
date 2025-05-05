@@ -697,3 +697,22 @@ model authorization {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
+
+
+enum FeedbackType {
+  BUG
+  SUGGESTION
+  QUESTION
+  OTHER
+}
+
+//  feedback
+model feedback {
+  id        String    @id @default(cuid())
+  userId    String?
+  organizationId String?
+  type      FeedbackType @default(OTHER)
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

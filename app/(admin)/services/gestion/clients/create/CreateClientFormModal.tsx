@@ -90,7 +90,7 @@ export default function CreateClientFormModal() {
       <ErrorModal 
         errorModal={errorModal} 
         onRetry={openModal}
-        message="Erreur lors de la création du client" 
+        message="Erreur lors de la création du client : l'émail existe déjà" 
       />
       <Button variant="outline" size="sm" onClick={openModal} className="bg-gray-200">
         <Plus className="w-4 h-4 dark:text-white" /> Creer un client
