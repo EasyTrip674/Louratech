@@ -27,8 +27,8 @@ export function formatCurrency(
   const {
     useSymbol = false,
     maxDecimals = 0,
-    abbreviateMillions = true,
-    abbreviateBillions = true
+    abbreviateMillions = false,
+    abbreviateBillions = false
   } = options;
 
   // Gestion des valeurs négatives
