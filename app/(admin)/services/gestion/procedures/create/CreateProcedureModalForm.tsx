@@ -82,10 +82,10 @@ export default function CreateProcedureFormModal() {
   return (
     <>
     <SuccessModal successModal={successModal}
-               message="Procedure created successfully"
+               message="Service créé avec succès"
                title="" />
     <ErrorModal errorModal={errorModal} onRetry={openModal}
-        message="Error during creation user" />
+        message="Erreur lors de la création du service" />
        <button className="flex items-center gap-2 bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 text-sm font-medium" onClick={openModal}>
               <Plus className="h-4 w-4" />
               Nouveau service
