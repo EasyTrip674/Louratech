@@ -161,7 +161,7 @@ const CreateExpenseModal = ({}: Props) => {
             <Input
               type="text"
               id="title"
-              placeholder="Entrez le titre"
+              placeholder="Ex : Achat d'un ordinateur"
               aria-invalid={errors.title ? "true" : "false"}
               aria-describedby={errors.title ? "title-error" : undefined}
               {...register('title')}
@@ -169,12 +169,14 @@ const CreateExpenseModal = ({}: Props) => {
             {errors.title && (
               <p id="title-error" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.title.message}</p>
             )}
+
+            
           </div>
 
           {/* Description avec textarea */}
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Description
+              Description (optionnel)
             </label>
             <textarea
               id="description"
@@ -197,7 +199,6 @@ const CreateExpenseModal = ({}: Props) => {
             <div className="relative">
               <Input
                 type="number"
-                step="100"
                 id="amount"
                 placeholder="Entrez le montant"
                 aria-invalid={errors.amount ? "true" : "false"}
@@ -230,12 +231,12 @@ const CreateExpenseModal = ({}: Props) => {
           </p>
           <div>
             <label htmlFor="vendor" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Destination 
+              Destination  (optionnel)
             </label>
             <Input
               type="text"
               id="vendor"
-              placeholder="Nom du Destination"
+              placeholder="Datacenter, fournisseur, etc."
               {...register('vendor')}
             />
           </div>
@@ -243,7 +244,7 @@ const CreateExpenseModal = ({}: Props) => {
           {/* Numéro de facture */}
           <div>
             <label htmlFor="invoiceNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Numéro de facture
+              Numéro de facture (optionnel)
             </label>
             <Input
               type="text"

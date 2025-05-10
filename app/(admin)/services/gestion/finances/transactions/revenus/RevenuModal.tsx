@@ -164,7 +164,7 @@ const CreateRevenuModal = ({}: Props) => {
             <Input
               type="text"
               id="title"
-              placeholder="Entrez le titre"
+              placeholder="Ex: Revente d'un produit X"
               aria-invalid={errors.title ? "true" : "false"}
               aria-describedby={errors.title ? "title-error" : undefined}
               {...register('title')}
@@ -177,7 +177,7 @@ const CreateRevenuModal = ({}: Props) => {
           {/* Description avec textarea */}
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Description
+              Description (optionnel)
             </label>
             <textarea
               id="description"
@@ -200,7 +200,6 @@ const CreateRevenuModal = ({}: Props) => {
             <div className="relative">
               <Input
                 type="number"
-                step="100"
                 id="amount"
                 placeholder="Entrez le montant"
                 aria-invalid={errors.amount ? "true" : "false"}
@@ -233,12 +232,12 @@ const CreateRevenuModal = ({}: Props) => {
           </p>
           <div>
             <label htmlFor="source" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Source 
+              Source (optionnel)
             </label>
             <Input
               type="text"
               id="source"
-              placeholder="titre de la source"
+              placeholder="Ex : Client X"
               {...register('source')}
             />
           </div>

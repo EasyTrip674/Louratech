@@ -69,7 +69,7 @@ export async function PUT(
         }
         // garder l'ancien lien pour le suppression
         const OldlogoUrl = user.organization.logo;
-        const blob = await put(user.organization.slug+Date.now(), logoFile, {
+        const blob = await put(`${user.organization.id}-${Date.now()}`, logoFile, {
             access: 'public',
           });
         updateData.logo = blob.url;

@@ -52,7 +52,7 @@ export async function POST(
         currency: data.currency ?? 'FNG',
         defaultTaxRate: data.defaultTaxRate || 0,
         invoicePrefix: data.invoicePrefix || "FTX-",
-        invoiceNumberFormat: data.invoiceNumberFormat ?? "{YEAR}-{MONTH}-{DAY}-{NUM}",
+        invoiceNumberFormat: data.invoiceNumberFormat ?? "{YEAR}{MONTH}{DAY}{NUM}",
         organizationId: params.id,
       },
     });
