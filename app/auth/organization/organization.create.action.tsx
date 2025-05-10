@@ -7,6 +7,8 @@ import { createOrganizationSchema } from "./create.organization.shema";
 import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { sendEmail } from "@/lib/nodemailer/email";
+import { generateEmailMessageHtml } from "@/lib/nodemailer/message";
 
 // Map to track last execution time for each user email
 const lastExecutionMap = new Map();
@@ -205,7 +207,7 @@ export const doCreateOrganization = actionClient
                 organization:{
                     connect:organization
                 },
-                invoiceNumberFormat: "{YEAR}-{MONTH}-{NUM}",
+                invoiceNumberFormat: "{YEAR}{MONTH}{NUM}",
                 invoicePrefix: "FACT-",
                 taxIdentification: "",
                 defaultTaxRate: 0,
@@ -221,6 +223,30 @@ export const doCreateOrganization = actionClient
     
 
         console.log("Creating organization with data:", result.organization);
+
+        // Send email to the user
+        await sendEmail({
+            to: clientInput.email,
+            subject: "Inscription réussie sur ProGestion",
+           html: generateEmailMessageHtml({
+              subject: "Bienvenue sur ProGestion",
+              content: 
+                `
+                <h1>Bienvenue sur ProGestion</h1>
+                <p>Bonjour ${clientInput.organizationName},</p>
+                <p>Merci de vous être inscrit sur ProGestion. Votre organisation a été créée avec succès.</p>
+                <p>Voici les détails de votre organisation :</p>
+                <ul>
+                    <li>Nom de l'organisation : ${clientInput.organizationName}</li>
+                    <li>Description : ${clientInput.organizationDescription}</li>
+                    <li>Nom de l'administrateur : ${clientInput.firstName} ${clientInput.lastName}</li>
+                    <li>Email : ${clientInput.email}</li>
+                </ul>
+                <p>Vous pouvez vous connecter à votre compte en utilisant le lien suivant : <a href="https://www.monagence.org/auth/signin">Se connecter</a></p>
+                <p>Nous vous remercions de votre confiance et sommes ravis de vous accueillir parmi nous.</p>
+                `
+            })
+          });
 
         revalidatePath("/app/auth/organization");
 

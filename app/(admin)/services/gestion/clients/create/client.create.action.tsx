@@ -6,6 +6,8 @@ import prisma from "@/db/prisma";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { Role } from "@prisma/client";
+import { sendEmail } from "@/lib/nodemailer/email";
+import { generateEmailMessageHtml } from "@/lib/nodemailer/message";
 
 export const doCreateClient = adminAction
     .metadata({ actionName: "create client" })
@@ -93,7 +95,43 @@ export const doCreateClient = adminAction
                 },
             });
 
+            // send email to client
+            await sendEmail({
+                to: ctx.user.userDetails?.email ?? "",
+                subject: `Ajout d'un client sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
+               html: generateEmailMessageHtml({
+                  subject: `Ajout d'un client sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
+                  content:  
+                    `
+                    <p>Bonjour</p>
+                    <p>${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} a ajouté ${clientInput.email} comme client.</p>
+
+                   `
+                })
+              });
+              const admin = await prisma.user.findFirst({
+                where: {
+                    organizationId: ctx.user.userDetails?.organization?.id,
+                    role: Role.ADMIN,
+                },
+            });
+              await sendEmail({
+                to: admin?.email ?? "",
+                subject: `Ajout d'un client sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
+               html: generateEmailMessageHtml({
+                  subject: `Ajout d'un client sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
+                  content:  
+                    `
+                    <p>Bonjour</p>
+                    <p>${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} a ajouté ${clientInput.email} comme client.</p>
+                    
+                   `
+                })
+              });
+
             revalidatePath("/app/(admin)/services/gestion/clients");
+
+
             
             return { success: true };
         } catch (error) {

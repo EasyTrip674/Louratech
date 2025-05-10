@@ -1,13 +1,11 @@
 
 export const generateEmailMessageHtml = (
   {
-    sujet,
-    nom,
-    content,
+    subject,
+   content
   }: {
-    sujet: string;
-    nom: string;
-    content?: string;
+    subject: string;
+    content: string;
   }
 ) =>{
 
@@ -17,7 +15,7 @@ export const generateEmailMessageHtml = (
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${sujet}</title>
+  <title>${subject}</title>
   <style>
     /* Styles globaux */
     body {
@@ -105,26 +103,14 @@ export const generateEmailMessageHtml = (
     </div>
     
     <div class="content">
-      <h1>Bonjour ${nom} !</h1>
-      <p>Nous sommes ravis de vous accueillir dans notre communauté !</p>
-      <p>N'hésitez pas à nous contacter si vous avez des questions.</p>
-      <p style="text-align: center;">
-        <a href="https://www.monagence.org" class="button">En savoir plus</a>
-      </p>
-
-      <p>${content}</p>
+     ${content}
     </div>
     
     <div class="footer">
-      <div class="social">
-        <a href="#">Facebook</a>
-        <a href="#">Twitter</a>
-        <a href="#">Instagram</a>
-      </div>
-      <p>&copy; 2025 VotreSociété. Tous droits réservés.</p>
+     
+      <p>&copy; 2025 ProGestion. Tous droits réservés.</p>
       <p>
         Vous recevez cet email car vous êtes inscrit à notre sur notre plateforme ProGestion.<br>
-        Pour vous désabonner, <a href="#">cliquez ici</a>.
       </p>
     </div>
   </div>
