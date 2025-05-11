@@ -35,6 +35,12 @@ export const auth = betterAuth({
                     client:true,
                 }
             });
+            if (!allUser) {
+                throw new Error("User not found");
+            }
+            if (!allUser.organization?.active) {
+                throw new Error("Not authorized");
+            }
             return {
                 userDetails: allUser,
                 user: {

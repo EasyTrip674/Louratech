@@ -182,6 +182,7 @@ export const doCreateOrganization = actionClient
                     slug: slug,
                     logo:'',
                     metadata:'',
+                    active: false,
                     users:{
                         connect:{
                             id: userUpdated.id
