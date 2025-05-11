@@ -11,6 +11,7 @@ import React from "react";
 import "@copilotkit/react-ui/styles.css";
 import { authClient } from "@/lib/auth-client";
 import Loading from "../try";
+import { useRouter } from "next/navigation";
 
 
 export default function AdminLayout({
@@ -25,6 +26,7 @@ export default function AdminLayout({
     : isExpanded || isHovered
     ? "lg:ml-[290px]"
     : "lg:ml-[90px]";
+    const router = useRouter();
 
     // redirect user to login page if not authenticated
     const { data: session ,isPending,error } = authClient.useSession();
@@ -32,6 +34,18 @@ export default function AdminLayout({
     if (error) return <div>{error.message}</div>;
     if (!session) {
       window.location.href = "/auth/signin";
+      return null;
+    }
+
+    if (!session.userDetails.organization?.active) {
+      // deconnect user
+       authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            router.push("/auth/signin"); // redirect to login page
+          },
+        },
+      });
       return null;
     }
 
