@@ -105,7 +105,6 @@ export const doCreateClient = adminAction
                     `
                     <p>Bonjour</p>
                     <p>${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} a ajouté ${clientInput.email} comme client.</p>
-
                    `
                 })
               });

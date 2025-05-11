@@ -7,6 +7,7 @@ import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
 import {  ChevronDownIcon, Ellipsis, GripHorizontal, LayoutDashboard, MonitorDot } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import Logo from "@/components/logo";
 
 type NavItem = {
   name: string;
@@ -305,34 +306,7 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link href="/services">
-          {/* {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <Image
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-              <Image
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-            </>
-          ) : (
-            <Image
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
-          )} */}
-          <p><span className="text-brand-500">M</span>G</p>
-        </Link>
+       <Logo href="/services" showText={isExpanded || isHovered} />
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">

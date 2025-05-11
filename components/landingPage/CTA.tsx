@@ -12,8 +12,9 @@ const CTA = () => (
 
     <div className={`${styles.flexCenter} sm:ml-10 ml-0 sm:mt-0 mt-10`}>
       <Button 
+        href="/auth/signin"
         styles="bg-gradient-to-r from-brand-600 to-brand-800 dark:from-brand-400 dark:to-brand-600 text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" 
-        text="Démarrer l'essai gratuit" 
+        text="Démarrer maintenant" 
       />
     </div>
   </section>

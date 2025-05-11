@@ -3,10 +3,11 @@ import styles from "@/utils/style";
 import Navbar from "./Navbar";
 import Hero from "./Hero";
 import Stats from "./Stats";
-import Business from "./Business";
 import CTA from "./CTA";
 import Footer from "./Footer";
 import TargetClients from "./Clients";
+import Testimonials from "./Testimonials";
+import BusinessPage from "./Business";
 
 
 export default function LandingPage() {
@@ -27,7 +28,8 @@ export default function LandingPage() {
     <div className={`bg-primary ${styles.paddingX} ${styles.flexCenter}`}>
       <div className={`${styles.boxWidth} container`}>
         <Stats />
-        <Business />
+        <Testimonials />
+        <BusinessPage />
         <TargetClients />
         <CTA />
         <Footer />

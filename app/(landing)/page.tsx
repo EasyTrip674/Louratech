@@ -10,16 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-    // const me = await sendEmail({
-    //   to: "guintechprod@gmail.com",
-    //   subject: "Test Email",
-    //  html: generateEmailMessageHtml({
-    //     nom: "Guintech",
-    //     sujet: "Test Email",
-    //     content: "This is a test email sent from Next.js using Nodemailer.",
-    //   })
-    // });
-    // console.log(me);
 
   return (
     <div>

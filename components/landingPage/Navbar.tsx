@@ -4,7 +4,7 @@ import { useState } from "react";
 import { navLinks } from "@/utils/constants";
 import { motion, AnimatePresence } from "motion/react";
 import { MenuIcon, X } from "lucide-react";
-import Link from "next/link";
+import Logo from "../logo";
 
 const Navbar = () => {
   const [active, setActive] = useState("Accueil");
@@ -13,11 +13,7 @@ const Navbar = () => {
   return (
     <nav className="w-full fixed top-0 left-0 z-50 dark:bg-gray-900 backdrop-blur-md shadow-theme-sm px-6 md:px-12 py-4 flex justify-between items-center">
       {/* Logo */}
-      <Link href="/" className="flex items-center">
-        <div className="text-gray-900 dark:text-white text-2xl font-bold">
-          <span className="text-brand-500">Pro</span>Gestion
-        </div>
-      </Link>
+    <Logo href="/" className="flex items-center gap-2" showText={true} />
 
       {/* Navigation Bureau */}
       <ul className="hidden md:flex space-x-8">

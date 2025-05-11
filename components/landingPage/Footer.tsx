@@ -1,24 +1,20 @@
 
 import styles from "@/utils/style";
-import { footerLinks, socialMedia } from "@/utils/constants";
-import Link from "next/link";
-import Image from "next/image";
+// import { footerLinks, socialMedia } from "@/utils/constants";
+import Logo from "../logo";
+// import Image from "next/image";
 
 const Footer = () => (
   <section className={`${styles.flexCenter} ${styles.paddingY} flex-col`}>
     <div className={`${styles.flexStart} md:flex-row flex-col mb-8 w-full`}>
       <div className="flex-[1] flex flex-col justify-start mr-10">
-      <Link href="/" className="flex items-center">
-        <div className="text-gray-900 dark:text-white text-2xl font-bold">
-          <span className="text-brand-500">Pro</span>Gestion
-        </div>
-      </Link>
+    <Logo href="/" className="flex items-center gap-2" showText={true} />
         <p className={`${styles.paragraph} mt-4 max-w-[312px] dark:text-white`}>
           la solution de gestion d&agence pour les professionnels qui automatise vos tâches
         </p>
       </div>
 
-      <div className="flex-[1.5] w-full flex flex-row justify-between flex-wrap md:mt-0 mt-10">
+      {/* <div className="flex-[1.5] w-full flex flex-row justify-between flex-wrap md:mt-0 mt-10">
         {footerLinks.map((footerlink) => (
           <div key={footerlink.title} className={`flex flex-col ss:my-0 my-4 min-w-[150px]`}>
             <h4 className="font-poppins font-medium text-[18px] leading-[27px] dark:text-white">
@@ -38,15 +34,15 @@ const Footer = () => (
             </ul>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
 
     <div className="w-full flex justify-between items-center md:flex-row flex-col pt-6 border-t-[1px] border-t-[#3F3E45]">
-      <p className="font-poppins font-normal text-center text-[18px] leading-[27px] dark:text-white">
-        Copyright Ⓒ 2025 ProGestion. Tous Droits Reservés.
+      <p className="font-poppins flex gap-2 font-normal text-center text-[18px] leading-[27px] dark:text-white">
+        Copyright Ⓒ 2025 <Logo showText={true} />. Tous Droits Reservés.
       </p>
 
-      <div className="flex flex-row md:mt-0 mt-6">
+      {/* <div className="flex flex-row md:mt-0 mt-6">
         {socialMedia.map((social, index) => (
           <Image
            width={21}
@@ -60,7 +56,7 @@ const Footer = () => (
             // onClick={() => window.open(social.link)}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   </section>
 );

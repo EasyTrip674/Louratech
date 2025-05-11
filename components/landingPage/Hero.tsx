@@ -170,7 +170,8 @@ const Hero = () => {
         <FeatureIcon icon={Smartphone} text="Compatible mobile" delay={0.7} />
       </motion.div>
       
-      <motion.div 
+      <motion.a 
+      href='/auth/signin'
         variants={fadeInUp}
         className="mt-8 sm:mt-10 flex flex-col  md:flex-row items-center gap-4 max-md:w-full p-4 "
       >
@@ -179,10 +180,10 @@ const Hero = () => {
           className="group flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
         >
 
-          Voir la démo
+            se connecter
             <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
         </div>
-      </motion.div>
+      </motion.a>
       <GradientBackground />
     </motion.div>
   ), [typedText, isTypingComplete]);

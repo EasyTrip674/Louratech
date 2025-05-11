@@ -62,7 +62,7 @@ export default function CreationOrganisationFormulaire() {
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon />
-          Retour au tableau de bord
+          Retour 
         </Link>
       </div>
 

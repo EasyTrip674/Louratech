@@ -47,7 +47,7 @@ const services = [
   {
     id: "service-3",
     icon: <Calendar size={32} className="text-amber-500" />,
-    title: "Planning & Réservations",
+    title: "Planification Avancée",
   },
   {
     id: "service-4",
@@ -193,7 +193,7 @@ const TargetClients = () => {
           ))}
         </motion.div>
         
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
@@ -206,7 +206,7 @@ const TargetClients = () => {
           >
             Découvrir Nos Solutions
           </motion.button>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );
