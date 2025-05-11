@@ -6,8 +6,10 @@ import { adminAction } from "@/lib/safe-action"
 import { revalidatePath } from "next/cache";
 import { createTransactionSchema } from "./transaction.schema";
 import prisma from "@/db/prisma";
-import { PaymentMethod, TransactionStatus } from "@prisma/client";
+import { PaymentMethod, Role, TransactionStatus } from "@prisma/client";
 import { z } from "zod";
+import { sendEmail } from "@/lib/nodemailer/email";
+import { generateEmailMessageHtml } from "@/lib/nodemailer/message";
 
 export const doCreateTransaction = adminAction
     .metadata({actionName:"create Transaction"}) // ✅ Ajout des métadonnées obligatoires
@@ -73,7 +75,7 @@ export const doCreateTransaction = adminAction
                 ?.replaceAll("{NUM}", (numberTransaction + 1).toString()) + Math.floor(Math.random() * 1000).toString().padStart(3, "0"); 
       
         
-        await prisma.transaction.create({
+      const transaction =   await prisma.transaction.create({
             data: {
                 amount: clientInput.amount,
                 reference: reference,
@@ -95,6 +97,50 @@ export const doCreateTransaction = adminAction
                 }
             },
         });
+
+
+        await sendEmail({
+            to: ctx.user.userDetails?.email ?? "",
+            subject: `Creation d'un transaction sur ${ctx.user.userDetails?.organization?.name}`,
+           html: generateEmailMessageHtml({
+              subject: `Creation d'un transaction sur ${ctx.user.userDetails?.organization?.name}`,
+              content:  
+                `
+                <p>Bonjour</p>
+                <p>Votre transaction a été créé avec succès.</p>
+                <p>Voici les détails de la transaction :</p>
+                <p>Montant : ${transaction.amount} FNG</p>
+                <p>Référence : ${transaction.reference}</p>
+                <p> Créé par : ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} pour un service de votre agence</p>
+                <p>Date : ${new Date(transaction.createdAt).toLocaleDateString("fr-FR")}</p>
+                <p>Merci de votre confiance.</p>
+               `
+            })
+          });
+          const admin = await prisma.user.findFirst({
+            where: {
+                organizationId: ctx.user.userDetails?.organization?.id,
+                role: Role.ADMIN,
+            },
+        });
+        await sendEmail({
+            to: admin?.email ?? "",
+            subject: `Creation d'un transaction sur ${ctx.user.userDetails?.organization?.name}`,
+           html: generateEmailMessageHtml({
+              subject: `Creation d'un transaction sur ${ctx.user.userDetails?.organization?.name}`,
+              content:  
+                `
+                <p>Bonjour</p>
+                <p>Votre transaction a été créé avec succès.</p>
+                <p>Voici les détails de la transaction :</p>
+                <p>Montant : ${transaction.amount} FNG</p>
+                <p>Référence : ${transaction.reference}</p>
+                <p> Créé par : ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} pour un service de votre agence</p>
+                <p>Date : ${new Date(transaction.createdAt).toLocaleDateString("fr-FR")}</p>
+                <p>Merci de votre confiance.</p>
+               `
+            })
+          });
 
         revalidatePath("/app/(admin)/services/gestion/Procedures");
         
@@ -126,7 +172,7 @@ export const doApproveTransaction = adminAction
 
         console.log(transaction);
 
-        await prisma.transaction.update({
+     await prisma.transaction.update({
             where: {
                 id: transaction.id,
                 organizationId: ctx.user.userDetails?.organizationId ?? "",
@@ -137,6 +183,53 @@ export const doApproveTransaction = adminAction
                 approvedAt: new Date(Date.now()),
             },
         });
+
+        // Send email to update approval status
+
+        await sendEmail({
+            to: ctx.user.userDetails?.email ?? "",
+            subject: `Approbation d'un transaction sur ${ctx.user.userDetails?.organization?.name}`,
+           html: generateEmailMessageHtml({
+              subject: `Approbation d'un transaction sur ${ctx.user.userDetails?.organization?.name}`,
+              content:  
+                `
+                <p>Bonjour</p>
+                <p>Votre transaction a été approuvée avec succès.</p>
+                <p>Voici les détails de la transaction :</p>
+                <p>Montant : ${transaction.amount} FNG</p>
+                <p>Référence : ${transaction.reference}</p>
+                <p> Approuvée par : ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName}</p>
+                <p>Date : ${new Date(transaction.createdAt).toLocaleDateString("fr-FR")}</p>
+                <p>Merci de votre confiance.</p>
+
+               `
+            })
+          });
+          const admin = await prisma.user.findFirst({
+            where: {
+                organizationId: ctx.user.userDetails?.organization?.id,
+                role: Role.ADMIN,
+            },
+        });
+        await sendEmail({
+            to: admin?.email ?? "",
+            subject: `Approbation d'un transaction sur ${ctx.user.userDetails?.organization?.name}`,
+           html: generateEmailMessageHtml({
+              subject: `Approbation d'un transaction sur ${ctx.user.userDetails?.organization?.name}`,
+              content:  
+                `
+                <p>Bonjour</p>
+                <p>Votre transaction a été approuvée avec succès.</p>
+                <p>Voici les détails de la transaction :</p>
+                <p>Montant : ${transaction.amount} FNG</p>
+                <p>Référence : ${transaction.reference}</p>
+                <p> Approuvée par : ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName}</p>
+                <p>Date : ${new Date(transaction.createdAt).toLocaleDateString("fr-FR")}</p>
+                <p>Merci de votre confiance.</p>
+               `
+            })
+          });
+
 
         revalidatePath("/app/(admin)/services/gestion/Procedures");
 
