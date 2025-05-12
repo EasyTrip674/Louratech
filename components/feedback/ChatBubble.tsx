@@ -1,27 +1,44 @@
 "use client";
-import { formatDistanceToNow } from 'date-fns';
+import { useModal } from "@/hooks/useModal";
+import { HelpCircle } from "lucide-react";
+import React from "react";
+import { Modal } from "../ui/modal";
 
-interface ChatBubbleProps {
-  message: string;
-  isStaff: boolean;
-  authorName?: string;
-  timestamp: Date;
-}
-
-export default function ChatBubble({ message, isStaff, authorName, timestamp }: ChatBubbleProps) {
+export default function FeedBackChat() {
+  const {openModal,isOpen,closeModal} = useModal()
   return (
-    <div className={`absolute w-full ${isStaff ? 'justify-start' : 'justify-end'}`}>
-      <div
-        className={`max-w-[80%] rounded-lg p-3 ${
-          isStaff ? 'bg-gray-200 text-gray-800' : 'bg-blue-600 text-white'
-        }`}
-      >
-        {authorName && <p className="mb-1 text-xs font-semibold">{authorName}</p>}
-        <p className="text-sm">{message}</p>
-        <p className="mt-1 text-right text-xs opacity-70">
-          {formatDistanceToNow(new Date(timestamp), { addSuffix: true })}
-        </p>
-      </div>
+  <>
+    <div className="fixed bottom-6 right-6 z-50  sm:block">
+    <button
+    onClick={openModal}
+      className="inline-flex size-14 items-center justify-center rounded-full bg-brand-500 text-white transition-colors hover:bg-brand-600"
+    >
+      <HelpCircle />
+    </button>
     </div>
+
+      <Modal
+      isOpen={isOpen}
+      onClose={closeModal}
+
+      >
+
+      <div className="flex flex-col gap-4">
+        <h2 className="text-lg font-semibold">Feedback</h2>
+        <textarea
+          className="w-full h-32 p-2 border rounded"
+          placeholder="Write your feedback here..."
+        ></textarea>
+        <button
+          className="px-4 py-2 text-white bg-blue-500 rounded"
+          onClick={closeModal}
+        >
+          Submit
+        </button>
+      </div>
+      </Modal>
+        </>
   );
 }
+
+

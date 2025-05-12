@@ -1,12 +1,13 @@
 "use client";
 import { useCallback, useEffect, useState } from 'react';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { motion } from 'framer-motion';
 import GetStarted from './GetStarted';
 import GradientBackground from './GradientBackground';
 import { DollarSign, ArrowRight, TrendingUp, ShieldCheck, Smartphone } from 'lucide-react';
+import YouTubeEmbed from '../ui/video/YouTubeEmbed';
 
-// Variantes d'animation pour différents éléments
+// Animation variants (keeping the existing ones)
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
@@ -117,6 +118,8 @@ const Hero = () => {
     }
   }, [currentIndex, fullText]);
 
+
+
   const renderHeroContent = useCallback(() => (
     <motion.div 
       variants={staggerContainer}
@@ -171,17 +174,16 @@ const Hero = () => {
       </motion.div>
       
       <motion.a 
-      href='/auth/signin'
+        href='/auth/signin'
         variants={fadeInUp}
-        className="mt-8 sm:mt-10 flex flex-col  md:flex-row items-center gap-4 max-md:w-full p-4 "
+        className="mt-8 sm:mt-10 flex flex-col md:flex-row items-center gap-4 max-md:w-full p-4"
       >
-          <GetStarted />
+        <GetStarted />
         <div
           className="group flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
         >
-
-            se connecter
-            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          se connecter
+          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
         </div>
       </motion.a>
       <GradientBackground />
@@ -212,22 +214,7 @@ const Hero = () => {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
               className="relative"
             >
-              <Image
-                src="/hero.png"
-                alt="Dashboard de gestion d'agence"
-                width={1200}
-                height={600}
-                className="w-full rounded-xl shadow-2xl"
-                priority
-              />
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2, duration: 0.6 }}
-                className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg"
-              >
-                Interface intuitive et moderne
-              </motion.div>
+             <YouTubeEmbed videoId='wZVtzOp92lc' />
             </motion.div>
           </div>
         </div>

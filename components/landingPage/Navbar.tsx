@@ -5,6 +5,7 @@ import { navLinks } from "@/utils/constants";
 import { motion, AnimatePresence } from "motion/react";
 import { MenuIcon, X } from "lucide-react";
 import Logo from "../logo";
+import { ThemeToggleButton } from "../common/ThemeToggleButton";
 
 const Navbar = () => {
   const [active, setActive] = useState("Accueil");
@@ -30,7 +31,10 @@ const Navbar = () => {
             <a href={`#${nav.id}`}>{nav.title}</a>
           </li>
         ))}
+       
+
       </ul>
+      <ThemeToggleButton />
 
       {/* Bouton Menu Mobile */}
       <button
@@ -67,6 +71,7 @@ const Navbar = () => {
                   {nav.title}
                 </motion.a>
               ))}
+              <ThemeToggleButton />
             </div>
           </motion.div>
         )}
