@@ -706,13 +706,20 @@ enum FeedbackType {
   OTHER
 }
 
-//  feedback
-model feedback {
-  id        String    @id @default(cuid())
-  userId    String?
+model Feedback {
+  id             String       @id @default(cuid())
+  userId         String?
   organizationId String?
-  type      FeedbackType @default(OTHER)
-  message   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  type           FeedbackType @default(OTHER)
+  message        String
+  email          String?
+  name           String?
+  isAnonymous    Boolean      @default(true)
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  
+  @@index([type])
+  @@index([createdAt])
+  @@index([isAnonymous])
 }
