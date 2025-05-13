@@ -10,7 +10,7 @@ const Footer = () => (
       <div className="flex-[1] flex flex-col justify-start mr-10">
     <Logo href="/" className="flex items-center gap-2" showText={true} />
         <p className={`${styles.paragraph} mt-4 max-w-[312px] dark:text-white`}>
-          la solution de gestion d&agence pour les professionnels qui automatise vos tâches
+          la solution de gestion d&apos;agence pour les professionnels qui automatise vos tâches
         </p>
       </div>
 
