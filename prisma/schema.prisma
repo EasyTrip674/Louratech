@@ -715,7 +715,6 @@ model Feedback {
   email          String?
   name           String?
   isAnonymous    Boolean      @default(true)
-  
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt  
 }
