@@ -699,21 +699,21 @@ model authorization {
 }
 
 
-enum FeedbackType {
-  BUG
-  SUGGESTION
-  QUESTION
-  OTHER
-}
+// enum FeedbackType {
+//   BUG
+//   SUGGESTION
+//   QUESTION
+//   OTHER
+// }
 
-model Feedback {
-  id             String       @id @default(cuid())
-  userId         String?
-  type           FeedbackType @default(OTHER)
-  message        String
-  email          String?
-  name           String?
-  isAnonymous    Boolean      @default(true)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt  
-}
+// model Feedback {
+//   id             String       @id @default(cuid())
+//   userId         String?
+//   type           FeedbackType @default(OTHER)
+//   message        String
+//   email          String?
+//   name           String?
+//   isAnonymous    Boolean      @default(true)
+//   createdAt      DateTime     @default(now())
+//   updatedAt      DateTime     @updatedAt  
+// }
