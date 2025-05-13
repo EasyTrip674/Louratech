@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma migrate resolve --rolled-back '20250501172209_add_active_bool_to_organization' && prisma migrate deploy && prisma migrate deploy && prisma generate --no-engine && next build",
+    "build": "prisma migrate resolve --rolled-back '20250513083516_remove_indexes_from_feedback_model' && prisma migrate deploy && prisma migrate deploy && prisma generate --no-engine && next build",
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
