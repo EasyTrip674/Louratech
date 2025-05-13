@@ -1,6 +1,6 @@
 "use server";
 
-// import prisma from "@/db/prisma";
+import prisma from "@/db/prisma";
 import { action } from "@/lib/safe-action";
 import { z } from "zod";
 
@@ -18,14 +18,14 @@ export const doAddFeedback = action
         .action(async ({ clientInput }) => {
             console.log("Submitting feedback with data:", clientInput);  
             
-            // const feedback = await prisma.feedback.create({
-            //     data: {
-            //         message: clientInput.message,
-            //         type: clientInput.type,
-            //         name: clientInput.isAnonymous ? undefined : clientInput.name,
-            //         email: clientInput.isAnonymous ? undefined : clientInput.email,
-            //         isAnonymous: clientInput.isAnonymous,
-            //     },
-            // });
-            return { success: true };
+            const feedback = await prisma.feedback.create({
+                data: {
+                    message: clientInput.message,
+                    type: clientInput.type,
+                    name: clientInput.isAnonymous ? undefined : clientInput.name,
+                    email: clientInput.isAnonymous ? undefined : clientInput.email,
+                    isAnonymous: clientInput.isAnonymous,
+                },
+            });
+            return { success: true , feedback };
 });
