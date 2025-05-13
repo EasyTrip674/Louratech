@@ -16,12 +16,3 @@ CREATE TABLE "Feedback" (
 
     CONSTRAINT "Feedback_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE INDEX "Feedback_type_idx" ON "Feedback"("type");
-
--- CreateIndex
-CREATE INDEX "Feedback_createdAt_idx" ON "Feedback"("createdAt");
-
--- CreateIndex
-CREATE INDEX "Feedback_isAnonymous_idx" ON "Feedback"("isAnonymous");
