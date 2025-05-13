@@ -154,7 +154,7 @@ export default function FeedBackChat() {
           >
             <X className="size-6" />
           </button>
-          <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
             <MessageSquare className="size-5" /> Votre Feedback
           </h2>
 
@@ -221,7 +221,7 @@ export default function FeedBackChat() {
               }))}
               className="form-checkbox text-brand-500 rounded"
             />
-            <label htmlFor="anonymousToggle" className="text-sm text-gray-700">
+            <label htmlFor="anonymousToggle" className="text-sm text-gray-700 dark:text-gray-200">
               Envoyer anonymement
             </label>
           </div>
