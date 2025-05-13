@@ -7,7 +7,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 /**
- * Formate un nombre en format monétaire avec gestion des millions et milliards
+ * Formate un nombre en format monétaire avec gestion des millions et milliards si possible
  * @param value - La valeur numérique à formater
  * @param devise - Le code de la devise (par défaut "FNG")
  * @param options - Options de formatage supplémentaires
