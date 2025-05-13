@@ -1,26 +1,59 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER', 'CLIENT', 'EMPLOYEE');
+DO $$ BEGIN
+    CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER', 'CLIENT', 'EMPLOYEE');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "ProcedureStatus" AS ENUM ('IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'FAILED');
+DO $$ BEGIN
+    CREATE TYPE "ProcedureStatus" AS ENUM ('IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'FAILED');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "StepStatus" AS ENUM ('IN_PROGRESS', 'WAITING', 'COMPLETED', 'SKIPPED', 'FAILED');
+DO $$ BEGIN
+    CREATE TYPE "StepStatus" AS ENUM ('IN_PROGRESS', 'WAITING', 'COMPLETED', 'SKIPPED', 'FAILED');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "TransactionType" AS ENUM ('EXPENSE', 'REVENUE', 'TRANSFER');
+DO $$ BEGIN
+    CREATE TYPE "TransactionType" AS ENUM ('EXPENSE', 'REVENUE', 'TRANSFER');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "TransactionStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED');
+DO $$ BEGIN
+    CREATE TYPE "TransactionStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "PaymentMethod" AS ENUM ('CASH', 'BANK_TRANSFER', 'CREDIT_CARD', 'CHECK', 'MOBILE_PAYMENT');
+DO $$ BEGIN
+    CREATE TYPE "PaymentMethod" AS ENUM ('CASH', 'BANK_TRANSFER', 'CREDIT_CARD', 'CHECK', 'MOBILE_PAYMENT');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "InvoiceStatus" AS ENUM ('DRAFT', 'SENT', 'PARTIALLY_PAID', 'PAID', 'OVERDUE', 'CANCELLED');
+DO $$ BEGIN
+    CREATE TYPE "InvoiceStatus" AS ENUM ('DRAFT', 'SENT', 'PARTIALLY_PAID', 'PAID', 'OVERDUE', 'CANCELLED');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "FeedbackType" AS ENUM ('BUG', 'SUGGESTION', 'QUESTION', 'OTHER');
+DO $$ BEGIN
+    CREATE TYPE "FeedbackType" AS ENUM ('BUG', 'SUGGESTION', 'QUESTION', 'OTHER');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
 
 -- CreateTable
 CREATE TABLE "SuperAdmin" (
