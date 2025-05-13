@@ -1,5 +1,5 @@
 
-import FeedBackChat from "@/components/feedback/ChatBubble";
+import FeedBackChat from "@/components/feedback/ChatFeedBack";
 
 
 import React from "react";

@@ -12,7 +12,7 @@ class ActionError extends Error {}
 
 // ✅ Définition du client de base avec un schéma de métadonnées valide
 
-export const actionClient = createSafeActionClient({
+export const action = createSafeActionClient({
   handleServerError(e) {
     console.error("Action error:", e.message);
 
@@ -27,6 +27,8 @@ export const actionClient = createSafeActionClient({
       actionName: z.string(),
     }),
 })
+
+export const actionClient = action
 // ✅ Middleware de logging
 .use(async ({ next, clientInput, metadata }) => {
   console.log("LOGGING MIDDLEWARE");
