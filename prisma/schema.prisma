@@ -709,7 +709,6 @@ enum FeedbackType {
 model Feedback {
   id             String       @id @default(cuid())
   userId         String?
-  organizationId String?
   type           FeedbackType @default(OTHER)
   message        String
   email          String?
