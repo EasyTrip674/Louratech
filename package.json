@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma migrate deploy && prisma migrate deploy && prisma generate --no-engine && next build",
+    "build": "prisma migrate deploy && prisma generate --no-engine && next build",
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
@@ -63,8 +63,5 @@
     "postcss": "^8",
     "tailwindcss": "^4.0.9",
     "typescript": "^5"
-  },
-  "prisma": {
-    "seed": "node --loader ts-node/esm prisma/seed.ts"
   }
 }

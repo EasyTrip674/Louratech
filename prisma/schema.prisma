@@ -706,15 +706,68 @@ enum FeedbackType {
   OTHER
 }
 
+
+
+
+
+// Modèle de feedback
 model Feedback {
-  id             String       @id @default(cuid())
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
   userId         String?
   type           FeedbackType @default(OTHER)
-  message        String
   email          String?
   name           String?
   isAnonymous    Boolean      @default(true)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt  
+
+  // Sous-catégorie de feedback (dépend du type principal)
+  subtype     String?
+  
+  // Message textuel
+  message     String
+  
+  // Évaluation par étoiles (pour les suggestions)
+  rating      Int?
+  
+  // Sentiment général (pour les feedbacks de type OTHER)
+  satisfaction FeedbackSatisfaction?
+  
+  // Niveau d'impact (pour les bugs)
+  impact      FeedbackImpact?
+  
+  
+  pageUrl     String?   // URL de la page où le feedback a été soumis
+  browser     String?   // Information sur le navigateur
+  device      String?   // Type d'appareil (mobile, desktop, etc.)
+  
+  // Suivi administratif
+  status      FeedbackStatus @default(PENDING)
+  assignedTo  String?        // ID de l'administrateur assigné
+  response    String?        // Réponse au feedback
+  responseAt  DateTime?      // Date de la réponse
 }
 
+
+// Niveaux d'impact pour les bugs
+enum FeedbackImpact {
+  CRITICAL
+  MAJOR
+  MINOR
+}
+
+// Satisfaction de l'utilisateur
+enum FeedbackSatisfaction {
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
+}
+
+// Statut de traitement du feedback
+enum FeedbackStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+  REJECTED
+}
