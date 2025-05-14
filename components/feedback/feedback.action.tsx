@@ -2,18 +2,12 @@
 
 import prisma from "@/db/prisma";
 import { action } from "@/lib/safe-action";
-import { z } from "zod";
+import { feedbackSchema } from "./feedback.shema";
 
 export const doAddFeedback = action
         .metadata({ actionName: "feedback" }) // ✅ Ajout des métadonnées obligatoires.
         .schema(
-            z.object({
-                message: z.string().min(1, "Message is required"),
-                type: z.enum(["BUG", "SUGGESTION", "QUESTION", "OTHER"]),
-                name: z.string().optional(),
-                email: z.string().optional(),
-                isAnonymous: z.boolean(),
-            })
+           feedbackSchema
         )
         .action(async ({ clientInput }) => {
             console.log("Submitting feedback with data:", clientInput);  
@@ -25,7 +19,15 @@ export const doAddFeedback = action
                     name: clientInput.isAnonymous ? undefined : clientInput.name,
                     email: clientInput.isAnonymous ? undefined : clientInput.email,
                     isAnonymous: clientInput.isAnonymous,
+                    subtype: clientInput.subtype,
+                    rating: clientInput.rating,
+                    satisfaction: clientInput.satisfaction,
+                    impact: clientInput.impact,
                 },
             });
             return { success: true , feedback };
 });
+
+
+
+
