@@ -12,6 +12,8 @@ import { doCreateOrganization } from "./organization.create.action";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { ChevronLeftIcon, Eye, EyeOff } from "lucide-react";
+import { toast } from 'react-toastify';
+
 
 
 type OrganizationFormData = z.infer<typeof createOrganizationSchema>;
@@ -39,6 +41,10 @@ export default function CreationOrganisationFormulaire() {
       const result = await doCreateOrganization(data);
       if (result?.data) {
         router.push("/auth/signin");
+      }else{
+        toast.error(
+          "Erreur: veuillez verifier la validité de votre code de confirmation ou changer d'email"
+        )
       }
       return result;
     },
@@ -207,6 +213,20 @@ export default function CreationOrganisationFormulaire() {
               )}
             </div>
 
+             {/* un champ code */}
+             <div>
+              <Label>Code d&apos;Invitation</Label>
+              <Input
+                {...register("invitationCode")}
+                placeholder="Saisissez le code d'invitation"
+              />
+              {errors.invitationCode && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.invitationCode.message}
+                </p>
+              )}
+            </div>
+
             {/* Conditions d'utilisation */}
             <div className="flex items-center gap-3">
               <input type="checkbox"
@@ -225,6 +245,8 @@ export default function CreationOrganisationFormulaire() {
                 {errors.agreesToTerms.message}
               </p>
             )}
+
+           
 
             {/* Bouton de Soumission - Utilisez uniquement l'état de la mutation */}
             <Button

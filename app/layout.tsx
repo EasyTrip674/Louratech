@@ -6,6 +6,7 @@ import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import TansQueryProvider from "@/context/TansQueryProvider";
 // import { CopilotKit } from "@copilotkit/react-core";
+import { ToastContainer } from 'react-toastify';
 
 const outfit = Outfit({
   variable: "--font-outfit-sans",
@@ -26,7 +27,7 @@ export default function RootLayout({
               <TansQueryProvider>
                 <SidebarProvider>
                     {children}
-              
+                    <ToastContainer />
                 </SidebarProvider>
             </TansQueryProvider>
               </ThemeProvider>
