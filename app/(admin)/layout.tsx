@@ -12,6 +12,7 @@ import "@copilotkit/react-ui/styles.css";
 import { authClient } from "@/lib/auth-client";
 import Loading from "../try";
 import { useRouter } from "next/navigation";
+import FeedBackChat from "@/components/feedback/ChatFeedBack";
 
 
 export default function AdminLayout({
@@ -75,6 +76,8 @@ export default function AdminLayout({
           initial: "Ici pour vous aider ! Je suis à votre disposition pour répondre à vos questions. Faire des actions sur l'application ou vous aider à trouver des informations. Fournir des indications sur les fonctionnalités de l'application. Faire des bilans sur les actions effectuées. Je suis là pour vous aider !",
         }}
       /> */}
+
+        <FeedBackChat />
 
    </>
   );

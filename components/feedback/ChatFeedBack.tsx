@@ -171,7 +171,9 @@ export default function FeedBackChat() {
                     </span>
                   </div>
                   <div className="text-left">
-                    <h4 className="font-medium capitalize dark:text-white">{type.toLowerCase()}</h4>
+                    <h4 className="font-medium capitalize dark:text-white">{
+                      type === FeedbackType.OTHER ? "Autre" : type.toLowerCase()
+                      }</h4>
                     <p className="text-xs text-gray-500 dark:text-white/90">{feedbackTypeInfo[type].helpText}</p>
                   </div>
                 </button>
@@ -334,7 +336,7 @@ export default function FeedBackChat() {
                   feedback.type === FeedbackType.QUESTION ? "Posez votre question..." :
                   "Partagez vos commentaires..."
                 }
-                className={`resize-none h-32 transition-all duration-300 ${
+                className={`resize-none h-32 transition-all duration-300  text-black dark:text-white ${
                   validationErrors.message 
                     ? "border-red-500 ring-2 ring-red-100" 
                     : feedback.message.length >= 5 
