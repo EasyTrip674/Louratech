@@ -37,8 +37,8 @@ const Footer = () => (
       </div> */}
     </div>
 
-    <div className="w-full flex justify-between items-center md:flex-row flex-col pt-6 border-t-[1px] border-t-[#3F3E45]">
-      <p className="font-poppins flex gap-2 font-normal text-center text-[18px] leading-[27px] dark:text-white">
+    <div className="w-full flex justify-center items-center md:flex-row flex-col pt-6 border-t-[1px] border-t-[#3F3E45]">
+      <p className="font-poppins gap-2 font-normal text-center text-[8px] leading-[27px] dark:text-white flex justify-center">
         Copyright Ⓒ 2025 <Logo showText={true} />. Tous Droits Reservés.
       </p>
 

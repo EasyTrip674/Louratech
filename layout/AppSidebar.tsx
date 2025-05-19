@@ -18,7 +18,7 @@ type NavItem = {
 
 
 const AppSidebar: React.FC = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { isExpanded, isMobileOpen, isHovered, setIsHovered, toggleMobileSidebar} = useSidebar();
   const pathname = usePathname();
   const session = authClient.useSession();
   const user = session?.data?.userDetails;
@@ -63,6 +63,7 @@ const AppSidebar: React.FC = () => {
     //   ],
     // },
   ];
+
   
   const othersItems: NavItem[] = [
     // {
@@ -142,6 +143,11 @@ const AppSidebar: React.FC = () => {
           ) : (
             nav.path && (
               <Link
+                onClick={() => {
+                    if (isMobileOpen) {
+                      toggleMobileSidebar();
+                    }
+                }}
                 href={nav.path}
                 className={`menu-item group ${
                   isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
@@ -179,6 +185,11 @@ const AppSidebar: React.FC = () => {
                 {nav.subItems.map((subItem) => (
                   <li key={subItem.name}>
                     <Link
+                      onClick={() => {
+                      if (isMobileOpen) {
+                        toggleMobileSidebar();
+                      }
+                    }}
                       href={subItem.path}
                       className={`menu-dropdown-item ${
                         isActive(subItem.path)
@@ -274,6 +285,7 @@ const AppSidebar: React.FC = () => {
   }, [openSubmenu]);
 
   const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
+    
     setOpenSubmenu((prevOpenSubmenu) => {
       if (
         prevOpenSubmenu &&
