@@ -145,7 +145,9 @@ const AppSidebar: React.FC = () => {
               <Link
                 onClick={() => {
                     if (isMobileOpen) {
+                    setTimeout(() => {
                       toggleMobileSidebar();
+                    }, 1000);
                     }
                 }}
                 href={nav.path}
@@ -186,9 +188,11 @@ const AppSidebar: React.FC = () => {
                   <li key={subItem.name}>
                     <Link
                       onClick={() => {
-                      if (isMobileOpen) {
-                        toggleMobileSidebar();
-                      }
+                        if (isMobileOpen) {
+                          setTimeout(() => {
+                            toggleMobileSidebar();
+                          }, 1000);
+                          }
                     }}
                       href={subItem.path}
                       className={`menu-dropdown-item ${

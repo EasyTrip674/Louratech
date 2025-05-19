@@ -195,7 +195,7 @@ export async function getStatisticsData() {
         data: revenueData,
       },
       {
-        name: "Expense",
+        name: "Depense",
         data: expenseData,
       },
     ],
