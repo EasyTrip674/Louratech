@@ -21,10 +21,10 @@ export default async function EmployeesPage() {
 
     return (
         <div>
-            <PageBreadcrumb pageTitle="Gestion des Employees" />
+            <PageBreadcrumb pageTitle="Gestion des Employés" />
             <div className="space-y-6">
                 <ComponentCard
-                    title="Employees"
+                    title="Employés"
                     actions={
                         <div className="flex items-center space-x-2">
                          {

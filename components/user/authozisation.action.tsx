@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { authorizationSchema } from "./authorization.shema";
 
 export const doChangeAuthozation = adminAction
-  .metadata({ actionName: "change password" })
+  .metadata({ actionName: "change autorization" })
   .schema(authorizationSchema)
   .action(async ({ clientInput }) => {
 

@@ -38,7 +38,7 @@ const AppSidebar: React.FC = () => {
           ? [{ name: "Services", path: "/services/gestion/procedures", pro: false }]
           : []),
         ...(user?.authorize?.canReadAdmin
-          ? [{ name: "Admin/Employees", path: "/services/gestion/employees", pro: false }]
+          ? [{ name: "Admin/Employés", path: "/services/gestion/employees", pro: false }]
           : []),
         ...(user?.authorize?.canReadClient
           ? [{ name: "Clients", path: "/services/gestion/clients", pro: false }]

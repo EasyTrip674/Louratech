@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import { Search, Users, Shield, CheckCircle, AlertCircle, Eye, Plus, Edit, Trash2, Settings } from 'lucide-react';
+import { Search, Users, Shield, CheckCircle, AlertCircle, Eye, Plus, Edit, Trash2, Settings, LucideIcon } from 'lucide-react';
+import { doChangeAuthozation } from './authozisation.action';
+import { useMutation } from '@tanstack/react-query';
 
-// Simulation des types (à adapter selon votre projet)
+// Interface Authorization corrigée
 interface Authorization {
   id: string;
   userId: string;
@@ -59,10 +61,44 @@ interface Authorization {
   canDeleteClientDocument: boolean;
 }
 
+
+// Interface AuthorizationProps corrigée
 interface AuthorizationProps {
   initialAuthorizations: Authorization;
-  onSave: (data: Authorization) => Promise<void>;
-  isLoading?: boolean;
+}
+
+// Type pour les permissions
+type PermissionKey = keyof Omit<Authorization, 'id' | 'userId'>;
+
+// Interface pour les permissions avec métadonnées
+interface Permission {
+  key: PermissionKey;
+  label: string;
+  critical?: boolean;
+}
+
+// Interface pour les permissions filtrées
+interface FilteredPermission extends Permission {
+  category: string;
+  groupLabel: string;
+  groupColor: string;
+  groupIcon: LucideIcon;
+}
+
+// Interface pour les groupes de permissions
+interface PermissionGroup {
+  label: string;
+  icon: LucideIcon;
+  color: string;
+  permissions: Permission[];
+}
+
+// Interface pour les rôles prédéfinis
+interface PredefinedRole {
+  name: string;
+  description: string;
+  icon: LucideIcon;
+  permissions: PermissionKey[];
 }
 
 // Composant Switch amélioré
@@ -99,42 +135,47 @@ const Switch = ({ checked, onChange, disabled, label, size = 'md' }: {
 
 export default function ImprovedAuthorization({ 
   initialAuthorizations, 
-  onSave, 
-  isLoading = false 
 }: AuthorizationProps) {
   const [authorizations, setAuthorizations] = useState<Authorization>(initialAuthorizations);
   const [hasChanges, setHasChanges] = useState(false);
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [successMessage, setSuccessMessage] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(['all']));
 
+  // Helper function pour obtenir toutes les clés de permission
+  const getAllPermissionKeys = (): PermissionKey[] => {
+    return Object.keys(initialAuthorizations).filter(
+      key => key !== 'id' && key !== 'userId'
+    ) as PermissionKey[];
+  };
+
   // Rôles prédéfinis pour faciliter la gestion
-  const predefinedRoles = {
+  const predefinedRoles: Record<string, PredefinedRole> = {
     admin: {
       name: 'Administrateur complet',
       description: 'Accès total à toutes les fonctionnalités',
       icon: Shield,
-      permissions: Object.keys(initialAuthorizations).filter(key => key !== 'id' && key !== 'userId')
+      permissions: getAllPermissionKeys()
     },
     manager: {
       name: 'Gestionnaire',
       description: 'Lecture et modification, sans suppression critique',
       icon: Users,
-      permissions: Object.keys(initialAuthorizations).filter(key => 
+      permissions: getAllPermissionKeys().filter(key => 
         key.includes('Read') || key.includes('Edit') || key.includes('Create')
-      ).filter(key => !key.includes('Delete') && key !== 'canDeleteClient' && key !== 'canChangeUserAuthorization')
+      ).filter(key => !key.includes('Delete') && key !== 'canDeleteClient' && key !== 'canChangeUserAuthorization') as PermissionKey[]
     },
     viewer: {
       name: 'Consultant',
       description: 'Lecture seule des données',
       icon: Eye,
-      permissions: Object.keys(initialAuthorizations).filter(key => key.includes('Read'))
+      permissions: getAllPermissionKeys().filter(key => key.includes('Read')) as PermissionKey[]
     }
   };
 
   // Configuration des groupes de permissions avec icônes
-  const permissionGroups = {
+  const permissionGroups: Record<string, PermissionGroup> = {
     general: {
       label: 'Gestion système',
       icon: Settings,
@@ -223,8 +264,8 @@ export default function ImprovedAuthorization({
   };
 
   // Filtrage et recherche
-  const filteredPermissions = useMemo(() => {
-    let permissions = [];
+  const filteredPermissions = useMemo((): FilteredPermission[] => {
+    let permissions: FilteredPermission[] = [];
     
     if (activeCategory === 'all') {
       permissions = Object.entries(permissionGroups).flatMap(([category, group]) =>
@@ -237,14 +278,16 @@ export default function ImprovedAuthorization({
         }))
       );
     } else {
-      const group = permissionGroups[activeCategory as keyof typeof permissionGroups];
-      permissions = group.permissions.map(p => ({
-        ...p,
-        category: activeCategory,
-        groupLabel: group.label,
-        groupColor: group.color,
-        groupIcon: group.icon
-      }));
+      const group = permissionGroups[activeCategory];
+      if (group) {
+        permissions = group.permissions.map(p => ({
+          ...p,
+          category: activeCategory,
+          groupLabel: group.label,
+          groupColor: group.color,
+          groupIcon: group.icon
+        }));
+      }
     }
 
     if (searchTerm) {
@@ -256,7 +299,7 @@ export default function ImprovedAuthorization({
     return permissions;
   }, [activeCategory, searchTerm]);
 
-  const handleToggle = (key: keyof Authorization, value: boolean) => {
+  const handleToggle = (key: PermissionKey, value: boolean) => {
     setAuthorizations(prev => ({
       ...prev,
       [key]: value
@@ -265,21 +308,19 @@ export default function ImprovedAuthorization({
   };
 
   const applyRole = (roleKey: string) => {
-    const role = predefinedRoles[roleKey as keyof typeof predefinedRoles];
+    const role = predefinedRoles[roleKey];
+    if (!role) return;
+    
     const newAuthorizations = { ...initialAuthorizations };
     
     // Désactiver toutes les permissions
-    Object.keys(newAuthorizations).forEach(key => {
-      if (key !== 'id' && key !== 'userId') {
-        (newAuthorizations as any)[key] = false;
-      }
+    getAllPermissionKeys().forEach(key => {
+      newAuthorizations[key] = false;
     });
     
     // Activer les permissions du rôle
     role.permissions.forEach(permission => {
-      if (permission in newAuthorizations) {
-        (newAuthorizations as any)[permission] = true;
-      }
+      newAuthorizations[permission] = true;
     });
     
     setAuthorizations(newAuthorizations);
@@ -287,27 +328,36 @@ export default function ImprovedAuthorization({
   };
 
   const toggleCategoryPermissions = (category: string) => {
-    const group = permissionGroups[category as keyof typeof permissionGroups];
+    const group = permissionGroups[category];
+    if (!group) return;
+    
     const allEnabled = group.permissions.every(p => 
-      authorizations[p.key as keyof Authorization] === true
+      authorizations[p.key] === true
     );
     
     const newAuthorizations = { ...authorizations };
     group.permissions.forEach(p => {
-      (newAuthorizations as any)[p.key] = !allEnabled;
+      newAuthorizations[p.key] = !allEnabled;
     });
     
     setAuthorizations(newAuthorizations);
     setHasChanges(true);
   };
 
-  const saveAuthorizations = async () => {
-    try {
-      await onSave({
+  const authorizationMutation = useMutation({
+    mutationFn: async(data:Authorization)=>{
+      await doChangeAuthozation({
         userId: initialAuthorizations.userId,
         authorizationId: initialAuthorizations.id,
-        authorization: { ...authorizations }
+        authorization: { ...data }
       });
+    }
+  })
+
+  const saveAuthorizations = async () => {
+    try {
+     
+      authorizationMutation.mutate(authorizations);
       
       setHasChanges(false);
       setSuccessMessage(true);
@@ -318,13 +368,13 @@ export default function ImprovedAuthorization({
   };
 
   const getStats = () => {
-    const total = Object.keys(initialAuthorizations).filter(k => k !== 'id' && k !== 'userId').length;
-    const active = Object.entries(authorizations).filter(([key, value]) => 
-      key !== 'id' && key !== 'userId' && value === true
+    const total = getAllPermissionKeys().length;
+    const active = getAllPermissionKeys().filter(key => 
+      authorizations[key] === true
     ).length;
     const critical = Object.entries(permissionGroups)
-      .flatMap(([_, group]) => group.permissions)
-      .filter(p => p?.critical && authorizations[p.key as keyof Authorization])
+      .flatMap(([, group]) => group.permissions)
+      .filter(p => p?.critical && authorizations[p.key])
       .length;
     
     return { total, active, critical };
@@ -439,7 +489,7 @@ export default function ImprovedAuthorization({
             {Object.entries(permissionGroups).map(([key, group]) => {
               const IconComponent = group.icon;
               const activeCount = group.permissions.filter(p => 
-                authorizations[p.key as keyof Authorization]
+                authorizations[p.key]
               ).length;
               
               return (
@@ -472,7 +522,8 @@ export default function ImprovedAuthorization({
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 {(() => {
-                  const group = permissionGroups[activeCategory as keyof typeof permissionGroups];
+                  const group = permissionGroups[activeCategory];
+                  if (!group) return null;
                   const IconComponent = group.icon;
                   return (
                     <>
@@ -490,9 +541,10 @@ export default function ImprovedAuthorization({
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium"
               >
                 {(() => {
-                  const group = permissionGroups[activeCategory as keyof typeof permissionGroups];
+                  const group = permissionGroups[activeCategory];
+                  if (!group) return '';
                   const allEnabled = group.permissions.every(p => 
-                    authorizations[p.key as keyof Authorization] === true
+                    authorizations[p.key] === true
                   );
                   return allEnabled ? 'Tout désactiver' : 'Tout activer';
                 })()}
@@ -523,9 +575,9 @@ export default function ImprovedAuthorization({
                     )}
                   </div>
                   <Switch
-                    checked={authorizations[permission.key as keyof Authorization] === true}
-                    onChange={(checked) => handleToggle(permission.key as keyof Authorization, checked)}
-                    disabled={isLoading}
+                    checked={authorizations[permission.key] === true}
+                    onChange={(checked) => handleToggle(permission.key, checked)}
+                    disabled={authorizationMutation.isPending}
                   />
                 </div>
               ))}
@@ -538,10 +590,10 @@ export default function ImprovedAuthorization({
               const IconComponent = group.icon;
               const isExpanded = expandedGroups.has(key);
               const activeCount = group.permissions.filter(p => 
-                authorizations[p.key as keyof Authorization]
+                authorizations[p.key]
               ).length;
               const criticalCount = group.permissions.filter(p => 
-                p.critical && authorizations[p.key as keyof Authorization]
+                p.critical && authorizations[p.key]
               ).length;
               
               return (
@@ -615,9 +667,9 @@ export default function ImprovedAuthorization({
                             )}
                           </div>
                           <Switch
-                            checked={authorizations[permission.key as keyof Authorization] === true}
-                            onChange={(checked) => handleToggle(permission.key as keyof Authorization, checked)}
-                            disabled={isLoading}
+                            checked={authorizations[permission.key] === true}
+                            onChange={(checked) => handleToggle(permission.key, checked)}
+                            disabled={authorizationMutation.isPending}
                             size="sm"
                           />
                         </div>
@@ -653,10 +705,10 @@ export default function ImprovedAuthorization({
               </button>
               <button
                 onClick={saveAuthorizations}
-                disabled={isLoading}
+                disabled={authorizationMutation.isPending}
                 className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
               >
-                {isLoading ? 'Sauvegarde...' : 'Sauvegarder'}
+                {authorizationMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
               </button>
             </div>
           </div>

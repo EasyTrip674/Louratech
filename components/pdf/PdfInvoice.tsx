@@ -324,3 +324,5 @@ const InvoicePDF = ({ transaction }: {
 };
 
 export default InvoicePDF;
+
+

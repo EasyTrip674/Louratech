@@ -737,7 +737,6 @@ model Feedback {
   // Niveau d'impact (pour les bugs)
   impact      FeedbackImpact?
   
-  
   pageUrl     String?   // URL de la page où le feedback a été soumis
   browser     String?   // Information sur le navigateur
   device      String?   // Type d'appareil (mobile, desktop, etc.)

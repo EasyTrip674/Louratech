@@ -1,39 +1,102 @@
 "use client"
-import React, { useState } from "react";
-import { useModal } from "@/hooks/useModal";
+
+import React, { useState, useEffect } from "react";
 import { 
   HelpCircle, Send, X, MessageSquare, AlertCircle, 
-  Lightbulb, HelpingHand, Star, ThumbsUp, ThumbsDown 
+  Lightbulb, HelpingHand, Star, ThumbsUp, ThumbsDown,
+  ArrowLeft, Check, Loader2, ChevronRight
 } from "lucide-react";
-import { Modal } from "../ui/modal";
-import TextArea from "../form/input/TextArea";
-import Button from "../ui/button/Button";
-import Input from "../form/input/InputField";
-import { useMutation } from "@tanstack/react-query";
-import { z } from "zod";
-import { doAddFeedback } from "./feedback.action";
-import { feedbackSchema, feedbackSubcategories, FeedbackType } from "./feedback.shema";
-import { FeedbackImpact, FeedbackSatisfaction } from "@prisma/client";
 
+// Types définis correctement
+enum FeedbackType {
+  BUG = 'BUG',
+  SUGGESTION = 'SUGGESTION', 
+  QUESTION = 'QUESTION',
+  OTHER = 'OTHER'
+}
 
-type FeedbackSubmission = z.infer<typeof feedbackSchema>;
+enum FeedbackSatisfaction {
+  NEGATIVE = 'NEGATIVE',
+  NEUTRAL = 'NEUTRAL', 
+  POSITIVE = 'POSITIVE'
+}
 
-// Fonction pour soumettre le feedback
-const submitFeedback = async (data: FeedbackSubmission) => {
-  const response = await doAddFeedback(data);
-  
-  if (response?.serverError) {
-    const errorData = await response.serverError
-    throw new Error(errorData || "Une erreur est survenue");
-  }
-  
-  return response?.data
+enum FeedbackImpact {
+  CRITICAL = 'CRITICAL',
+  MAJOR = 'MAJOR',
+  MINOR = 'MINOR'
+}
+
+// Interface pour les sous-catégories
+interface FeedbackSubcategory {
+  id: string;
+  label: string;
+}
+
+// Interface pour l'état du feedback
+interface FeedbackState {
+  message: string;
+  type: FeedbackType;
+  subtype: string;
+  rating: number;
+  satisfaction: FeedbackSatisfaction;
+  impact: FeedbackImpact;
+  isAnonymous: boolean;
+  name: string;
+  email: string;
+}
+
+// Interface pour les erreurs de validation
+interface ValidationErrors {
+  message?: string;
+  name?: string;
+  email?: string;
+}
+
+// Interface pour les informations de type de feedback
+interface FeedbackTypeInfo {
+  icon: React.ReactNode;
+  helpText: string;
+  color: string;
+  bgColor: string;
+  borderColor: string;
+}
+
+// Données de sous-catégories
+const feedbackSubcategories: Record<FeedbackType, FeedbackSubcategory[]> = {
+  [FeedbackType.BUG]: [
+    { id: 'crash', label: 'Plantage' },
+    { id: 'ui', label: 'Interface' },
+    { id: 'performance', label: 'Performance' },
+    { id: 'other', label: 'Autre' }
+  ],
+  [FeedbackType.SUGGESTION]: [
+    { id: 'feature', label: 'Nouvelle fonctionnalité' },
+    { id: 'improvement', label: 'Amélioration' },
+    { id: 'design', label: 'Design' },
+    { id: 'other', label: 'Autre' }
+  ],
+  [FeedbackType.QUESTION]: [
+    { id: 'how-to', label: 'Comment faire' },
+    { id: 'account', label: 'Mon compte' },
+    { id: 'billing', label: 'Facturation' },
+    { id: 'other', label: 'Autre' }
+  ],
+  [FeedbackType.OTHER]: [
+    { id: 'compliment', label: 'Compliment' },
+    { id: 'complaint', label: 'Réclamation' },
+    { id: 'general', label: 'Général' },
+    { id: 'other', label: 'Autre' }
+  ]
 };
 
-export default function FeedBackChat() {
-  const { openModal, isOpen, closeModal } = useModal();
-  const [step, setStep] = useState(1);
-  const [feedback, setFeedback] = useState<FeedbackSubmission>({
+export default function ImprovedFeedbackComponent() {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [step, setStep] = useState<number>(1);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [showThankYou, setShowThankYou] = useState<boolean>(false);
+  const [feedback, setFeedback] = useState<FeedbackState>({
     message: "",
     type: FeedbackType.OTHER,
     subtype: "other",
@@ -42,70 +105,86 @@ export default function FeedBackChat() {
     impact: FeedbackImpact.MINOR,
     isAnonymous: true,
     name: "",
-  });
-  
-
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  const [characterCount, setCharacterCount] = useState(0);
-  
-  // Configuration de la mutation React Query
-  const mutation = useMutation({
-    mutationFn: submitFeedback,
-    onSuccess: () => {
-      setTimeout(() => {
-        setFeedback({
-          message: "",
-          type: FeedbackType.OTHER,
-          subtype: "other",
-          rating: 0,
-          satisfaction: FeedbackSatisfaction.NEUTRAL,
-          impact: FeedbackImpact.MINOR,
-          isAnonymous: true,
-          name: "",
-        });
-        setCharacterCount(0);
-        setStep(1);
-        closeModal();
-      }, 2000);
-    }
-
+    email: ""
   });
 
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+  const [characterCount, setCharacterCount] = useState<number>(0);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
 
-  const validateForm = () => {
-    try {
-      feedbackSchema.parse(feedback);
-      setValidationErrors({});
-      return true;
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errors: Record<string, string> = {};
-        error.errors.forEach(err => {
-          if (err.path[0]) {
-            errors[err.path[0] as string] = err.message;
-          }
-        });
-        setValidationErrors(errors);
-      }
-      return false;
+  // Animation de typing indicator
+  useEffect(() => {
+    if (feedback.message.length > 0) {
+      setIsTyping(true);
+      const timer = setTimeout(() => setIsTyping(false), 1000);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [feedback.message]);
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      mutation.mutate(feedback);
-    }
-  };
-
-  const handleMessageChange = (value: string) => {
-    console.log("Message:", feedback);
+  // Validation en temps réel
+  const validateForm = (): boolean => {
+    const errors: ValidationErrors = {};
     
-    setFeedback(prev => ({ ...prev, message: value 
-    }));
+    if (feedback.message.length < 10) {
+      errors.message = "Le message doit contenir au moins 10 caractères";
+    }
+    
+    if (!feedback.isAnonymous && !feedback.name.trim()) {
+      errors.name = "Le nom est requis";
+    }
+    
+    if (!feedback.isAnonymous && feedback.email && !/\S+@\S+\.\S+/.test(feedback.email)) {
+      errors.email = "Email invalide";
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (): Promise<void> => {
+    if (!validateForm()) return;
+    
+    setIsSubmitting(true);
+    
+    // Simulation d'envoi
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      setShowThankYou(true);
+      
+      setTimeout(() => {
+        resetForm();
+        setIsOpen(false);
+      }, 3000);
+    }, 2000);
+  };
+
+  const resetForm = (): void => {
+    setFeedback({
+      message: "",
+      type: FeedbackType.OTHER,
+      subtype: "other", 
+      rating: 0,
+      satisfaction: FeedbackSatisfaction.NEUTRAL,
+      impact: FeedbackImpact.MINOR,
+      isAnonymous: true,
+      name: "",
+      email: ""
+    });
+    setCharacterCount(0);
+    setStep(1);
+    setIsSuccess(false);
+    setShowThankYou(false);
+    setValidationErrors({});
+  };
+
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    const value = e.target.value;
+    setFeedback(prev => ({ ...prev, message: value }));
     setCharacterCount(value.length);
   };
 
-  const handleTypeChange = (type: FeedbackType) => {
+  const handleTypeChange = (type: FeedbackType): void => {
     setFeedback(prev => ({ 
       ...prev, 
       type, 
@@ -113,44 +192,86 @@ export default function FeedBackChat() {
       rating: 0,
       satisfaction: FeedbackSatisfaction.NEUTRAL,
       impact: FeedbackImpact.MINOR,
-
     }));
   };
 
-  // Objets pour les icônes et textes d'aide par type de feedback
-  const feedbackTypeInfo = {
+  // Configuration des types de feedback
+  const feedbackTypeInfo: Record<FeedbackType, FeedbackTypeInfo> = {
     [FeedbackType.BUG]: {
-      icon: <AlertCircle className="size-5" />,
+      icon: <AlertCircle className="w-5 h-5" />,
       helpText: "Signalez un problème que vous avez rencontré",
-      color: "text-red-500"
+      color: "text-red-500",
+      bgColor: "bg-red-50",
+      borderColor: "border-red-200"
     },
     [FeedbackType.SUGGESTION]: {
-      icon: <Lightbulb className="size-5" />,
-      helpText: "Partagez vos idées d'amélioration",
-      color: "text-amber-500"
+      icon: <Lightbulb className="w-5 h-5" />,
+      helpText: "Partagez vos idées d'amélioration", 
+      color: "text-amber-500",
+      bgColor: "bg-amber-50",
+      borderColor: "border-amber-200"
     },
     [FeedbackType.QUESTION]: {
-      icon: <MessageSquare className="size-5" />,
+      icon: <MessageSquare className="w-5 h-5" />,
       helpText: "Posez une question sur notre plateforme",
-      color: "text-blue-500"
+      color: "text-blue-500",
+      bgColor: "bg-blue-50", 
+      borderColor: "border-blue-200"
     },
     [FeedbackType.OTHER]: {
-      icon: <HelpingHand className="size-5" />,
+      icon: <HelpingHand className="w-5 h-5" />,
       helpText: "Tout autre commentaire ou retour",
-      color: "text-purple-500"
+      color: "text-purple-500",
+      bgColor: "bg-purple-50",
+      borderColor: "border-purple-200"
     }
   };
 
-  // Rendu conditionnel selon l'étape
-  const renderStepContent = () => {
+  // Interface pour les niveaux d'impact
+  interface ImpactLevel {
+    id: FeedbackImpact;
+    label: string;
+    desc: string;
+  }
+
+  // Interface pour les sentiments
+  interface SentimentOption {
+    id: FeedbackSatisfaction;
+    icon: React.ComponentType<{ className?: string }> | string;
+    label: string;
+    color: string;
+    bg: string;
+  }
+
+  // Rendu du contenu selon l'étape
+  const renderStepContent = (): React.ReactNode => {
+    if (showThankYou) {
+      return (
+        <div className="text-center py-8 space-y-4">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+            <Check className="w-8 h-8 text-green-600" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-800">Merci pour votre feedback !</h3>
+          <p className="text-gray-600">Votre message a été envoyé avec succès.</p>
+          <div className="flex justify-center">
+            <div className="w-8 h-1 bg-green-500 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+      );
+    }
+
     switch (step) {
       case 1:
         return (
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
-              Quel type de feedback souhaitez-vous partager ?
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="space-y-6">
+            <div className="text-center space-y-2">
+              <h3 className="text-xl font-semibold text-gray-800">
+                Comment pouvons-nous vous aider ?
+              </h3>
+              <p className="text-gray-600">Choisissez le type de feedback que vous souhaitez partager</p>
+            </div>
+            
+            <div className="grid gap-3">
               {Object.values(FeedbackType).map((type) => (
                 <button
                   key={type}
@@ -158,66 +279,69 @@ export default function FeedBackChat() {
                     handleTypeChange(type);
                     setStep(2);
                   }}
-                  className={`flex items-center p-4 gap-3 rounded-lg border border-gray-200 hover:border-brand-400 hover:bg-brand-50 dark:hover:bg-brand-600 transition-all duration-200 group`}
+                  className={`group flex items-center p-4 gap-4 rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-md`}
                 >
-                  <div className={`p-2 rounded-full ${
-                    type === FeedbackType.BUG ? "bg-red-100" :
-                    type === FeedbackType.SUGGESTION ? "bg-amber-100" :
-                    type === FeedbackType.QUESTION ? "bg-blue-100" : 
-                    "bg-purple-100"
-                  }`}>
+                  <div className={`p-3 rounded-xl ${feedbackTypeInfo[type].bgColor} ${feedbackTypeInfo[type].borderColor} border group-hover:scale-110 transition-transform duration-300`}>
                     <span className={feedbackTypeInfo[type].color}>
                       {feedbackTypeInfo[type].icon}
                     </span>
                   </div>
-                  <div className="text-left">
-                    <h4 className="font-medium capitalize dark:text-white">{
-                      type === FeedbackType.OTHER ? "Autre" : type.toLowerCase()
-                      }</h4>
-                    <p className="text-xs text-gray-500 dark:text-white/90">{feedbackTypeInfo[type].helpText}</p>
+                  <div className="flex-1 text-left">
+                    <h4 className="font-semibold text-gray-800 capitalize mb-1">
+                      {type === FeedbackType.OTHER ? "Autre" : type.toLowerCase()}
+                    </h4>
+                    <p className="text-sm text-gray-600">{feedbackTypeInfo[type].helpText}</p>
                   </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
                 </button>
               ))}
             </div>
           </div>
         );
+
       case 2:
         return (
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
+          <div className="space-y-6">
+            {/* Header avec navigation */}
+            <div className="flex items-center gap-3">
               <button 
                 onClick={() => setStep(1)} 
-                className="text-gray-500 hover:text-gray-700"
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                </svg>
+                <ArrowLeft className="w-5 h-5 text-gray-600" />
               </button>
-              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <span className={feedbackTypeInfo[feedback.type].color}>
-                  {feedbackTypeInfo[feedback.type].icon}
-                </span>
-                {feedback.type.toLowerCase().charAt(0).toUpperCase() + feedback.type.toLowerCase().slice(1)}
-              </h3>
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${feedbackTypeInfo[feedback.type].bgColor}`}>
+                  <span className={feedbackTypeInfo[feedback.type].color}>
+                    {feedbackTypeInfo[feedback.type].icon}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 capitalize">
+                  {feedback.type === FeedbackType.OTHER ? "Autre" : feedback.type.toLowerCase()}
+                </h3>
+              </div>
             </div>
 
-            {/* Sous-catégories */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          
+
+            {/* Sous-catégories avec animation */}
+            <div className="space-y-3">
+              <label className="block text-sm font-semibold text-gray-700">
                 Précisez votre {feedback.type === FeedbackType.BUG ? "problème" : 
                   feedback.type === FeedbackType.SUGGESTION ? "suggestion" : 
                   feedback.type === FeedbackType.QUESTION ? "question" : "feedback"}
               </label>
-              <div className="flex flex-wrap gap-2">
-                {feedbackSubcategories[feedback.type].map((subcat) => (
+              <div className="grid grid-cols-2 gap-2">
+                {feedbackSubcategories[feedback.type].map((subcat, index) => (
                   <button
                     key={subcat.id}
                     onClick={() => setFeedback(prev => ({ ...prev, subtype: subcat.id }))}
-                    className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                    className={`p-3 text-sm rounded-lg border-2 transition-all duration-200 transform hover:scale-105 ${
                       feedback.subtype === subcat.id 
-                        ? "bg-brand-100 border-brand-500 text-brand-700 border" 
-                        : "bg-gray-100 hover:bg-gray-200 text-gray-700 border border-transparent"
+                        ? "bg-blue-50 border-blue-300 text-blue-700 shadow-md" 
+                        : "bg-white hover:bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300"
                     }`}
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
                     {subcat.label}
                   </button>
@@ -225,225 +349,251 @@ export default function FeedBackChat() {
               </div>
             </div>
 
-            {/* Évaluation selon le type */}
+            {/* Évaluations spécifiques par type */}
             {feedback.type === FeedbackType.BUG && (
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Impact du problème
+              <div className="space-y-3 p-4 bg-red-50 rounded-xl border border-red-100">
+                <label className="block text-sm font-semibold text-red-700">
+                  Niveau d&apos;impact du problème
                 </label>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    { id: "critical", label: "Critique", color: "bg-red-100 text-red-700 border-red-200" },
-                    { id: "major", label: "Majeur", color: "bg-orange-100 text-orange-700 border-orange-200" },
-                    { id: "minor", label: "Mineur", color: "bg-yellow-100 text-yellow-700 border-yellow-200" },
-                  ].map((level) => (
+                <div className="grid grid-cols-3 gap-2">
+                  {([
+                    { id: FeedbackImpact.CRITICAL, label: "🔴 Critique", desc: "Bloque complètement" },
+                    { id: FeedbackImpact.MAJOR, label: "🟡 Majeur", desc: "Gêne importante" },
+                    { id: FeedbackImpact.MINOR, label: "🟢 Mineur", desc: "Gêne légère" },
+                  ] as ImpactLevel[]).map((level) => (
                     <button
                       key={level.id}
-                      onClick={() => setFeedback(prev => ({ ...prev, impact: level.id as FeedbackImpact }))}
-                      className={`px-3 py-1.5 text-sm rounded-full border transition-all ${
-                        feedback.impact === level.id ? `${level.color} border` : "bg-gray-100 hover:bg-gray-200 text-gray-700 border-transparent"
+                      onClick={() => setFeedback(prev => ({ ...prev, impact: level.id }))}
+                      className={`p-3 text-center rounded-lg border-2 transition-all duration-200 ${
+                        feedback.impact === level.id 
+                          ? "border-red-300 bg-red-100 text-red-800 shadow-md transform scale-105" 
+                          : "border-gray-200 bg-white hover:bg-gray-50 text-gray-700"
                       }`}
                     >
-                      {level.label}
+                      <div className="font-medium text-sm">{level.label}</div>
+                      <div className="text-xs opacity-75 mt-1">{level.desc}</div>
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {feedback.type === FeedbackType.OTHER && (
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Votre sentiment
-                </label>
-                <div className="flex gap-4 justify-center">
-                  <button
-                    onClick={() => setFeedback(prev => ({ ...prev, satisfaction: FeedbackSatisfaction.NEGATIVE }))}
-                    className={`flex flex-col items-center p-2 rounded-lg transition ${
-                      feedback.satisfaction === FeedbackSatisfaction.NEGATIVE ? "bg-red-50 text-red-600" : "text-gray-400 hover:text-gray-600"
-                    }`}
-                  >
-                    <ThumbsDown className={`size-8 ${feedback.satisfaction ===  FeedbackSatisfaction.NEGATIVE ? "fill-red-100" : ""}`} />
-                    <span className="text-xs mt-1">Insatisfait</span>
-                  </button>
-                  <button
-                    onClick={() => setFeedback(prev => ({ ...prev, satisfaction:  FeedbackSatisfaction.NEUTRAL }))}
-                    className={`flex flex-col items-center p-2 rounded-lg transition ${
-                      feedback.satisfaction ===  FeedbackSatisfaction.NEUTRAL ? "bg-gray-50 text-gray-600" : "text-gray-400 hover:text-gray-600"
-                    }`}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`size-8 ${feedback.satisfaction ===  FeedbackSatisfaction.NEUTRAL  ? "fill-gray-100" : ""}`}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12h10.5" />
-                    </svg>
-                    <span className="text-xs mt-1">Neutre</span>
-                  </button>
-                  <button
-                    onClick={() => setFeedback(prev => ({ ...prev, satisfaction:  FeedbackSatisfaction.POSITIVE }))}
-                    className={`flex flex-col items-center p-2 rounded-lg transition ${
-                      feedback.satisfaction ===  FeedbackSatisfaction.POSITIVE  ? "bg-green-50 text-green-600" : "text-gray-400 hover:text-gray-600"
-                    }`}
-                  >
-                    <ThumbsUp className={`size-8 ${feedback.satisfaction ===  FeedbackSatisfaction.POSITIVE  ? "fill-green-100" : ""}`} />
-                    <span className="text-xs mt-1">Satisfait</span>
-                  </button>
-                </div>
-              </div>
-            )}
-
             {feedback.type === FeedbackType.SUGGESTION && (
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Comment évaluez-vous cette fonctionnalité ?
+              <div className="space-y-3 p-4 bg-amber-50 rounded-xl border border-amber-100">
+                <label className="block text-sm font-semibold text-amber-700">
+                  À quel point cette fonctionnalité vous serait-elle utile ?
                 </label>
                 <div className="flex justify-center">
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
                         onClick={() => setFeedback(prev => ({ ...prev, rating: star }))}
-                        className="p-1 focus:outline-none"
+                        className="p-1 focus:outline-none transition-transform duration-200 hover:scale-110"
                       >
                         <Star 
-                          className={`size-8 ${
+                          className={`w-8 h-8 ${
                             (feedback.rating || 0) >= star 
                               ? "text-yellow-400 fill-yellow-400" 
-                              : "text-gray-300"
-                          } hover:text-yellow-400 transition-colors`} 
+                              : "text-gray-300 hover:text-yellow-300"
+                          } transition-colors`} 
                         />
                       </button>
                     ))}
                   </div>
                 </div>
-                <p className="text-center text-xs text-gray-500 mt-1">
-                  {feedback.rating === 0 && "Sélectionnez une note"}
-                  {feedback.rating === 1 && "Pas prioritaire"}
-                  {feedback.rating === 2 && "Peu important"}
-                  {feedback.rating === 3 && "Utile"}
-                  {feedback.rating === 4 && "Très utile"}
-                  {feedback.rating === 5 && "Indispensable"}
+                <p className="text-center text-sm text-amber-600 font-medium">
+                  {feedback.rating === 0 && "Cliquez pour noter"}
+                  {feedback.rating === 1 && "😐 Pas vraiment utile"}
+                  {feedback.rating === 2 && "🤔 Peu utile"}
+                  {feedback.rating === 3 && "😊 Assez utile"}
+                  {feedback.rating === 4 && "😍 Très utile"}
+                  {feedback.rating === 5 && "🤩 Indispensable !"}
                 </p>
               </div>
             )}
 
-            {/* Zone de message */}
-            <div className="relative">
-              <TextArea
-                value={feedback.message}
-                onChangeValue={handleMessageChange}
-                placeholder={
-                  feedback.type === FeedbackType.BUG ? "Décrivez le problème rencontré..." :
-                  feedback.type === FeedbackType.SUGGESTION ? "Décrivez votre idée..." :
-                  feedback.type === FeedbackType.QUESTION ? "Posez votre question..." :
-                  "Partagez vos commentaires..."
-                }
-                className={`resize-none h-32 transition-all duration-300  text-black dark:text-white ${
-                  validationErrors.message 
-                    ? "border-red-500 ring-2 ring-red-100" 
-                    : feedback.message.length >= 5 
-                      ? "border-brand-500 ring-2 ring-brand-100" 
-                      : "border-gray-300"
-                }`}
-                disabled={mutation.isPending}
-              />
-              <div className="flex justify-between mt-1">
-                <span className={`text-xs ${validationErrors.message ? "text-red-500" : "text-gray-500"}`}>
-                  {validationErrors.message || ""}
-                </span>
-                <span className={`text-xs font-medium ${
-                  characterCount === 0 ? "text-gray-400" :
-                  characterCount < 5 ? "text-red-500" :
-                  "text-green-500"
-                }`}>
-                  {characterCount} caractères {characterCount < 5 ? "(min. 5)" : ""}
-                </span>
+            {feedback.type === FeedbackType.OTHER && (
+              <div className="space-y-3 p-4 bg-purple-50 rounded-xl border border-purple-100">
+                <label className="block text-sm font-semibold text-purple-700">
+                  Comment vous sentez-vous par rapport à notre service ?
+                </label>
+                <div className="flex gap-4 justify-center">
+                  {([
+                    { id: FeedbackSatisfaction.NEGATIVE, icon: ThumbsDown, label: 'Insatisfait', color: 'text-red-500', bg: 'bg-red-50' },
+                    { id: FeedbackSatisfaction.NEUTRAL, icon: '😐', label: 'Neutre', color: 'text-gray-500', bg: 'bg-gray-50' },
+                    { id: FeedbackSatisfaction.POSITIVE, icon: ThumbsUp, label: 'Satisfait', color: 'text-green-500', bg: 'bg-green-50' }
+                  ] as SentimentOption[]).map((sentiment) => (
+                    <button
+                      key={sentiment.id}
+                      onClick={() => setFeedback(prev => ({ ...prev, satisfaction: sentiment.id }))}
+                      className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all duration-200 transform hover:scale-105 ${
+                        feedback.satisfaction === sentiment.id 
+                          ? `${sentiment.bg} border-current ${sentiment.color} shadow-md scale-105` 
+                          : "bg-white border-gray-200 text-gray-400 hover:text-gray-600 hover:border-gray-300"
+                      }`}
+                    >
+                      {typeof sentiment.icon === 'string' ? (
+                        <span className="text-2xl">{sentiment.icon}</span>
+                      ) : (
+                        <sentiment.icon className="w-6 h-6" />
+                      )}
+                      <span className="text-sm font-medium mt-2">{sentiment.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Anonyme ou Identifié */}
-            <div className="flex items-center gap-2 border-t border-gray-100 pt-3">
-              <input 
-                type="checkbox" 
-                id="anonymousToggle"
-                checked={feedback.isAnonymous}
-                onChange={() => setFeedback(prev => ({ 
-                  ...prev, 
-                  isAnonymous: !prev.isAnonymous,
-                  name: prev.isAnonymous ? "" : prev.name,
-                  email: prev.isAnonymous ? "" : prev.email
-                }))}
-                className="form-checkbox text-brand-500 rounded"
-              />
-              <label htmlFor="anonymousToggle" className="text-sm text-gray-700 dark:text-gray-200">
-                Envoyer anonymement
+            {/* Zone de message améliorée */}
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                Décrivez-nous votre expérience
               </label>
+              <div className="relative">
+                <textarea
+                  value={feedback.message}
+                  onChange={handleMessageChange}
+                  placeholder={
+                    feedback.type === FeedbackType.BUG ? "Décrivez précisément le problème : quand est-il survenu ? Que faisiez-vous ?" :
+                    feedback.type === FeedbackType.SUGGESTION ? "Expliquez votre idée : quel problème résoudrait-elle ? Comment l'imaginez-vous ?" :
+                    feedback.type === FeedbackType.QUESTION ? "Posez votre question de manière détaillée..." :
+                    "Partagez vos commentaires, suggestions ou impressions..."
+                  }
+                  className={`w-full h-32 p-4 border-2 rounded-xl resize-none transition-all duration-300 focus:outline-none ${
+                    validationErrors.message 
+                      ? "border-red-300 bg-red-50 focus:border-red-400" 
+                      : feedback.message.length >= 10 
+                        ? "border-green-300 bg-green-50 focus:border-green-400" 
+                        : "border-gray-200 bg-white focus:border-blue-400 focus:bg-blue-50"
+                  }`}
+                  disabled={isSubmitting}
+                />
+                
+                {/* Typing indicator */}
+                {isTyping && (
+                  <div className="absolute bottom-3 right-3 flex items-center gap-1 text-blue-500">
+                    <div className="flex gap-1">
+                      <div className="w-1 h-1 bg-current rounded-full animate-bounce"></div>
+                      <div className="w-1 h-1 bg-current rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                      <div className="w-1 h-1 bg-current rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    </div>
+                    <span className="text-xs ml-1">saisie en cours...</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <span className={`text-sm font-medium ${
+                  validationErrors.message ? "text-red-500" : 
+                  characterCount < 10 ? "text-orange-500" : "text-green-600"
+                }`}>
+                  {validationErrors.message || 
+                   (characterCount < 10 ? `${10 - characterCount} caractères minimum requis` : 
+                    "✓ Message suffisamment détaillé")}
+                </span>
+                <span className={`text-sm font-medium ${
+                  characterCount === 0 ? "text-gray-400" :
+                  characterCount < 10 ? "text-orange-500" :
+                  "text-green-600"
+                }`}>
+                  {characterCount}/500
+                </span>
+              </div>
             </div>
 
-            {/* Informations personnelles si non anonyme */}
-            {!feedback.isAnonymous && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Input
-                    value={feedback.name}
-                    onChange={(e) => setFeedback(prev => ({ 
-                      ...prev, 
-                      name: e.target.value 
-                    }))}
-                    placeholder="Votre nom"
-                    className={validationErrors.name ? "border-red-500" : ""}
-                  />
-                  {validationErrors.name && (
-                    <p className="text-xs text-red-500 mt-1">{validationErrors.name}</p>
-                  )}
+            {/* Section anonymat avec toggle amélioré */}
+            <div className="bg-gray-50 rounded-xl p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-semibold text-gray-700">Mode anonyme</span>
+                  <div className="text-xs text-gray-500 bg-white px-2 py-1 rounded-full">
+                    {feedback.isAnonymous ? "🔒 Anonyme" : "👤 Identifié"}
+                  </div>
                 </div>
-                <div>
-                  <Input 
-                    type="email"
-                    value={feedback.email}
-                    onChange={(e) => setFeedback(prev => ({ 
-                      ...prev, 
-                      email: e.target.value 
-                    }))}
-                    placeholder="Votre email"
-                    className={validationErrors.email ? "border-red-500" : ""}
-                  />
-                  {validationErrors.email && (
-                    <p className="text-xs text-red-500 mt-1">{validationErrors.email}</p>
-                  )}
-                </div>
+                <button
+                  onClick={() => setFeedback(prev => ({ 
+                    ...prev, 
+                    isAnonymous: !prev.isAnonymous,
+                    name: prev.isAnonymous ? "" : prev.name,
+                    email: prev.isAnonymous ? "" : prev.email
+                  }))}
+                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
+                    feedback.isAnonymous ? 'bg-blue-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 ${
+                    feedback.isAnonymous ? 'translate-x-7' : 'translate-x-1'
+                  }`} />
+                </button>
               </div>
-            )}
-
-            {/* Bouton d'envoi */}
-            <Button 
-              onClick={handleSubmit}
-              disabled={mutation.isPending || characterCount < 5}
-              className="w-full flex items-center justify-center gap-2"
-            >
-              {mutation.isPending ? (
-                <span className="animate-pulse">Envoi en cours...</span>
-              ) : mutation.isSuccess ? (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Merci pour votre feedback!
-                </>
-              ) : mutation.isError ? (
-                "Erreur, réessayez"
-              ) : (
-                <>
-                  <Send className="size-4 mr-2" /> Envoyer
-                </>
+              
+              {!feedback.isAnonymous && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-gray-200">
+                  <div>
+                    <input
+                      type="text"
+                      value={feedback.name}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFeedback(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Votre nom"
+                      className={`w-full p-3 border-2 rounded-lg transition-all ${
+                        validationErrors.name ? "border-red-300" : "border-gray-200 focus:border-blue-400 focus:bg-blue-50"
+                      }`}
+                    />
+                    {validationErrors.name && (
+                      <p className="text-xs text-red-500 mt-1">{validationErrors.name}</p>
+                    )}
+                  </div>
+                  <div>
+                    <input 
+                      type="email"
+                      value={feedback.email}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFeedback(prev => ({ ...prev, email: e.target.value }))}
+                      placeholder="Votre email (optionnel)"
+                      className={`w-full p-3 border-2 rounded-lg transition-all ${
+                        validationErrors.email ? "border-red-300" : "border-gray-200 focus:border-blue-400 focus:bg-blue-50"
+                      }`}
+                    />
+                    {validationErrors.email && (
+                      <p className="text-xs text-red-500 mt-1">{validationErrors.email}</p>
+                    )}
+                  </div>
+                </div>
               )}
-            </Button>
-            
-            {mutation.isError && (
-              <p className="text-red-500 text-sm text-center">
-                {mutation.error instanceof Error ? mutation.error.message : "Une erreur est survenue. Veuillez réessayer."}
-              </p>
-            )}
+            </div>
+
+            {/* Bouton d'envoi amélioré */}
+            <button 
+              onClick={handleSubmit}
+              disabled={isSubmitting || characterCount < 10 || Object.keys(validationErrors).length > 0}
+              className={`w-full p-4 rounded-xl font-semibold transition-all duration-300 transform ${
+                isSubmitting || characterCount < 10 || Object.keys(validationErrors).length > 0
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed" 
+                  : isSuccess 
+                    ? "bg-green-500 text-white hover:bg-green-600 hover:scale-105 shadow-lg" 
+                    : "bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl"
+              }`}
+            >
+              {isSubmitting ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Envoi en cours...</span>
+                </div>
+              ) : isSuccess ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-5 h-5" />
+                  <span>Feedback envoyé !</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center gap-2">
+                  <Send className="w-5 h-5" />
+                  <span>Envoyer mon feedback</span>
+                </div>
+              )}
+            </button>
           </div>
         );
+
       default:
         return null;
     }
@@ -451,35 +601,56 @@ export default function FeedBackChat() {
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-50 sm:block">
+      {/* Bouton flottant amélioré */}
+      <div className="fixed bottom-6 right-6 z-50">
         <button
-          onClick={openModal}
-          aria-label="Ouvrir le formulaire de feedback"
-          className="group inline-flex size-14 items-center justify-center rounded-full bg-brand-500 text-white transition-all duration-300 hover:bg-brand-600 hover:shadow-lg"
+          onClick={() => setIsOpen(true)}
+          className="group relative w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-200"
         >
-          <HelpCircle className="size-6 group-hover:animate-pulse" />
+          <HelpCircle className="w-7 h-7 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:rotate-12 transition-transform duration-300" />
+          
+          {/* Notification badge */}
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center animate-pulse">
+            !
+          </div>
+          
+          {/* Tooltip */}
+          <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            Donnez-nous votre avis
+            <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+          </div>
         </button>
       </div>
-      <Modal
-        isOpen={isOpen}
-        onClose={closeModal}
-        className="max-w-[600px] p-5 lg:p-8"
-      >
-        <div className="flex flex-col relative">
-          <button 
-            onClick={closeModal} 
-            className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 transition-colors"
-            aria-label="Fermer"
-          >
-            <X className="size-6" />
-          </button>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2 mb-4">
-            <MessageSquare className="size-5" /> Votre Feedback
-          </h2>
-         
-          {renderStepContent()}
+
+      {/* Modal améliorée */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 dark:text-black bg-opacity-50 backdrop-blur-sm ">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100">
+            <div className="sticky top-0 border-b border-gray-100 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <MessageSquare className="w-5 h-5 text-blue-600" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-800">Votre Feedback</h2>
+              </div>
+              
+              <button 
+                onClick={() => {
+                  setIsOpen(false);
+                  setTimeout(resetForm, 300);
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-6 h-6 text-gray-400 hover:text-gray-600" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              {renderStepContent()}
+            </div>
+          </div>
         </div>
-      </Modal>
+      )}
     </>
   );
 }
