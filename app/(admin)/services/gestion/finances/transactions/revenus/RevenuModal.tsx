@@ -12,7 +12,6 @@ import Input from '@/components/form/input/InputField'
 import { useMutation } from '@tanstack/react-query'
 import SuccessModal from '@/components/alerts/SuccessModal'
 import ErrorModal from '@/components/alerts/ErrorModal'
-import { formatCurrency } from '@/lib/utils'
 import { createRevenuSchema } from './revenu.shema'
 import { doCreateRevenu } from './revenu.create.action'
 import { authClient } from '@/lib/auth-client'
@@ -201,6 +200,9 @@ const CreateRevenuModal = ({}: Props) => {
               <Input
                 type="number"
                 id="amount"
+                currentAmount={currentAmount}
+                isAmount={true}
+                currency={session.data?.userDetails?.organization?.comptaSettings?.currency}
                 placeholder="Entrez le montant"
                 aria-invalid={errors.amount ? "true" : "false"}
                 aria-describedby={errors.amount ? "amount-error" : undefined}
@@ -213,11 +215,7 @@ const CreateRevenuModal = ({}: Props) => {
             {errors.amount && (
               <p id="amount-error" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.amount.message}</p>
             )}
-            {currentAmount > 0 && (
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {formatCurrency(currentAmount,session.data?.userDetails?.organization?.comptaSettings?.currency)}
-              </p>
-            )}
+           
           </div>
 
           {/* Destination */}

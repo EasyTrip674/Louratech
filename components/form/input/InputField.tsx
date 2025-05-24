@@ -1,8 +1,12 @@
+import { formatCurrency } from "@/lib/utils";
 import React, { FC } from "react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   success?: boolean;
   error?: boolean;
+  isAmount?:boolean;
+  currentAmount?:number;
+  currency?:string;
   hint?: string; // Optional hint text
 }
 
@@ -11,16 +15,19 @@ const Input: FC<InputProps> = ({
   id,
   name,
   placeholder,
+  currency,
   defaultValue,
   onChange,
   className = "",
   min,
   max,
   step,
+  currentAmount,
   disabled = false,
   success = false,
   error = false,
   hint,
+  isAmount= false,
   ...props
 }) => {
   // Determine input styles based on state (disabled, success, error)
@@ -38,6 +45,7 @@ const Input: FC<InputProps> = ({
   }
 
   return (
+  <>
     <div className="relative">
       <input
         {...props}
@@ -69,6 +77,16 @@ const Input: FC<InputProps> = ({
         </p>
       )}
     </div>
+
+  {
+    isAmount && currentAmount ? 
+    currentAmount > 0 && (
+      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        {formatCurrency(currentAmount, currency)}
+      </p>)
+    : null
+  }
+  </>
   );
 };
 

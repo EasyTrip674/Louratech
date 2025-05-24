@@ -16,6 +16,7 @@ import { useMutation } from '@tanstack/react-query'
 import { doAddClientToStep } from './client.add.to.step.action'
 import SuccessModal from '@/components/alerts/SuccessModal'
 import ErrorModal from '@/components/alerts/ErrorModal'
+import { authClient } from '@/lib/auth-client'
 
 type Props = {
     procedureId: string,
@@ -31,6 +32,7 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
     const { openModal, isOpen, closeModal } = useModal()
       const successModal = useModal();
       const errorModal = useModal();
+    const session = authClient.useSession();
     
     const {
         register,
@@ -59,6 +61,8 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
         label: `${client.user.firstName} ${client.user.lastName}`
     }))
     
+    const currentAmount = watch("price");
+
     const stepOptions = stepsProcedure?.steps.map(step => ({
         id: step.id ?? "",
         label: step.name ?? "",
@@ -123,10 +127,10 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
     return (
         <>
             <SuccessModal successModal={successModal}
-               message="CLient added successfully"
+               message="Le client a été ajouté avec succès"
                title="" />
             <ErrorModal errorModal={errorModal} onRetry={openModal}
-        message="Error during adding client to module" />
+        message="Erreur lors de l'ajout du client" />
             <Button onClick={handleOpen} size='sm' variant="outline">
                Inscrire un nouveau client <Plus className="h-5 w-5" />
             </Button>
@@ -171,6 +175,9 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
                             <Input
                                 type="number"
                                 id="price"
+                                currentAmount={currentAmount}
+                                isAmount={true}
+                                currency={session?.data?.userDetails?.organization?.comptaSettings?.currency}                
                                 {...register('price', { valueAsNumber: true })}
                             />
                             {errors.price && <p className="mt-2 text-sm text-red-600">{errors.price.message}</p>}

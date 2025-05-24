@@ -11,5 +11,6 @@ export const editClientSchema = z.object({
     fatherLastName: z.string().optional(),
     fatherFirstName: z.string().optional(),
     motherLastName: z.string().optional(),
+    email: z.string().email("L'email doit etre valide !! "),
     motherFirstName: z.string().optional(),
    });

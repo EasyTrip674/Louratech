@@ -21,18 +21,19 @@ export const doEditClient = adminAction
             },
             data: {
                 phone: clientInput.phone,
-                        passport: clientInput.passport,
-                        address: clientInput.address,
-                        birthDate: clientInput.birthDate ? new Date(clientInput.birthDate) : undefined,
-                        fatherLastName: clientInput.fatherLastName,
-                        fatherFirstName: clientInput.fatherFirstName,
-                        motherLastName: clientInput.motherLastName,
-                        motherFirstName: clientInput.motherFirstName,
+                passport: clientInput.passport,
+                address: clientInput.address,
+                birthDate: clientInput.birthDate ? new Date(clientInput.birthDate) : undefined,
+                fatherLastName: clientInput.fatherLastName,
+                fatherFirstName: clientInput.fatherFirstName,
+                motherLastName: clientInput.motherLastName,
+                motherFirstName: clientInput.motherFirstName,
+
                 user: {
                     update: {
                          firstName: clientInput.firstName,
                          lastName: clientInput.lastName,
-                       
+                         email: clientInput.email
                     },
                 },
             },

@@ -215,6 +215,9 @@ const CreateTransactionModalStep = ({
                 type="number"
                 step="100"
                 id="amount"
+                currentAmount={currentAmount}
+                isAmount={true}
+                currency={session.data?.userDetails?.organization?.comptaSettings?.currency}
                 placeholder="Entrez le montant"
                 aria-invalid={errors.amount ? "true" : "false"}
                 aria-describedby={errors.amount ? "amount-error" : undefined}
@@ -236,11 +239,7 @@ const CreateTransactionModalStep = ({
             {errors.amount && (
               <p id="amount-error" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.amount.message}</p>
             )}
-            {currentAmount > 0 && (
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {formatCurrency(currentAmount,session.data?.userDetails?.organization?.comptaSettings?.currency)}
-              </p>
-            )}
+           
           </div>
           <div>
             <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

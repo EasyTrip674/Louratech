@@ -15,6 +15,7 @@ import { createStepProcedureSchema } from "./step.create.shema";
 import type { z } from "zod";
 import TextArea from "@/components/form/input/TextArea";
 import { doCreateStep } from "./step.create.action";
+import { authClient } from "@/lib/auth-client";
 
 // Infer the TypeScript type from the Zod schema
 type StepProcedureScheme = z.infer<typeof createStepProcedureSchema>;
@@ -25,12 +26,14 @@ export default function CreateStepFormModal({procedureId}:{
   const { isOpen, openModal, closeModal } = useModal();
   const successModal = useModal();
   const errorModal = useModal();
+  const session = authClient.useSession()
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset
+    reset,
+    watch
   } = useForm<StepProcedureScheme>({
     resolver: zodResolver(createStepProcedureSchema),
     defaultValues: {
@@ -40,6 +43,8 @@ export default function CreateStepFormModal({procedureId}:{
       procedureId: procedureId,
     }
   });
+
+  const currentAmount = watch("price");
 
   const createMutation = useMutation({
     mutationFn: async (data: StepProcedureScheme) => {
@@ -131,7 +136,9 @@ export default function CreateStepFormModal({procedureId}:{
                 hint={errors.price?.message} 
                 type="number" 
                 min="0"
-                step="0.01"
+                currentAmount={currentAmount}
+                isAmount={true}
+                currency={session?.data?.userDetails?.organization?.comptaSettings?.currency}                
                 placeholder="Entrez le prix" 
               />
               <p className="text-xs text-gray-500 mt-1">Ce prix sera personnalisable par client</p>

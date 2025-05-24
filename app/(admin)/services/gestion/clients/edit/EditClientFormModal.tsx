@@ -29,7 +29,6 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
   const router = useRouter();
   const successModal = useModal();
   const errorModal = useModal();
-  const [serverError] = React.useState<string | null>(null);
 
   const {
     control,
@@ -51,8 +50,8 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
       fatherFirstName: client?.fatherFirstName ?? "" ,
       motherLastName: client?.motherLastName ?? "" ,
       motherFirstName: client?.motherFirstName ?? "" ,
+      email: client?.user.email
     },
-  
   });
 
   // Watch form values in real-time
@@ -94,10 +93,10 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
   return (
     <>
     <SuccessModal successModal={successModal}
-               message='Client Editd successfully'
+               message='Le client a été modifié avec success'
                title="" />
     <ErrorModal errorModal={errorModal} onRetry={openModal}
-        message={serverError ? serverError:"Erreur"} />
+        message={"Erreur lors de la modification ! Veuillez ressayez"} />
     {inPageProfile ?   <button
           onClick={openModal}
           className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
@@ -153,13 +152,19 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
             {/* Passport */}
             <div className="col-span-1">
               <Label>Passport</Label>
-              <Input {...register("passport")} type="text" placeholder="Enter passport number" />
+              <Input {...register("passport")} type="text" placeholder="Passport" />
+            </div>
+
+               {/* email */}
+               <div className="col-span-1 sm:col-span-2">
+              <Label>Address</Label>
+              <Input {...register("email")} type="text" placeholder="Email" />
             </div>
 
             {/* Address */}
             <div className="col-span-1 sm:col-span-2">
               <Label>Address</Label>
-              <Input {...register("address")} type="text" placeholder="Enter full address" />
+              <Input {...register("address")} type="text" placeholder="Adresse" />
             </div>
 
             {/* Birth Date */}
