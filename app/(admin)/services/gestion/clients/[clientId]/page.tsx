@@ -3,11 +3,11 @@ import { notFound } from "next/navigation";
 import React from "react";
 import { clientProfileDB } from "@/db/queries/clients.query";
 import ClientInfoCard from "./ClientInfoCard";
-import UserCredentialsManage from "@/components/user/ChangePasswordFormModal";
 import UserProfileCard from "../../../../../../components/user/UserProfileCard";
 import { Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import ClientPageServices from "./ClientPageServices";
 
 export const metadata: Metadata = {
     title: "Client",
@@ -51,13 +51,8 @@ export default async function Profile(props: PageProps) {
             imageSrc={""}
           />
           <ClientInfoCard client={client} canEditCLient={session?.userDetails?.authorize?.canEditClient} />
-          <UserCredentialsManage
-            canEditPassword={session?.userDetails?.authorize?.canChangeUserPassword ?? false}
-            role={Role.CLIENT}
-            userId={client.user.id} 
-            email={client.user.email} 
-            active={client.user.active} 
-          />
+
+        <ClientPageServices clientId={client.id} />
         </div>
       </div>
     </div>

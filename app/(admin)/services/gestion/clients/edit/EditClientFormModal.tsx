@@ -160,7 +160,6 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
               <Label>Address</Label>
               <Input {...register("email")} type="text" placeholder="Email" />
             </div>
-
             {/* Address */}
             <div className="col-span-1 sm:col-span-2">
               <Label>Address</Label>
