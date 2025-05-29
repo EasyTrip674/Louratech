@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Calendar,
   FileText,
   User,
@@ -34,6 +33,7 @@ import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import DownloadPdf from "@/components/pdf/DowloadPdf";
 import { authClient } from "@/lib/auth-client";
+import BackButton from "@/layout/BackButton";
 
 // Composant pour afficher les détails d'une transaction
 export default function TransactionDetails(
@@ -51,7 +51,7 @@ export default function TransactionDetails(
         <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
           {error || "Transaction introuvable"}
         </h1>
-        <Button onClick={() => router.push("/finances/transactions")}>
+        <Button  onClick={() => router.push("/finances/transactions")}>
           Retour aux transactions
         </Button>
       </div>
@@ -153,13 +153,17 @@ export default function TransactionDetails(
       {/* Header avec statut et actions */}
       <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4 py-6">
-          <Link
+          {/* <Link
             href="/services/gestion/finances"
-            className="inline-flex items-center text-brand-600 hover:text-brand-800 mb-4 text-sm font-medium transition-colors"
+            className="inline-flex items-center text-brand-600 hover:text-brand-800 mb-4 text-xl font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
             Retour aux transactions
-          </Link>
+          </Link> */}
+
+          <div className="py-4">
+          <BackButton />
+          </div>
           
           <div className="flex flex-col md:flex-row justify-between md:items-center">
             <div className="flex items-center">
@@ -300,10 +304,23 @@ export default function TransactionDetails(
                       {/* description */}
                       <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
                         <Building className="w-4 h-4 mr-2 text-gray-400" />
-                        Source
+                        Titre
                       </div>
                       <div className="mt-1 text-gray-900 dark:text-white">
                         {transaction.revenue.source}
+                      </div>
+                    </div>
+                  )}
+
+                  {transaction.type === "EXPENSE" && transaction.expense && (
+                    <div>
+                      {/* description */}
+                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                        <Building className="w-4 h-4 mr-2 text-gray-400" />
+                        Titre
+                      </div>
+                      <div className="mt-1 text-gray-900 dark:text-white">
+                        {transaction.expense.title}
                       </div>
                     </div>
                   )}

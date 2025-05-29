@@ -10,6 +10,7 @@ import Authorization from "@/components/user/Authorization";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import prisma from "@/db/prisma";
+import BackButton from "@/layout/BackButton";
 
 export const metadata: Metadata = {
     title: "employe",
@@ -46,6 +47,7 @@ export default async function Profile(
         <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">
           Employé / Admin
         </h3>
+        <BackButton />
         <div className="space-y-6">
           <UserProfileCard 
             role={Role.EMPLOYEE}

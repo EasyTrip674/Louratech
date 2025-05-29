@@ -8,6 +8,7 @@ import { Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import ClientPageServices from "./ClientPageServices";
+import BackButton from "@/layout/BackButton";
 
 export const metadata: Metadata = {
     title: "Client",
@@ -40,6 +41,7 @@ export default async function Profile(props: PageProps) {
         <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">
           Client
         </h3>
+        <BackButton />
         <div className="space-y-6">
           <UserProfileCard 
             role={Role.CLIENT}
