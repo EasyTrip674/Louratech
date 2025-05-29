@@ -120,6 +120,15 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
               >
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4" />
+                  Titre
+                </div>
+              </TableCell>
+              <TableCell
+                isHeader
+                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
                   Description
                 </div>
               </TableCell>
@@ -195,10 +204,21 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-700 text-start text-theme-sm dark:text-gray-300">
                   <div>
-                    <span className="font-medium">{transaction.description}</span>
+                    <span className="font-medium">{transaction?.expense ? transaction.expense.title : transaction.revenue?.source
+                      }</span>
                     <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
                       {transaction.type === "EXPENSE" 
                         ? transaction.expense?.vendor 
+                        : transaction.revenue?.source}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="px-4 py-3 text-gray-700 text-start text-theme-sm dark:text-gray-300">
+                  <div>
+                    <span className="font-medium">{transaction.description}</span>
+                    <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {transaction.type === "EXPENSE" 
+                        ? transaction.expense?.vendor
                         : transaction.revenue?.source}
                     </span>
                   </div>

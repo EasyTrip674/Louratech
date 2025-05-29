@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { getMonthlyTargetStatsType } from "@/db/queries/dasboard.query";
 import { formatCurrency } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
+import { useCopilotReadable } from "@copilotkit/react-core";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -14,6 +15,11 @@ export default function MonthlyTarget({MonthlyTargetData}:{MonthlyTargetData:get
   const progressToTarget = Math.min(100, Math.round((MonthlyTargetData.currentMonthAmount / MonthlyTargetData.target) * 100));
 
   const session = authClient.useSession()
+
+  useCopilotReadable({
+    description: "MonthlyTargetData",
+    value: MonthlyTargetData,
+  });
   
   const series = [progressToTarget];
   const options: ApexOptions = {

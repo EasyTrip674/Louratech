@@ -7,12 +7,13 @@ import Backdrop from "@/layout/Backdrop";
 import React from "react";
 // import { authClient } from "@/lib/auth-client";
 // import Loading from "../try";
-// import { CopilotPopup } from "@copilotkit/react-ui";
+// import {  CopilotSidebar } from "@copilotkit/react-ui";
 import "@copilotkit/react-ui/styles.css";
 import { authClient } from "@/lib/auth-client";
 import Loading from "../try";
 import { useRouter } from "next/navigation";
 import FeedBackChat from "@/components/feedback/ChatFeedBack";
+import { CopilotKit } from "@copilotkit/react-core";
 
 
 export default function AdminLayout({
@@ -52,7 +53,17 @@ export default function AdminLayout({
 
   return (
    <>
-    <div className="min-h-screen xl:flex">
+
+<CopilotKit publicApiKey={"key"}>
+    {/* <CopilotSidebar
+     instructions={"You are assisting the user as best as you can. Answer in the best way possible given the data you have."}
+     labels={{
+       title: "LouraIA",
+       initial: "Comment puis vous aider ?",
+     }}
+    > */}
+     <>
+  <div className="min-h-screen xl:flex">
       {/* Sidebar and Backdrop */}
       <AppSidebar />
       <Backdrop />
@@ -69,15 +80,13 @@ export default function AdminLayout({
       </div>
 
       </div>
-      {/* <CopilotPopup
-        instructions={"You are assisting the user as best as you can. Answer in the best way possible given the data you have."}
-        labels={{
-          title: "Gestion Agence IA",
-          initial: "Ici pour vous aider ! Je suis à votre disposition pour répondre à vos questions. Faire des actions sur l'application ou vous aider à trouver des informations. Fournir des indications sur les fonctionnalités de l'application. Faire des bilans sur les actions effectuées. Je suis là pour vous aider !",
-        }}
-      /> */}
-
         <FeedBackChat />
+  </>
+   {/* </CopilotSidebar> */}
+ </CopilotKit>
+
+
+  
 
    </>
   );

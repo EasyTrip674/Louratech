@@ -67,7 +67,7 @@ export const doCreateRevenu = adminAction
                     create: {
                         source: clientInput.title +" | "+ clientInput.source ,
                        organizationId: ctx.user.userDetails?.organizationId ?? "",
-                       createdById: ctx.user.userDetails?.id ?? "",
+                        createdById: ctx.user.userDetails?.id ?? "",
                     },
                 },
             },

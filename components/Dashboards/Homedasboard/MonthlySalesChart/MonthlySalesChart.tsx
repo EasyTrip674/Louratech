@@ -2,6 +2,7 @@
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { getStatisticsDataType } from "@/db/queries/dasboard.query";
+import { useCopilotReadable } from "@copilotkit/react-core";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -9,6 +10,11 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 
 export default function MonthlySalesChart({statisticsData}:{statisticsData:getStatisticsDataType}) {
   
+
+  useCopilotReadable({
+    description: "MonthlySalesChart",
+    value: statisticsData,
+  });
   
   const options: ApexOptions = {
     colors: ["#10B981", "#EF4444"], // Green for revenue, Red for expenses

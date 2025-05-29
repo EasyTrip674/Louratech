@@ -22,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${outfit.variable} dark:bg-gray-900`}>
-          {/* <CopilotKit publicApiKey="sk-proj-w89eTtdFAC7GydyEuV0-NxjGWV6dFzIWPI6gAEXFTXLRDJOqUD0IvQVEfj8K5_hxV56KVz_c32T3BlbkFJOLh2tEstAMFqAVxDSculH_lO4Dnf40yVuop4ml0zHVpcefpWEkLFbgkFyD2WlCjzP6IQZcHLQA">  */}
               <ThemeProvider>
               <TansQueryProvider>
                 <SidebarProvider>
@@ -31,7 +30,6 @@ export default function RootLayout({
                 </SidebarProvider>
             </TansQueryProvider>
               </ThemeProvider>
-        {/* </CopilotKit> */}
       </body>
     </html>
   );
