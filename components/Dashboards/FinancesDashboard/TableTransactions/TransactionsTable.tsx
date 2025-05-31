@@ -30,6 +30,7 @@ import ApprovedTransactionModal from "../../../../app/(admin)/services/gestion/p
 import DownloadPdf from "@/components/pdf/DowloadPdf";
 import { authClient } from "@/lib/auth-client";
 import { formatAmount, formatDate } from "@/lib/utils";
+import DeleteTransactionFormModal from "@/app/(admin)/services/gestion/finances/transactions/[transactionId]/delete/DeleteTransactionFormModal";
 
 // Composant pour afficher les transactions financières avec pagination
 export const TransactionsTable = ({ transactions }: { transactions: getTransactionsDB }) => {
@@ -263,14 +264,15 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                   {formatAmount(transaction.amount, transaction.type, session.data?.userDetails?.organization?.comptaSettings?.currency)}
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-2
+                  ">
                     <Link 
                       href={`/services/gestion/finances/transactions/${transaction.id}`}
                       className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 focus:ring-4 focus:ring-brand-300 transition-colors dark:bg-brand-700 dark:hover:bg-brand-800"
                     >
-                      <Eye className="w-4 h-4 mr-1" />
-                      Détails
+                      <Eye className="w-4 h-4" />
                     </Link>
+                    <DeleteTransactionFormModal transactionId={transaction.id} authorize={session.data?.userDetails.authorize?.canDeleteTransaction ?? false} />
                   </div>
                 </TableCell>
               </TableRow>

@@ -1,11 +1,12 @@
 "use client";
 import React from "react";
 import Button from "@/components/ui/button/Button";
-import { Eye, Trash, Clock, ChevronRight } from "lucide-react";
+import { Eye, Clock, ChevronRight } from "lucide-react";
 import { ProcedureWithStepsDb } from "@/db/queries/procedures.query";
 import EditStepFormModal from "../../../../app/(admin)/services/gestion/procedures/[procedureId]/steps/step/edit/EditStepFormModal";
 import { authClient } from "@/lib/auth-client";
 import { formatCurrency } from "@/lib/utils";
+import DeleteStepFormModal from "@/app/(admin)/services/gestion/procedures/[procedureId]/steps/step/delete/DeleteStepFormModal";
 
 type CardsProcedureStepsProps = {
   procedureDetails: ProcedureWithStepsDb;
@@ -94,16 +95,7 @@ export default function CardsProcedureSteps({
                     />
                     )
                   }
-                  {
-                    session.data?.userDetails?.authorize?.canDeleteStep && (
-                      <Button
-                      variant="outline"
-                      size="sm"
-                    >
-                      <Trash className="w-4 h-4" />
-                    </Button>
-                    )
-                  }
+                     <DeleteStepFormModal stepId={step.id} authozise={session.data?.userDetails?.authorize?.canDeleteStep ?? false} nameStep={step.name} />
                   </div>
                {
                 session.data?.userDetails?.authorize?.canReadStep && (
