@@ -99,7 +99,7 @@ export const generateEmailMessageHtml = (
 <body>
   <div class="container">
     <div class="header">
-      <div class="logo">ProGestion</div>
+      <div class="logo">Loura Tech</div>
     </div>
     
     <div class="content">

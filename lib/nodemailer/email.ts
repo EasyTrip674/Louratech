@@ -21,7 +21,6 @@ export const sendEmail = async ({
       pass: process.env.GMAIL_APP_PASSWORD, // mot de passe d'application
     },
   });
-
   const mailOptions = {
     from: process.env.GMAIL_USER,
     to,
