@@ -110,7 +110,7 @@ export const generateEmailMessageHtml = (
      
       <p>&copy; 2025 Loura Tech. Tous droits réservés.</p>
       <p>
-        Vous recevez cet email car vous êtes inscrit à notre sur notre plateforme ProGestion.<br>
+        Vous recevez cet email car vous êtes inscrit à notre sur notre plateforme Loura Tech.<br>
       </p>
     </div>
   </div>
