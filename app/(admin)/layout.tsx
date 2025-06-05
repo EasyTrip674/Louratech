@@ -92,7 +92,6 @@ export default function AdminLayout({
       placeholder: "Posez votre question...",
     }}
     > */}
-     <>
   <div className="min-h-screen xl:flex">
       {/* Sidebar and Backdrop */}
       <AppSidebar />
@@ -111,14 +110,10 @@ export default function AdminLayout({
 
       </div>
         <FeedBackChat />
-  </>
    {/* </CopilotSidebar>
   </CopilotProvider>
  </CopilotKit>
  */}
-
-  
-
    </>
   );
 }
