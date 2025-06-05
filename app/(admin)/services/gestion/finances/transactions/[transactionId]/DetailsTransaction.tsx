@@ -240,6 +240,47 @@ export default function TransactionDetails(
                 </h2>
               </div>
               <div className="p-6">
+                {transaction.clientProcedure && 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 py-6">
+                   <div>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                      Client
+                    </dt>
+                    <div className="mt-1 text-gray-900 dark:text-white">
+                        {transaction.clientProcedure.client.user.firstName} {transaction.clientProcedure.client.user.lastName}
+                    </div>
+                  </div>
+
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                      Email
+                    </dt>
+                    <div className="mt-1 text-gray-900 dark:text-white">
+                        {transaction.clientProcedure.client.user.email}
+                    </div>
+                  </div>
+
+
+
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                      Service
+                    </dt>
+                    <div className="mt-1 text-gray-900 dark:text-white">
+                        {transaction.clientProcedure.procedure.name} <br />
+                    </div>
+                  </div>
+
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                      Module
+                    </dt>
+                    <div className="mt-1 text-gray-900 dark:text-white">
+                    {transaction.clientStep?.step.name}
+                    </div>
+                  </div>
+                </div>
+                }
                 <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                   <div>
                     <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">

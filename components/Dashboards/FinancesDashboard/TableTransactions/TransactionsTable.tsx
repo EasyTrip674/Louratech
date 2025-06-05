@@ -208,9 +208,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                     <span className="font-medium">{transaction?.expense ? transaction.expense.title : transaction.revenue?.source
                       }</span>
                     <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {transaction.type === "EXPENSE" 
-                        ? transaction.expense?.vendor 
-                        : transaction.revenue?.source}
+                      {transaction.clientProcedure?.client.user.firstName} {transaction.clientProcedure?.client.user.lastName}
                     </span>
                   </div>
                 </TableCell>
@@ -232,7 +230,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                     <DownloadPdf transaction={transaction} canReadInvoice={session?.data?.userDetails?.authorize?.canReadInvoice }>
                       <span className="flex items-center text-gray-500 dark:text-gray-400">
                       <Download className="w-4 h-4 mr-1" />
-                      Télécharger
+                      Voir Facture
                       </span>
                     </DownloadPdf>
                   </div>
