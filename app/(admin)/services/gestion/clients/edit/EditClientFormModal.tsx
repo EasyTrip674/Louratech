@@ -127,13 +127,27 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 border-b border-gray-200 dark:border-gray-800 pb-6">
             {/* firstName */}
             <div className="col-span-1">
-              <Label>Prenom</Label>
-              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message}  type="text" placeholder="Enter full name" />
+              <Input 
+                label="Prenom"
+                required
+                {...register("firstName")} 
+                error={!!errors.firstName} 
+                hint={errors.firstName?.message} 
+                type="text" 
+                placeholder="Enter full name" 
+              />
             </div>
             {/* lastName */}
             <div className="col-span-1">
-              <Label>Nom</Label>
-              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message}  type="text" placeholder="Enter full name" />
+              <Input 
+                label="Nom"
+                required
+                {...register("lastName")} 
+                error={!!errors.lastName} 
+                hint={errors.lastName?.message} 
+                type="text" 
+                placeholder="Enter full name" 
+              />
             </div>
           
 
@@ -157,8 +171,15 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
 
                {/* email */}
                <div className="col-span-1 sm:col-span-2">
-              <Label>Address</Label>
-              <Input {...register("email")} type="text" placeholder="Email" />
+              <Input 
+                label="Email"
+                required
+                {...register("email")} 
+                error={!!errors.email} 
+                hint={errors.email?.message} 
+                type="text" 
+                placeholder="Email" 
+              />
             </div>
             {/* Address */}
             <div className="col-span-1 sm:col-span-2">

@@ -135,14 +135,28 @@ export default function EditEmployeeFormModal({ admin, inPageProfile = false }: 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 border-b border-gray-200 dark:border-gray-800 pb-6">
             {/* firstName */}
             <div className="col-span-1">
-              <Label>Prénom</Label>
-              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message} type="text" placeholder="Entrer le prénom" />
+              <Input 
+                label="Prénom"
+                required
+                {...register("firstName")} 
+                error={!!errors.firstName} 
+                hint={errors.firstName?.message} 
+                type="text" 
+                placeholder="Entrer le prénom" 
+              />
             </div>
             
             {/* lastName */}
             <div className="col-span-1">
-              <Label>Nom</Label>
-              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message} type="text" placeholder="Entrer le nom" />
+              <Input 
+                label="Nom"
+                required
+                {...register("lastName")} 
+                error={!!errors.lastName} 
+                hint={errors.lastName?.message} 
+                type="text" 
+                placeholder="Entrer le nom" 
+              />
             </div>
 
             {/* Phone */}
@@ -159,11 +173,16 @@ export default function EditEmployeeFormModal({ admin, inPageProfile = false }: 
 
             {/* Address */}
             <div className="col-span-1 sm:col-span-2">
-              <Label>Adresse</Label>
-              <Input {...register("address")} type="text" placeholder="Entrer l'adresse complète" />
+              <Input 
+                label="Adresse"
+                {...register("address")} 
+                error={!!errors.address} 
+                hint={errors.address?.message} 
+                type="text" 
+                placeholder="Entrer l'adresse complète" 
+              />
             </div>
           </div>
-
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button type="button" size="sm" variant="outline" onClick={() => { closeModal(); reset(); }}>
               Annuler

@@ -90,13 +90,27 @@ export default function CreateEmployeeFormModal() {
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 border-b border-gray-200 dark:border-gray-800 pb-6">
             {/* firstName */}
             <div className="col-span-1">
-              <Label>Prénom</Label>
-              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message}  type="text" placeholder="Entrez le prénom" />
+              <Input 
+                label="Prénom"
+                required
+                {...register("firstName")} 
+                error={!!errors.firstName} 
+                hint={errors.firstName?.message} 
+                type="text" 
+                placeholder="Entrez le prénom" 
+              />
             </div>
             {/* lastName */}
             <div className="col-span-1">
-              <Label>Nom</Label>
-              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message}  type="text" placeholder="Entrez le nom" />
+              <Input 
+                label="Nom"
+                required
+                {...register("lastName")} 
+                error={!!errors.lastName} 
+                hint={errors.lastName?.message} 
+                type="text" 
+                placeholder="Entrez le nom" 
+              />
             </div>
           
 
@@ -114,31 +128,45 @@ export default function CreateEmployeeFormModal() {
 
             {/* Address */}
             <div className="col-span-1 sm:col-span-2">
-              <Label>Adresse</Label>
-              <Input {...register("address")} type="text" placeholder="Entrez l'adresse complète" />
+              <Input 
+                label="Adresse"
+                {...register("address")} 
+                error={!!errors.address} 
+                hint={errors.address?.message} 
+                type="text" 
+                placeholder="Entrez l'adresse complète" 
+              />
             </div>
 
           </div>
 
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 mt-6">
-              {/* Email */}
+              {/* Email */} 
             <div className="col-span-2">
-              <Label>Email</Label>
-              <Input {...register("email")} error={!!errors.email} hint={errors.email?.message} type="email" placeholder="Entrez l'adresse email" />
+              <Input 
+                label="Email"
+                required
+                {...register("email")} 
+                error={!!errors.email} 
+                hint={errors.email?.message} 
+                type="email" 
+                placeholder="Entrez l'adresse email" 
+              />
             </div>
              {/* Password */}
             <div className="col-span-1">
-              <Label>Mot de passe</Label>
               <div className="relative">
                 <Input
+                  label="Mot de passe"
+                  required
                   {...register("password")}
                   error={!!errors.password}
                   hint={errors.password?.message}
                   type={showPassword ? "text" : "password"}
                   placeholder="Entrez le mot de passe"
                 />
-                <span
+                <span 
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                 >
@@ -153,9 +181,10 @@ export default function CreateEmployeeFormModal() {
 
             {/* Confirm Password */}
             <div className="col-span-1">
-              <Label>Confirmer le mot de passe</Label>
               <div className="relative">
                 <Input
+                  label="Confirmer le mot de passe"
+                  required
                   {...register("confirmPassword")}
                   error={!!errors.confirmPassword}
                   hint={errors.confirmPassword?.message}

@@ -15,6 +15,7 @@ import ErrorModal from '@/components/alerts/ErrorModal'
 import { createExpenseSchema } from './depense.shema'
 import { doCreateDepense } from './depense.create.action'
 import { authClient } from '@/lib/auth-client'
+import Label from '@/components/form/Label'
 
 
 type CreateExpenseSchema = z.infer<typeof createExpenseSchema>
@@ -154,10 +155,10 @@ const CreateExpenseModal = ({}: Props) => {
           
           {/* Titre */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Titre
-            </label>
+          
             <Input
+              label="Titre"
+              required={true}
               type="text"
               id="title"
               placeholder="Ex : Achat d'un ordinateur"
@@ -174,9 +175,9 @@ const CreateExpenseModal = ({}: Props) => {
 
           {/* Description avec textarea */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Description (optionnel)
-            </label>
+            <Label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Description
+            </Label>
             <textarea
               id="description"
               placeholder="Entrez la description"
@@ -192,11 +193,10 @@ const CreateExpenseModal = ({}: Props) => {
 
           {/* Montant */}
           <div>
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Montant
-            </label>
             <div className="relative">
               <Input
+                label="Montant"
+                required={true}
                 type="number"
                 id="amount"
                 currentAmount={currentAmount}
@@ -228,10 +228,9 @@ const CreateExpenseModal = ({}: Props) => {
             </span>
           </p>
           <div>
-            <label htmlFor="vendor" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Destination  (optionnel)
-            </label>
+   
             <Input
+              label="Destination"
               type="text"
               id="vendor"
               placeholder="Datacenter, fournisseur, etc."
@@ -241,10 +240,8 @@ const CreateExpenseModal = ({}: Props) => {
 
           {/* Numéro de facture */}
           <div>
-            <label htmlFor="invoiceNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Numéro de facture (optionnel)
-            </label>
             <Input
+              label="Numéro de facture"
               type="text"
               id="invoiceNumber"
               placeholder="Numéro de facture Destination"
@@ -254,9 +251,9 @@ const CreateExpenseModal = ({}: Props) => {
 
           {/* Méthode de paiement */}
           <div>
-            <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Méthode de paiement
-            </label>
+            <Label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Méthode de paiement <span className="text-red-500">*</span>
+            </Label>
             <Controller
               name="paymentMethod"
               control={control}
@@ -278,9 +275,9 @@ const CreateExpenseModal = ({}: Props) => {
 
           {/* Statut */}
           <div>
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Statut
-            </label>
+            <Label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Statut <span className="text-red-500">*</span>
+            </Label>
             <Controller
               name="status"
               control={control}
