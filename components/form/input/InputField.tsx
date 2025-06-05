@@ -1,5 +1,6 @@
 import { formatCurrency } from "@/lib/utils";
 import React, { FC } from "react";
+import Label from "../Label";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   success?: boolean;
@@ -7,6 +8,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   isAmount?:boolean;
   currentAmount?:number;
   currency?:string;
+  label?: string;
+  required?: boolean;
   hint?: string; // Optional hint text
 }
 
@@ -16,6 +19,7 @@ const Input: FC<InputProps> = ({
   name,
   placeholder,
   currency,
+  label,
   defaultValue,
   onChange,
   className = "",
@@ -27,6 +31,7 @@ const Input: FC<InputProps> = ({
   success = false,
   error = false,
   hint,
+  required = false,
   isAmount= false,
   ...props
 }) => {
@@ -46,6 +51,11 @@ const Input: FC<InputProps> = ({
 
   return (
   <>
+  {label && (
+      <Label htmlFor={id} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      {label} {required && <span className="text-error-500">*</span>}
+    </Label>
+  )}
     <div className="relative">
       <input
         {...props}

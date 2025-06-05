@@ -122,8 +122,9 @@ export default function EditStepFormModal({
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 border-b border-gray-200 dark:border-gray-800 pb-6">
             {/* Name field */}
             <div className="col-span-1">
-              <Label>Nom du module</Label>
               <Input 
+                label="Nom du module"
+                required
                 {...register("name")} 
                 error={!!errors.name} 
                 hint={errors.name?.message}  
@@ -146,14 +147,14 @@ export default function EditStepFormModal({
 
             {/* Price field */}
             <div className="col-span-1">
-              <Label>Prix de base pour ce module</Label>
               <Input 
+                label="Prix de base pour ce module"
+                required
                 {...register("price", { valueAsNumber: true })} 
                 error={!!errors.price} 
                 hint={errors.price?.message} 
                 type="number" 
                 min="0"
-                step="0.01"
                 placeholder="Entrez le prix" 
               />
               <p className="text-xs text-gray-500 mt-1">Ce prix sera personnalisable par client</p>

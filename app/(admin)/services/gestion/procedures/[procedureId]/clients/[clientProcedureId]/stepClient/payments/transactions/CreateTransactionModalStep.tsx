@@ -17,6 +17,7 @@ import ErrorModal from '@/components/alerts/ErrorModal'
 import { useEffect } from 'react'
 import { formatCurrency } from '@/lib/utils'
 import { authClient } from '@/lib/auth-client'
+import Label from '@/components/form/Label'
 
 type Props = {
   clientStepId: string,
@@ -207,9 +208,9 @@ const CreateTransactionModalStep = ({
           )}
           
           <div>
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Montant
-            </label>
+            <Label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Montant <span className="text-red-500">*</span>
+            </Label>
             <div className="relative">
               <Input
                 type="number"
@@ -242,9 +243,9 @@ const CreateTransactionModalStep = ({
            
           </div>
           <div>
-            <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Méthode de paiement
-            </label>
+            <Label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Méthode de paiement <span className="text-red-500">*</span>
+            </Label>
             <Controller
               name="paymentMethod"
               control={control}
@@ -265,9 +266,9 @@ const CreateTransactionModalStep = ({
           </div>
 
           <div>
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Statut
-            </label>
+            <Label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Statut <span className="text-red-500">*</span>
+            </Label>
             <Controller
               name="status"
               control={control}

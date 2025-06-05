@@ -20,7 +20,7 @@ type ComptaSettings = {
   id: string;
   fiscalYear: Date;
   taxIdentification: string | null;
-  currency: string;
+  currency: string; 
   defaultTaxRate: number | null;
   invoicePrefix: string | null;
   invoiceNumberFormat: string | null;

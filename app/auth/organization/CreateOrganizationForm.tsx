@@ -4,8 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
+import Input from "@/components/form/input/InputField"; 
 import Button from "@/components/ui/button/Button";
 import { createOrganizationSchema } from "./create.organization.shema";
 import { doCreateOrganization } from "./organization.create.action";
@@ -86,10 +85,9 @@ export default function CreationOrganisationFormulaire() {
           <div className="space-y-5">
             {/* Détails de l'Organisation */}
             <div>
-              <Label>
-                Nom de l&apos;Organisation<span className="text-error-500">*</span>
-              </Label>
               <Input
+              label="Nom de l'Organisation"
+              required
                 {...register("organizationName")}
                 placeholder="Saisissez le nom de votre organisation"
               />
@@ -101,8 +99,8 @@ export default function CreationOrganisationFormulaire() {
             </div>
 
             <div>
-              <Label>Description de l&apos;Organisation (Optionnel)</Label>
               <Input
+                label="Description de l'Organisation"
                 {...register("organizationDescription")}
                 placeholder="Décrivez brièvement votre organisation"
               />
@@ -111,10 +109,9 @@ export default function CreationOrganisationFormulaire() {
             {/* Informations de l'Administrateur */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label>
-                  Prénom<span className="text-error-500">*</span>
-                </Label>
                 <Input
+                  label="Prénom"
+                  required
                   {...register("firstName")}
                   placeholder="Votre prénom"
                 />
@@ -125,10 +122,9 @@ export default function CreationOrganisationFormulaire() {
                 )}
               </div>
               <div>
-                <Label>
-                  Nom de Famille<span className="text-error-500">*</span>
-                </Label>
                 <Input
+                  label="Nom de Famille"
+                  required
                   {...register("lastName")}
                   placeholder="Votre nom de famille"
                 />
@@ -141,10 +137,9 @@ export default function CreationOrganisationFormulaire() {
             </div>
 
             <div>
-              <Label>
-                Email<span className="text-error-500">*</span>
-              </Label>
               <Input
+                label="Email"
+                required
                 {...register("email")}
                 type="email"
                 placeholder="Saisissez votre adresse email"
@@ -158,11 +153,10 @@ export default function CreationOrganisationFormulaire() {
 
             {/* Mot de passe */}
             <div>
-              <Label>
-                Mot de Passe<span className="text-error-500">*</span>
-              </Label>
               <div className="relative">
                 <Input
+                  label="Mot de Passe"
+                  required
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
                   placeholder="Créez un mot de passe"
@@ -186,11 +180,10 @@ export default function CreationOrganisationFormulaire() {
             </div>
 
             <div>
-              <Label>
-                Confirmez le Mot de Passe<span className="text-error-500">*</span>
-              </Label>
               <div className="relative">
                 <Input
+                  label="Confirmez le Mot de Passe"
+                  required
                   {...register("confirmPassword")}
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirmez votre mot de passe"
@@ -215,8 +208,8 @@ export default function CreationOrganisationFormulaire() {
 
              {/* un champ code */}
              <div>
-              <Label>Code d&apos;Invitation</Label>
-              <Input
+                <Input
+                label="Code d'Invitation"
                 {...register("invitationCode")}
                 placeholder="Saisissez le code d'invitation"
               />

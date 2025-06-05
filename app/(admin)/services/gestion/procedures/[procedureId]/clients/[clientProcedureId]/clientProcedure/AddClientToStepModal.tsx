@@ -144,6 +144,7 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
                             <SelectSearch
                                 options={stepOptions}
                                 label="Étape"
+                                required={true}
                                 placeholder="Rechercher une étape..."
                                 value={selectedStepId}
                                 onChange={handleSelectStep}
@@ -164,15 +165,16 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
                                 onChange={handleSelectClient}
                                 emptyMessage="Aucun client trouvé"
                                 error={errors.clientId?.message}
+                                required={true}
                             />
                             {/* Champ caché pour la validation */}
                             <input type="hidden" {...register('clientId')} />
                         </div>
                         <div className='mt-6'>
-                            <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                                Le prix du module (en FNG) que le client doit payer
-                            </label>
+                            
                             <Input
+                                label="Le prix du module (en FNG) que le client doit payer"
+                                required={true}
                                 type="number"
                                 id="price"
                                 currentAmount={currentAmount}

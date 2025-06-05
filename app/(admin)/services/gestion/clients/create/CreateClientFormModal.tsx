@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useModal } from "@/hooks/useModal";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
-import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import PhoneInput from "@/components/form/group-input/PhoneInput";
 // import {  EyeIcon, EyeCloseIcon } from "@/icons";
@@ -17,6 +16,7 @@ import { createClientSchema } from "./client.create.shema";
 import { doCreateClient } from "./client.create.action";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
+import Label from "@/components/form/Label";
 
 // Infer le type TypeScript du schéma Zod
 type ClientFormData = z.infer<typeof createClientSchema>;
@@ -102,13 +102,27 @@ export default function CreateClientFormModal() {
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 border-b border-gray-200 dark:border-gray-800 pb-6">
             {/* Prénom */}
             <div className="col-span-1">
-              <Label>Prénom</Label>
-              <Input {...register("firstName")} error={!!errors.firstName} hint={errors.firstName?.message} type="text" placeholder="Entrez le prénom" />
+              <Input 
+                label="Prénom"
+                required
+                {...register("firstName")} 
+                error={!!errors.firstName} 
+                hint={errors.firstName?.message} 
+                type="text" 
+                placeholder="Entrez le prénom" 
+              />
             </div>
             {/* Nom */}
             <div className="col-span-1">
-              <Label>Nom</Label>
-              <Input {...register("lastName")} error={!!errors.lastName} hint={errors.lastName?.message} type="text" placeholder="Entrez le nom" />
+              <Input 
+                label="Nom"
+                required
+                {...register("lastName")} 
+                error={!!errors.lastName} 
+                hint={errors.lastName?.message} 
+                type="text" 
+                placeholder="Entrez le nom" 
+              />
             </div>
           
             {/* Téléphone */}
@@ -125,55 +139,109 @@ export default function CreateClientFormModal() {
 
             {/* Passeport */}
             <div className="col-span-1">
-              <Label>Passeport</Label>
-              <Input {...register("passport")} type="text" placeholder="Entrez le numéro de passeport" />
+              <Input 
+                label="Passeport"
+                {...register("passport")} 
+                error={!!errors.passport} 
+                hint={errors.passport?.message} 
+                type="text" 
+                placeholder="Entrez le numéro de passeport" 
+              />
             </div>
 
             {/* Adresse */}
             <div className="col-span-1 sm:col-span-2">
-              <Label>Adresse</Label>
-              <Input {...register("address")} type="text" placeholder="Entrez l'adresse complète" />
+              <Input 
+                label="Adresse"
+                {...register("address")} 
+                error={!!errors.address} 
+                hint={errors.address?.message} 
+                type="text" 
+                placeholder="Entrez l'adresse complète" 
+              />
             </div>
 
             {/* Date de naissance */}
             <div className="col-span-2">
-              <Label>Date de naissance</Label>
-              <Input {...register("birthDate")} type="date" />
+              <Input 
+                label="Date de naissance"
+                {...register("birthDate")} 
+                error={!!errors.birthDate} 
+                hint={errors.birthDate?.message} 
+                type="date" 
+              />
             </div>
 
             {/* Informations du père */}
             <div className="col-span-1">
-              <Label>Prénom du père</Label>
-              <Input {...register("fatherFirstName")} type="text" placeholder="Entrez le prénom du père" />
+              <Input 
+                label="Prénom du père"
+                {...register("fatherFirstName")} 
+                error={!!errors.fatherFirstName} 
+                hint={errors.fatherFirstName?.message} 
+                type="text" 
+                placeholder="Entrez le prénom du père" 
+              />
             </div>
             <div className="col-span-1">
-              <Label>Nom du père</Label>
-              <Input {...register("fatherLastName")} type="text" placeholder="Entrez le nom du père" />
+                <Input 
+                label="Nom du père"
+                {...register("fatherLastName")} 
+                error={!!errors.fatherLastName} 
+                hint={errors.fatherLastName?.message} 
+                type="text" 
+                placeholder="Entrez le nom du père" 
+              />
             </div>
 
             {/* Informations de la mère */}
             <div className="col-span-1">
-              <Label>Prénom de la mère</Label>
-              <Input {...register("motherFirstName")} type="text" placeholder="Entrez le prénom de la mère" />
+              <Input 
+                label="Prénom de la mère"
+                {...register("motherFirstName")} 
+                error={!!errors.motherFirstName} 
+                hint={errors.motherFirstName?.message} 
+                type="text" 
+                placeholder="Entrez le prénom de la mère" 
+              />
             </div>
             <div className="col-span-1">
-              <Label>Nom de la mère</Label>
-              <Input {...register("motherLastName")} type="text" placeholder="Entrez le nom de la mère" />
+              <Input 
+                label="Nom de la mère"
+                {...register("motherLastName")} 
+                error={!!errors.motherLastName} 
+                hint={errors.motherLastName?.message} 
+                type="text" 
+                placeholder="Entrez le nom de la mère" 
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 mt-6">
             {/* Email */}
             <div className="col-span-2">
-              <Label>Email</Label>
-              <Input {...register("email")} error={!!errors.email} hint={errors.email?.message} type="email" placeholder="Entrez l'adresse email" />
+              <Input 
+                label="Email"
+                required
+                {...register("email")} 
+                error={!!errors.email} 
+                hint={errors.email?.message} 
+                type="email" 
+                placeholder="Entrez l'adresse email" 
+              />
             </div>
             
             {/* Mot de passe */}
             {/* <div className="col-span-1">
-              <Label>Mot de passe</Label>
-              <div className="relative">
-                <Input 
+              <Input 
+                label="Mot de passe"
+                {...register("password")} 
+                error={!!errors.password} 
+                hint={errors.password?.message} 
+                type={showPassword ? "text" : "password"} 
+                placeholder="Entrez le mot de passe" 
+              />
+            </div>
                   {...register("password")} 
                   error={!!errors.password} 
                   hint={errors.password?.message} 

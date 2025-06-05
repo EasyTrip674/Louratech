@@ -145,7 +145,7 @@ export default function DeleteClientFormModal({ client, inPageProfile = false }:
 
           <div className="border-b border-gray-200 dark:border-gray-800 pb-6">
             <Label className="block mb-2">
-              Pour confirmer la suppression, veuillez saisir le nom du client <span className="font-medium">{client?.user?.lastName}</span>
+              Pour confirmer la suppression, veuillez saisir le nom du client <span className="font-medium text-amber-300 dark:text-amber-300">{client?.user?.lastName}</span>
             </Label>
             <Input 
               {...register("lastName")} 

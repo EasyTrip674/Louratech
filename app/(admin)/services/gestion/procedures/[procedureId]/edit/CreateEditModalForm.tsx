@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useModal } from "@/hooks/useModal";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
-import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import { Pen } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
@@ -16,6 +15,7 @@ import { editProcedureScheme } from "./procedure.edit.sheme";
 import { doEditProcedure } from "./procedure.edit.action";
 import { authClient } from "@/lib/auth-client";
 import TextArea from "@/components/form/input/TextArea";
+import Label from "@/components/form/Label";
 
 // Zod validation schema
 
@@ -107,8 +107,15 @@ export default function EditProcedureFormModal({
           
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 border-b border-gray-200 dark:border-gray-800 pb-6">
             <div className="col-span-2">
-              <Label>Nom du service</Label>
-              <Input {...register("name")} error={!!errors.name} hint={errors.name?.message}  type="text" placeholder="Entrer nom de la procedure ou service" />
+              <Input 
+                label="Nom du service"
+                required
+                {...register("name")} 
+                error={!!errors.name} 
+                hint={errors.name?.message} 
+                type="text" 
+                placeholder="Entrer nom de la procedure ou service" 
+              />
             </div>
             
             <div className="col-span-2">

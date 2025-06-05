@@ -17,6 +17,7 @@ type SelectSearchProps = {
   onChange: (value: string) => void
   emptyMessage?: string
   error?: string
+  required?: boolean
 }
 
 const SelectSearch: React.FC<SelectSearchProps> = ({
@@ -26,7 +27,8 @@ const SelectSearch: React.FC<SelectSearchProps> = ({
   value,
   onChange,
   emptyMessage = "Aucun résultat trouvé",
-  error
+  error,
+  required = false
 }) => {
 
   const [searchTerm, setSearchTerm] = useState("")
@@ -99,6 +101,7 @@ const SelectSearch: React.FC<SelectSearchProps> = ({
     <div className="relative">
       <label className="block text-sm font-medium text-gray-700 dark:text-amber-50 mb-1">
         {label}
+        {required && <span className="text-red-500">*</span>}
       </label>
       
       {value ? (
