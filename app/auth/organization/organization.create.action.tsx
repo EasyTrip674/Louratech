@@ -20,7 +20,7 @@ export const doCreateOrganization = actionClient
         // Debounce implementation: prevent multiple executions within 3 seconds
         const currentTime = Date.now();
         const userEmail = clientInput.email;
-        const codes = ["louraBeta", "louraTech", "monAgenceLoura"]; // Liste des codes d'invitation valides
+        const codes = ["louraBeta02", "louraTech02", "monAgenceLoura02"]; // Liste des codes d'invitation valides
         const isValidCode = codes.includes(clientInput.invitationCode); // Vérification du code d'invitation
         if (!isValidCode) {
             throw new Error("code invalide");
