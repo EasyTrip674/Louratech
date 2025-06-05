@@ -5,15 +5,15 @@ import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
 import React from "react";
-// import { authClient } from "@/lib/auth-client";
-// import Loading from "../try";
-// import {  CopilotSidebar } from "@copilotkit/react-ui";
-import "@copilotkit/react-ui/styles.css";
 import { authClient } from "@/lib/auth-client";
 import Loading from "../try";
+// import {  CopilotSidebar } from "@copilotkit/react-ui";
+import "@copilotkit/react-ui/styles.css";
 import { useRouter } from "next/navigation";
+// import { CopilotKit } from "@copilotkit/react-core";
+// import CopilotProvider from "@/context/CopilotProvider";
 import FeedBackChat from "@/components/feedback/ChatFeedBack";
-import { CopilotKit } from "@copilotkit/react-core";
+
 
 
 export default function AdminLayout({
@@ -39,6 +39,34 @@ export default function AdminLayout({
       return null;
     }
 
+  //   const copilotInstructions = `
+  //   Tu es LouraIA, l'assistant intelligent pour ${session?.userDetails.organization?.name || 'cette organisation'}.
+    
+  //   Contexte utilisateur:
+  //   - Nom: ${session?.userDetails.name}
+  //   - Rôle: ${session?.userDetails.role}
+  //   - Organisation: ${session?.userDetails.organization?.name}
+    
+  //   Tu as accès aux données suivantes de l'organisation:
+  //   - Clients et leurs informations avec des rapports et recommandations
+  //   - Procédures et leur statut d'avancement  
+  //   - Transactions financières (dépenses, revenus, transferts)
+  //   - Factures et leur statut de paiement
+  //   - Statistiques générales de l'organisation
+    
+  //   Tes capacités:
+  //   - Rechercher et filtrer les clients, procédures, transactions
+  //   - Créer de nouvelles procédures client
+  //   - Générer des résumés financiers
+  //   - Fournir des statistiques et analyses
+    
+  //   Réponds de manière professionnelle et utile. Si tu ne peux pas accéder à certaines données,
+  //   suggère à l'utilisateur comment obtenir l'information via l'interface.
+    
+  //   Utilise un ton français professionnel et convivial.
+  // `;
+
+
     if (!session.userDetails.organization?.active) {
       // deconnect user
        authClient.signOut({
@@ -53,14 +81,16 @@ export default function AdminLayout({
 
   return (
    <>
-
-<CopilotKit publicApiKey={"key"}>
-    {/* <CopilotSidebar
-     instructions={"You are assisting the user as best as you can. Answer in the best way possible given the data you have."}
+{/* 
+<CopilotKit publicApiKey={"akk"}>
+  <CopilotProvider>
+  <CopilotSidebar
+     instructions={copilotInstructions}
      labels={{
-       title: "LouraIA",
-       initial: "Comment puis vous aider ?",
-     }}
+      title: "LouraIA",
+      initial: "Comment puis-je vous aider aujourd'hui ?",
+      placeholder: "Posez votre question...",
+    }}
     > */}
      <>
   <div className="min-h-screen xl:flex">
@@ -82,9 +112,10 @@ export default function AdminLayout({
       </div>
         <FeedBackChat />
   </>
-   {/* </CopilotSidebar> */}
+   {/* </CopilotSidebar>
+  </CopilotProvider>
  </CopilotKit>
-
+ */}
 
   
 
