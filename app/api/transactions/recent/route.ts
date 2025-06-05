@@ -6,19 +6,16 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const organizationId = searchParams.get("organizationId");
     const limit = parseInt(searchParams.get("limit") || "10");
-    const type = searchParams.get("type");
+    // const type = searchParams.get("type");
 
     if (!organizationId) {
       return NextResponse.json({ error: "Organization ID required" }, { status: 400 });
     }
 
-    const whereClause: any = { organizationId };
-    if (type) {
-      whereClause.type = type;
-    }
+  
 
     const transactions = await prisma.transaction.findMany({
-      where: whereClause,
+      where:  { organizationId },
       include: {
         createdBy: {
           select: {
