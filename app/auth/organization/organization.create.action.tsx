@@ -27,7 +27,6 @@ export const doCreateOrganization = actionClient
         }
         // verify d'abord si le code d'invitation est valide
 
-
         if (lastExecutionMap.has(userEmail)) {
             const lastTime = lastExecutionMap.get(userEmail);
             const timeDiff = currentTime - lastTime;
