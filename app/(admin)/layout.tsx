@@ -10,7 +10,7 @@ import Loading from "../try";
 // import {  CopilotSidebar } from "@copilotkit/react-ui";
 import "@copilotkit/react-ui/styles.css";
 import { useRouter } from "next/navigation";
-// import { CopilotKit } from "@copilotkit/react-core";
+import { CopilotKit } from "@copilotkit/react-core";
 // import CopilotProvider from "@/context/CopilotProvider";
 import FeedBackChat from "@/components/feedback/ChatFeedBack";
 
@@ -81,10 +81,10 @@ export default function AdminLayout({
 
   return (
    <>
-{/* 
+
 <CopilotKit publicApiKey={"akk"}>
-  <CopilotProvider>
-  <CopilotSidebar
+  {/* <CopilotProvider> */}
+  {/* <CopilotSidebar
      instructions={copilotInstructions}
      labels={{
       title: "LouraIA",
@@ -111,9 +111,8 @@ export default function AdminLayout({
       </div>
         <FeedBackChat />
    {/* </CopilotSidebar>
-  </CopilotProvider>
+  // </CopilotProvider> */}
  </CopilotKit>
- */}
    </>
   );
 }
