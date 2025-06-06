@@ -45,6 +45,7 @@
     "next": "15.1.7",
     "next-safe-action": "^7.10.4",
     "nodemailer": "^7.0.3",
+    "posthog-js": "^1.249.4",
     "prisma": "^6.4.1",
     "react": "^19.0.0",
     "react-apexcharts": "^1.7.0",

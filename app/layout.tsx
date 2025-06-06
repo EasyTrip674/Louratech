@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import TansQueryProvider from "@/context/TansQueryProvider";
 // import { CopilotKit } from "@copilotkit/react-core";
 import { ToastContainer } from 'react-toastify';
+import { PostHogProvider } from "@/context/PostHogProvider";
 
 const outfit = Outfit({
   variable: "--font-outfit-sans",
@@ -23,12 +24,16 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${outfit.variable} dark:bg-gray-900`}>
               <ThemeProvider>
+              <PostHogProvider>
+
               <TansQueryProvider>
                 <SidebarProvider>
-                    {children}
+                   {children}
                     <ToastContainer />
                 </SidebarProvider>
             </TansQueryProvider>
+            </PostHogProvider>
+
               </ThemeProvider>
       </body>
     </html>
