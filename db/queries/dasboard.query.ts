@@ -59,13 +59,13 @@ export async function getMonthlyTargetStats() {
     },
   });
 
-
+  
 
   // Définir un objectif mensuel basé sur les derniers résultats ou sur une valeur par défaut
   // Ici, on utilise 120% du revenu du mois dernier ou 1000 par défaut
-  const lastMonthAmount = lastMonthRevenue._sum.amount || 0;
-  const target =  Math.max(1000, Math.round(lastMonthAmount * 1.2));
-  const currentMonthAmount = currentMonthRevenue._sum.amount || 0;
+  const lastMonthAmount = lastMonthRevenue._sum?.amount || 0;
+  const target = Math.max(1000, Math.round(lastMonthAmount * 1.2));
+  const currentMonthAmount = currentMonthRevenue._sum?.amount || 0;
   
   // Calculer le pourcentage de changement par rapport au mois dernier
   const percentageChange = lastMonthAmount > 0 
@@ -81,7 +81,7 @@ export async function getMonthlyTargetStats() {
     message = `📉 Vous avez diminué votre revenu de ${Math.abs(Math.round(percentageChange))}% par rapport au mois dernier.`;
   } else if (percentageChange === 0 && lastMonthAmount === 0) {
     message = `⚖️ Vous n'avez pas fait de chiffre le mois dernier.`;
-  }else if (percentageChange === 0 && lastMonthAmount > 0) {
+  } else if (percentageChange === 0 && lastMonthAmount > 0) {
     message = `⚖️ Vous n'avez pas fait de chiffre ce mois-ci.`;
   } else {
     message = `⚖️ Vous avez le même revenu que le mois dernier.`;
@@ -95,7 +95,7 @@ export async function getMonthlyTargetStats() {
     growth: Math.round(percentageChange),
     message: message,
     currentMonthAmount: currentMonthAmount, 
-    today: (todayRevenue._sum.amount || 0), 
+    today: (todayRevenue._sum?.amount || 0), 
   };
 }
 
@@ -131,7 +131,7 @@ export async function getMonthlySalesData() {
   // Remplir les données mensuelles
   monthlyRevenues.forEach(revenue => {
     const month = new Date(revenue.date).getMonth();
-    monthlyData[month] = (revenue._sum.amount || 0) / 1000; // Convertir en K pour l'affichage
+    monthlyData[month] = (revenue._sum?.amount || 0) / 1000; // Convertir en K pour l'affichage
   });
 
   return {
@@ -145,8 +145,6 @@ export async function getMonthlySalesData() {
 export type getMonthlySalesDataType = Prisma.PromiseReturnType<
   typeof getMonthlySalesData
 >;
-
-
 
 export async function getStatisticsData() {
   const now = new Date();
@@ -178,7 +176,7 @@ export async function getStatisticsData() {
 
   // Remplir les données mensuelles
   monthlyTransactions.forEach(transaction => {
-    const month = new Date(transaction.date).getMonth();
+    const month = new Date(transaction?.date).getMonth();
     const amount = (transaction._sum?.amount || 0) / 1000; // Convertir en K pour l'affichage
     
     if (transaction.type === "REVENUE") {
@@ -205,11 +203,6 @@ export async function getStatisticsData() {
 export type getStatisticsDataType = Prisma.PromiseReturnType<
   typeof getStatisticsData
 >;
-
-
-
-
-
 
 export async function getClientServiceData(timeRange: 'month' | 'year' | 'all' = 'all' ) {
   const organizationId = await getOrgnaizationId();
@@ -324,11 +317,10 @@ export const recentOrders = async () => {
       createdAt: "desc",
     },
     take: 5,
-include: {
+    include: {
       user: true,
     }
   });
-
 }
 
 export type recentOrdersType = Prisma.PromiseReturnType<
