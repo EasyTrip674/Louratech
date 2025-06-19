@@ -1380,6 +1380,11 @@
     "@prisma/fetch-engine" "6.4.1"
     "@prisma/get-platform" "6.4.1"
 
+"@prisma/extension-accelerate@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@prisma/extension-accelerate/-/extension-accelerate-2.0.1.tgz#dc796b53d5d633410618f98cb68f1ce520985c94"
+  integrity sha512-KSQlLC5F1qxFQCqSP8SnCwhkv9SE40v8WR+UjHdRce0R7Fv/K3IfJJNANGFx5MNoOypK1VN6wfvRr6CNA/l+BQ==
+
 "@prisma/fetch-engine@6.4.1":
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/@prisma/fetch-engine/-/fetch-engine-6.4.1.tgz#844686a1edeef8207abb230e34115fb7e72574fb"

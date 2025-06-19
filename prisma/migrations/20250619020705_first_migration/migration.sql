@@ -22,6 +22,15 @@ CREATE TYPE "InvoiceStatus" AS ENUM ('DRAFT', 'SENT', 'PARTIALLY_PAID', 'PAID', 
 -- CreateEnum
 CREATE TYPE "FeedbackType" AS ENUM ('BUG', 'SUGGESTION', 'QUESTION', 'OTHER');
 
+-- CreateEnum
+CREATE TYPE "FeedbackImpact" AS ENUM ('CRITICAL', 'MAJOR', 'MINOR');
+
+-- CreateEnum
+CREATE TYPE "FeedbackSatisfaction" AS ENUM ('POSITIVE', 'NEUTRAL', 'NEGATIVE');
+
+-- CreateEnum
+CREATE TYPE "FeedbackStatus" AS ENUM ('PENDING', 'IN_PROGRESS', 'RESOLVED', 'REJECTED');
+
 -- CreateTable
 CREATE TABLE "SuperAdmin" (
     "id" TEXT NOT NULL,
@@ -383,6 +392,7 @@ CREATE TABLE "account" (
     "password" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     CONSTRAINT "account_pkey" PRIMARY KEY ("id")
 );
 
@@ -465,14 +475,25 @@ CREATE TABLE "authorization" (
 -- CreateTable
 CREATE TABLE "Feedback" (
     "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" TEXT,
     "type" "FeedbackType" NOT NULL DEFAULT 'OTHER',
-    "message" TEXT NOT NULL,
     "email" TEXT,
     "name" TEXT,
     "isAnonymous" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "subtype" TEXT,
+    "message" TEXT NOT NULL,
+    "rating" INTEGER,
+    "satisfaction" "FeedbackSatisfaction",
+    "impact" "FeedbackImpact",
+    "pageUrl" TEXT,
+    "browser" TEXT,
+    "device" TEXT,
+    "status" "FeedbackStatus" NOT NULL DEFAULT 'PENDING',
+    "assignedTo" TEXT,
+    "response" TEXT,
+    "responseAt" TIMESTAMP(3),
 
     CONSTRAINT "Feedback_pkey" PRIMARY KEY ("id")
 );
