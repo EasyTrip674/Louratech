@@ -1,4 +1,4 @@
-import { Outfit } from "next/font/google";
+import {  Space_Grotesk } from "next/font/google";
 import "./globals.css";
 // import { CopilotPopup } from "@copilotkit/react-ui";
 
@@ -9,7 +9,7 @@ import TansQueryProvider from "@/context/TansQueryProvider";
 import { ToastContainer } from 'react-toastify';
 import { PostHogProvider } from "@/context/PostHogProvider";
 
-const outfit = Outfit({
+const outfit = Space_Grotesk({
   variable: "--font-outfit-sans",
   subsets: ["latin"],
 });

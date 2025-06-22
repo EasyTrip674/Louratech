@@ -191,6 +191,12 @@ model Client {
   passport    String?
   address     String?
   birthDate   DateTime?
+  
+
+  email         String?
+  image         String?
+  firstName     String?
+  lastName      String?
 
   fatherLastName String?
   fatherFirstName  String?
