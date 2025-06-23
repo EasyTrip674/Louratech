@@ -71,6 +71,8 @@ export default function CreateEmployeeFormModal() {
 
   const onSubmit = (data: EmployeeFormData) => {
      createMutation.mutateAsync(data);
+     console.log("sending .........................................");
+     
   };
 
   return (
@@ -84,7 +86,7 @@ export default function CreateEmployeeFormModal() {
         <Plus className="w-4 h-4 dark:text-white" /> Ajouter un employé
       </Button>
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit((e)=>onSubmit(e))}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Ajouter un nouvel employé</h4>
           
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 border-b border-gray-200 dark:border-gray-800 pb-6">

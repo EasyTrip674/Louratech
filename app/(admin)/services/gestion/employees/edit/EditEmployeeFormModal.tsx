@@ -40,10 +40,12 @@ export default function EditEmployeeFormModal({ admin, inPageProfile = false }: 
     resolver: zodResolver(editEmployeeSheme),
     defaultValues: {
       id: admin?.id,
+      email:admin?.user.email,
       lastName: admin?.user?.lastName ?? "",
       firstName: admin?.user?.firstName ?? "",
       phone: admin?.phone ?? "",
       address: admin?.address ?? "",
+
     },
   });
 
@@ -126,6 +128,7 @@ export default function EditEmployeeFormModal({ admin, inPageProfile = false }: 
         <form onSubmit={handleSubmit(onSubmit)}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Modifier cet employé</h4>
           
+
           {errors.firstName && (
             <div className="mb-4 text-sm text-red-600 dark:text-red-400">
               {errors.firstName.message}
