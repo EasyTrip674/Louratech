@@ -71,7 +71,6 @@ export default function CreateEmployeeFormModal() {
 
   const onSubmit = (data: EmployeeFormData) => {
      createMutation.mutateAsync(data);
-     console.log("sending .........................................");
      
   };
 
