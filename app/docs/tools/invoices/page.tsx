@@ -1,7 +1,7 @@
-import InvoiceGenerator from "./Generator";
+// import InvoiceGenerator from "./Generator";
 
 export default function GenereInvoice() {
     return <>
-    <InvoiceGenerator />
+    {/* <InvoiceGenerator /> */}
     </>
 }
