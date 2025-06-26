@@ -103,24 +103,24 @@ const InvoiceGenerator: React.FC = () => {
     ssr: false
   });
 
-  const handleInputChange = (field: keyof FormData, defaultValue: string | number): void => {
+  const handleInputChange = (field: keyof FormData, value: string | number): void => {
     setFormData(prev => ({
       ...prev,
-      [field]: defaultValue
+      [field]: value
     }));
   };
 
-  const handleItemChange = (index: number, field: keyof InvoiceItem, defaultValue: string | number): void => {
+  const handleItemChange = (index: number, field: keyof InvoiceItem, value: string | number): void => {
     const newItems = [...formData.items];
     if (field === 'quantity' || field === 'unitPrice') {
       newItems[index] = {
         ...newItems[index],
-        [field]: typeof defaultValue === 'string' ? parseFloat(defaultValue) || 0 : defaultValue
+        [field]: typeof value === 'string' ? parseFloat(value) || 0 : value
       };
     } else {
       newItems[index] = {
         ...newItems[index],
-        [field]: defaultValue as string
+        [field]: value as string
       };
     }
     setFormData(prev => ({
@@ -147,19 +147,19 @@ const InvoiceGenerator: React.FC = () => {
   };
 
   const handleStringInputChange = (field: keyof FormData) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    handleInputChange(field, e.target.defaultValue);
+    handleInputChange(field, e.target.value);
   };
 
   const handleNumberInputChange = (field: keyof FormData) => (e: ChangeEvent<HTMLInputElement>) => {
-    handleInputChange(field, parseFloat(e.target.defaultValue) || 0);
+    handleInputChange(field, parseFloat(e.target.value) || 0);
   };
 
   const handleItemStringChange = (index: number, field: keyof InvoiceItem) => (e: ChangeEvent<HTMLInputElement>) => {
-    handleItemChange(index, field, e.target.defaultValue);
+    handleItemChange(index, field, e.target.value);
   };
 
   const handleItemNumberChange = (index: number, field: keyof InvoiceItem) => (e: ChangeEvent<HTMLInputElement>) => {
-    handleItemChange(index, field, e.target.defaultValue);
+    handleItemChange(index, field, e.target.value);
   };
 
   const handleLogoUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -227,7 +227,7 @@ const InvoiceGenerator: React.FC = () => {
                 </div>
                 <input
                   type="color"
-                  defaultValue={formData.primaryColor}
+                  value={formData.primaryColor}
                   onChange={handleStringInputChange('primaryColor')}
                   className="w-full h-10 border border-gray-300 rounded-md"
                 />
@@ -245,7 +245,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.supplierName}
+                  value={formData.supplierName}
                   onChange={handleStringInputChange('supplierName')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
@@ -257,7 +257,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.supplierNIF}
+                  value={formData.supplierNIF}
                   onChange={handleStringInputChange('supplierNIF')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
@@ -268,7 +268,7 @@ const InvoiceGenerator: React.FC = () => {
                   Adresse
                 </label>
                 <textarea
-                  defaultValue={formData.supplierAddress}
+                  value={formData.supplierAddress}
                   onChange={handleStringInputChange('supplierAddress')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows={2}
@@ -280,7 +280,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.supplierPhone1}
+                  value={formData.supplierPhone1}
                   onChange={handleStringInputChange('supplierPhone1')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -291,7 +291,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.supplierPhone2}
+                  value={formData.supplierPhone2}
                   onChange={handleStringInputChange('supplierPhone2')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -302,7 +302,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="email"
-                  defaultValue={formData.supplierEmail}
+                  value={formData.supplierEmail}
                   onChange={handleStringInputChange('supplierEmail')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -320,7 +320,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.clientName}
+                  value={formData.clientName}
                   onChange={handleStringInputChange('clientName')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
@@ -332,7 +332,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.clientNIF}
+                  value={formData.clientNIF}
                   onChange={handleStringInputChange('clientNIF')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -343,7 +343,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.clientPhone}
+                  value={formData.clientPhone}
                   onChange={handleStringInputChange('clientPhone')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -354,7 +354,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.clientTVA}
+                  value={formData.clientTVA}
                   onChange={handleStringInputChange('clientTVA')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -364,7 +364,7 @@ const InvoiceGenerator: React.FC = () => {
                   Adresse Client
                 </label>
                 <textarea
-                  defaultValue={formData.clientAddress}
+                  value={formData.clientAddress}
                   onChange={handleStringInputChange('clientAddress')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows={2}
@@ -383,7 +383,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.invoiceNumber}
+                  value={formData.invoiceNumber}
                   onChange={handleStringInputChange('invoiceNumber')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
@@ -395,7 +395,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="date"
-                  defaultValue={formData.date}
+                  value={formData.date}
                   onChange={handleStringInputChange('date')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -406,7 +406,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.city}
+                  value={formData.city}
                   onChange={handleStringInputChange('city')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -417,7 +417,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="number"
-                  defaultValue={formData.tvaRate}
+                  value={formData.tvaRate}
                   onChange={handleNumberInputChange('tvaRate')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   min="0"
@@ -449,7 +449,7 @@ const InvoiceGenerator: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    defaultValue={item.description}
+                    value={item.description}
                     onChange={handleItemStringChange(index, 'description')}
                     className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
@@ -461,7 +461,7 @@ const InvoiceGenerator: React.FC = () => {
                   </label>
                   <input
                     type="number"
-                    defaultValue={item.quantity}
+                    value={item.quantity}
                     onChange={handleItemNumberChange(index, 'quantity')}
                     className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     min="0"
@@ -476,7 +476,7 @@ const InvoiceGenerator: React.FC = () => {
                     </label>
                     <input
                       type="number"
-                      defaultValue={item.unitPrice}
+                      value={item.unitPrice}
                       onChange={handleItemNumberChange(index, 'unitPrice')}
                       className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       min="0"
@@ -508,7 +508,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.bankName}
+                  value={formData.bankName}
                   onChange={handleStringInputChange('bankName')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -519,7 +519,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.swiftCode}
+                  value={formData.swiftCode}
                   onChange={handleStringInputChange('swiftCode')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -530,7 +530,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.accountName}
+                  value={formData.accountName}
                   onChange={handleStringInputChange('accountName')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -541,7 +541,7 @@ const InvoiceGenerator: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue={formData.accountNumber}
+                  value={formData.accountNumber}
                   onChange={handleStringInputChange('accountNumber')}
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
