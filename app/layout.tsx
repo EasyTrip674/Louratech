@@ -1,6 +1,7 @@
 import {  Space_Grotesk } from "next/font/google";
 import "./globals.css";
 // import { CopilotPopup } from "@copilotkit/react-ui";
+import { Analytics } from "@vercel/analytics/next"
 
 import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
@@ -23,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${outfit.variable} dark:bg-gray-900`}>
+              <Analytics />
               <ThemeProvider>
               <PostHogProvider>
 
