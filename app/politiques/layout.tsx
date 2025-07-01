@@ -1,7 +1,6 @@
 "use client"
 import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import Logo from "@/components/logo";
-import BackButton from "@/layout/BackButton";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
