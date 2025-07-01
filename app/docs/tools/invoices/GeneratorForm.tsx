@@ -255,6 +255,7 @@ const InvoiceGenerator: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   NIF *
                 </label>
+                
                 <input
                   type="text"
                   value={formData.supplierNIF}
