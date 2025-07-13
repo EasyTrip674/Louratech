@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import Button from "@/components/ui/button/Button";
 import Link from 'next/link';
 import {  getStepsProcedureDB } from '@/db/queries/procedures.query';
-import { getCLientsIdWithNameDB } from '@/db/queries/clients.query';
+import { clientService } from '@/lib/services';
 import AddClientToStepModal from './clients/[clientProcedureId]/clientProcedure/AddClientToStepModal';
 import CreateStepFormModal from './steps/step/create/CreateStepFormModal';
 import { auth } from '@/lib/auth';
@@ -45,7 +45,7 @@ export default async function ProcedureDetailPage(props: PageProps) {
     });
 
 
-  const clients = await getCLientsIdWithNameDB();
+  const clients = await clientService.getClientsForSelect();
   // Données de test pour les étapes d'une procédure
 
   const stepsProc = await getStepsProcedureDB(params?.procedureId);
@@ -130,8 +130,16 @@ export default async function ProcedureDetailPage(props: PageProps) {
           <div>
            {
             session?.userDetails?.authorize?.canCreateClientProcedure && ( <AddClientToStepModal
-              stepsProcedure={stepsProc}
-              procedureId={params.procedureId} clientsDB={clients} />
+              stepsProcedure={{
+                steps: (stepsProc?.steps ?? []).map(step => ({
+                  id: step.id,
+                  name: step.name,
+                  price: step.price ?? undefined
+                }))
+              }}
+              procedureId={params.procedureId}
+              clientsDB={clients}
+            />
             )
            }
           </div>

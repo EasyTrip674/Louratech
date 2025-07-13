@@ -2,10 +2,8 @@
 
 import { adminAction } from "@/lib/safe-action"
 import { createClientSchema } from "./client.create.shema"
-import prisma from "@/db/prisma";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
-import { Role } from "@prisma/client";
+import { clientService } from "@/lib/services";
 import { sendEmail } from "@/lib/nodemailer/email";
 import { generateEmailMessageHtml } from "@/lib/nodemailer/message";
 
@@ -16,121 +14,49 @@ export const doCreateClient = adminAction
         try {
             // Vérifier s'il est autorisé
             if (ctx.user.userDetails?.authorize?.canCreateClient === false) {
-                throw new Error("Vous n'êtes pas autorisé à créer cet utilisateur");
+                throw new Error("Vous n'êtes pas autorisé à créer un client");
             }
 
-            // Vérifier l'existence du client AVANT de continuer
-            const existingClient = await prisma.user.findFirst({
-                where: {
-                    email: clientInput.email,
-                    client: {
-                        isNot: null
-                    }
-                }
-            });
+            // Utiliser le service client pour créer le client
+            const newClient = await clientService.createClient(clientInput);
 
-            if (existingClient) {
-                throw new Error("Un client avec cet email existe déjà");
-            }
-
-            // Vérifier l'existence de l'organisation AVANT de continuer
-            const organization = await prisma.organization.findFirst({
-                where: {
-                    id: ctx.user.userDetails?.organization?.id,
-                },
-            });
-
-            if (!organization) {
-                throw new Error("Organisation introuvable");
-            }
-
-            // Utiliser une transaction pour toutes les opérations de base de données
-            await prisma.$transaction(async (tx) => {
-                // Créer le compte utilisateur
-                const user = await auth.api.signUpEmail({
-                    body: {
-                        email: clientInput.email,
-                        password: "00000000",
-                        name: `${clientInput.firstName} ${clientInput.lastName}`,
-                        options: {
-                            emailVerification: false,
-                            data: {
-                                firstName: clientInput.firstName,
-                                lastName: clientInput.lastName,
-                            }
-                        }
-                    }
-                });
-
-                if (!user.user.id) {
-                    throw new Error("Erreur lors de la création de l'utilisateur");
-                }
-
-                // Créer le profil client
-                await tx.user.update({
-                    where: {
-                        id: user.user.id,
-                    },
-                    data: {
-                        organizationId: organization.id,
-                        role: Role.CLIENT,
-                        lastName: clientInput.lastName,
-                        firstName: clientInput.firstName,
-                        client: {
-                            create: {
-                                phone: clientInput.phone,
-                                passport: clientInput.passport,
-                                address: clientInput.address,
-                                birthDate: clientInput.birthDate ? new Date(clientInput.birthDate) : null,
-                                fatherLastName: clientInput.fatherLastName,
-                                fatherFirstName: clientInput.fatherFirstName,
-                                motherLastName: clientInput.motherLastName,
-                                motherFirstName: clientInput.motherFirstName,
-                                organizationId: organization.id,
-                            },
-                        },
-                    },
-                });
-
-                return { userId: user.user.id };
-            });
-
-            // Envoyer les emails APRÈS que la transaction soit terminée avec succès
+            // Envoyer les emails APRÈS que la création soit terminée avec succès
             try {
+                const organizationName = ctx.user.userDetails?.organization?.name || "ProGestion";
+                
                 // Email à l'utilisateur actuel
                 await sendEmail({
                     to: ctx.user.userDetails?.email ?? "",
-                    subject: `Ajout d'un client sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
+                    subject: `Ajout d'un client sur ${organizationName}`,
                     html: generateEmailMessageHtml({
-                        subject: `Ajout d'un client sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
+                        subject: `Ajout d'un client sur ${organizationName}`,
                         content: `
-                            <p>Bonjour</p>
-                            <p>${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} a ajouté ${clientInput.email} comme client.</p>
+                            <p>Bonjour ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName},</p>
+                            <p>Vous avez ajouté ${clientInput.email} comme client avec succès.</p>
+                            <p>Détails du client :</p>
+                            <ul>
+                                <li>Nom : ${clientInput.firstName} ${clientInput.lastName}</li>
+                                <li>Email : ${clientInput.email}</li>
+                                <li>Téléphone : ${clientInput.phone || 'Non renseigné'}</li>
+                            </ul>
                         `
                     })
                 });
 
-                // Email à l'admin
-                const admin = await prisma.user.findFirst({
-                    where: {
-                        organizationId: ctx.user.userDetails?.organization?.id,
-                        role: Role.ADMIN,
-                    },
+                // Email de bienvenue au nouveau client
+                await sendEmail({
+                    to: clientInput.email,
+                    subject: `Bienvenue chez ${organizationName}`,
+                    html: generateEmailMessageHtml({
+                        subject: `Bienvenue chez ${organizationName}`,
+                        content: `
+                            <p>Bonjour ${clientInput.firstName} ${clientInput.lastName},</p>
+                            <p>Votre compte client a été créé avec succès chez ${organizationName}.</p>
+                            <p>Vous pouvez maintenant accéder à votre espace client.</p>
+                            <p>Cordialement,<br>L'équipe ${organizationName}</p>
+                        `
+                    })
                 });
-
-                if (admin?.email) {
-                    await sendEmail({
-                        to: admin.email,
-                        subject: `Ajout d'un client sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
-                        html: generateEmailMessageHtml({
-                            subject: `Ajout d'un client sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
-                            content: `
-                                <p>Bonjour</p>
-                                <p>${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} a ajouté ${clientInput.email} comme client.</p>
-                            `
-                        })
-                    });
-                }
             } catch (emailError) {
                 console.error("Erreur lors de l'envoi des emails:", emailError);
                 // Ne pas faire échouer toute l'opération si l'email échoue
@@ -139,10 +65,14 @@ export const doCreateClient = adminAction
             // Revalider le cache
             revalidatePath("/app/(admin)/services/gestion/clients");
             
-            return { success: true };
+            return { 
+                success: true, 
+                client: newClient,
+                message: "Client créé avec succès"
+            };
 
         } catch (error) {
             console.error("Error creating client:", error);
-            throw error;
+            throw new Error(`Échec de la création du client: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
         }
     });

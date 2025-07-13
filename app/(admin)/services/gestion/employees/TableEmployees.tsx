@@ -12,7 +12,7 @@ import {
 import Badge from "@/components/ui/badge/Badge";
 import Button from "@/components/ui/button/Button";
 import { employeesTableOrganizationDB } from "@/db/queries/employees.query";
-import { Eye, ChevronLeft, ChevronRight, Search, Filter, X } from "lucide-react";
+import { Eye, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import EditEmployeeFormModal from "./edit/EditEmployeeFormModal";
 import { authClient } from "@/lib/auth-client";
 import DeleteemployeeFormModal from "./[employeeId]/delete/DeleteEmployeeFormModal";
@@ -30,6 +30,12 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
   const itemsPerPage = 5;
   const session = authClient.useSession();
 
+  // Ajout des nouveaux états pour les filtres avancés
+  const [emailFilter, setEmailFilter] = useState("");
+  const [addressFilter, setAddressFilter] = useState("");
+  const [phoneFilter, setPhoneFilter] = useState("");
+
+
   // Appliquer les filtres chaque fois que searchTerm, statusFilter ou employees change
   useEffect(() => {
     if (!employees) return;
@@ -41,8 +47,7 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
       const searchTermLower = searchTerm.toLowerCase().trim();
       filtered = filtered.filter(employee => 
         `${employee.user.lastName} ${employee.user.firstName}`.toLowerCase().includes(searchTermLower) ||
-        employee.user.email.toLowerCase().includes(searchTermLower) ||
-        (employee.address && employee.address.toLowerCase().includes(searchTermLower))
+        employee.user.email.toLowerCase().includes(searchTermLower)
       );
     }
     
@@ -52,11 +57,30 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
         (statusFilter === "active" ? employee.user.active : !employee.user.active)
       );
     }
+
+    // Appliquer les filtres avancés
+    if (emailFilter.trim() !== "") {
+      filtered = filtered.filter(employee =>
+        employee.user.email && employee.user.email.toLowerCase().includes(emailFilter.toLowerCase())
+      );
+    }
+    if (addressFilter.trim() !== "") {
+      filtered = filtered.filter(employee =>
+        employee.address && employee.address.toLowerCase().includes(addressFilter.toLowerCase())
+      );
+    }
+    if (phoneFilter.trim() !== "") {
+      filtered = filtered.filter(employee =>
+        employee.phone && employee.phone.includes(phoneFilter.trim())
+      );
+    }
     
+   
+
     setFilteredEmployees(filtered);
     // Retourner à la première page après application des filtres
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, employees]);
+  }, [searchTerm, statusFilter, emailFilter, addressFilter, phoneFilter, employees]);
 
   if (!employees || employees.length === 0) {
     return (
@@ -79,71 +103,48 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
     }
   };
 
-  // Fonction pour réinitialiser tous les filtres
-  const resetFilters = () => {
-    setSearchTerm("");
-    setStatusFilter("all");
-  };
 
   return (
     <div className="space-y-4">
       {/* Filtres et recherche */}
       <div className="bg-white dark:bg-white/[0.03] rounded-xl border border-gray-200 dark:border-white/[0.05] p-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          {/* Barre de recherche */}
-          <div className="relative flex-grow">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <Search className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            </div>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Rechercher par nom, email ou adresse..."
-              className="w-full rounded-md border border-gray-300 dark:border-gray-700 pl-10 pr-4 py-2 focus:border-brand-500 focus:ring-brand-500 dark:bg-gray-800 dark:text-white"
-            />
-            {searchTerm && (
-              <button 
-                onClick={() => setSearchTerm("")}
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
-              >
-                <X className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-              </button>
-            )}
-          </div>
-          
-          {/* Filtre par statut */}
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center">
-              <Filter className="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" />
-              <span className="text-sm text-gray-500 dark:text-gray-400">Statut:</span>
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher un employé..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              />
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as "all" | "active" | "inactive")}
-              className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 focus:border-brand-500 focus:ring-brand-500 dark:bg-gray-800 dark:text-white"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
             >
-              <option value="all">Tous</option>
+              <option value="all">Tous les statuts</option>
               <option value="active">Actifs</option>
               <option value="inactive">Inactifs</option>
             </select>
+            <input type="text" placeholder="Email..." value={emailFilter} onChange={e => setEmailFilter(e.target.value)} className="input-filter" />
+            <input type="text" placeholder="Téléphone..." value={phoneFilter} onChange={e => setPhoneFilter(e.target.value)} className="input-filter" />
+            <input type="text" placeholder="Adresse..." value={addressFilter} onChange={e => setAddressFilter(e.target.value)} className="input-filter" />
           </div>
-          
-          {/* Bouton de réinitialisation */}
-          {(searchTerm || statusFilter !== "all") && (
-            <button
-              onClick={resetFilters}
-              className="px-4 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-            >
-              Réinitialiser les filtres
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {filteredEmployees.length} employé{filteredEmployees.length > 1 ? 's' : ''}
+            </span>
+            {/* Ajoute ici le bouton d'ajout si besoin */}
+          </div>
         </div>
       </div>
 
       {/* Résumé des résultats */}
       <div className="text-sm text-gray-500 dark:text-gray-400 px-1">
-        {filteredEmployees.length} employé(s) trouvé(s) {(searchTerm || statusFilter !== "all") && "après filtrage"}
+        {filteredEmployees.length} employé(s) trouvé(s) {(searchTerm || statusFilter !== "all" || emailFilter || addressFilter || phoneFilter) && "après filtrage"}
       </div>
 
       {/* Tableau des employés */}
@@ -156,15 +157,21 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
                 <TableRow>
                   <TableCell
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
-                    Name
+                    <div className="flex items-center gap-2">
+                      Name
+                  
+                    </div>
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
-                    Email
+                    <div className="flex items-center gap-2">
+                      Email
+                    
+                    </div>
                   </TableCell>
                   <TableCell
                     isHeader
@@ -192,10 +199,24 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
                 {currentEmployees.length > 0 ? (
                   currentEmployees.map((employee) => (
                     <TableRow key={employee.id}>
-                      <TableCell className="px-5 py-4 sm:px-6 text-start">
-                        <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {employee.user.lastName} {employee.user.firstName}
-                        </span>
+                      <TableCell className="px-5 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10">
+                            <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                              <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                {(employee.user.firstName?.charAt(0) || '') + (employee.user.lastName?.charAt(0) || '')}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              {employee.user.firstName} {employee.user.lastName}
+                            </div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                              {employee.address || "Aucune adresse"}
+                            </div>
+                          </div>
+                        </div>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                         {employee.user.email}
@@ -204,36 +225,36 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
                         {employee.address}
                       </TableCell>
                       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                        <Badge
-                          size="sm"
-                          color={
-                            employee.user.active
-                              ? "success"
-                              : "error"
-                          }
-                        >
-                          {employee.user.active ? "Active" : "Inactive"}
-                        </Badge>
+                          <Badge
+                            size="sm"
+                            color={
+                              employee.user.active
+                                ? "success"
+                                : "error"
+                            }
+                          >
+                            {employee.user.active ? "Active" : "Inactive"}
+                          </Badge>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                         <div className="flex items-center gap-2">
                           {
                             session.data?.userDetails?.authorize?.canReadAdmin && (
-                              <Button href={`/services/gestion/employees/${employee.id}`} variant="outline" size="sm">
+                                <Button variant="outline" size="sm" onClick={() => window.location.href = `/services/gestion/employees/${employee.id}` }>
                                 <Eye className="w-4 h-4 dark:text-white" />
                               </Button>
                             )
                           }
                           {
                             session.data?.userDetails?.authorize?.canEditAdmin && (
-                              <EditEmployeeFormModal admin={employee} />
+                                <EditEmployeeFormModal admin={employee} />
                             )
                           }
                           {
                             session.data?.userDetails?.authorize?.canDeleteAdmin && (
-                             <DeleteemployeeFormModal
-                                employee={employee}
-                                inPageProfile={false} 
+                                <DeleteemployeeFormModal
+                                  employee={employee}
+                                  inPageProfile={false} 
                                 />
                             )
                           }

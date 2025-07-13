@@ -86,7 +86,7 @@ export default function EditEmployeeFormModal({ admin, inPageProfile = false }: 
       <SuccessModal 
         successModal={successModal}
         message='Employé modifié avec succès'
-        title="" 
+        title="Modification réussie" 
       />
       
       <ErrorModal 

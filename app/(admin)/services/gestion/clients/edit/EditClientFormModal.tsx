@@ -16,7 +16,7 @@ import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
 import { editClientSchema } from "./client.edit.shema";
 import { doEditClient } from "./client.edit.action";
-import { clientProfileDB, clientsTableOrganizationDB } from "@/db/queries/clients.query";
+import type { clientsTableOrganizationDB, clientProfileDB } from '@/lib/services/client.service';
 import { useRouter } from "next/navigation";
 
 // Zod validation schema

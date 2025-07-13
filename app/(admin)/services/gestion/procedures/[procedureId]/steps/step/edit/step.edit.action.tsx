@@ -1,52 +1,35 @@
 "use server"
 
 import { adminAction } from "@/lib/safe-action"
-import prisma from "@/db/prisma";
 import { revalidatePath } from "next/cache";
-import {  editStepProcedureSchema } from "./step.edit.shema";
+import { editStepProcedureSchema } from "./step.edit.shema";
+import { procedureService } from "@/lib/services";
 
 export const doEditStep = adminAction
-    .metadata({actionName:"step client"}) // ✅ Ajout des métadonnées obligatoires
+    .metadata({actionName:"edit step"})
     .schema(editStepProcedureSchema)
-    .action(async ({ clientInput,ctx}) => {
-        console.log("Creating step with data:", clientInput);
+    .action(async ({ clientInput, ctx }) => {
+        try {
+            console.log("Editing step with data:", clientInput);
 
-        // verifffier l'autorisation de l'utilisateur
-        if(!ctx.user.userDetails?.authorize?.canEditStep){
-            throw new Error("Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
-        }
-
-
-
-        // TODO: Sauvegarder les données du step dans la base de données
-
-        const procedure  = await prisma.procedure.findUnique({
-            where:{
-                id: clientInput.procedureId
-            },
-            select:{
-                id:true
+            // Vérifier l'autorisation
+            if (!ctx.user.userDetails?.authorize?.canEditStep) {
+                throw new Error("Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
             }
-        })
-        if(!procedure){
-            // throw new Error("Donnees invalides");
-            return;
-        }
-        const step = await prisma.stepProcedure.update({
-            where:{
-                id: clientInput.stepId
-            },
-            data:{
-                description: clientInput.description ?? "",
-                price: clientInput.price,
-                name:clientInput.name,
-                order:1
-            }
-        })
-     
-        
 
-        revalidatePath("/app/(admin)/services/gestion/procedures");
-        
-        return { success: true, step };
+            // Utiliser le service procedure
+            const step = await procedureService.updateStep({
+                id: clientInput.stepId,
+                name: clientInput.name,
+                description: clientInput.description,
+                price: clientInput.price
+            });
+
+            revalidatePath("/app/(admin)/services/gestion/procedures");
+            
+            return { success: true, step };
+        } catch (error) {
+            console.error("Erreur lors de la modification de l'étape:", error);
+            throw new Error(`Échec de la modification de l'étape: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+        }
     });

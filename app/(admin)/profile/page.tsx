@@ -5,21 +5,78 @@ import UserProfileCard from "@/components/user/UserProfileCard";
 import { auth } from "@/lib/auth";
 import { Role } from "@prisma/client";
 import { headers } from "next/headers";
+import { authorizationService } from "@/lib/services";
 
-
-export default async function  profilePage() {
+// Composant pour récupérer les données du profil
+async function ProfileDataProvider({ children }: { children: React.ReactNode }) {
+  try {
     const user = await auth.api.getSession({
-        headers: await headers() //some endpoint might require headers
+      headers: await headers()
     });
 
     if (!user) {
-        throw new Error("Non authentifié");
+      return (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-red-600 mb-4">Non authentifié</h1>
+            <p className="text-gray-600">Vous devez être connecté pour accéder à cette page</p>
+          </div>
+        </div>
+      );
     }
 
-    const phone = user.userDetails?.admin ? user.userDetails.admin.phone : user.userDetails?.client?.phone || "";
-    const address = user.userDetails?.admin ? user.userDetails.admin.address : user.userDetails?.client?.address || "";
+    // Vérifier les autorisations
+    const canViewProfile = await authorizationService.checkUserPermission(user.userDetails.id, "canCreateAdmin");
+    if (!canViewProfile) {
+      return (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-red-600 mb-4">Accès refusé</h1>
+            <p className="text-gray-600">Vous n&apos;avez pas les autorisations nécessaires</p>
+          </div>
+        </div>
+      );
+    }
 
-    console.log("User", user);
+    return (
+      <div className="profile-data" data-user={JSON.stringify(user)}>
+        {children}
+      </div>
+    );
+  } catch (error) {
+    console.error("Erreur lors du chargement du profil:", error);
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Erreur</h1>
+          <p className="text-gray-600">Une erreur est survenue lors du chargement du profil</p>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default async function profilePage() {
+  return (
+    <ProfileDataProvider>
+      <ProfileContent />
+    </ProfileDataProvider>
+  );
+}
+
+async function ProfileContent() {
+  const user = await auth.api.getSession({
+    headers: await headers()
+  });
+
+  if (!user) {
+    throw new Error("Non authentifié");
+  }
+
+  const phone = user.userDetails?.admin ? user.userDetails.admin.phone : user.userDetails?.client?.phone || "";
+  const address = user.userDetails?.admin ? user.userDetails.admin.address : user.userDetails?.client?.address || "";
+
+  console.log("User", user);
     return (
         <div>
 

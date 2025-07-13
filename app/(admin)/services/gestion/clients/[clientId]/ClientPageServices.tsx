@@ -1,4 +1,4 @@
-import prisma from '@/db/prisma';
+import React from 'react';
 import { getStatusIcon } from '@/lib/StatusBadge';
 import { formatAmount, formatDate } from '@/lib/utils';
 import { 
@@ -13,6 +13,7 @@ import {
   Target,
 } from 'lucide-react';
 import Link from 'next/link';
+import { clientService } from '@/lib/services';
 
 // Types pour les données
 interface ClientProcedureWithDetails {
@@ -67,79 +68,31 @@ interface ClientStats {
 
 // Fonction pour récupérer les données du client
 async function getClientData(clientId: string) {
-  const clientProcedures = await prisma.clientProcedure.findMany({
-    where: {
-      clientId: clientId
-    },
-    include: {
-      procedure: {
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          category: true,
-          estimatedDuration: true
-        }
-      },
-      assignedTo: {
-        select: {
-          id: true,
-          name: true
-        }
-      },
-      manager: {
-        select: {
-          id: true,
-          name: true
-        }
-      },
-      steps: {
-        include: {
-          step: {
-            select: {
-              id: true,
-              name: true,
-              order: true,
-            },
-          }
-          
-        },
-        orderBy: {
-          step: {
-            order: 'asc'
-          }
-        }
-      },
-      _count: {
-        select: {
-          steps: true
-        }
-      }
-    },
-    orderBy: {
-      startDate: 'desc'
-    }
-  });
+  try {
+    const clientProcedures = await clientService.getClientProcedures(clientId);
+    
+    // Calcul des statistiques
+    const totalSteps = clientProcedures.reduce((acc, p) => acc + p._count.steps, 0);
+    const completedSteps = clientProcedures.reduce((acc, p) => acc + p.steps.filter(s => s.status === 'COMPLETED').length, 0);
+    const completedProcedures = clientProcedures.filter(p => p.status === 'COMPLETED').length;
+    const totalPrices = clientProcedures.reduce((acc, p)=> acc + (p.steps.reduce( (accs,step)=>accs + (step?.price ?? 0), 0)) , 0)
+    
+    const stats: ClientStats = {
+      totalProcedures: clientProcedures.length,
+      completedProcedures,
+      inProgressProcedures: clientProcedures.filter(p => p.status === 'IN_PROGRESS').length,
+      cancelledProcedures: clientProcedures.filter(p => p.status === 'CANCELLED').length,
+      totalSteps,
+      completedSteps,
+      totalPrices,
+      averageCompletionTime: null,
+    };
 
-
-  // Calcul des statistiques
-  const totalSteps = clientProcedures.reduce((acc, p) => acc + p._count.steps, 0);
-  const completedSteps = clientProcedures.reduce((acc, p) => acc + p.steps.filter(s => s.status === 'COMPLETED').length, 0);
-  const completedProcedures = clientProcedures.filter(p => p.status === 'COMPLETED').length;
-  const totalPrices = clientProcedures.reduce((acc, p)=> acc + (p.steps.reduce( (accs,step)=>accs + (step?.price ?? 0), 0)) , 0)
-  
-  const stats: ClientStats = {
-    totalProcedures: clientProcedures.length,
-    completedProcedures,
-    inProgressProcedures: clientProcedures.filter(p => p.status === 'IN_PROGRESS').length,
-    cancelledProcedures: clientProcedures.filter(p => p.status === 'CANCELLED').length,
-    totalSteps,
-    completedSteps,
-    totalPrices,
-    averageCompletionTime: null,
-  };
-
-  return { clientProcedures, stats };
+    return { clientProcedures, stats };
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données du client:", error);
+    throw new Error("Impossible de charger les données du client");
+  }
 }
 
 // Fonction utilitaire pour calculer le pourcentage d'avancement

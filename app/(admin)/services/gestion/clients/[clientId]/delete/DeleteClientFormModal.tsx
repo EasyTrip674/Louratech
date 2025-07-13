@@ -12,7 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
 import { doDeleteClient } from "./client.delete.action";
-import { clientProfileDB, clientsTableOrganizationDB } from "@/db/queries/clients.query";
+import type { clientsTableOrganizationDB, clientProfileDB } from '@/lib/services/client.service';
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { deleteClientSchema } from "./client.delete.shema";

@@ -3,8 +3,10 @@ import Input from '@/components/form/input/InputField'
 import SelectSearch from '@/components/form/SelectSearch'
 import Button from '@/components/ui/button/Button'
 import { Modal } from '@/components/ui/modal'
-import { ClientIdWithNameDB } from '@/db/queries/clients.query'
-import { StepsProcedureDB } from '@/db/queries/procedures.query'
+import { ClientIdWithNameDB } from '@/lib/services/client.service'  
+type stepsProcedureDB = {
+  steps: { id: string; name: string; price?: number }[]
+};
 import { useModal } from '@/hooks/useModal'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus } from 'lucide-react'
@@ -21,7 +23,7 @@ import { authClient } from '@/lib/auth-client'
 type Props = {
     procedureId: string,
     clientsDB: ClientIdWithNameDB,
-    stepsProcedure: StepsProcedureDB
+    stepsProcedure: stepsProcedureDB
 }
 
 
@@ -63,7 +65,7 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
     
     const currentAmount = watch("price");
 
-    const stepOptions = stepsProcedure?.steps.map(step => ({
+    const stepOptions = stepsProcedure?.steps.map((step: { id: string; name: string; price?: number }) => ({
         id: step.id ?? "",
         label: step.name ?? "",
         price: step.price ?? 0
@@ -72,7 +74,7 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
     // Effet pour mettre à jour le prix lorsqu'une étape est sélectionnée
     useEffect(() => {
         if (selectedStepId) {
-            const selectedStep = stepsProcedure?.steps.find(step => step.id === selectedStepId)
+            const selectedStep = stepsProcedure?.steps.find((step: { id: string }) => step.id === selectedStepId)
             if (selectedStep) {
                 setValue('price', selectedStep.price ?? 0, { shouldValidate: true })
             }
@@ -185,10 +187,9 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
                             {errors.price && <p className="mt-2 text-sm text-red-600">{errors.price.message}</p>}
                         </div>
                     </div>
-                    
                     <div className="flex justify-end p-4 gap-3">
                         <Button onClick={closeModal} size="sm" variant="outline" type="button">Annuler</Button>
-                        <Button disabled={addCLientToStepMutation.isPending} type="submit" size="sm">Inscrire</Button>
+                        <Button disabled={addCLientToStepMutation.isPending} type="submit" size="sm" variant="primary">Inscrire</Button>
                     </div>
                 </form>
             </Modal>
