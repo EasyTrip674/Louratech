@@ -73,3 +73,18 @@ Cette structure vous permettra de gérer l'ensemble des opérations comptables d
     ### NEXT OBJECTIF E 
   - INTEGRER L'AGENT IA
 
+
+
+
+
+
+<!-- ETAPE -->
+
+Reconnecter github sur vercel
+faire pour que ca lance la nouvelle migration de faire de la relation client user optionnel
+Decommenter l'update de user push encore pour update
+apres supprimer la relation entre client et user sur prisma dans la branch gestion 
+Push ca 
+Update cote main 
+ajouter une reference pour un client 
+categoriser les services ! 
