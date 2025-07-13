@@ -10,6 +10,7 @@ import RecentOrdersSkeleton from "@/components/Dashboards/Homedasboard/RecentsOr
 import { RecentOrdersLayout } from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersLayout";
 import MonthlySalesChartSkeleton from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthySalesChartSkeleton";
 import { ProceduresMetricsSkeleton } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
+import prisma from "@/db/prisma";
 
 
 export const metadata: Metadata = {
@@ -21,6 +22,9 @@ export const metadata: Metadata = {
 };
 
 export default async function  DashboardPage() {
+  await prisma.member.deleteMany()
+  await prisma.invitation.deleteMany()
+  await prisma.team.deleteMany()
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12 space-y-6 xl:col-span-7">
