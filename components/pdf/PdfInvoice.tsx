@@ -272,9 +272,9 @@ const InvoicePDF = ({ transaction }: {
           <View style={styles.infoBlock}>
             <Text style={styles.sectionTitle}>Client</Text>
             <Text style={[styles.sectionText, { fontWeight: 'bold' }]}>
-              {transaction.clientProcedure?.client.user.lastName} {transaction.clientProcedure?.client.user.firstName}
+              {transaction.clientProcedure?.client.lastName} {transaction.clientProcedure?.client.firstName}
             </Text>
-            <Text style={styles.sectionText}>{transaction.clientProcedure?.client.user.email}</Text>
+            <Text style={styles.sectionText}>{transaction.clientProcedure?.client.email}</Text>
             <Text style={styles.sectionText}>Passeport: {transaction.clientProcedure?.client.passport || 'Non spécifié'}</Text>
           </View>
         </View>

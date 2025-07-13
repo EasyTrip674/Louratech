@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import { useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth-client';
 
 // Types based on the Prisma schema
 type Organization = {
@@ -28,7 +28,7 @@ type ComptaSettings = {
 };
 
 const OrganizationSettings = () => {
-  const router = useRouter();
+  const { data: session } = authClient.useSession();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
@@ -53,7 +53,14 @@ const OrganizationSettings = () => {
   useEffect(() => {
     const fetchOrganizationData = async () => {
       try {
-        // In a real application, you would fetch from your API
+        // Vérifier que l'utilisateur est connecté
+        if (!session) {
+          console.error('Utilisateur non connecté');
+          setLoading(false);
+          return;
+        }
+
+        // Utiliser le service pour récupérer les données
         const response = await fetch('/api/organization/current');
         if (!response.ok) throw new Error('Failed to fetch organization data');
         
@@ -79,13 +86,12 @@ const OrganizationSettings = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching organization data:', error);
-        // toast.error('Une erreur est survenue lors du chargement des données');
         setLoading(false);
       }
     };
 
     fetchOrganizationData();
-  }, []);
+  }, [session]);
 
   // Handle logo file selection
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,22 +119,24 @@ const OrganizationSettings = () => {
         formData.append('logo', orgLogo);
       }
       
-      // In a real application, you would post to your API
+      // Utiliser l'API avec gestion d'erreurs améliorée
       const response = await fetch(`/api/organization/${organization?.id}`, {
         method: 'PUT',
         body: formData,
       });
       
-      if (!response.ok) throw new Error('Failed to update organization');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update organization');
+      }
       
-    //   toast.success('Paramètres généraux mis à jour');
+      // Succès - pas besoin de recharger toute la page
+      console.log('Paramètres généraux mis à jour avec succès');
     } catch (error) {
       console.error('Error saving general settings:', error);
-    //   toast.error('Une erreur est survenue lors de la mise à jour');
+      // Ici on pourrait ajouter une notification d'erreur
     } finally {
       setSaving(false);
-      router.refresh();
-      window.location.reload();
     }
   };
 
@@ -148,23 +156,25 @@ const OrganizationSettings = () => {
         organizationId: organization?.id,
       };
       
-      // In a real application, you would post to your API
+      // Utiliser l'API avec gestion d'erreurs améliorée
       const response = await fetch(`/api/organization/${organization?.id}/compta-settings`, {
         method: comptaSettings ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(comptaData),
       });
       
-      if (!response.ok) throw new Error('Failed to update accounting settings');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update accounting settings');
+      }
       
-    //   toast.success('Paramètres comptables mis à jour');
+      // Succès - pas besoin de recharger toute la page
+      console.log('Paramètres comptables mis à jour avec succès');
     } catch (error) {
       console.error('Error saving accounting settings:', error);
-    //   toast.error('Une erreur est survenue lors de la mise à jour');
+      // Ici on pourrait ajouter une notification d'erreur
     } finally {
       setSaving(false);
-      router.refresh();
-      window.location.reload();
     }
   };
 

@@ -12,8 +12,8 @@ import { useMutation } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
 import { doDeleteClient } from "./client.delete.action";
-import { clientProfileDB, clientsTableOrganizationDB } from "@/db/queries/clients.query";
-import { useRouter } from "next/navigation";
+import type { clientsTableOrganizationDB, clientProfileDB } from '@/lib/services/client.service';
+import {useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { deleteClientSchema } from "./client.delete.shema";
 
@@ -22,7 +22,7 @@ type ClientFormData = z.infer<typeof deleteClientSchema>;
 
 export default function DeleteClientFormModal({ client, inPageProfile = false }: { client: clientsTableOrganizationDB[0] | clientProfileDB, inPageProfile?: boolean }) {
   const { isOpen, openModal, closeModal } = useModal();
-  const router = useRouter();
+  const router =useRouter();
   const successModal = useModal();
   const errorModal = useModal();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -32,7 +32,7 @@ export default function DeleteClientFormModal({ client, inPageProfile = false }:
   const enhancedDeleteClientSchema = deleteClientSchema.extend({
     lastName: z.string()
       .min(1, "Veuillez saisir le nom du client")
-      .refine((val) => val.toLowerCase() === client?.user?.lastName?.toLowerCase(), {
+      .refine((val) => val.toLowerCase() === client?.lastName?.toLowerCase(), {
         message: "Le nom saisi ne correspond pas au nom du client",
       }),
   });
@@ -56,8 +56,8 @@ export default function DeleteClientFormModal({ client, inPageProfile = false }:
   const watchedLastName = watch("lastName");
   
   useEffect(() => {
-    setNameMatch(watchedLastName?.toLowerCase() === client?.user?.lastName?.toLowerCase());
-  }, [watchedLastName, client?.user.lastName]);
+    setNameMatch(watchedLastName?.toLowerCase() === client?.lastName?.toLowerCase());
+  }, [watchedLastName, client?.lastName]);
 
   const DeleteMutation = useMutation({
     mutationFn: async (data: ClientFormData) => {
@@ -136,7 +136,7 @@ export default function DeleteClientFormModal({ client, inPageProfile = false }:
 
           <div className="p-4 mb-6 border border-red-200 rounded-lg bg-red-50 dark:bg-red-900/10 dark:border-red-900/30">
             <p className="text-sm text-red-700 dark:text-red-300">
-              <strong>Attention :</strong> Vous êtes sur le point de supprimer définitivement le client <span className="font-medium">{client?.user.firstName} {client?.user?.lastName}</span> et toutes les procédures associées.
+              <strong>Attention :</strong> Vous êtes sur le point de supprimer définitivement le client <span className="font-medium">{client?.firstName} {client?.lastName}</span> et toutes les procédures associées.
             </p>
             <p className="mt-2 text-sm text-red-700 dark:text-red-300">
               Cette action est irréversible et entraînera la perte de toutes les données liées à ce client.
@@ -145,14 +145,14 @@ export default function DeleteClientFormModal({ client, inPageProfile = false }:
 
           <div className="border-b border-gray-200 dark:border-gray-800 pb-6">
             <Label className="block mb-2">
-              Pour confirmer la suppression, veuillez saisir le nom du client <span className="font-medium text-amber-300 dark:text-amber-300">{client?.user?.lastName}</span>
+              Pour confirmer la suppression, veuillez saisir le nom du client <span className="font-medium text-amber-300 dark:text-amber-300">{client?.lastName}</span>
             </Label>
             <Input 
               {...register("lastName")} 
               error={!!errors.lastName} 
               hint={errors.lastName?.message} 
               type="text" 
-              placeholder={`Saisir "${client?.user?.lastName}"`}
+              placeholder={`Saisir "${client?.lastName}"`}
               className={`${nameMatch ? "border-green-500 dark:border-green-500" : ""}`}
             />
             

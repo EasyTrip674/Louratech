@@ -12,7 +12,7 @@ export default function UserProfileCard({
   email,
   phone
 }: {
-  email: string;
+  email?:string | null;
   firstName?: string;
   lastName?: string;
   phone?: string;

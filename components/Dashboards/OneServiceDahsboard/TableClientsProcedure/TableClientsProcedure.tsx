@@ -135,15 +135,15 @@ export default async function TableClientsProcedure({
                       <div className="flex items-center gap-3">
                         <div className="flex-shrink-0 h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                           <span className="font-medium text-purple-600 dark:text-purple-400">
-                            {clientProc.client.user.firstName?.charAt(0)}{clientProc.client.user.lastName?.charAt(0)}
+                            {clientProc.client.firstName?.charAt(0)}{clientProc.client.lastName?.charAt(0)}
                           </span>
                         </div>
                         <div>
                           <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                            {clientProc.client.user.lastName} {clientProc.client.user.firstName}
+                            {clientProc.client.lastName} {clientProc.client.firstName}
                           </span>
                           <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                            {clientProc.client.user.email}
+                            {clientProc.client.email}
                           </span>
                         </div>
                       </div>

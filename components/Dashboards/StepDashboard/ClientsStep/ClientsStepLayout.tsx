@@ -57,14 +57,14 @@ stepId
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                       <div className="h-10 w-10 flex-shrink-0 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400">
-                        {clientStep.clientProcedure.client.user.firstName?.[0]}{clientStep.clientProcedure.client.user.lastName?.[0]}
+                        {clientStep.clientProcedure.client.firstName?.[0]}{clientStep.clientProcedure.client.lastName?.[0]}
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {clientStep.clientProcedure.client.user.firstName} {clientStep.clientProcedure.client.user.lastName}
+                          {clientStep.clientProcedure.client.firstName} {clientStep.clientProcedure.client.lastName}
                         </div>
                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {clientStep.clientProcedure.client.user.email}
+                          {clientStep.clientProcedure.client.email}
                         </div>
                       </div>
                     </div>

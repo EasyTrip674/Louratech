@@ -3,7 +3,7 @@ import { z } from "zod";
 export const createClientSchema = z.object({
     firstName: z.string().min(2, { message: "Le prénom doit comporter au moins 2 caractères" }),
     lastName: z.string().min(2, { message: "Le nom doit comporter au moins 2 caractères" }),
-    email: z.string().email({ message: "Adresse email invalide" }),
+    email: z.string().optional(),
     phone: z.string().optional(),
     passport: z.string().optional(),
     address: z.string().optional(),

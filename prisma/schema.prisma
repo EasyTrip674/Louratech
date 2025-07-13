@@ -43,10 +43,7 @@ model organization {
   invoices    Invoice[]
   comptaSettings ComptaSettings?
   clientProcedures ClientProcedure[]
-  team team[]
-  invitation invitation[]
 
-  member member[]
 }
 
 // Modèle d'abonnement pour les organisations
@@ -99,43 +96,6 @@ model organization {
 // }
 
 
-model member{
-  id          String   @id @default(cuid())
-  userId      String
-  organizationId String
-  role        Role
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  user        User     @relation(fields: [userId], references: [id])
-  organization  organization @relation(fields: [organizationId], references: [id])
-}
-
-model invitation{
-  id          String   @id @default(cuid())
-  email       String
-  inviterId   String
-  organizationId String
-  role        Role
-  status      String
-  expiresAt   DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  inviter     User     @relation(fields: [inviterId], references: [id])
-  organization  organization @relation(fields: [organizationId], references: [id])
-}
-
-model team{
-  id          String   @id @default(cuid())
-  name        String
-  organizationId String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
-
-  organization  organization @relation(fields: [organizationId], references: [id])
-}
-
 // Définition des rôles utilisateurs dans le système
 enum Role {
   ADMIN
@@ -180,9 +140,6 @@ model User {
 
   account account[]
 
-  invitation invitation[]
-
-  member member[]
 }
 
 // Profil client étendu avec informations personnelles détaillées
@@ -192,7 +149,9 @@ model Client {
   passport    String?
   address     String?
   birthDate   DateTime?
-  
+
+ 
+  reference String? 
 
   email         String?
   image         String?
@@ -208,8 +167,8 @@ model Client {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  userId      String  @unique
-  user        User     @relation(fields: [userId], references: [id])
+  userId      String?  @unique
+  user        User?    @relation(fields: [userId], references: [id])
 
   organization  organization @relation(fields: [organizationId], references: [id])
   organizationId String

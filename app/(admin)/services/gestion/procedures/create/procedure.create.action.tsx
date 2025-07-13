@@ -2,53 +2,29 @@
 
 import { adminAction } from "@/lib/safe-action"
 import { createProcedureScheme } from "./procedure.create.sheme"
-import prisma from "@/db/prisma";
-
 import { revalidatePath } from "next/cache";
+import { procedureService } from "@/lib/services";
 
 export const doCreateProcedure = adminAction
-    .metadata({actionName:"create Procedure"}) // ✅ Ajout des métadonnées obligatoires
+    .metadata({actionName:"create Procedure"})
     .schema(createProcedureScheme)
-    .action(async ({ clientInput ,ctx}) => {
+    .action(async ({ clientInput, ctx }) => {
+        try {
+            console.log("Creating Procedure with data:", clientInput);
 
-
-        console.log("Creating Procedure with data:", clientInput);
-
-        // TODO: Vérifier si l'utilisateur est autorisé à créer une procédure
-        if (ctx.user.userDetails?.authorize?.canCreateProcedure === false) {
-            throw new Error("Vous n'êtes pas autorisé à créer un service");
-        }
-
-        const existProcedure = await prisma.procedure.findFirst({
-            where: {
-                name: clientInput.name,
-                organizationId: ctx.user.userDetails?.organizationId,
+            // Vérifier l'autorisation
+            if (ctx.user.userDetails?.authorize?.canCreateProcedure === false) {
+                throw new Error("Vous n'êtes pas autorisé à créer un service");
             }
-        });
-        if (existProcedure) {
-            throw new Error("Procedure already exist");
+
+            // Utiliser le service procedure
+            const procedure = await procedureService.createProcedure(clientInput);
+
+            revalidatePath("/app/(admin)/services/gestion/procedures");
+            
+            return { success: true, procedure };
+        } catch (error) {
+            console.error("Erreur lors de la création de la procédure:", error);
+            throw new Error(`Échec de la création de la procédure: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
         }
-
-        const procedure = await prisma.procedure.create({
-            data: {
-                name: clientInput.name,
-                description: "",
-                organizationId: ctx.user.userDetails?.organizationId,
-            },
-        });
-        
-
-        // create category for the procedure
-        await prisma.category.create({
-            data: {
-                name: clientInput.name,
-                type: "REVENUE",
-                description: "Categorie de transaction pour la procedure : " + clientInput.name,
-                organizationId: ctx.user.userDetails?.organizationId,
-            },
-        });
-
-        revalidatePath("/app/(admin)/services/gestion/Procedures");
-        
-        return { success: true, procedure };
     });

@@ -16,7 +16,7 @@ import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
 import { editClientSchema } from "./client.edit.shema";
 import { doEditClient } from "./client.edit.action";
-import { clientProfileDB, clientsTableOrganizationDB } from "@/db/queries/clients.query";
+import type { clientsTableOrganizationDB, clientProfileDB } from '@/lib/services/client.service';
 import { useRouter } from "next/navigation";
 
 // Zod validation schema
@@ -40,8 +40,8 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
     resolver: zodResolver(editClientSchema),
     defaultValues: {
       id: client?.id,
-      lastName: client?.user.lastName  ?? "" ,
-      firstName: client?.user.firstName ?? "" ,
+      lastName: client?.lastName  ?? "" ,
+      firstName: client?.firstName ?? "" ,
       phone: client?.phone ?? "" ,
       passport: client?.passport ?? "" ,
       address: client?.address ?? "" ,
@@ -50,7 +50,7 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
       fatherFirstName: client?.fatherFirstName ?? "" ,
       motherLastName: client?.motherLastName ?? "" ,
       motherFirstName: client?.motherFirstName ?? "" ,
-      email: client?.user.email
+      email: client?.email ?? undefined
     },
   });
 

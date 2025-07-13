@@ -194,16 +194,7 @@ export const doCreateOrganization = actionClient
                             id: userUpdated.id
                         }
                     },
-                    member:{
-                        create:{
-                            user:{
-                                connect:{
-                                    id: userUpdated.id
-                                }
-                            },
-                            role: Role.ADMIN
-                        },
-                    }
+                  
                 }
             });
 

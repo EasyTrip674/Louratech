@@ -247,7 +247,7 @@ export default function TransactionDetails(
                       Client
                     </dt>
                     <div className="mt-1 text-gray-900 dark:text-white">
-                        {transaction.clientProcedure.client.user.firstName} {transaction.clientProcedure.client.user.lastName}
+                        {transaction.clientProcedure.client.firstName} {transaction.clientProcedure.client.lastName}
                     </div>
                   </div>
 
@@ -256,7 +256,7 @@ export default function TransactionDetails(
                       Email
                     </dt>
                     <div className="mt-1 text-gray-900 dark:text-white">
-                        {transaction.clientProcedure.client.user.email}
+                        {transaction.clientProcedure.client.email}
                     </div>
                   </div>
 

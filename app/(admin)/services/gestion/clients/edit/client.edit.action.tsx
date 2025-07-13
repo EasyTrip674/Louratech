@@ -1,45 +1,30 @@
 "use server"
 
 import { adminAction } from "@/lib/safe-action"
-import prisma from "@/db/prisma";
 import { revalidatePath } from "next/cache";
 import { editClientSchema } from "./client.edit.shema";
+import { clientService } from "@/lib/services";
 
 export const doEditClient = adminAction
-    .metadata({actionName:"edit client"}) // ✅ Ajout des métadonnées obligatoires
+    .metadata({actionName:"edit client"})
     .schema(editClientSchema)
-    .action(async ({ clientInput ,ctx}) => {
-        console.log("editing client with data:", clientInput);
-        // TODO: Vérifier si l'utilisateur est autorisé à modifier le client
-        if (ctx.user.userDetails?.authorize?.canEditClient === false) {
-            throw new Error("Vous n'êtes pas autorisé à modifier cet utilisateur");
+    .action(async ({ clientInput, ctx }) => {
+        try {
+            console.log("Editing client with data:", clientInput);
+            
+            // Vérifier l'autorisation
+            if (ctx.user.userDetails?.authorize?.canEditClient === false) {
+                throw new Error("Vous n'êtes pas autorisé à modifier ce client");
+            }
+
+            // Utiliser le service client
+            const client = await clientService.updateClient(clientInput);
+
+            revalidatePath("/app/(admin)/services/gestion/clients");
+            
+            return { success: true, client };
+        } catch (error) {
+            console.error("Erreur lors de la modification du client:", error);
+            throw new Error(`Échec de la modification du client: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
         }
-        // TODO: Mettre a jour les données du client dans la base de données
-        const client = await prisma.client.update({
-            where: {
-                id: clientInput.id,
-            },
-            data: {
-                phone: clientInput.phone,
-                passport: clientInput.passport,
-                address: clientInput.address,
-                birthDate: clientInput.birthDate ? new Date(clientInput.birthDate) : undefined,
-                fatherLastName: clientInput.fatherLastName,
-                fatherFirstName: clientInput.fatherFirstName,
-                motherLastName: clientInput.motherLastName,
-                motherFirstName: clientInput.motherFirstName,
-
-                user: {
-                    update: {
-                         firstName: clientInput.firstName,
-                         lastName: clientInput.lastName,
-                         email: clientInput.email
-                    },
-                },
-            },
-        });
-
-        revalidatePath("/app/(admin)/services/gestion/clients");
-        
-        return { success: true, client };
     });

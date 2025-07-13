@@ -38,6 +38,15 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  // Ajout des nouveaux états pour les filtres avancés
+  const [typeFilter, setTypeFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState('');
+  const [clientFilter, setClientFilter] = useState('');
+  // const [dateFilter, setDateFilter] = useState<Date | null>(null);
+  const [minAmount, setMinAmount] = useState('');
+  const [maxAmount, setMaxAmount] = useState('');
+
   
   if(!transactions || transactions.length === 0) {
       return (
@@ -47,11 +56,23 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
       );
   }
 
-  // Calculer les indices pour la pagination
+  // Filtrage avancé des transactions
+  const filteredTransactions = transactions.filter(transaction => {
+    let match = true;
+    if (typeFilter && transaction.type !== typeFilter) match = false;
+    if (statusFilter && transaction.status !== statusFilter) match = false;
+    if (paymentMethodFilter && transaction.paymentMethod !== paymentMethodFilter) match = false;
+    if (clientFilter && `${transaction.clientProcedure?.client.firstName} ${transaction.clientProcedure?.client.lastName}`.toLowerCase().indexOf(clientFilter.toLowerCase()) === -1) match = false;
+    if (minAmount && transaction.amount < Number(minAmount)) match = false;
+    if (maxAmount && transaction.amount > Number(maxAmount)) match = false;
+    return match;
+  });
+
+  // Pagination sur filteredTransactions
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentTransactions = transactions.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(transactions.length / itemsPerPage);
+  const currentTransactions = filteredTransactions.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
 
   // Fonction pour changer de page
   const paginate = (pageNumber: number) => {
@@ -102,6 +123,32 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
   return (
     <div className="max-w-full overflow-x-auto">
       <div className="min-w-[1102px]">
+        <div className="flex flex-wrap gap-2 mb-4">
+          <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} className="input-filter">
+            <option value="">Type</option>
+            <option value="REVENUE">Revenu</option>
+            <option value="EXPENSE">Dépense</option>
+            <option value="TRANSFER">Transfert</option>
+          </select>
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="input-filter">
+            <option value="">Statut</option>
+            <option value="PENDING">En attente</option>
+            <option value="APPROVED">Approuvée</option>
+            <option value="REJECTED">Rejetée</option>
+          </select>
+          <select value={paymentMethodFilter} onChange={e => setPaymentMethodFilter(e.target.value)} className="input-filter">
+            <option value="">Méthode de paiement</option>
+            <option value="CASH">Espèces</option>
+            <option value="BANK_TRANSFER">Virement</option>
+            <option value="CREDIT_CARD">Carte bancaire</option>
+            <option value="CHECK">Chèque</option>
+            <option value="MOBILE_PAYMENT">Paiement mobile</option>
+          </select>
+          <input type="text" placeholder="Client..." value={clientFilter} onChange={e => setClientFilter(e.target.value)} className="input-filter" />
+          {/* <DatePicker value={dateFilter} onChange={setDateFilter} /> */}
+          <input type="number" placeholder="Montant min" value={minAmount} onChange={e => setMinAmount(e.target.value)} className="input-filter" />
+          <input type="number" placeholder="Montant max" value={maxAmount} onChange={e => setMaxAmount(e.target.value)} className="input-filter" />
+        </div>
         <Table>
           {/* En-tête du tableau */}
           <TableHeader className="border-b border-gray-100 dark:border-white/[0.05] bg-gray-50 dark:bg-gray-800/50">
@@ -208,7 +255,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                     <span className="font-medium">{transaction?.expense ? transaction.expense.title : transaction.revenue?.source
                       }</span>
                     <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {transaction.clientProcedure?.client.user.firstName} {transaction.clientProcedure?.client.user.lastName}
+                      {transaction.clientProcedure?.client.firstName} {transaction.clientProcedure?.client.lastName}
                     </span>
                   </div>
                 </TableCell>
@@ -262,8 +309,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                   {formatAmount(transaction.amount, transaction.type, session.data?.userDetails?.organization?.comptaSettings?.currency)}
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  <div className="flex items-center gap-2
-                  ">
+                  <div className="flex items-center gap-2">
                     <Link 
                       href={`/services/gestion/finances/transactions/${transaction.id}`}
                       className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 focus:ring-4 focus:ring-brand-300 transition-colors dark:bg-brand-700 dark:hover:bg-brand-800"
@@ -282,7 +328,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-4 px-4">
             <div className="text-sm text-gray-500 dark:text-gray-400">
-              Affichage de {indexOfFirstItem + 1} à {Math.min(indexOfLastItem, transactions.length)} sur {transactions.length} transactions
+              Affichage de {indexOfFirstItem + 1} à {Math.min(indexOfLastItem, filteredTransactions.length)} sur {filteredTransactions.length} transactions
             </div>
             <div className="flex items-center space-x-2">
               <button

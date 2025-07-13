@@ -43,7 +43,6 @@ export default function CreateClientFormModal() {
       phone: "",
       passport: "",
       address: "",
-      birthDate: "",
       fatherLastName: "",
       fatherFirstName: "",
       motherLastName: "",
@@ -222,7 +221,6 @@ export default function CreateClientFormModal() {
             <div className="col-span-2">
               <Input 
                 label="Email"
-                required
                 {...register("email")} 
                 error={!!errors.email} 
                 hint={errors.email?.message} 
@@ -231,59 +229,7 @@ export default function CreateClientFormModal() {
               />
             </div>
             
-            {/* Mot de passe */}
-            {/* <div className="col-span-1">
-              <Input 
-                label="Mot de passe"
-                {...register("password")} 
-                error={!!errors.password} 
-                hint={errors.password?.message} 
-                type={showPassword ? "text" : "password"} 
-                placeholder="Entrez le mot de passe" 
-              />
-            </div>
-                  {...register("password")} 
-                  error={!!errors.password} 
-                  hint={errors.password?.message} 
-                  type={showPassword ? "text" : "password"} 
-                  placeholder="Entrez le mot de passe" 
-                />
-                <span
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-                >
-                  {showPassword ? (
-                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                  ) : (
-                    <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                  )}
-                </span>
-              </div>
-            </div> */}
-
-            {/* Confirmer le mot de passe */}
-            {/* <div className="col-span-1">
-              <Label>Confirmer le mot de passe</Label>
-              <div className="relative">
-                <Input 
-                  {...register("confirmPassword")} 
-                  error={!!errors.confirmPassword} 
-                  hint={errors.confirmPassword?.message} 
-                  type={showConfirmPassword ? "text" : "password"} 
-                  placeholder="Confirmez le mot de passe" 
-                />
-                <span
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-                >
-                  {showConfirmPassword ? (
-                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                  ) : (
-                    <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                  )}
-                </span>
-              </div>
-            </div> */}
+            
           </div>
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">

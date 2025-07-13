@@ -11,35 +11,58 @@ import TableEmployeesSkeleton from "./TableEmployeesSkeleton";
 export const metadata: Metadata = {
     title: "Employees",
     description: "Gestion des Employees de l'entreprise",
-    // other metadata
 };
 
-export default async function EmployeesPage() {
-  const session = await auth.api.getSession({
-    headers: await headers()
-  })
+// Composant pour récupérer les données de session
+async function EmployeesPageProvider({ children }: { children: React.ReactNode }) {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers()
+    });
+
+    if (!session) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-red-500">Session non trouvée</p>
+        </div>
+      );
+    }
 
     return (
-        <div>
-            <PageBreadcrumb pageTitle="Gestion des Employés" />
-            <div className="space-y-6">
-                <ComponentCard
-                    title="Employés"
-                    actions={
-                        <div className="flex items-center space-x-2">
-                         {
-                             session?.userDetails?.authorize?.canCreateAdmin && (
-                                <CreateEmployeeFormModal />
-                                )
-                         }
-                        </div>
-                    }
-                >
-                    <Suspense fallback={<TableEmployeesSkeleton />}>
-                        <TableEmployeesLayout />
-                    </Suspense>
-                </ComponentCard>
-            </div>
-        </div>
+      <div className="employees-page-data" data-session={JSON.stringify(session)}>
+        {children}
+      </div>
     );
+  } catch (error) {
+    console.error("Erreur lors du chargement de la session:", error);
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-500">Erreur lors du chargement de la session</p>
+      </div>
+    );
+  }
+}
+
+export default async function EmployeesPage() {
+  return (
+    <EmployeesPageProvider>
+      <div>
+        <PageBreadcrumb pageTitle="Gestion des Employés" />
+        <div className="space-y-6">
+          <ComponentCard
+            title="Employés"
+            actions={
+              <div className="flex items-center space-x-2">
+                <CreateEmployeeFormModal />
+              </div>
+            }
+          >
+            <Suspense fallback={<TableEmployeesSkeleton />}>
+              <TableEmployeesLayout />
+            </Suspense>
+          </ComponentCard>
+        </div>
+      </div>
+    </EmployeesPageProvider>
+  );
 }
