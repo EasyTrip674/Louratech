@@ -60,7 +60,7 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
     // Transformer les données pour notre composant SelectSearch
     const clientOptions = clientsDB.map(client => ({
         id: client.id,
-        label: `${client.user.firstName} ${client.user.lastName}`
+        label: `${client.firstName} ${client.lastName}`
     }))
     
     const currentAmount = watch("price");

@@ -1,8 +1,4 @@
 import { BaseService } from "./base.service";
-import { Role } from "@prisma/client";
-import { sendEmail } from "@/lib/nodemailer/email";
-import { generateEmailMessageHtml } from "@/lib/nodemailer/message";
-import { auth } from "@/lib/auth";
 
 // Types équivalents à ceux de db/queries/clients.query.ts
 import type { Prisma } from "@prisma/client";
@@ -12,13 +8,13 @@ export type clientProfileDB = Prisma.PromiseReturnType<ClientService["getClientB
 export type ClientIdWithNameDB = Prisma.PromiseReturnType<ClientService["getClientsForSelect"]>;
 
 export interface CreateClientData {
-  email: string;
+  email?: string;
   firstName: string;
   lastName: string;
   phone?: string;
   passport?: string;
   address?: string;
-  birthDate?: Date;
+  birthDate?: string | Date;
   fatherLastName?: string;
   fatherFirstName?: string;
   motherLastName?: string;
@@ -27,7 +23,7 @@ export interface CreateClientData {
 
 export interface UpdateClientData {
   id: string;
-  email: string;
+  email?: string;
   firstName: string;
   lastName: string;
   phone?: string;
@@ -44,7 +40,11 @@ export class ClientService extends BaseService {
   /**
    * Crée un nouveau client
    */
+
+  private clientCreationLocks = new Map<string, Promise<string>>();
+
   async createClient(data: CreateClientData) {
+    
     try {
       const organizationId = await this.getOrganizationId();
       
@@ -59,53 +59,20 @@ export class ClientService extends BaseService {
       }
 
       // Vérifier l'existence du client
-      const existingClient = await this.prisma.user.findFirst({
-        where: {
-          email: data.email,
-          client: {
-            isNot: null
-          }
-        }
-      });
+      // const existingClient = await this.prisma.client.findFirst({
+      //   where: {
+      //     email: data.email,
+      //   }
+      // });
 
-      if (existingClient) {
-        throw new Error("Un client avec cet email existe déjà");
-      }
+      // if (existingClient) {
+      //   throw new Error("Un client avec cet email existe déjà");
+      // }
+
 
       // Utiliser une transaction pour toutes les opérations de base de données
       const result = await this.prisma.$transaction(async (tx) => {
         // Créer le compte utilisateur via l'auth system
-        const user = await auth.api.signUpEmail({
-          body: {
-            email: data.email,
-            password: "00000000", // Mot de passe temporaire
-            name: `${data.firstName} ${data.lastName}`,
-            options: {
-              emailVerification: false,
-              data: {
-                firstName: data.firstName,
-                lastName: data.lastName,
-              }
-            }
-          }
-        });
-
-        if (!user.user.id) {
-          throw new Error("Erreur lors de la création de l'utilisateur");
-        }
-
-        // Mettre à jour l'utilisateur avec les informations de l'organisation
-        await tx.user.update({
-          where: {
-            id: user.user.id,
-          },
-          data: {
-            organizationId,
-            role: Role.CLIENT,
-            lastName: data.lastName,
-            firstName: data.firstName,
-          },
-        });
 
         // Créer le profil client
         const client = await tx.client.create({
@@ -119,10 +86,11 @@ export class ClientService extends BaseService {
             motherLastName: data.motherLastName,
             motherFirstName: data.motherFirstName,
             organizationId,
-            userId: user.user.id,
+            lastName: data.lastName,
+            firstName: data.firstName,
+            email: data.email
           },
           include: {
-            user: true,
             organization: true
           }
         });
@@ -130,28 +98,16 @@ export class ClientService extends BaseService {
         return client;
       });
 
-      // Envoyer un email de bienvenue
-      try {
-        await sendEmail({
-          to: data.email,
-          subject: "Bienvenue chez LouraTech",
-          html: generateEmailMessageHtml({
-            subject: "Bienvenue chez LouraTech",
-            content: `
-              <h1>Bienvenue ${data.firstName} ${data.lastName} !</h1>
-              <p>Votre compte client a été créé avec succès.</p>
-              <p>Vous pouvez maintenant accéder à votre espace client.</p>
-            `
-          })
-        });
-      } catch (emailError) {
-        console.error("Erreur lors de l'envoi de l'email:", emailError);
-      }
+ 
 
       return result;
     } catch (error) {
       this.handleDatabaseError(error, "createClient");
+    } finally {
+      // Toujours nettoyer le lock après la création
+      // this.clientCreationLocks.delete(lockKey);
     }
+
   }
 
   /**
@@ -189,17 +145,12 @@ export class ClientService extends BaseService {
           fatherFirstName: data.fatherFirstName,
           motherLastName: data.motherLastName,
           motherFirstName: data.motherFirstName,
-          user: {
-            update: {
-              firstName: data.firstName,
-              lastName: data.lastName,
-              email: data.email
-            }
-          }
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email
         },
         include: {
-          user: true,
-          organization: true
+          organization:true
         }
       });
 
@@ -271,9 +222,7 @@ export class ClientService extends BaseService {
         });
 
         // Supprimer l'utilisateur
-        await tx.user.delete({
-          where: { id: client.userId }
-        });
+      
       });
 
       return { success: true };
@@ -301,15 +250,9 @@ export class ClientService extends BaseService {
           fatherFirstName: true,
           motherLastName: true,
           motherFirstName: true,
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-              active: true,
-            }
-          }
+          firstName: true,
+          lastName: true,
+          email: true,
         }
       });
     } catch (error) {
@@ -339,15 +282,10 @@ export class ClientService extends BaseService {
           fatherFirstName: true,
           motherLastName: true,
           motherFirstName: true,
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-              active: true,
-            }
-          }
+          email:true,
+          firstName:true,
+          lastName:true,
+        
         }
       });
     } catch (error) {
@@ -366,12 +304,9 @@ export class ClientService extends BaseService {
         where: { organizationId },
         select: {
           id: true,
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-            }
-          }
+          firstName: true,
+          lastName: true,
+         
         }
       });
     } catch (error) {

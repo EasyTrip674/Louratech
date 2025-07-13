@@ -64,7 +64,7 @@ export abstract class BaseService {
       }
     }
     
-    throw new Error('Une erreur est survenue lors de l\'opération');
+    throw new Error(`Une erreur est survenue lors de l\'opération ${error}`);
   }
 
   /**

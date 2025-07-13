@@ -16,17 +16,17 @@ export default function ClientInfoCard({ client, canEditCLient = false }: { clie
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <UserElementInfo 
               label="Prénom" 
-              value={client?.user.firstName} 
+              value={client?.firstName} 
             />
 
             <UserElementInfo 
               label="Nom" 
-              value={client?.user.lastName} 
+              value={client?.lastName} 
             />
 
             <UserElementInfo 
               label="Adresse e-mail" 
-              value={client?.user.email} 
+              value={client?.email} 
             />
 
             <UserElementInfo 

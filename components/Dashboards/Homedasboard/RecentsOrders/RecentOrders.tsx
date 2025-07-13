@@ -115,12 +115,12 @@ export default async function  RecentOrders(
                 <TableCell className="py-3">
                   <div className="flex flex-col">
                     <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                    {client.user.firstName} {client.user.lastName}
+                    {client.firstName} {client.lastName}
                     </p>
                   </div>
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                  {client.user.email}
+                  {client.email}
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     {new Date(client.createdAt).toLocaleDateString("fr-FR", {
@@ -132,12 +132,12 @@ export default async function  RecentOrders(
                 <TableCell className="py-3">
                   <Badge
                     color={
-                      client.user.active
+                      client.active
                         ? "success"
                         : "error"
                     }
                   >
-                    {client.user.active ? "Actif" : "Inactif"}
+                    {client.active ? "Actif" : "Inactif"}
                   </Badge>
                 </TableCell>
               </TableRow>

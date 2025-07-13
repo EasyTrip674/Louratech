@@ -1,13 +1,13 @@
 "use server";
 
 import { adminAction } from "@/lib/safe-action";
-import { clientService, CreateClientData } from "@/lib/services";
+import { clientService } from "@/lib/services";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 // Schémas de validation
 const createClientSchema = z.object({
-  email: z.string().email("Email invalide"),
+  email: z.string().optional(),
   firstName: z.string().min(1, "Le prénom est requis"),
   lastName: z.string().min(1, "Le nom est requis"),
   phone: z.string().optional(),
@@ -22,7 +22,7 @@ const createClientSchema = z.object({
 
 const updateClientSchema = z.object({
   id: z.string().min(1, "ID requis"),
-  email: z.string().email("Email invalide"),
+  email: z.string().optional(),
   firstName: z.string().min(1, "Le prénom est requis"),
   lastName: z.string().min(1, "Le nom est requis"),
   phone: z.string().optional(),
@@ -45,7 +45,7 @@ export const createClientAction = adminAction
   .schema(createClientSchema)
   .action(async ({ clientInput }) => {
     try {
-      const client = await clientService.createClient(clientInput as CreateClientData);
+      const client = await clientService.createClient(clientInput);
       
       revalidatePath("/app/(admin)/services/gestion/clients");
       
@@ -62,7 +62,7 @@ export const updateClientAction = adminAction
     try {
       const client = await clientService.updateClient(clientInput);
       
-      revalidatePath("/app/(admin)/services/gestion/clients");
+      revalidatePath("/app/(admin)/services/gestion/clients/[clientId]");
       
       return { success: true, client };
     } catch (error) {

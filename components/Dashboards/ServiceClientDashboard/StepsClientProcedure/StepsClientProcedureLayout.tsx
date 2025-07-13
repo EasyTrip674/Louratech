@@ -118,7 +118,7 @@ export default async function StepsClientProcedureLayout(
                   session?.userDetails?.authorize?.canReadTransaction && (
                     <PaymentStepModal >
                     <PaymentStepDetails  clientStepId={stepClient.id} stepName={stepClient.step.name} 
-                    clientName={`${clientProcedure.client.user.firstName} ${clientProcedure.client.user.lastName}`} procedureName={clientProcedure.procedure.name}  />
+                    clientName={`${clientProcedure.client.firstName} ${clientProcedure.client.lastName}`} procedureName={clientProcedure.procedure.name}  />
                  </PaymentStepModal>
                   )
                  }

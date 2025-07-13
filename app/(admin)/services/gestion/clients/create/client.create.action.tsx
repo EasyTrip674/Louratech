@@ -43,20 +43,7 @@ export const doCreateClient = adminAction
                     })
                 });
 
-                // Email de bienvenue au nouveau client
-                await sendEmail({
-                    to: clientInput.email,
-                    subject: `Bienvenue chez ${organizationName}`,
-                    html: generateEmailMessageHtml({
-                        subject: `Bienvenue chez ${organizationName}`,
-                        content: `
-                            <p>Bonjour ${clientInput.firstName} ${clientInput.lastName},</p>
-                            <p>Votre compte client a été créé avec succès chez ${organizationName}.</p>
-                            <p>Vous pouvez maintenant accéder à votre espace client.</p>
-                            <p>Cordialement,<br>L'équipe ${organizationName}</p>
-                        `
-                    })
-                });
+        
             } catch (emailError) {
                 console.error("Erreur lors de l'envoi des emails:", emailError);
                 // Ne pas faire échouer toute l'opération si l'email échoue

@@ -109,9 +109,9 @@ async function ClientDetailContent({
     <>
       <UserProfileCard 
         role={Role.CLIENT}
-        email={client.user.email}
-        firstName={client.user.firstName || ""}
-        lastName={client.user.lastName || ""}
+        email={client?.email}
+        firstName={client.firstName || ""}
+        lastName={client.lastName || ""}
         phone={client.phone || ""}
         address={client.address || ""}
         imageSrc={""}

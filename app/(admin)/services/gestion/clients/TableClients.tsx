@@ -1,16 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import { Eye, Search } from 'lucide-react';
 import { clientsTableOrganizationDB } from '@/lib/services/client.service';
-import { getStatusIcon } from '@/lib/StatusBadge';
 import Button from '@/components/ui/button/Button';
 import CreateClientFormModal from './create/CreateClientFormModal';
 import EditClientFormModal from './edit/EditClientFormModal';
 import DeleteClientFormModal from './[clientId]/delete/DeleteClientFormModal';
 import { authClient } from '@/lib/auth-client';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '@/components/ui/table';
+import { useRouter } from 'next/navigation';
 
 export default function TableClients() {
   const [clients, setClients] = useState<clientsTableOrganizationDB>([]);
@@ -22,7 +21,7 @@ export default function TableClients() {
   const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 10;
   const session = authClient.useSession();
-  const router = useRouter();
+  const router =useRouter();
   const [phoneFilter, setPhoneFilter] = useState("");
   const [addressFilter, setAddressFilter] = useState("");
 
@@ -53,17 +52,12 @@ export default function TableClients() {
     if (searchTerm.trim() !== "") {
       const searchTermLower = searchTerm.toLowerCase().trim();
       filtered = filtered.filter(client => 
-        `${client.user.lastName} ${client.user.firstName}`.toLowerCase().includes(searchTermLower) ||
-        client.user.email.toLowerCase().includes(searchTermLower)
+        `${client.lastName} ${client.firstName}`.toLowerCase().includes(searchTermLower) ||
+        client?.email?.toLowerCase().includes(searchTermLower)
       );
     }
     
-    // Appliquer le filtre de statut
-    if (statusFilter !== "all") {
-      filtered = filtered.filter(client => 
-        (statusFilter === "active" ? client.user.active : !client.user.active)
-      );
-    }
+ 
 
     // Appliquer le filtre de téléphone
     if (phoneFilter.trim() !== "") {
@@ -86,12 +80,12 @@ export default function TableClients() {
 
       switch (sortBy) {
         case "name":
-          aValue = `${a.user.lastName} ${a.user.firstName}`.toLowerCase();
-          bValue = `${b.user.lastName} ${b.user.firstName}`.toLowerCase();
+          aValue = `${a.lastName} ${a.firstName}`.toLowerCase();
+          bValue = `${b.lastName} ${b.firstName}`.toLowerCase();
           break;
         case "email":
-          aValue = a.user.email.toLowerCase();
-          bValue = b.user.email.toLowerCase();
+          aValue = a?.email?.toLowerCase() ?? "";
+          bValue = b?.email?.toLowerCase() ?? "";
           break;
         case "createdAt":
           aValue = new Date(0); // Fallback since createdAt is not available
@@ -238,9 +232,6 @@ export default function TableClients() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Statut
-                  </TableCell>
                   <TableCell className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Actions
                   </TableCell>
@@ -254,13 +245,13 @@ export default function TableClients() {
                         <div className="flex-shrink-0 h-10 w-10">
                           <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
                             <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                              {client.user.firstName?.charAt(0)}{client.user.lastName?.charAt(0)}
+                              {client.firstName?.charAt(0)}{client.lastName?.charAt(0)}
                             </span>
                           </div>
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
-                            {client.user.firstName} {client.user.lastName}
+                            {client.firstName} {client.lastName}
                           </div>
                           <div className="text-sm text-gray-500 dark:text-gray-400">
                             {client.address || "Aucune adresse"}
@@ -269,7 +260,7 @@ export default function TableClients() {
                       </div>
                     </TableCell>
                     <TableCell className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 dark:text-white">{client.user.email}</div>
+                      <div className="text-sm text-gray-900 dark:text-white">{client.email}</div>
                     </TableCell>
                     <TableCell className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900 dark:text-white">
@@ -281,9 +272,7 @@ export default function TableClients() {
                         N/A
                       </div>
                     </TableCell>
-                    <TableCell className="px-6 py-4 ">
-                      {getStatusIcon(client.user.active ? "active" : "inactive")}
-                    </TableCell>
+                 
                     <TableCell className="px-6 py-4  text-sm font-medium">
                       <div className="flex items-center gap-2">
                         <Button

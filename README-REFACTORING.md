@@ -219,7 +219,7 @@ describe("ClientService", () => {
     const client = await clientService.createClient(clientData);
     
     expect(client).toBeDefined();
-    expect(client.user.email).toBe(clientData.email);
+    expect(client.email).toBe(clientData.email);
   });
 });
 ```

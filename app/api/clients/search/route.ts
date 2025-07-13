@@ -634,8 +634,8 @@ export async function POST(request: NextRequest) {
 //     return {
 //       success: true,
 //       client: {
-//         name: client.user.name || `${client.user.firstName} ${client.user.lastName}`,
-//         email: client.user.email,
+//         name: client.name || `${client.firstName} ${client.lastName}`,
+//         email: client.email,
 //         phone: client.phone
 //       },
 //       analysis,

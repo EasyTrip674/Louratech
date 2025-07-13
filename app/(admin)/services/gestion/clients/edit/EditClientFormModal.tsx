@@ -40,8 +40,8 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
     resolver: zodResolver(editClientSchema),
     defaultValues: {
       id: client?.id,
-      lastName: client?.user.lastName  ?? "" ,
-      firstName: client?.user.firstName ?? "" ,
+      lastName: client?.lastName  ?? "" ,
+      firstName: client?.firstName ?? "" ,
       phone: client?.phone ?? "" ,
       passport: client?.passport ?? "" ,
       address: client?.address ?? "" ,
@@ -50,7 +50,7 @@ export default function EditClientFormModal({ client , inPageProfile=false }: { 
       fatherFirstName: client?.fatherFirstName ?? "" ,
       motherLastName: client?.motherLastName ?? "" ,
       motherFirstName: client?.motherFirstName ?? "" ,
-      email: client?.user.email
+      email: client?.email ?? undefined
     },
   });
 

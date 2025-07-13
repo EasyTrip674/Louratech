@@ -222,9 +222,9 @@ export class DashboardService extends BaseService {
 
       return clients.map(client => ({
         id: client.id,
-        firstName: client.user.firstName || "",
-        lastName: client.user.lastName || "",
-        email: client.user.email || "",
+        firstName: client.firstName || "",
+        lastName: client.lastName || "",
+        email: client.email || "",
         createdAt: client.createdAt,
       }));
     } catch (error) {

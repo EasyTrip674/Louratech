@@ -55,7 +55,7 @@ export  const StatClientProcedureLayout = async ({clientProcedureId,procedureId}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            {clientProcedure.client.user.firstName} {clientProcedure.client.user.lastName}
+            {clientProcedure.client.firstName} {clientProcedure.client.lastName}
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-1">
             {clientProcedure.procedure.name}
@@ -116,24 +116,24 @@ export  const StatClientProcedureLayout = async ({clientProcedureId,procedureId}
           </h2>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-            { clientProcedure.client?.user.firstName &&
+            { clientProcedure.client?.firstName &&
                 <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Client</p>
-                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.user.firstName}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.firstName}</p>
               </div>
             }
             {
-              clientProcedure.client?.user.lastName &&
+              clientProcedure.client?.lastName &&
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Nom</p>
-                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.user.lastName}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.lastName}</p>
               </div>
             }
              {
-              clientProcedure.client?.user.email &&
+              clientProcedure.client?.email &&
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
-                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.user.email}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{clientProcedure.client?.email}</p>
               </div>
              }
              {

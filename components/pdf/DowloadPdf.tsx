@@ -25,7 +25,7 @@ export default function DownloadPdf({
     return null;
   }
 
-  const fileName = `${transaction.clientProcedure?.client.user.firstName}${transaction?.clientProcedure?.client.user.lastName}${transaction.id}.pdf`;
+  const fileName = `${transaction.clientProcedure?.client.firstName}${transaction?.clientProcedure?.client.lastName}${transaction.id}.pdf`;
 
   const handleZoomIn = () => {
     setScale(prevScale => Math.min(prevScale + 0.25, 2.5));

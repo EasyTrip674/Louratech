@@ -51,7 +51,7 @@ export default function FilteredTransactions({
     transactions.forEach(transaction => {
       if (transaction.clientProcedure?.client) {
         const client = transaction.clientProcedure.client;
-        const clientName = client.user?.name || `Client ${client.id}`;
+        const clientName = client?.firstName || `Client ${client.id}`;
         clients.set(client.id, {
           id: client.id,
           name: clientName
@@ -121,7 +121,7 @@ export default function FilteredTransactions({
         transaction.createdBy?.email.toLowerCase().includes(searchLower) ||
         transaction.approvedBy?.name?.toLowerCase().includes(searchLower) ||
         transaction.approvedBy?.email?.toLowerCase().includes(searchLower) ||
-        transaction.clientProcedure?.client?.user?.name?.toLowerCase().includes(searchLower) ||
+        transaction.clientProcedure?.client?.firstName?.toLowerCase().includes(searchLower) ||
         transaction.clientProcedure?.procedure?.name?.toLowerCase().includes(searchLower)
       );
     }

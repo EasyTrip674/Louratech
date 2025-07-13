@@ -62,7 +62,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
     if (typeFilter && transaction.type !== typeFilter) match = false;
     if (statusFilter && transaction.status !== statusFilter) match = false;
     if (paymentMethodFilter && transaction.paymentMethod !== paymentMethodFilter) match = false;
-    if (clientFilter && `${transaction.clientProcedure?.client.user.firstName} ${transaction.clientProcedure?.client.user.lastName}`.toLowerCase().indexOf(clientFilter.toLowerCase()) === -1) match = false;
+    if (clientFilter && `${transaction.clientProcedure?.client.firstName} ${transaction.clientProcedure?.client.lastName}`.toLowerCase().indexOf(clientFilter.toLowerCase()) === -1) match = false;
     if (minAmount && transaction.amount < Number(minAmount)) match = false;
     if (maxAmount && transaction.amount > Number(maxAmount)) match = false;
     return match;
@@ -255,7 +255,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
                     <span className="font-medium">{transaction?.expense ? transaction.expense.title : transaction.revenue?.source
                       }</span>
                     <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {transaction.clientProcedure?.client.user.firstName} {transaction.clientProcedure?.client.user.lastName}
+                      {transaction.clientProcedure?.client.firstName} {transaction.clientProcedure?.client.lastName}
                     </span>
                   </div>
                 </TableCell>
