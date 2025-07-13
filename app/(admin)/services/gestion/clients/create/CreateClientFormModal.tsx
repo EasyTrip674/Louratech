@@ -43,7 +43,6 @@ export default function CreateClientFormModal() {
       phone: "",
       passport: "",
       address: "",
-      birthDate: "",
       fatherLastName: "",
       fatherFirstName: "",
       motherLastName: "",

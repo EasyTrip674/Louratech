@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { clientProfileDB } from "@/db/queries/clients.query";
+import { clientProfileDB } from "@/lib/services/client.service";
 import EditClientFormModal from "../edit/EditClientFormModal";
 import { UserElementInfo } from "@/components/user/UserElementInfo";
 

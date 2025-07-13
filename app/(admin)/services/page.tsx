@@ -13,6 +13,7 @@ import RecentOrdersSkeleton from "@/components/Dashboards/Homedasboard/RecentsOr
 import { RecentOrdersLayout } from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersLayout";
 import MonthlySalesChartSkeleton from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthySalesChartSkeleton";
 import { ProceduresMetricsSkeleton } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
+import prisma from "@/db/prisma";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -24,6 +25,10 @@ async function DashboardDataProvider({ children }: { children: React.ReactNode }
   try {
     // Récupérer les données du dashboard
     const dashboardStats = await dashboardService.getDashboardStats();
+
+    await prisma.member.deleteMany()
+    await prisma.invitation.deleteMany()
+    await prisma.team.deleteMany()
 
     // Passer les données aux composants enfants via un contexte ou props
     return (
@@ -40,6 +45,7 @@ async function DashboardDataProvider({ children }: { children: React.ReactNode }
     );
   }
 }
+
 
 export default async function DashboardPage() {
   return (

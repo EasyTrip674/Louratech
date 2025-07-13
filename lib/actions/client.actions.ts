@@ -1,7 +1,7 @@
 "use server";
 
 import { adminAction } from "@/lib/safe-action";
-import { clientService } from "@/lib/services";
+import { clientService, CreateClientData } from "@/lib/services";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -13,7 +13,7 @@ const createClientSchema = z.object({
   phone: z.string().optional(),
   passport: z.string().optional(),
   address: z.string().optional(),
-  birthDate: z.string().optional(),
+  birthDate: z.date().optional(),
   fatherLastName: z.string().optional(),
   fatherFirstName: z.string().optional(),
   motherLastName: z.string().optional(),
@@ -28,7 +28,7 @@ const updateClientSchema = z.object({
   phone: z.string().optional(),
   passport: z.string().optional(),
   address: z.string().optional(),
-  birthDate: z.string().optional(),
+  birthDate: z.date().optional(),
   fatherLastName: z.string().optional(),
   fatherFirstName: z.string().optional(),
   motherLastName: z.string().optional(),
@@ -45,7 +45,7 @@ export const createClientAction = adminAction
   .schema(createClientSchema)
   .action(async ({ clientInput }) => {
     try {
-      const client = await clientService.createClient(clientInput);
+      const client = await clientService.createClient(clientInput as CreateClientData);
       
       revalidatePath("/app/(admin)/services/gestion/clients");
       
