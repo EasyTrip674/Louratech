@@ -7,7 +7,6 @@ import {
 } from "../../../ui/table";
 import Link from "next/link";
 import { recentOrdersType } from "@/db/queries/dasboard.query";
-import Badge from "@/components/ui/badge/Badge";
 
 
 
@@ -100,12 +99,6 @@ export default async function  RecentOrders(
               >
                 Date d&apos;inscription
               </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                Statut
-              </TableCell>
             </TableRow>
           </TableHeader>
 
@@ -128,17 +121,6 @@ export default async function  RecentOrders(
                       month: "2-digit",
                       day: "2-digit",
                     })}
-                </TableCell>
-                <TableCell className="py-3">
-                  <Badge
-                    color={
-                      client.active
-                        ? "success"
-                        : "error"
-                    }
-                  >
-                    {client.active ? "Actif" : "Inactif"}
-                  </Badge>
                 </TableCell>
               </TableRow>
             ))}
