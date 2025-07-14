@@ -13,7 +13,7 @@ import RecentOrdersSkeleton from "@/components/Dashboards/Homedasboard/RecentsOr
 import { RecentOrdersLayout } from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersLayout";
 import MonthlySalesChartSkeleton from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthySalesChartSkeleton";
 import { ProceduresMetricsSkeleton } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
-import { checkDataBeforeMigration, migrateClientEmailsAndDeleteUsers } from "@/db/mgirate";
+// import { checkDataBeforeMigration, migrateClientEmailsAndDeleteUsers } from "@/db/mgirate";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -27,10 +27,10 @@ async function DashboardDataProvider({ children }: { children: React.ReactNode }
     const dashboardStats = await dashboardService.getDashboardStats();
 
     // Vérifier les données avant migration
-await checkDataBeforeMigration();
+// await checkDataBeforeMigration();
 
-// Exécuter la migration
-await migrateClientEmailsAndDeleteUsers();
+// // Exécuter la migration
+// await migrateClientEmailsAndDeleteUsers();
 
 
 
