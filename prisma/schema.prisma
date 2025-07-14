@@ -21,7 +21,6 @@ model SuperAdmin {
 }
 
 
-
 // Entité principale représentant une agence ou une entreprise
 model organization {
   id          String   @id @default(cuid())

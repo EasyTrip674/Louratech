@@ -29,7 +29,7 @@ export interface UpdateClientData {
   phone?: string;
   passport?: string;
   address?: string;
-  birthDate?: Date;
+  birthDate?: string;
   fatherLastName?: string;
   fatherFirstName?: string;
   motherLastName?: string;
