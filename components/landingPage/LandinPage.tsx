@@ -8,6 +8,8 @@ import Footer from "./Footer";
 import TargetClients from "./Clients";
 import Testimonials from "./Testimonials";
 import BusinessPage from "./Business";
+import FeaturesSection from './FeaturesSection';
+import { FAQ } from './FAQ';
 
 
 export default function LandingPage() {
@@ -22,6 +24,8 @@ export default function LandingPage() {
     <div className={`bg-primary ${styles.flexStart}`}>
       <div className={`${styles.boxWidth}`}>
         <Hero />
+        <FeaturesSection />
+        <FAQ />
       </div>
     </div>
     
