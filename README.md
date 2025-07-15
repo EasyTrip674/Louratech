@@ -72,4 +72,3 @@ Cette structure vous permettra de gérer l'ensemble des opérations comptables d
 
     ### NEXT OBJECTIF E 
   - INTEGRER L'AGENT IA
-
