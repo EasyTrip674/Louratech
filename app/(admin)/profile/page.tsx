@@ -73,8 +73,6 @@ async function ProfileContent() {
     throw new Error("Non authentifié");
   }
 
-  const phone = user.userDetails?.admin ? user.userDetails.admin.phone : user.userDetails?.client?.phone || "";
-  const address = user.userDetails?.admin ? user.userDetails.admin.address : user.userDetails?.client?.address || "";
 
   console.log("User", user);
     return (
@@ -91,8 +89,8 @@ async function ProfileContent() {
             email={user.user.email}
             firstName={user?.userDetails?.firstName || ""}
             lastName={user.userDetails?.lastName || ""}
-            phone={phone || ""}
-            address={address || ""}
+            phone={user.userDetails.admin?.phone || ""}
+            address={user.userDetails.admin?.address || ""}
             imageSrc={user.user.image || ""}
            />
             <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -122,36 +120,14 @@ async function ProfileContent() {
 
             <UserElementInfo 
               label="Phone" 
-              value={phone} 
+              value={user.userDetails.admin?.phone} 
             />
 
-            <UserElementInfo 
-              label="Birth Date" 
-              value={user.userDetails?.client?.birthDate?.toLocaleDateString()} 
-            />
-
-         {user.userDetails?.client?.passport && (
-            <UserElementInfo 
-              label="Passport" 
-              value={user.userDetails?.client?.passport}
-            />
-          )}
-          {user.userDetails?.client?.fatherFirstName && (
-            <UserElementInfo 
-              label="Father's Name" 
-              value={`${user.userDetails?.client?.fatherFirstName} ${user.userDetails?.client?.fatherLastName}`}
-            />
-          )}
-          {user.userDetails?.client?.motherFirstName && (
-            <UserElementInfo 
-              label="Mother's Name" 
-              value={`${user.userDetails?.client?.motherFirstName} ${user.userDetails?.client?.motherLastName}`}
-            />
-          )}
+       
           
             <UserElementInfo 
               label="Address" 
-              value={address} 
+              value={user.userDetails.admin?.address} 
             />
           </div>
         </div>
