@@ -19,6 +19,7 @@ const updateProcedureSchema = z.object({
 
 const deleteProcedureSchema = z.object({
   id: z.string().min(1, "ID requis"),
+  deleteTransaction:z.boolean().default(false)
 });
 
 // Schémas de validation pour les étapes
@@ -43,6 +44,7 @@ const updateStepSchema = z.object({
 
 const deleteStepSchema = z.object({
   id: z.string().min(1, "ID requis"),
+  deleteTransaction:z.boolean().default(false)
 });
 
 // Actions pour les procédures
@@ -87,7 +89,7 @@ export const deleteProcedureAction = adminAction
   .schema(deleteProcedureSchema)
   .action(async ({ clientInput }) => {
     try {
-      await procedureService.deleteProcedure(clientInput.id);
+      await procedureService.deleteProcedure(clientInput.id, clientInput.deleteTransaction ?? false);
       
       revalidatePath("/app/(admin)/services/gestion/procedures");
       
@@ -142,7 +144,7 @@ export const deleteStepAction = adminAction
   .schema(deleteStepSchema)
   .action(async ({ clientInput }) => {
     try {
-      await procedureService.deleteStep(clientInput.id);
+      await procedureService.deleteStep(clientInput.id, clientInput.deleteTransaction ?? false);
       
       revalidatePath("/app/(admin)/services/gestion/procedures");
       
