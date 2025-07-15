@@ -450,6 +450,7 @@ export const getClientStepPaymentInfo = async (clientStepId: string) => {
                     firstName:true,
                     lastName:true,
                     email:true,
+                    passport:true
                   }
                  }
               }
@@ -464,7 +465,6 @@ export const getClientStepPaymentInfo = async (clientStepId: string) => {
             date: true,
             description: true,
             revenue: {
-              
               select: {
                 id: true,
                 source: true,
