@@ -70,11 +70,7 @@ export async function getTransactionById(id: string) {
         clientProcedure: {
           include: {
             procedure: true,
-            client: {
-              include: {
-                user: true,
-              },
-            },
+            client: true,
           },
         },
         clientStep: {
