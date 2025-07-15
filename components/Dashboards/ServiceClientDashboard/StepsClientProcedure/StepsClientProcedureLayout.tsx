@@ -1,12 +1,14 @@
 import PaymentStepDetails from "@/app/(admin)/services/gestion/procedures/[procedureId]/clients/[clientProcedureId]/stepClient/payments/PayementStepDetails";
 import PaymentStepModal from "@/app/(admin)/services/gestion/procedures/[procedureId]/clients/[clientProcedureId]/stepClient/payments/PayementStepModal";
 import ChangerStatutClientProcedure from "@/app/(admin)/services/gestion/procedures/[procedureId]/clients/[clientProcedureId]/stepClient/status/ChangerStatutClientProcedure";
+import AddClientToStepModal from "@/app/(admin)/services/gestion/procedures/[procedureId]/clients/[clientProcedureId]/clientProcedure/AddClientToStepModal";
 import { getClientProcedureWithSteps } from "@/db/queries/procedures.query";
 import { auth } from "@/lib/auth";
 import { getStepStatusBadge } from "@/lib/StatusBadge";
 import { formatDate } from "@/lib/utils";
 import { AlertTriangle, CheckCircle, CircleDashed, CircleDot, Clock, FileText, XCircle } from "lucide-react";
 import { headers } from "next/headers";
+// import Button from "@/components/ui/button/Button";
 
 export default async function StepsClientProcedureLayout(
         {procedureId, clientProcedureId}:{
@@ -31,6 +33,22 @@ export default async function StepsClientProcedureLayout(
       <FileText className="w-5 h-5 mr-2 text-blue-500 dark:text-blue-400" />
       Modules du service pour ce client
     </h2>
+
+    {/* Bouton pour ajouter une étape/module à ce client */}
+    <div className="mb-8 flex justify-center">
+      <AddClientToStepModal
+        procedureId={procedureId}
+        baseClientId={clientProcedure.client.id}
+        stepsProcedure={{
+          steps: clientProcedure.procedure.steps.map(s => ({
+            id: s.id,
+            name: s.name,
+            price: s.price ?? undefined,
+          }))
+        }}
+        title="Ajouter un module à ce client"
+      />
+    </div>
 
     <div className="relative">
       {clientProcedure.steps.map((stepClient, index) => (
@@ -123,55 +141,21 @@ export default async function StepsClientProcedureLayout(
                   )
                  }
 
+                 {/* <div>
+                  <Button size="sm">
+                    <Trash></Trash>
+                  </Button>
+                 </div> */}
 
-                  {/* Ajouter une note */}
-                  {/* <Button variant="outline" size="sm" className="flex items-center">
-                    <FileText className="w-4 h-4 mr-1" />
-                    Ajouter une note
-                  </Button> */}
 
-                  {/* Assigner à un utilisateur */}
-                  {/* <div className="relative group">
-                    <Button variant="outline" size="sm" className="flex items-center">
-                      <Users className="w-4 h-4 mr-1" />
-                      Assigner
-                      <ChevronRight className="w-4 h-4 ml-1" />
-                    </Button>
-                    <div className="hidden group-hover:block absolute left-0 mt-1 z-10 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700">
-                      <div className="py-1">
-                        <button className="flex items-center w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                          <User className="w-4 h-4 mr-2" />
-                          Sophie Martin
-                        </button>
-                        <button className="flex items-center w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                          <User className="w-4 h-4 mr-2" />
-                          Thomas Dubois
-                        </button>
-                        <button className="flex items-center w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                          <User className="w-4 h-4 mr-2" />
-                          Julie Leclerc
-                        </button>
-                      </div>
-                    </div>
-                  </div> */}
-
-                  {/* Planifier un rendez-vous */}
-                  {/* <Button variant="outline" size="sm" className="flex items-center">
-                    <CalendarClock className="w-4 h-4 mr-1" />
-                    Planifier RDV
-                  </Button> */}
-
-                  {/* Télécharger documents */}
-                  {/* <Button variant="outline" size="sm" className="flex items-center">
-                    <FileCheck className="w-4 h-4 mr-1" />
-                    Factures
-                  </Button> */}
                 </div>
               </div>
             </div>
           </div>
         </div>
       ))}
+
+      
     </div>
   </div>
   );

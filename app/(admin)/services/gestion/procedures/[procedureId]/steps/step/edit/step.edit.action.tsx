@@ -22,7 +22,10 @@ export const doEditStep = adminAction
                 id: clientInput.stepId,
                 name: clientInput.name,
                 description: clientInput.description,
-                price: clientInput.price
+                price: clientInput.price,
+                order: clientInput.order,
+                estimatedDuration: clientInput.estimatedDuration,
+                required: clientInput.isRequired,
             });
 
             revalidatePath("/app/(admin)/services/gestion/procedures");

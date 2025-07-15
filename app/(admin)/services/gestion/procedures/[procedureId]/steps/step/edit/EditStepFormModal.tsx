@@ -132,7 +132,6 @@ export default function EditStepFormModal({
                 placeholder="Entrez le nom du module" 
               />
             </div>
-            
             {/* Description field */}
             <div className="col-span-1">
               <Label>Description (Optionnel)</Label>
@@ -144,7 +143,6 @@ export default function EditStepFormModal({
                 onChangeValue={()=>register("description").onChange}
               />
             </div>
-
             {/* Price field */}
             <div className="col-span-1">
               <Input 
@@ -158,6 +156,44 @@ export default function EditStepFormModal({
                 placeholder="Entrez le prix" 
               />
               <p className="text-xs text-gray-500 mt-1">Ce prix sera personnalisable par client</p>
+            </div>
+            {/* Order field */}
+            <div className="col-span-1">
+              <Input
+                label="Ordre du module"
+                {...register("order", { valueAsNumber: true })}
+                error={!!errors.order}
+                hint={errors.order?.message}
+                type="number"
+                min="1"
+                placeholder="Ordre dans la procédure"
+              />
+            </div>
+            {/* Estimated Duration field */}
+            <div className="col-span-1">
+              <Input
+                label="Durée estimée (jours)"
+                {...register("estimatedDuration", { valueAsNumber: true })}
+                error={!!errors.estimatedDuration}
+                hint={errors.estimatedDuration?.message}
+                type="number"
+                min="0"
+                placeholder="Durée estimée en jours"
+              />
+            </div>
+            {/* Required field */}
+            <div className="col-span-1 flex items-center gap-2">
+              <input
+                id="isRequired"
+                type="checkbox"
+                {...register("isRequired")}
+                defaultChecked={isRequired}
+                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <Label htmlFor="isRequired">Obligatoire</Label>
+              {errors.isRequired && (
+                <span className="text-xs text-red-500 ml-2">{errors.isRequired.message as string}</span>
+              )}
             </div>
           </div>
 

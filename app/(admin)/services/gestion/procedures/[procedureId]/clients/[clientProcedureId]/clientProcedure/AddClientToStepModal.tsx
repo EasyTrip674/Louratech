@@ -10,7 +10,7 @@ type stepsProcedureDB = {
 import { useModal } from '@/hooks/useModal'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus } from 'lucide-react'
-import React, {  useEffect } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { addClientToStepSchema } from './client.add.to.step.scheme'
@@ -22,15 +22,19 @@ import { authClient } from '@/lib/auth-client'
 
 type Props = {
     procedureId: string,
-    clientsDB: ClientIdWithNameDB,
-    stepsProcedure: stepsProcedureDB
+    clientsDB?: ClientIdWithNameDB,
+    stepsProcedure?: stepsProcedureDB,
+    baseClientId?: string,
+    basesStepId?: string,
+    stepBasePrice?: number,
+    title?:string
 }
 
 
 
 type AddClientToStepSchema = z.infer<typeof addClientToStepSchema>
 
-const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props) => {
+const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure, baseClientId, basesStepId, stepBasePrice,title="Inscrire un nouveau client" }: Props) => {
     const { openModal, isOpen, closeModal } = useModal()
       const successModal = useModal();
       const errorModal = useModal();
@@ -47,10 +51,10 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
         resolver: zodResolver(addClientToStepSchema
         ),
         defaultValues: {
-            clientId: '',
+            clientId: baseClientId || '',
             procedureId: procedureId,
-            stepId: '',
-            price: 0
+            stepId: basesStepId || '',
+            price: stepBasePrice ?? 0
         }
     })
     
@@ -58,10 +62,10 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
     const selectedStepId = watch('stepId')
     
     // Transformer les données pour notre composant SelectSearch
-    const clientOptions = clientsDB.map(client => ({
+    const clientOptions = clientsDB?.map(client => ({
         id: client.id,
         label: `${client.firstName} ${client.lastName}`
-    }))
+    })) ?? []
     
     const currentAmount = watch("price");
 
@@ -69,17 +73,24 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
         id: step.id ?? "",
         label: step.name ?? "",
         price: step.price ?? 0
-    }))
+    })) ?? []
     
-    // Effet pour mettre à jour le prix lorsqu'une étape est sélectionnée
-    useEffect(() => {
-        if (selectedStepId) {
-            const selectedStep = stepsProcedure?.steps.find((step: { id: string }) => step.id === selectedStepId)
+    // Effet pour synchroniser les valeurs si props changent
+    React.useEffect(() => {
+        if (baseClientId) setValue('clientId', baseClientId, { shouldValidate: true })
+        if (basesStepId) setValue('stepId', basesStepId, { shouldValidate: true })
+        if (typeof stepBasePrice === 'number') setValue('price', stepBasePrice, { shouldValidate: true })
+    }, [baseClientId, basesStepId, stepBasePrice, setValue])
+
+    // Effet pour mettre à jour dynamiquement le prix lors du changement d'étape sélectionnée (si pas de stepBasePrice)
+    React.useEffect(() => {
+        if (!stepBasePrice && selectedStepId && stepsProcedure?.steps) {
+            const selectedStep = stepsProcedure.steps.find(step => step.id === selectedStepId);
             if (selectedStep) {
-                setValue('price', selectedStep.price ?? 0, { shouldValidate: true })
+                setValue('price', typeof selectedStep.price === 'number' ? selectedStep.price : 0, { shouldValidate: true });
             }
         }
-    }, [selectedStepId, stepsProcedure?.steps, setValue])
+    }, [selectedStepId, stepsProcedure, setValue, stepBasePrice]);
 
 
   const addCLientToStepMutation = useMutation({
@@ -126,6 +137,20 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
         setValue('stepId', id, { shouldValidate: true })
     }
 
+    // Vérification exclusive des props (dev only)
+    if (process.env.NODE_ENV !== 'production') {
+        if (baseClientId && clientsDB) {
+            console.warn('AddClientToStepModal: Vous avez passé à la fois baseClientId et clientsDB. baseClientId sera prioritaire.');
+        }
+        if (basesStepId && stepsProcedure) {
+            console.warn('AddClientToStepModal: Vous avez passé à la fois basesStepId et stepsProcedure. basesStepId sera prioritaire.');
+        }
+    }
+
+    // Pour le select client/step, n'affiche que si l'id n'est pas fourni
+    const showClientSelect = !baseClientId && clientsDB;
+    const showStepSelect = !basesStepId && stepsProcedure;
+
     return (
         <>
             <SuccessModal successModal={successModal}
@@ -134,43 +159,51 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
             <ErrorModal errorModal={errorModal} onRetry={openModal}
         message="Erreur lors de l'ajout du client" />
             <Button onClick={handleOpen} size='sm' variant="outline">
-               Inscrire un nouveau client <Plus className="h-5 w-5" />
+               {title} <Plus className="h-5 w-5" />
             </Button>
             <Modal isOpen={isOpen} onClose={closeModal} className='max-w-[584px] p-5 lg:p-10'>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="p-4">
                         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Inscrire un client à un module</h2>
                         
-                        {/* Utilisation de notre composant SelectSearch pour les étapes */}
+                        {/* Étape */}
                         <div className="mt-6">
-                            <SelectSearch
-                                options={stepOptions}
-                                label="Étape"
-                                required={true}
-                                placeholder="Rechercher une étape..."
-                                value={selectedStepId}
-                                onChange={handleSelectStep}
-                                emptyMessage="Aucune étape trouvée"
-                                error={errors.stepId?.message}
-                            />
+                            {basesStepId ? (
+                                <input type="hidden" value={basesStepId} {...register('stepId')} />
+                            ) : showStepSelect ? (
+                                <SelectSearch
+                                    options={stepOptions}
+                                    label="Étape"
+                                    required={true}
+                                    placeholder="Rechercher une étape..."
+                                    value={selectedStepId}
+                                    onChange={handleSelectStep}
+                                    emptyMessage="Aucune étape trouvée"
+                                    error={errors.stepId?.message}
+                                />
+                            ) : null}
                             {/* Champ caché pour la validation */}
-                            <input type="hidden" {...register('stepId')} />
+                            {!basesStepId && showStepSelect && <input type="hidden" {...register('stepId')} />}
                         </div>
                         
-                        {/* Utilisation de notre composant SelectSearch pour les clients */}
+                        {/* Client */}
                         <div className="mt-6">
-                            <SelectSearch
-                                options={clientOptions}
-                                label="Client"
-                                placeholder="Rechercher un client..."
-                                value={selectedClientId}
-                                onChange={handleSelectClient}
-                                emptyMessage="Aucun client trouvé"
-                                error={errors.clientId?.message}
-                                required={true}
-                            />
+                            {baseClientId ? (
+                                <input type="hidden" value={baseClientId} {...register('clientId')} />
+                            ) : showClientSelect ? (
+                                <SelectSearch
+                                    options={clientOptions}
+                                    label="Client"
+                                    placeholder="Rechercher un client..."
+                                    value={selectedClientId}
+                                    onChange={handleSelectClient}
+                                    emptyMessage="Aucun client trouvé"
+                                    error={errors.clientId?.message}
+                                    required={true}
+                                />
+                            ) : null}
                             {/* Champ caché pour la validation */}
-                            <input type="hidden" {...register('clientId')} />
+                            {!baseClientId && showClientSelect && <input type="hidden" {...register('clientId')} />}
                         </div>
                         <div className='mt-6'>
                             
@@ -183,6 +216,7 @@ const AddClientToStepModal = ({ procedureId, clientsDB, stepsProcedure }: Props)
                                 isAmount={true}
                                 currency={session?.data?.userDetails?.organization?.comptaSettings?.currency}                
                                 {...register('price', { valueAsNumber: true })}
+                                readOnly={typeof stepBasePrice === 'number'}
                             />
                             {errors.price && <p className="mt-2 text-sm text-red-600">{errors.price.message}</p>}
                         </div>

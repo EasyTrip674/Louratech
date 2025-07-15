@@ -27,6 +27,7 @@ export interface UpdateStepData {
   name: string;
   description?: string;
   price?: number;
+  order?: number;
   required?: boolean;
   estimatedDuration?: number;
 }
@@ -281,13 +282,11 @@ export class ProcedureService extends BaseService {
   async updateStep(data: UpdateStepData) {
     try {
       const organizationId = await this.getOrganizationId();
-      
       // Vérifier les autorisations
       const canEdit = await this.checkPermission("canEditStep");
       if (!canEdit) {
         throw new Error("Vous n'êtes pas autorisé à modifier cette étape");
       }
-
       // Vérifier que l'étape appartient à une procédure de l'organisation
       const step = await this.prisma.stepProcedure.findUnique({
         where: { id: data.id },
@@ -297,11 +296,9 @@ export class ProcedureService extends BaseService {
           }
         }
       });
-
       if (!step || step.procedure.organizationId !== organizationId) {
         throw new Error("Étape introuvable ou accès non autorisé");
       }
-
       // Mettre à jour l'étape
       const updatedStep = await this.prisma.stepProcedure.update({
         where: { id: data.id },
@@ -309,14 +306,14 @@ export class ProcedureService extends BaseService {
           name: data.name,
           description: data.description || "",
           price: data.price,
-          required: data.required ?? true,
+          order: data.order,
           estimatedDuration: data.estimatedDuration,
+          required: data.required ?? true,
         },
         include: {
           procedure: true,
         },
       });
-
       return updatedStep;
     } catch (error) {
       this.handleDatabaseError(error, "updateStep");

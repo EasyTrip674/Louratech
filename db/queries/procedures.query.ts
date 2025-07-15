@@ -413,7 +413,11 @@ export const getClientProcedureWithSteps = async (clientProcedureId: string, pro
         procedureId,
       },
       include: {
-        procedure: true,
+        procedure: {
+          include:{
+            steps:true
+          }
+        },
         client:true,
         steps: {
           include: {

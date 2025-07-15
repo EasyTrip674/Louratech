@@ -139,21 +139,21 @@ export default function TableClientsProcedure({
                 placeholder="Rechercher un client..." 
                 value={filters.search}
                 onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-white" 
+                className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg w-full focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-white" 
               />
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
                 showFilters || hasActiveFilters
-                  ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-700 dark:text-blue-300'
+                  ? 'bg-brand-50 border-brand-200 text-brand-700 dark:bg-brand-900/30 dark:border-brand-700 dark:text-brand-300'
                   : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300'
               }`}
             >
               <Filter className="w-4 h-4 mr-2" />
               Filtres
               {hasActiveFilters && (
-                <span className="ml-1 bg-blue-500 text-white text-xs rounded-full px-1.5 py-0.5">
+                <span className="ml-1 bg-brand-500 text-white text-xs rounded-full px-1.5 py-0.5">
                   {Object.values(filters).filter(Boolean).length}
                 </span>
               )}
@@ -169,7 +169,7 @@ export default function TableClientsProcedure({
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-1"
+                  className="text-sm text-brand-600 hover:text-brand-700 dark:text-brand-400 flex items-center gap-1"
                 >
                   <X className="w-3 h-3" />
                   Effacer tout
@@ -186,7 +186,7 @@ export default function TableClientsProcedure({
                 <select
                   value={filters.status}
                   onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                 >
                   <option value="">Tous les statuts</option>
                   <option value="completed">Terminé</option>
@@ -204,7 +204,7 @@ export default function TableClientsProcedure({
                   <select
                     value={filters.progress}
                     onChange={(e) => setFilters(prev => ({ ...prev, progress: e.target.value }))}
-                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                   >
                     <option value="">Toutes les progressions</option>
                     <option value="0-25">0% - 25%</option>
@@ -329,7 +329,7 @@ export default function TableClientsProcedure({
                             <div 
                               className={`h-2 rounded-full ${
                                 progress === 100 ? 'bg-green-500' : 
-                                progress > 50 ? 'bg-blue-500' : 
+                                progress > 50 ? 'bg-brand-500' : 
                                 progress > 25 ? 'bg-amber-500' : 'bg-purple-500'
                               }`} 
                               style={{ width: `${progress}%` }}
@@ -403,7 +403,7 @@ export default function TableClientsProcedure({
                     onClick={() => setCurrentPage(page)}
                     className={`px-3 py-2 text-sm font-medium rounded-lg ${
                       currentPage === page
-                        ? 'bg-blue-500 text-white'
+                        ? 'bg-brand-500 text-white'
                         : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700'
                     }`}
                   >
@@ -439,7 +439,7 @@ export default function TableClientsProcedure({
           </p>
           <button
             onClick={clearFilters}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50"
+            className="inline-flex items-center px-4 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg hover:bg-brand-100 dark:bg-brand-900/30 dark:text-brand-400 dark:hover:bg-brand-900/50"
           >
             <X className="w-4 h-4 mr-2" />
             Effacer les filtres
