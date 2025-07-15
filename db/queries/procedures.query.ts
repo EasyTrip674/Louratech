@@ -457,15 +457,11 @@ export const getClientStepPaymentInfo = async (clientStepId: string) => {
             clientProcedure:{
               select:{
                  client:{
-                  include:{
-                    user:{
-                      select:{
-                        firstName:true,
-                        lastName:true,
-                        email:true,
-                        name:true,
-                      }
-                    }
+                  select:{
+                    id:true,
+                    firstName:true,
+                    lastName:true,
+                    email:true,
                   }
                  }
               }
