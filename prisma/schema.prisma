@@ -1,13 +1,14 @@
-generator client {
-  provider = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
-}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
 
 // Administrateur principal avec accès à toutes les organisations
 model SuperAdmin {
@@ -18,7 +19,6 @@ model SuperAdmin {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 }
-
 
 
 // Entité principale représentant une agence ou une entreprise

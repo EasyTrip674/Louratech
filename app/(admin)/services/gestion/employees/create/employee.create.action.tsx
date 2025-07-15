@@ -58,14 +58,7 @@ export const doCreateEmployee = adminAction
                     body: {
                         email: clientInput.email,
                         password: clientInput.password,
-                        name: `${clientInput.firstName} ${clientInput.lastName}`,
-                        options: {
-                            emailVerification: false,
-                            data: {
-                                firstName: clientInput.firstName,
-                                lastName: clientInput.lastName,
-                            }
-                        }
+                        name: `${clientInput.firstName} ${clientInput.lastName}`,                       
                     }
                 });
 

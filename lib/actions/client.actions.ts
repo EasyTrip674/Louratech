@@ -28,7 +28,7 @@ const updateClientSchema = z.object({
   phone: z.string().optional(),
   passport: z.string().optional(),
   address: z.string().optional(),
-  birthDate: z.date().optional(),
+  birthDate: z.string().optional(),
   fatherLastName: z.string().optional(),
   fatherFirstName: z.string().optional(),
   motherLastName: z.string().optional(),

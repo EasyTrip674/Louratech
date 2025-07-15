@@ -205,13 +205,9 @@ export class DashboardService extends BaseService {
         },
         select: {
           id: true,
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-              email: true,
-            }
-          },
+          firstName: true,
+          lastName: true,
+          email: true,
           createdAt: true,
         },
         orderBy: {
@@ -286,6 +282,7 @@ export class DashboardService extends BaseService {
               procedureId: true
             }
           });
+          
 
           // Grouper les données par date
           const groupedByDate = clientProcedures.reduce((acc, cp) => {
