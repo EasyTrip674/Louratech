@@ -37,11 +37,7 @@ export const getProcedureById = async (id: string) => {
       },
       clientProcedures: {
         include: {
-          client: {
-            include: {
-              user: true,
-            },
-          },
+          client:true,
         },
       },
     },
@@ -393,11 +389,7 @@ export const getStepProcedureDetails = async (stepId: string) => {
         include: {
           clientProcedure: {
             include: {
-              client: {
-                include: {
-                  user: true,
-                },
-              },
+              client: true,
             },
           },
         },
@@ -422,11 +414,7 @@ export const getClientProcedureWithSteps = async (clientProcedureId: string, pro
       },
       include: {
         procedure: true,
-        client:{
-          include:{
-            user:true
-          }
-        },
+        client:true,
         steps: {
           include: {
             step: true,
