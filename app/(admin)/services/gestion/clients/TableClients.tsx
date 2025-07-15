@@ -15,7 +15,6 @@ export default function TableClients() {
   const [clients, setClients] = useState<clientsTableOrganizationDB>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [sortBy, setSortBy] = useState<"name" | "email" | "createdAt">("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [isLoading, setIsLoading] = useState(true);
@@ -103,7 +102,7 @@ export default function TableClients() {
     });
 
     return filtered;
-  }, [clients, searchTerm, statusFilter, phoneFilter, addressFilter, sortBy, sortOrder]);
+  }, [clients, searchTerm, phoneFilter, addressFilter, sortBy, sortOrder]);
 
   // Calculer les indices pour la pagination
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -114,7 +113,7 @@ export default function TableClients() {
   // Réinitialiser la page quand les filtres changent
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, phoneFilter, addressFilter, sortBy, sortOrder]);
+  }, [searchTerm, phoneFilter, addressFilter, sortBy, sortOrder]);
 
   const handleSort = (column: "name" | "email" | "createdAt") => {
     if (sortBy === column) {
@@ -163,15 +162,6 @@ export default function TableClients() {
               className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
             />
           </div>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as "all" | "active" | "inactive")}
-            className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-          >
-            <option value="all">Tous les statuts</option>
-            <option value="active">Actifs</option>
-            <option value="inactive">Inactifs</option>
-          </select>
           <input type="text" placeholder="Téléphone..." value={phoneFilter} onChange={e => setPhoneFilter(e.target.value)} className="input-filter" />
           <input type="text" placeholder="Adresse..." value={addressFilter} onChange={e => setAddressFilter(e.target.value)} className="input-filter" />
         </div>
@@ -179,7 +169,6 @@ export default function TableClients() {
           <span className="text-sm text-gray-500 dark:text-gray-400">
             {filteredAndSortedClients.length} client{filteredAndSortedClients.length > 1 ? 's' : ''}
           </span>
-          <CreateClientFormModal />
         </div>
       </div>
 
