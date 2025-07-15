@@ -80,9 +80,9 @@ Cette structure vous permettra de gérer l'ensemble des opérations comptables d
 
 <!-- ETAPE -->
 
-Reconnecter github sur vercel
-faire pour que ca lance la nouvelle migration de faire de la relation client user optionnel
-Decommenter l'update de user push encore pour update
+Reconnecter github sur vercel fixed
+faire pour que ca lance la nouvelle migration de faire de la relation client user optionnel fixes
+Decommenter l'update de user push encore pour update fixed
 apres supprimer la relation entre client et user sur prisma dans la branch gestion 
 Push ca 
 Update cote main 
