@@ -14,9 +14,9 @@ import { recentOrdersType } from "@/db/queries/dasboard.query";
 export default async function  RecentOrders(
 
   {
-    clientData,
+    clientProcedureData,
   }: {
-    clientData: recentOrdersType
+    clientProcedureData: recentOrdersType
   }
 ) {
   
@@ -29,7 +29,7 @@ export default async function  RecentOrders(
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Derniers clients
+            Derniers clientProcedures
           </h3>
         </div>
 
@@ -72,7 +72,7 @@ export default async function  RecentOrders(
             </svg>
             Filter
           </button> */}
-          <Link href="/services/gestion/clients" className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+          <Link href="/services/gestion/clientProcedures" className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
             Voir plus
           </Link>
         </div>
@@ -103,20 +103,20 @@ export default async function  RecentOrders(
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {clientData.map((client) => (
-              <TableRow key={client.id} className="">
+            {clientProcedureData.map((clientProcedure) => (
+              <TableRow key={clientProcedure.id} className="">
                 <TableCell className="py-3">
                   <div className="flex flex-col">
                     <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                    {client.firstName} {client.lastName}
+                    {clientProcedure.client.firstName} {clientProcedure.client.lastName}
                     </p>
                   </div>
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                  {client.email}
+                  {clientProcedure.client?.email}
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {new Date(client.createdAt).toLocaleDateString("fr-FR", {
+                    {new Date(clientProcedure.createdAt).toLocaleDateString("fr-FR", {
                       year: "numeric",
                       month: "2-digit",
                       day: "2-digit",

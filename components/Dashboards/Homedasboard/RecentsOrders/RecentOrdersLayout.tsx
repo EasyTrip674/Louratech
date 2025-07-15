@@ -3,12 +3,12 @@ import RecentOrders from "./RecentOrders";
 
 
 export const RecentOrdersLayout = async()=>{
-  const RecentOrgdersData = await recentOrders();
+  const recentOrdersClientProcedures = await recentOrders();
 
 
     return (
         <>
-            <RecentOrders clientData={RecentOrgdersData} />
+            <RecentOrders clientProcedureData={recentOrdersClientProcedures} />
         </>
     )
 }

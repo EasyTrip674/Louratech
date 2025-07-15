@@ -31,7 +31,6 @@ export const auth = betterAuth({
                        }
                     },
                     authorize:true,
-                    client:true,
                 }
             });
             if (!allUser) {

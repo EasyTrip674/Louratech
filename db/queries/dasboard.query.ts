@@ -306,20 +306,17 @@ export type getClientServiceDataType = Prisma.PromiseReturnType<
 
 export const recentOrders = async () => {
   const organizationId = await getOrgnaizationId()
-  return await prisma.client.findMany({
+  return await prisma.clientProcedure.findMany({
     where:{
-      user:{
-        organizationId: organizationId,
-        role: "CLIENT",
-      }
+      organizationId: organizationId,
     },
     orderBy: {
       createdAt: "desc",
     },
+    include:{
+        client:true
+    },
     take: 5,
-    include: {
-      user: true,
-    }
   });
 }
 
