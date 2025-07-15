@@ -18,6 +18,7 @@ const WarningModal = ({warningModal}: Props) => {
            isOpen={warningModal.isOpen}
            onClose={warningModal.closeModal}
            className="max-w-[600px] p-5 lg:p-10"
+           // ref={modalRef} // Ajoute une ref ici si besoin d'accès externe
          >
            <div className="text-center">
              <div className="relative flex items-center justify-center z-1 mb-7">

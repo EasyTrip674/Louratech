@@ -52,6 +52,8 @@ export class ClientService extends BaseService {
         throw new Error("Organisation introuvable");
       }
 
+      
+
       // Vérifier les autorisations
       const canCreate = await this.checkPermission("canCreateClient");
       if (!canCreate) {
@@ -59,15 +61,16 @@ export class ClientService extends BaseService {
       }
 
       // Vérifier l'existence du client
-      // const existingClient = await this.prisma.client.findFirst({
-      //   where: {
-      //     email: data.email,
-      //   }
-      // });
+      const existingClient = await this.prisma.client.findFirst({
+        where: {
+          ...data,
+          birthDate: data?.birthDate ? new Date(data.birthDate) : null
+        }
+      });
 
-      // if (existingClient) {
-      //   throw new Error("Un client avec cet email existe déjà");
-      // }
+      if (existingClient) {
+        return;
+      }
 
 
       // Utiliser une transaction pour toutes les opérations de base de données
@@ -177,7 +180,6 @@ export class ClientService extends BaseService {
       const client = await this.prisma.client.findUnique({
         where: { id: clientId },
         include: { 
-          user: true,
           clientProcedures: {
             include: {
               steps: true,

@@ -15,9 +15,11 @@ export const doCreateClient = adminAction
             // Vérifier s'il est autorisé
             if (ctx.user.userDetails?.authorize?.canCreateClient === false) {
                 throw new Error("Vous n'êtes pas autorisé à créer un client");
-            }
+            }else{
 
-            // Utiliser le service client pour créer le client
+                
+
+                // Utiliser le service client pour créer le client
             const newClient = await clientService.createClient(clientInput);
 
             // Envoyer les emails APRÈS que la création soit terminée avec succès
@@ -58,7 +60,11 @@ export const doCreateClient = adminAction
                 message: "Client créé avec succès"
             };
 
-        } catch (error) {
+            }
+
+            
+        }
+        catch (error) {
             console.error("Error creating client:", error);
             throw new Error(`Échec de la création du client: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
         }

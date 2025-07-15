@@ -34,7 +34,6 @@ export const doCreateEmployee = adminAction
                 }
             });
 
-            console.log(existingEmployee);
 
             if (existingEmployee?.id) {
                 throw new Error("Un employé avec cet email existe déjà");

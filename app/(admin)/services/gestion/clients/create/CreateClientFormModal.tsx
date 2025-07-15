@@ -54,11 +54,11 @@ export default function CreateClientFormModal() {
     mutationFn: async (data: ClientFormData) => {
       const result = await doCreateClient(data);
       if (result?.data?.success) {
-        closeModal();
         reset();
+        closeModal();
         successModal.openModal();
       } else {
-        closeModal();
+        // Ne ferme pas la modal, affiche juste l'erreur
         errorModal.openModal();
       }
     },
@@ -71,12 +71,7 @@ export default function CreateClientFormModal() {
   });
 
   const onSubmit = (data: ClientFormData) => {
-    console.log("Enregistrement des données client:", data);
-    if (data) {
-      createMutation.mutate(data);
-    } else {
-      console.log("Aucune donnée à enregistrer");
-    }
+    createMutation.mutateAsync(data);
   };
 
   return (
