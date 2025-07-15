@@ -41,18 +41,7 @@ export async function POST(request: NextRequest) {
         reference: `REF-${Date.now()}`, // Générer une référence unique
       },
       include: {
-        client: {
-          include: {
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                email: true,
-                name: true,
-              },
-            },
-          },
-        },
+        client: true,
         procedure: {
           select: {
             name: true,

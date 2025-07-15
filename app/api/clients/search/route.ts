@@ -79,22 +79,13 @@ export async function POST(request: NextRequest) {
         where: {
           organizationId,
           OR: query ? [
-            { user: { firstName: { contains: query, mode: "insensitive" } } },
-            { user: { lastName: { contains: query, mode: "insensitive" } } },
-            { user: { email: { contains: query, mode: "insensitive" } } },
+             { firstName: { contains: query, mode: "insensitive" } } ,
+             { lastName: { contains: query, mode: "insensitive" } } ,
+             { email: { contains: query, mode: "insensitive" } } ,
             { phone: { contains: query, mode: "insensitive" } },
           ] : undefined,
         },
         include: {
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-              email: true,
-              name: true,
-              active: true,
-            },
-          },
           clientProcedures: {
             include: {
               procedure: {
@@ -187,15 +178,7 @@ export async function POST(request: NextRequest) {
       include: {
         client: {
           include: {
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                email: true,
-                name: true,
-                active: true,
-              },
-            },
+           
           },
         },
         procedure: {
@@ -605,9 +588,9 @@ export async function POST(request: NextRequest) {
 //       where: {
 //         organizationId,
 //         OR: [
-//           { user: { firstName: { contains: clientName, mode: "insensitive" } } },
-//           { user: { lastName: { contains: clientName, mode: "insensitive" } } },
-//           { user: { name: { contains: clientName, mode: "insensitive" } } },
+//            { firstName: { contains: clientName, mode: "insensitive" } } },
+//            { lastName: { contains: clientName, mode: "insensitive" } } },
+//            { name: { contains: clientName, mode: "insensitive" } } },
 //         ]
 //       },
 //       include: {

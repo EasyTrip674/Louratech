@@ -19,28 +19,15 @@ export async function GET(request: NextRequest) {
           { procedure: { name: { contains: query, mode: "insensitive" } } },
           { reference: { contains: query, mode: "insensitive" } },
           { client: { 
-            user: { 
-              OR: [
-                { firstName: { contains: query, mode: "insensitive" } },
-                { lastName: { contains: query, mode: "insensitive" } },
-              ]
-            }
+            OR: [
+              { firstName: { contains: query, mode: "insensitive" } },
+              { lastName: { contains: query, mode: "insensitive" } },
+            ]
           }},
         ],
       },
       include: {
-        client: {
-          include: {
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                email: true,
-                name: true,
-              },
-            },
-          },
-        },
+        client: true,
         procedure: {
           select: {
             name: true,
