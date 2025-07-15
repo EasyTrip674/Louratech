@@ -106,8 +106,9 @@ enum Role {
 // Modèle utilisateur central - base pour tous les types d'utilisateurs
 model User {
   id            String        @id @default(cuid())
-  email         String        @unique
+  email         String        @unique 
   emailVerified       Boolean       @default(false)
+
   image         String?
   firstName     String?
   lastName      String?
