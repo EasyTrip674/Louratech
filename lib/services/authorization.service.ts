@@ -196,7 +196,6 @@ export class AuthorizationService extends BaseService {
         where: { organizationId },
         include: {
           authorize: true,
-          client: true,
           admin: true,
         },
         orderBy: {

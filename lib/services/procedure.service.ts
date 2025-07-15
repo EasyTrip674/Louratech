@@ -416,11 +416,7 @@ export class ProcedureService extends BaseService {
           },
           clientProcedures: {
             include: {
-              client: {
-                include: {
-                  user: true,
-                },
-              },
+              client: true
             },
           },
         },
