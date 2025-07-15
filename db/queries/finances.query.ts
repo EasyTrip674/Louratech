@@ -19,12 +19,7 @@ export const getTransactionsDB = async () => {
         clientProcedure:
         {
           include:{
-            client:
-            {
-              include:{
-                user:true,
-              }
-            },
+            client:true,
             procedure:true,
           }
         },

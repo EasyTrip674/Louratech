@@ -105,11 +105,7 @@ export class TransactionService extends BaseService {
           clientProcedure: {
             include: {
               procedure: true,
-              client: {
-                include: {
-                  user: true,
-                },
-              },
+              client:true
             },
           },
           clientStep: {
@@ -171,11 +167,7 @@ export class TransactionService extends BaseService {
           clientProcedure: {
             include: {
               procedure: true,
-              client: {
-                include: {
-                  user: true,
-                },
-              },
+              client: true
             },
           },
         },
@@ -287,11 +279,7 @@ export class TransactionService extends BaseService {
           revenue: true,
           clientProcedure: {
             include: {
-              client: {
-                include: {
-                  user: true,
-                }
-              },
+              client: true,
               procedure: true,
             },
           },
@@ -337,11 +325,7 @@ export class TransactionService extends BaseService {
           clientProcedure: {
             include: {
               procedure: true,
-              client: {
-                include: {
-                  user: true,
-                },
-              },
+              client: true
             },
           },
           clientStep: {
