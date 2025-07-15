@@ -115,23 +115,23 @@ export const footerLinks = [
     links: [
       {
         name: "Documentation",
-        link: "https://www.progestion.com/docs/",
+        link: "https://www.LouraTech.com/docs/",
       },
       {
         name: "Tutoriels",
-        link: "https://www.progestion.com/tutorials/",
+        link: "https://www.LouraTech.com/tutorials/",
       },
       {
         name: "API",
-        link: "https://www.progestion.com/api/",
+        link: "https://www.LouraTech.com/api/",
       },
       {
         name: "Blog",
-        link: "https://www.progestion.com/blog/",
+        link: "https://www.LouraTech.com/blog/",
       },
       {
         name: "Support",
-        link: "https://www.progestion.com/support/",
+        link: "https://www.LouraTech.com/support/",
       },
     ],
   },
@@ -140,23 +140,23 @@ export const footerLinks = [
     links: [
       {
         name: "À propos",
-        link: "https://www.progestion.com/about/",
+        link: "https://www.LouraTech.com/about/",
       },
       {
         name: "Carrières",
-        link: "https://www.progestion.com/careers/",
+        link: "https://www.LouraTech.com/careers/",
       },
       {
         name: "Contact",
-        link: "https://www.progestion.com/contact/",
+        link: "https://www.LouraTech.com/contact/",
       },
       {
         name: "Presse",
-        link: "https://www.progestion.com/press/",
+        link: "https://www.LouraTech.com/press/",
       },
       {
         name: "Partenaires",
-        link: "https://www.progestion.com/partners/",
+        link: "https://www.LouraTech.com/partners/",
       },
     ],
   },
@@ -165,15 +165,15 @@ export const footerLinks = [
     links: [
       {
         name: "CGU",
-        link: "https://www.progestion.com/terms/",
+        link: "https://www.LouraTech.com/terms/",
       },
       {
         name: "Politique de confidentialité",
-        link: "https://www.progestion.com/privacy/",
+        link: "https://www.LouraTech.com/privacy/",
       },
       {
         name: "RGPD",
-        link: "https://www.progestion.com/gdpr/",
+        link: "https://www.LouraTech.com/gdpr/",
       },
     ],
   },
@@ -183,22 +183,22 @@ export const socialMedia = [
   {
     id: "social-media-1",
     icon: resources.instagram,
-    link: "https://www.instagram.com/progestion",
+    link: "https://www.instagram.com/LouraTech",
   },
   {
     id: "social-media-2",
     icon: resources.facebook,
-    link: "https://www.facebook.com/progestion",
+    link: "https://www.facebook.com/LouraTech",
   },
   {
     id: "social-media-3",
     icon: resources.twitter,
-    link: "https://www.twitter.com/progestion",
+    link: "https://www.twitter.com/LouraTech",
   },
   {
     id: "social-media-4",
     icon: resources.linkedin,
-    link: "https://www.linkedin.com/company/progestion",
+    link: "https://www.linkedin.com/company/LouraTech",
   },
 ];
 

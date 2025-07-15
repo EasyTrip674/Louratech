@@ -218,14 +218,14 @@ export const doCreateOrganization = actionClient
         // Send email to the user
         await sendEmail({
             to: clientInput.email,
-            subject: "Inscription réussie sur ProGestion",
+            subject: "Inscription réussie sur LouraTech",
            html: generateEmailMessageHtml({
-              subject: "Bienvenue sur ProGestion",
+              subject: "Bienvenue sur LouraTech",
               content: 
                 `
-                <h1>Bienvenue sur ProGestion</h1>
+                <h1>Bienvenue sur LouraTech</h1>
                 <p>Bonjour ${clientInput.organizationName},</p>
-                <p>Merci de vous être inscrit sur ProGestion. Votre organisation a été créée avec succès.</p>
+                <p>Merci de vous être inscrit sur LouraTech. Votre organisation a été créée avec succès.</p>
                 <p>Voici les détails de votre organisation :</p>
                 <ul>
                     <li>Nom de l'organisation : ${clientInput.organizationName}</li>

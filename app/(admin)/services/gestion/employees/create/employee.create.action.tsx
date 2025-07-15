@@ -166,9 +166,9 @@ export const doCreateEmployee = adminAction
                 // Email à l'utilisateur actuel
                 await sendEmail({
                     to: ctx.user.userDetails?.email ?? "",
-                    subject: `Ajout d'un employé sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
+                    subject: `Ajout d'un employé sur LouraTech ${ctx.user.userDetails?.organization?.name}`,
                     html: generateEmailMessageHtml({
-                        subject: `Ajout d'un employé sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
+                        subject: `Ajout d'un employé sur LouraTech ${ctx.user.userDetails?.organization?.name}`,
                         content: `
                             <p>Bonjour</p>
                             <p>${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} a ajouté ${clientInput.email} comme employé.</p>
@@ -187,9 +187,9 @@ export const doCreateEmployee = adminAction
                 if (admin?.email) {
                     await sendEmail({
                         to: admin.email,
-                        subject: `Ajout d'un employé sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
+                        subject: `Ajout d'un employé sur LouraTech ${ctx.user.userDetails?.organization?.name}`,
                         html: generateEmailMessageHtml({
-                            subject: `Ajout d'un employé sur ProGestion ${ctx.user.userDetails?.organization?.name}`,
+                            subject: `Ajout d'un employé sur LouraTech ${ctx.user.userDetails?.organization?.name}`,
                             content: `
                                 <p>Bonjour</p>
                                 <p>${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} a ajouté ${clientInput.email} comme employé.</p>

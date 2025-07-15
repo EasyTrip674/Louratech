@@ -24,7 +24,7 @@ export const doCreateClient = adminAction
 
             // Envoyer les emails APRÈS que la création soit terminée avec succès
             try {
-                const organizationName = ctx.user.userDetails?.organization?.name || "ProGestion";
+                const organizationName = ctx.user.userDetails?.organization?.name || "LouraTech";
                 
                 // Email à l'utilisateur actuel
                 await sendEmail({
