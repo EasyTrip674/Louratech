@@ -21,6 +21,7 @@ import TableClientsProcedureSkeleton from '@/components/Dashboards/OneServiceDah
 import TableProcedureStepsSkeleton from '@/components/Dashboards/OneServiceDahsboard/TableProcedureSteps/TableProcedureStepsSkeleton';
 import TableProcedureStepsLayout from '@/components/Dashboards/OneServiceDahsboard/TableProcedureSteps/TableProcedureStepsLayout';
 import EditProcedureFormModal from './edit/CreateEditModalForm';
+import DeleteProcedureFormModal from './delete/DeleteProcedureFormModal';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
 
 // Type pour les paramètres de la page
@@ -65,7 +66,7 @@ export default async function ProcedureDetailPage(props: PageProps) {
     <div className="p-6 max-w-7xl mx-auto">
       {/* En-tête de la page */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <div className="flex items-start gap-2 ">
+        <div className="flex gap-2 justify-end">
           <Link href="/services/gestion/procedures">
             <Button variant="outline" size="sm" className='text-xs'>
               <ArrowLeft className="w-2 h-2 mr-2" />
@@ -76,23 +77,26 @@ export default async function ProcedureDetailPage(props: PageProps) {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{procedure.name}</h1>
             <p className="text-gray-500 dark:text-gray-400">{procedure.description}</p>
           </div>
-         {
+       
+        </div>
+        <div className='flex gap-2 items-center'>
+        {
           session?.userDetails?.authorize?.canEditProcedure && (
             <EditProcedureFormModal procedure={
               { procedureId: procedure.id, name:procedure.name ?? "", description: procedure.description ?? "" }
             } />
           )
          }
+           <div className="flex items-center gap-3 mt-4 md:mt-0">
+              <DeleteProcedureFormModal procedureId={procedure.id} procedureName={procedure.name} authozise={session?.userDetails.authorize?.canDeleteProcedure ?? false} />
+          </div>
+
         </div>
-        
-        <div className="flex items-center gap-3 mt-4 md:mt-0">
-        {/* <EditProcedureFormModal procedureId={procedure.id} /> */}
-        </div>
+      
       </div>
       
       {/* Statistiques générales */}
       <Suspense fallback={<StatsServiceSkeleton />}>
-        {/* <StatsService procedureId={params.procedureId} /> */}
         <StatsService procedureId={params.procedureId} />
       </Suspense>
      

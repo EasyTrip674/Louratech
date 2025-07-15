@@ -153,52 +153,55 @@ export class ProcedureService extends BaseService {
   /**
    * Supprime une procédure
    */
-  async deleteProcedure(procedureId: string) {
+  async deleteProcedure(procedureId: string, deleteTransaction: boolean) {
     try {
       const organizationId = await this.getOrganizationId();
-      
       // Vérifier les autorisations
       const canDelete = await this.checkPermission("canDeleteProcedure");
       if (!canDelete) {
         throw new Error("Vous n'êtes pas autorisé à supprimer cette procédure");
       }
-
       // Vérifier que la procédure appartient à l'organisation
       const procedure = await this.prisma.procedure.findUnique({
         where: { id: procedureId },
-        include: { 
+        include: {
           organization: true,
           clientProcedures: true,
-          steps: true
-        }
+          steps: true,
+          transactions: true,
+          invoiceItems: true,
+        },
       });
-
       if (!procedure || procedure.organizationId !== organizationId) {
         throw new Error("Procédure introuvable ou accès non autorisé");
       }
-
       // Vérifier s'il y a des procédures client actives
       const activeClientProcedures = procedure.clientProcedures.filter(
         cp => cp.status === ProcedureStatus.IN_PROGRESS
       );
-
       if (activeClientProcedures.length > 0) {
         throw new Error("Impossible de supprimer cette procédure car elle a des clients actifs");
       }
-
-      // Supprimer la procédure et ses relations
+      // Supprimer toutes les associations et gérer les transactions
       await this.prisma.$transaction(async (tx) => {
-        // Supprimer les étapes
-        await tx.stepProcedure.deleteMany({
-          where: { procedureId }
-        });
-
+        // Supprimer les étapes (et leurs associations)
+        await tx.stepProcedure.deleteMany({ where: { procedureId } });
+        // Supprimer les clientProcedures (et leurs associations)
+        await tx.clientProcedure.deleteMany({ where: { procedureId } });
+        // Supprimer les invoiceItems liés à la procédure
+        await tx.invoiceItem.deleteMany({ where: { procedureId } });
+        // Gérer les transactions liées à la procédure
+        if (deleteTransaction) {
+          await tx.transaction.deleteMany({ where: { procedureId } });
+        } else {
+          await tx.transaction.updateMany({
+            where: { procedureId },
+            data: { procedureId: null },
+          });
+        }
         // Supprimer la procédure
-        await tx.procedure.delete({
-          where: { id: procedureId }
-        });
+        await tx.procedure.delete({ where: { id: procedureId } });
       });
-
       return { success: true };
     } catch (error) {
       this.handleDatabaseError(error, "deleteProcedure");
@@ -323,45 +326,49 @@ export class ProcedureService extends BaseService {
   /**
    * Supprime une étape
    */
-  async deleteStep(stepId: string) {
+  async deleteStep(stepId: string, deleteTransaction: boolean) {
     try {
       const organizationId = await this.getOrganizationId();
-      
       // Vérifier les autorisations
       const canDelete = await this.checkPermission("canDeleteStep");
       if (!canDelete) {
         throw new Error("Vous n'êtes pas autorisé à supprimer cette étape");
       }
-
       // Vérifier que l'étape appartient à une procédure de l'organisation
       const step = await this.prisma.stepProcedure.findUnique({
         where: { id: stepId },
         include: {
-          procedure: {
-            select: { organizationId: true }
-          },
-          clientSteps: true
-        }
+          procedure: { select: { organizationId: true } },
+          clientSteps: true,
+          transactions: true,
+        },
       });
-
       if (!step || step.procedure.organizationId !== organizationId) {
         throw new Error("Étape introuvable ou accès non autorisé");
       }
-
       // Vérifier s'il y a des étapes client actives
       const activeClientSteps = step.clientSteps.filter(
         cs => cs.status === "IN_PROGRESS"
       );
-
       if (activeClientSteps.length > 0) {
         throw new Error("Impossible de supprimer cette étape car elle a des clients actifs");
       }
-
-      // Supprimer l'étape
-      await this.prisma.stepProcedure.delete({
-        where: { id: stepId }
+      // Supprimer toutes les associations et gérer les transactions
+      await this.prisma.$transaction(async (tx) => {
+        // Supprimer les clientSteps liés à cette étape
+        await tx.clientStep.deleteMany({ where: { stepId } });
+        // Gérer les transactions liées à l'étape
+        if (deleteTransaction) {
+          await tx.transaction.deleteMany({ where: { stepId } });
+        } else {
+          await tx.transaction.updateMany({
+            where: { stepId },
+            data: { stepId: null },
+          });
+        }
+        // Supprimer l'étape
+        await tx.stepProcedure.delete({ where: { id: stepId } });
       });
-
       return { success: true };
     } catch (error) {
       this.handleDatabaseError(error, "deleteStep");

@@ -127,7 +127,7 @@ const CreateRevenuModal = ({}: Props) => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Nouvelle revenue
+              Nouveau revenu
             </h3>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Veuillez remplir les informations de la revenue ci-dessous
