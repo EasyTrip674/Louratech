@@ -84,4 +84,4 @@ apres supprimer la relation entre client et user sur prisma dans la branch gesti
 Push ca 
 Update cote main 
 ajouter une reference pour un client 
-categoriser les services ! 
+categoriser les services !

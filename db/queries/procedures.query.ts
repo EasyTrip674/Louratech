@@ -143,18 +143,7 @@ export async function getProcedureDetails(id: string) {
         organizationId,
       },
       include: {
-        client: {
-          include: {
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                email: true,
-                active: true,
-              },
-            },
-          },
-        },
+        client: true,
         steps: {
           select: {
             id: true,
