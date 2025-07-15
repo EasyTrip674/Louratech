@@ -240,7 +240,7 @@ export default function TransactionDetails(
                 </h2>
               </div>
               <div className="p-6">
-                {transaction.clientProcedure && 
+                {transaction?.clientProcedure && 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 py-6">
                    <div>
                     <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
@@ -259,8 +259,6 @@ export default function TransactionDetails(
                         {transaction.clientProcedure.client.email}
                     </div>
                   </div>
-
-
 
                   <div>
                     <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">

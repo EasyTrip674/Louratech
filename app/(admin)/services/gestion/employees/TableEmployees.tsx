@@ -25,7 +25,6 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
   // État pour la pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [filteredEmployees, setFilteredEmployees] = useState(employees || []);
   const itemsPerPage = 5;
   const session = authClient.useSession();
@@ -51,12 +50,6 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
       );
     }
     
-    // Appliquer le filtre de statut
-    if (statusFilter !== "all") {
-      filtered = filtered.filter(employee => 
-        (statusFilter === "active" ? employee.user.active : !employee.user.active)
-      );
-    }
 
     // Appliquer les filtres avancés
     if (emailFilter.trim() !== "") {
@@ -80,7 +73,7 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
     setFilteredEmployees(filtered);
     // Retourner à la première page après application des filtres
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, emailFilter, addressFilter, phoneFilter, employees]);
+  }, [searchTerm, emailFilter, addressFilter, phoneFilter, employees]);
 
   if (!employees || employees.length === 0) {
     return (
@@ -120,15 +113,7 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
                 className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
               />
             </div>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as "all" | "active" | "inactive")}
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-            >
-              <option value="all">Tous les statuts</option>
-              <option value="active">Actifs</option>
-              <option value="inactive">Inactifs</option>
-            </select>
+          
             <input type="text" placeholder="Email..." value={emailFilter} onChange={e => setEmailFilter(e.target.value)} className="input-filter" />
             <input type="text" placeholder="Téléphone..." value={phoneFilter} onChange={e => setPhoneFilter(e.target.value)} className="input-filter" />
             <input type="text" placeholder="Adresse..." value={addressFilter} onChange={e => setAddressFilter(e.target.value)} className="input-filter" />
@@ -144,7 +129,7 @@ export default function TableEmployees({ employees }: TableEmployeesProps) {
 
       {/* Résumé des résultats */}
       <div className="text-sm text-gray-500 dark:text-gray-400 px-1">
-        {filteredEmployees.length} employé(s) trouvé(s) {(searchTerm || statusFilter !== "all" || emailFilter || addressFilter || phoneFilter) && "après filtrage"}
+        {filteredEmployees.length} employé(s) trouvé(s) {(searchTerm || emailFilter || addressFilter || phoneFilter) && "après filtrage"}
       </div>
 
       {/* Tableau des employés */}
