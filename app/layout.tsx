@@ -35,7 +35,6 @@ export default function RootLayout({
                 </SidebarProvider>
             </TansQueryProvider>
             </PostHogProvider>
-
               </ThemeProvider>
       </body>
     </html>
