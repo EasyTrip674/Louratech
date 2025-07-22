@@ -1,12 +1,12 @@
+"use client"
 import React from 'react';
 import { Pencil, Trash2, Eye } from 'lucide-react';
-import type { Organization } from './organizations/page';
-// import { organization } from '@prisma/client';
+import { organization } from '@prisma/client';
 import { getOrganizationsSupAdmin } from './superAdmin.query';
 
 type OrganizationTableProps = {
   organizations: getOrganizationsSupAdmin,
-  onEdit?: (org: Organization) => void;
+  onEdit?: (org: organization) => void;
   onDelete?: (id: string) => void;
 };
 
@@ -32,14 +32,15 @@ const OrganizationTable = ({ organizations, onEdit, onDelete }: OrganizationTabl
                 {org.active ? 'Active' : 'Inactive'}
               </span>
             </td>
-            {/* <td className='px-4 py-2'>{org.admins.map(a => a.user.name).join(', ')}</td> */}
+            <td className='px-4 py-2'>{org._count.admins}</td>
             <td className='px-4 py-2'>
               {/* <span className='font-semibold'>{org.subscription?.plan || '-'}</span> */}
               {/* <span className='ml-2 text-xs px-2 py-1 rounded bg-gray-100'>
                 {org.subscription?.status || '-'}
               </span> */}
+              2
             </td>
-            {/* <td className='px-4 py-2'>{org.usersCount ?? (org.users?.length || 0)}</td> */}
+            <td className='px-4 py-2'>{org._count.users}</td>
             <td className='px-4 py-2 flex gap-2'>
               <button className='p-1 hover:bg-gray-100 rounded'><Eye size={16} /></button>
               <button className='p-1 hover:bg-gray-100 rounded' onClick={() => onEdit && onEdit(org)}><Pencil size={16} /></button>

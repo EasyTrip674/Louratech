@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 
 const menu = [
   { label: 'Dashboard', href: '/superadmin' },
-  { label: 'Organisations', href: '/superadmin/organizations' },
   { label: 'Utilisateurs', href: '/superadmin/users' },
   { label: 'Abonnements', href: '/superadmin/subscriptions' },
   { label: 'Feedbacks', href: '/superadmin/feedbacks' },
