@@ -9,4 +9,9 @@ export const cinetPayConfig: CinetPayConfig = {
       ? 'https://api-checkout.cinetpay.com'
       : 'https://api-checkout-sandbox.cinetpay.com'
   };
-  
+
+
+
+
+
+

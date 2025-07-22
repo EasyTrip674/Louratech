@@ -1,5 +1,5 @@
 // lib/services/subscriptionService.ts
-import { PrismaClient, } from '@prisma/client';
+import { BillingInterval, PaymentStatus, PaymentType, PrismaClient, SubscriptionStatus, } from '@prisma/client';
 import { CinetPayClient } from '../client';
 import { formatAmount, generateTransactionId } from '../utils';
 
