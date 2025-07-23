@@ -16,22 +16,12 @@ interface FAQItemProps {
     {
       id: "faq-1",
       question: "Combien de temps dure la période d'essai ?",
-      answer: "Notre période d'essai gratuite dure 14 jours pour tous nos forfaits, sans engagement et sans carte bancaire requise."
+      answer: "Notre période d'essai gratuite dure 3 mois pour tous nos forfaits, sans engagement et sans carte bancaire requise."
     },
     {
       id: "faq-2",
       question: "Est-il possible de changer de forfait à tout moment ?",
       answer: "Oui, vous pouvez passer à un forfait supérieur à tout moment. La mise à niveau est immédiate et vous ne payez que la différence proratisée."
-    },
-    {
-      id: "faq-3",
-      question: "Pouvez-vous m'aider à migrer mes données existantes ?",
-      answer: "Absolument ! Notre équipe d'onboarding vous accompagne dans la migration de vos données depuis vos outils actuels, quelle que soit leur format."
-    },
-    {
-      id: "faq-4",
-      question: "Proposez-vous des formations pour mon équipe ?",
-      answer: "Nous offrons des sessions de formation personnalisées pour votre équipe, ainsi qu'une bibliothèque complète de tutoriels vidéo et documentation."
     },
     {
       id: "faq-5",

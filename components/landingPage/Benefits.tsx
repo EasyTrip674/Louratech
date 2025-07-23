@@ -10,7 +10,7 @@ export const Benefits: React.FC = () => (
           Pourquoi choisir notre solution ?
         </h2>
         <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto">
-          Conçue spécifiquement pour les besoins des agences modernes, notre plateforme offre des avantages uniques
+          Conçue spécifiquement pour les besoins des entreprises modernes, notre plateforme offre des avantages uniques
         </p>
       </div>
       

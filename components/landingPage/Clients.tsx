@@ -6,21 +6,21 @@ const targetClients = [
   {
     id: "client-1",
     icon: <Globe size={40} className="text-brand-500" />,
-    title: "Agences de Voyage",
+    title: "entreprises de Voyage",
     description: "Optimisez la gestion de vos réservations, clients et planning avec une solution tout-en-un adaptée à vos besoins spécifiques.",
     features: ["Réservations centralisées", "Gestion des clients", "Planification simplifiée"]
   },
   {
     id: "client-2",
     icon: <Briefcase size={40} className="text-brand-500" />,
-    title: "Agences de Tourisme",
+    title: "entreprises de Tourisme",
     description: "Gérez efficacement vos circuits, guides et activités touristiques en un seul endroit pour une meilleure productivité.",
     features: ["Organisation des circuits", "Coordination des guides", "Suivi des activités"]
   },
   {
     id: "client-3",
     icon: <Users size={40} className="text-green-500" />,
-    title: "Agences Événementielles",
+    title: "entreprises Événementielles",
     description: "Organisez vos événements, gérez vos clients et suivez vos budgets en temps réel avec nos outils performants.",
     features: ["Planification d'événements", "Gestion des prestataires", "Suivi budgétaire"]
   },
@@ -122,10 +122,10 @@ const TargetClients = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-600 dark:from-brand-400 dark:to-brand-400">
-            Solutions Adaptées à Votre Agence
+            Solutions Adaptées à Votre entreprise
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Notre plateforme tout-en-un révolutionne la gestion de votre agence en centralisant clients, finances et opérations.
+            Notre plateforme tout-en-un révolutionne la gestion de votre entreprise en centralisant clients, finances et opérations.
           </p>
           
           <motion.div
