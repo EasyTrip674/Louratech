@@ -39,7 +39,7 @@ import axios from 'axios';
       }
     }
   
-    async checkPaymentStatus(transactionId: string): Promise<any> {
+    async checkPaymentStatus(transactionId: string) {
       try {
         const payload = {
           apikey: this.apiKey,
