@@ -20,19 +20,20 @@ import GestionParametres from './sections/GestionParametres';
 import Assistance from './sections/Assistance';
 import Logo from '@/components/logo';
 import { ThemeToggleButton } from '@/components/common/ThemeToggleButton';
+import InterfaceAndNavigation from './sections/InterfaceAndNavigation';
 
 const DocumentationPage = () => {
   const [activeSection, setActiveSection] = useState('introduction');
   const [searchTerm, setSearchTerm] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
-    'connexion': true,
-    'gestion-services': true,
-    'gestion-utilisateurs': true,
-    'gestion-clients': true,
-    'gestion-financiere': true,
-    'parametres': true,
-    'assistance': true
+    // 'connexion': true,
+    // 'gestion-services': true,
+    // 'gestion-utilisateurs': true,
+    // 'gestion-clients': true,
+    // 'gestion-financiere': true,
+    // 'parametres': true,
+    // 'assistance': true,
   });
 
 
@@ -65,6 +66,11 @@ const DocumentationPage = () => {
         return (
          <Connexion />
         );
+
+      case "interface":
+        return (
+          <InterfaceAndNavigation />
+        )
 
       case 'creation-agence':
         return (

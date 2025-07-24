@@ -111,7 +111,7 @@ export const PlanCard: React.FC<{
         </div>
         {plan.trialDays && (
           <p className="text-sm text-blue-600 font-medium">
-            {plan.trialDays} jours d'essai gratuit
+            {plan.trialDays} jours d&apos;essai gratuit
           </p>
         )}
       </div>

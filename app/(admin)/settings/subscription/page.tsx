@@ -1,5 +1,8 @@
-import { getOrgnaizationId } from "@/db/queries/utils.query";
-import SubscriptionDashboard from "./SubscriptionDasboard";
+// import { getOrgnaizationId } from "@/db/queries/utils.query";
+// import SubscriptionDashboard from "./SubscriptionDasboard";
+
+import { notFound } from "next/navigation";
+
 
 export default async function page(){
 
@@ -9,8 +12,11 @@ export default async function page(){
   //   return null
   // }
 
-  return<>
+
+  return notFound() 
+
+  // return<>
    {/* <SubscriptionDashboard organizationId={organisationId} /> */}
-  </>
+  // </>
 }
 

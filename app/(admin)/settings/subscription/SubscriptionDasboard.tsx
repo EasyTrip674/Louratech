@@ -177,7 +177,7 @@ const SubscriptionDashboard: React.FC<{ organizationId: string }> = ({ organizat
                 <div className="text-lg font-semibold text-gray-900">
                   {formatDate(currentSubscription.trialEnd)}
                 </div>
-                <div className="text-sm text-gray-600">Fin d'essai</div>
+                <div className="text-sm text-gray-600">Fin d&apos;essai</div>
               </div>
             )}
           </div>

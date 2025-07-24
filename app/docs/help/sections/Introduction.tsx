@@ -1,3 +1,5 @@
+import Logo from "@/components/logo";
+
 export default function Introduction() {
     return (
         <section id="introduction" className="space-y-8">
@@ -18,8 +20,8 @@ export default function Introduction() {
                   </div>
                   
                   <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-                    <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                      LouraTech
+                    <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text flex justify-center">
+                      <Logo  />
                     </span>
                   </h1>
                   
@@ -29,39 +31,30 @@ export default function Introduction() {
                     <span className="text-purple-400 font-semibold"> développent leur croissance</span>.
                   </p>
                   
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <button className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl shadow-lg shadow-purple-500/25 transition-all duration-300 transform hover:scale-105">
                       Commencer l&apos;exploration
                     </button>
                     <button className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold py-4 px-8 rounded-xl border border-white/20 transition-all duration-300">
                       Voir la démo
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
 
             {/* Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               <div className="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600">
                 <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Gestion Client 360°</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Gestion Client</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm">Centralisez toutes les informations clients et suivez leur parcours en temps réel.</p>
               </div>
 
-              <div className="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Projets Intelligents</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">Planifiez, suivez et livrez vos projets avec des outils de gestion avancés.</p>
-              </div>
 
               <div className="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-pink-300 dark:hover:border-pink-600">
                 <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-pink-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -79,8 +72,8 @@ export default function Introduction() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Communication Unifiée</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">Centralisez toutes vos communications équipe et clients en un seul endroit.</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Services Unifiée</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">Centralisez tous vos services en un seul endroit.</p>
               </div>
             </div>
 
@@ -95,10 +88,10 @@ export default function Introduction() {
                 </p>
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
                 <div className="text-center">
                   <div className="text-4xl font-bold bg-gradient-to-br from-cyan-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                    2,500+
+                    10+
                   </div>
                   <div className="text-gray-600 dark:text-gray-400 font-medium">Agences actives</div>
                 </div>
@@ -114,12 +107,7 @@ export default function Introduction() {
                   </div>
                   <div className="text-gray-600 dark:text-gray-400 font-medium">Disponibilité</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold bg-gradient-to-br from-green-600 to-teal-600 bg-clip-text text-transparent mb-2">
-                    35+
-                  </div>
-                  <div className="text-gray-600 dark:text-gray-400 font-medium">Pays africains</div>
-                </div>
+                
               </div>
             </div>
 
@@ -164,14 +152,14 @@ export default function Introduction() {
                       </span>
                     </div>
                     
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    {/* <div className="flex flex-col sm:flex-row gap-3">
                       <button className="bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105">
-                        Explorer la documentation
+                       Commencer
                       </button>
                       <button className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold py-3 px-6 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-300">
                         Télécharger PDF
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
