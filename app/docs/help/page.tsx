@@ -14,25 +14,27 @@ import Connexion from './sections/Connexion';
 import CreationAgence from './sections/CreationAgence';
 import GestionServices from './sections/GestionServices';
 import GestionFinances from './sections/GestionFinances';
-import GestionClients from './sections/GestionClients';
+// import GestionClients from './sections/GestionClients';
 import GestionEmployees from './sections/GestionEmployees';
 import GestionParametres from './sections/GestionParametres';
 import Assistance from './sections/Assistance';
 import Logo from '@/components/logo';
 import { ThemeToggleButton } from '@/components/common/ThemeToggleButton';
+import InterfaceAndNavigation from './sections/InterfaceAndNavigation';
+import BackButton from '@/layout/BackButton';
 
 const DocumentationPage = () => {
   const [activeSection, setActiveSection] = useState('introduction');
   const [searchTerm, setSearchTerm] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
-    'connexion': true,
-    'gestion-services': true,
-    'gestion-utilisateurs': true,
-    'gestion-clients': true,
-    'gestion-financiere': true,
-    'parametres': true,
-    'assistance': true
+    // 'connexion': true,
+    // 'gestion-services': true,
+    // 'gestion-utilisateurs': true,
+    // 'gestion-clients': true,
+    // 'gestion-financiere': true,
+    // 'parametres': true,
+    // 'assistance': true,
   });
 
 
@@ -66,6 +68,11 @@ const DocumentationPage = () => {
          <Connexion />
         );
 
+      case "interface":
+        return (
+          <InterfaceAndNavigation />
+        )
+
       case 'creation-agence':
         return (
           <CreationAgence />
@@ -81,10 +88,10 @@ const DocumentationPage = () => {
           <GestionEmployees />
         );
 
-      case 'gestion-clients':
-        return (
-          <GestionClients />
-        );
+      // case 'gestion-clients':
+      //   return (
+      //     <GestionClients />
+      //   );
 
       case 'gestion-finances':
         return (
@@ -155,7 +162,8 @@ const DocumentationPage = () => {
         <div className="flex gap-8">
           {/* Sidebar */}
           <aside className={`${sidebarOpen ? 'block' : 'hidden'} lg:block w-80 bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6 h-fit sticky top-24`}>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Table des matières</h2>
+            <BackButton />
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white my-6">Guide d&apos;Usage</h2>
             <nav className="space-y-2">
               {tableOfContents.map((section) => (
                 <div key={section.id}>

@@ -23,7 +23,7 @@ export default function Connexion() {
                     href="https://louratech.org" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-blue-600 dark:text-blue-400 hover:underline flex items-center space-x-1"
+                    className="text-brand-600 dark:text-brand-400 hover:underline flex items-center space-x-1"
                   >
                     <span>https://louratech.org</span>
                     <ExternalLink className="w-3 h-3" />
@@ -34,7 +34,7 @@ export default function Connexion() {
                 </p>
                 <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-1 ml-4">
                   <li>Vous connecter à votre compte existant</li>
-                  <li>Créer une nouvelle agence</li>
+                  <li>Créer une nouvelle entreprise</li>
                 </ul>
               </div>
             </div>
@@ -61,8 +61,8 @@ export default function Connexion() {
                     </p>
                   </div>
                 </div>
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                <div className="bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 rounded-lg p-4">
+                  <p className="text-sm text-brand-800 dark:text-brand-200">
                     <strong>Important :</strong> Les informations de connexion sont définies lors de la création de votre agence.
                   </p>
                 </div>

@@ -45,7 +45,7 @@ export   const tableOfContents = [
     },
     {
       id: 'gestion-utilisateurs',
-      title: 'Gestion des utilisateurs',
+      title: 'Gestion des employees ou administrateurs',
       icon: <Users className="w-4 h-4" />,
       subsections: [
         { id: 'administration', title: 'Administration' },

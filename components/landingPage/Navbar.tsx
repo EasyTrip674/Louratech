@@ -31,6 +31,17 @@ const Navbar = () => {
             <a href={`#${nav.id}`}>{nav.title}</a>
           </li>
         ))}
+
+        <li
+            className={`cursor-pointer text-[16px] font-medium transition-all duration-300 ${
+              active === "docs"
+                ? "text-gray-900 dark:text-white font-bold" 
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            }`}
+            onClick={() => setActive("docs")}
+          >
+            <a href={"/docs/help"}>Documentation</a>
+          </li>
        
 
       </ul>
@@ -71,6 +82,20 @@ const Navbar = () => {
                   {nav.title}
                 </motion.a>
               ))}
+
+                <motion.a
+                  href={`/docs/help`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="text-2xl font-medium text-gray-900 dark:text-white hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
+                  onClick={() => {
+                    setActive("docs");
+                    setToggle(false);
+                  }}
+                >
+                  Documentation
+                </motion.a>
               <ThemeToggleButton />
             </div>
           </motion.div>

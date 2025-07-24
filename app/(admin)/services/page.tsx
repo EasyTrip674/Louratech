@@ -13,7 +13,6 @@ import RecentOrdersSkeleton from "@/components/Dashboards/Homedasboard/RecentsOr
 import { RecentOrdersLayout } from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersLayout";
 import MonthlySalesChartSkeleton from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthySalesChartSkeleton";
 import { ProceduresMetricsSkeleton } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
-// import { checkDataBeforeMigration, migrateClientEmailsAndDeleteUsers } from "@/db/mgirate";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -26,12 +25,7 @@ async function DashboardDataProvider({ children }: { children: React.ReactNode }
     // Récupérer les données du dashboard
     const dashboardStats = await dashboardService.getDashboardStats();
 
-    // Vérifier les données avant migration
-// await checkDataBeforeMigration();
-
-// // Exécuter la migration
-// await migrateClientEmailsAndDeleteUsers();
-
+  
 
 
     // Passer les données aux composants enfants via un contexte ou props
@@ -49,6 +43,8 @@ async function DashboardDataProvider({ children }: { children: React.ReactNode }
     );
   }
 }
+
+
 
 
 export default async function DashboardPage() {
