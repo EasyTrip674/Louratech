@@ -101,7 +101,7 @@ const FeatureIcon = ({ icon, text, delay }:{
 
 const Hero = () => {
   const [typedText, setTypedText] = useState("");
-  const fullText = "agence";
+  const fullText = "entreprise";
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
   
@@ -158,7 +158,7 @@ const Hero = () => {
         variants={fadeInUp}
         className="text-gray-600 dark:text-gray-400 max-w-xl mt-6 text-sm sm:text-base leading-relaxed"
       >
-        Optimisez la gestion de votre agence avec notre plateforme intuitive.
+        Optimisez la gestion de votre entreprise avec notre plateforme intuitive.
         Suivez vos clients, planifiez vos projets, gérez votre comptabilité, et communiquez efficacement.
       </motion.p>
       
