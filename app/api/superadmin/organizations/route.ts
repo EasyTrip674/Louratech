@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/db/prisma';
 
-export async function GET() {
+// export async function GET() {
  
-  return NextResponse.json(organizations);
-}
+//   return NextResponse.json(organization);
+// }
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
