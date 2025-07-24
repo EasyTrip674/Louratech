@@ -37,11 +37,17 @@ model organization {
   clients     Client[]
   admins      Admin[]
   transactions Transaction[]
+
   expenses    Expense[]
   revenues    Revenue[]
   invoices    Invoice[]
   comptaSettings ComptaSettings?
   clientProcedures ClientProcedure[]
+
+
+  // abonnements
+  subscriptions Subscription[]
+  payments      Payment[]
 
 }
 
@@ -51,48 +57,116 @@ model organization {
 // disponibles pour chaque organisation en fonction de son abonnement.
 // Le modèle d'abonnement peut être utilisé pour gérer les paiements,
 
-// enum PlanSubscription {
-//   FREE
-//   BASIC
-//   PREMIUM
-//   ENTERPRISE
-// }
 
 // abonnement d'une organisation
-// model subscription {
-//   id          String   @id @default(cuid())
-//   organizationId String
-//   plan        PlanSubscription @default(FREE)
-//   status      String
-//   startDate   DateTime
-//   endDate     DateTime
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-//   organization organization @relation(fields: [organizationId], references: [id])
-// }
 
-// model subscriptionPrice {
-//   id          String   @id @default(cuid())
-//   name        String
-//   price       Float
-//   currency    String
-//   billingCycle String // Mensuel, Annuel, etc.
-//   features    String[] // Liste des fonctionnalités incluses dans l'abonnement
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
 
-//   organization organization? @relation(fields: [organizationId], references: [id])
-//   organizationId String?
-// }
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
 
-// model coupons {
-//   id          String   @id @default(cuid())
-//   code        String   @unique
-//   discount    Float
-//   expirationDate DateTime
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-// }
+enum PaymentType {
+  SUBSCRIPTION
+  ONE_TIME
+  RENEWAL
+}
+
+enum BillingInterval {
+  MONTH
+  YEAR
+  WEEK
+}
+
+model SubscriptionPlan {
+  id            String            @id @default(cuid())
+  name          String
+  description   String?
+  amount        Float
+  currency      String            @default("FNG")
+  interval      BillingInterval
+  intervalCount Int               @default(1)
+  trialDays     Int?
+  features      String[]
+  isActive      Boolean           @default(true)
+  subscriptions Subscription[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  @@map("subscription_plans")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  organizationId         String
+  Organization           organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  planId               String
+  plan                 SubscriptionPlan   @relation(fields: [planId], references: [id])
+  status               SubscriptionStatus @default(TRIAL)
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+  canceledAt           DateTime?
+  trialEnd             DateTime?
+  payments             Payment[]
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@map("subscriptions")
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  organizationId         String
+  Organization           organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  transactionId  String        @unique
+  providerPayId     String?       @unique
+  amount         Float
+  currency       String        @default("FNG")
+  description    String?
+  status         PaymentStatus @default(PENDING)
+  paymentMethod  String?
+  paymentType    PaymentType   @default(ONE_TIME)
+  metadata       Json?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@map("payments")
+}
+
+
+
+model CouponUsage {
+  id          String   @id @default(cuid())
+  couponId String
+
+}
+
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  discount    Float
+  
+  expirationDate DateTime
+
+  userOwnerId String
+  userOwner User @relation(fields: [userOwnerId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
 
 // Définition des rôles utilisateurs dans le système
@@ -121,6 +195,9 @@ model User {
   organizationId String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+
+  coupons Coupon[]
+
   admin         Admin?
   
   createdTransactions Transaction[] @relation("CreatedBy")
