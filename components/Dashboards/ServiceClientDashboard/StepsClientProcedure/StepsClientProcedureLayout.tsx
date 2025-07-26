@@ -8,7 +8,7 @@ import { getStepStatusBadge } from "@/lib/StatusBadge";
 import { formatDate } from "@/lib/utils";
 import { AlertTriangle, CheckCircle, CircleDashed, CircleDot, Clock, FileText, XCircle } from "lucide-react";
 import { headers } from "next/headers";
-// import Button from "@/components/ui/button/Button";
+import DeleteClientStepFormModal from "./delete/DeleteStepClientFormModal";
 
 export default async function StepsClientProcedureLayout(
         {procedureId, clientProcedureId}:{
@@ -141,11 +141,15 @@ export default async function StepsClientProcedureLayout(
                   )
                  }
 
-                 {/* <div>
-                  <Button size="sm">
-                    <Trash></Trash>
-                  </Button>
-                 </div> */}
+                 <div>
+                    <DeleteClientStepFormModal 
+                      clientProcedureId={clientProcedure.id}
+                      procedureId={procedureId}
+                      ClientStepId={stepClient.id}
+                      ClientStepName={stepClient.step.name}
+                      authozise={session?.userDetails.authorize?.canDeleteClientStep ?? false}
+                    />
+                 </div>
 
 
                 </div>
@@ -155,7 +159,6 @@ export default async function StepsClientProcedureLayout(
         </div>
       ))}
 
-      
     </div>
   </div>
   );

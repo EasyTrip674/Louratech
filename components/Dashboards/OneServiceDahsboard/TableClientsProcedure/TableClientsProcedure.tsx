@@ -23,11 +23,13 @@ import {
   Filter,
   X,
   ChevronLeft,
+  Trash,
 } from "lucide-react";
 import { procedureDetailsDb } from "@/db/queries/procedures.query";
 import Link from "next/link";
 import { calculateProgress, formatDate } from "@/lib/utils";
 import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
+import Button from "@/components/ui/button/Button";
 
 type TableClientsProcedureProps = {
   procedureDetails: procedureDetailsDb;
@@ -358,18 +360,24 @@ export default function TableClientsProcedure({
                     )}
                     
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                      {canEditClientProcedure && (
-                        <div className="flex items-center">
-                          <Link 
-                            href={`/services/gestion/procedures/${clientProc.procedureId}/clients/${clientProc.id}`}
-                            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition-colors dark:bg-purple-700 dark:hover:bg-purple-800"
-                          >
-                            <Eye className="w-4 h-4 mr-2" />
-                            Détails
-                            <ChevronRight className="w-4 h-4 ml-1" />
-                          </Link>
-                        </div>
-                      )}
+                     <div className="flex justify-between gap-1">
+                        {canEditClientProcedure && (
+                            <div className="flex items-center">
+                              <Link 
+                                href={`/services/gestion/procedures/${clientProc.procedureId}/clients/${clientProc.id}`}
+                                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition-colors dark:bg-purple-700 dark:hover:bg-purple-800"
+                              >
+                                <Eye className="w-4 h-4 mr-1" />
+                                
+                                <ChevronRight className="w-4 h-4 ml-1" />
+                              </Link>
+                            </div>
+                          )}
+
+                          <Button size="sm" className="bg-red-700 py-0 my-2">
+                            <Trash className="w-4 h-4" /> 
+                          </Button>
+                     </div>
                     </TableCell>
                   </TableRow>
                 );

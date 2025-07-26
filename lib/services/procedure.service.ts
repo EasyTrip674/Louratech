@@ -373,6 +373,50 @@ export class ProcedureService extends BaseService {
   }
 
   /**
+   *  Suppression ou desinscription d'un client dans une etape
+   */
+
+  async deleteClientStep(clientStepId: string, deleteTransaction: boolean) {
+    try {
+      const organizationId = await this.getOrganizationId();
+      // Vérifier les autorisations
+      const canDelete = await this.checkPermission("canDeleteClientStep");
+      if (!canDelete) {
+        throw new Error("Vous n'êtes pas autorisé à supprimer cette procédure");
+      }
+      // Vérifier que la procédure appartient à l'organisation
+      const clientStep = await this.prisma.clientStep.findUnique({
+        where: { id: clientStepId },
+        include: {
+          transactions: true,
+          clientProcedure:true
+        },
+      });
+      if (!clientStep || clientStep.clientProcedure.organizationId !== organizationId) {
+        throw new Error("Procédure introuvable ou accès non autorisé");
+      }
+      
+      // Supprimer toutes les associations et gérer les transactions
+      await this.prisma.$transaction(async (tx) => {
+       
+        if (deleteTransaction) {
+          await tx.transaction.deleteMany({ where: { clientStepId } });
+        } else {
+          await tx.transaction.updateMany({
+            where: { clientStepId },
+            data: { clientStepId: null },
+          });
+        }
+        // Supprimer la procédure
+        await tx.clientStep.delete({ where: { id: clientStepId } });
+      });
+      return { success: true };
+    } catch (error) {
+      this.handleDatabaseError(error, "deleteClientStep");
+    }
+  }
+
+  /**
    * Récupère toutes les procédures de l'organisation
    */
   async getAllProcedures() {
