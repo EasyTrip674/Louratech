@@ -1,4 +1,3 @@
-
 import UserCredentialsManage from "@/components/user/ChangePasswordFormModal";
 import { UserElementInfo } from "@/components/user/UserElementInfo";
 import UserProfileCard from "@/components/user/UserProfileCard";
@@ -6,6 +5,9 @@ import { auth } from "@/lib/auth";
 import { Role } from "@prisma/client";
 import { headers } from "next/headers";
 import { authorizationService } from "@/lib/services";
+
+export const dynamic = "force-dynamic";
+
 
 
 
