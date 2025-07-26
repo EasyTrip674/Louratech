@@ -1,5 +1,7 @@
-import CouponTable from './CouponTable';
+import { notFound } from 'next/navigation';
+// import CouponTable from './CouponTable';
 
 export default function Page() {
-  return <CouponTable />;
+  return notFound()
+  // return <CouponTable />;
 } 
