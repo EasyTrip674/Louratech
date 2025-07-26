@@ -42,6 +42,11 @@ export default async function ProcedureDetailPage(props: PageProps) {
       id:true,
       name: true,
       description: true,
+      _count:{
+        select:{
+          clientProcedures:true
+        }
+      }
     }
     });
 
@@ -88,7 +93,13 @@ export default async function ProcedureDetailPage(props: PageProps) {
           )
          }
            <div className="flex items-center gap-3 mt-4 md:mt-0">
-              <DeleteProcedureFormModal procedureId={procedure.id} procedureName={procedure.name} authozise={session?.userDetails.authorize?.canDeleteProcedure ?? false} />
+              <DeleteProcedureFormModal 
+              procedureId={procedure.id} 
+              procedureName={procedure.name} 
+              authozise={session?.userDetails.authorize?.canDeleteProcedure ?? false} 
+              countClient={procedure._count.clientProcedures}
+              
+              />
           </div>
 
         </div>

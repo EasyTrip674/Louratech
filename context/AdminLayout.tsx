@@ -9,7 +9,7 @@ import { authClient } from "@/lib/auth-client";
 import "@copilotkit/react-ui/styles.css";
 import { useRouter } from "next/navigation";
 import { CopilotKit } from "@copilotkit/react-core";
-// import FeedBackChat from "@/components/feedback/ChatFeedBack";
+import FeedBackChat from "@/components/feedback/ChatFeedBack";
 import CopilotProvider from "@/context/CopilotProvider";
 
 // Composant de gestion de l'authentification
@@ -122,7 +122,7 @@ export default function AdminLayout({
     {children}
     </CopilotProvider>
       </AdminLayoutContent>
-        {/* <FeedBackChat /> */}
+        <FeedBackChat />
       </AuthGuard>
     </CopilotKit>
   );

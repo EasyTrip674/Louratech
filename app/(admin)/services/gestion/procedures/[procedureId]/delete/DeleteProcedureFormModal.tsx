@@ -19,7 +19,7 @@ import { deleteProcedureSchema } from "./procedure.delete.shema";
 // Infer the TypeScript type from the Zod schema
 type ProcedureFormData = z.infer<typeof deleteProcedureSchema>;
 
-export default function DeleteProcedureFormModal({ procedureId, inPageProfile = false ,procedureName, authozise =false}: { procedureId:string, procedureName:string, authozise:boolean , inPageProfile?: boolean }) {
+export default function DeleteProcedureFormModal({ procedureId,countClient, inPageProfile = false ,procedureName, authozise =false,}: { procedureId:string, procedureName:string, authozise:boolean , inPageProfile?: boolean, countClient:number }) {
   const { isOpen, openModal, closeModal } = useModal();
   const router = useRouter();
   const successModal = useModal();
@@ -95,7 +95,7 @@ export default function DeleteProcedureFormModal({ procedureId, inPageProfile = 
     reset();
   };
 
-  if (!authozise){
+  if (!authozise || countClient != 0){
     return null;
   }
 
