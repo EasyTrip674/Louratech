@@ -10,7 +10,6 @@ import { authorizationService } from "@/lib/services";
 
 
 export default async function profilePage() {
-  try {
     const user = await auth.api.getSession({
       headers: await headers()
     });
@@ -112,16 +111,5 @@ export default async function profilePage() {
         </div>
       </div>
     );
-  } catch (error) {
-    console.error("Erreur lors du chargement du profil:", error);
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Erreur</h1>
-          <p className="text-gray-600">Une erreur est survenue lors du chargement du profil</p>
-        </div>
-      </div>
-    );
-  }
 
 }
