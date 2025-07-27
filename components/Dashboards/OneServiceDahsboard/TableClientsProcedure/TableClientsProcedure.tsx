@@ -1,7 +1,5 @@
 "use client"
 
-"use client";
-
 import React, { useState, useMemo } from "react";
 import {
   Table,
@@ -23,13 +21,12 @@ import {
   Filter,
   X,
   ChevronLeft,
-  Trash,
 } from "lucide-react";
 import { procedureDetailsDb } from "@/db/queries/procedures.query";
 import Link from "next/link";
 import { calculateProgress, formatDate } from "@/lib/utils";
 import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
-import Button from "@/components/ui/button/Button";
+import DeleteClientProcedureFormModal from "./delete/DeleteClientProcedureFormModal";
 
 type TableClientsProcedureProps = {
   procedureDetails: procedureDetailsDb;
@@ -37,6 +34,7 @@ type TableClientsProcedureProps = {
   showDates?: boolean;
   showInvoice?: boolean;
   canEditClientProcedure?: boolean;
+  canDeleteClientProcedure?: boolean;
 }
 
 type FilterType = {
@@ -52,6 +50,7 @@ export default function TableClientsProcedure({
   showDates = true,
   showProgress = true,
   canEditClientProcedure = false,
+  canDeleteClientProcedure=false
 }: TableClientsProcedureProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
@@ -373,10 +372,12 @@ export default function TableClientsProcedure({
                               </Link>
                             </div>
                           )}
-
-                          <Button size="sm" className="bg-red-700 py-0 my-2">
-                            <Trash className="w-4 h-4" /> 
-                          </Button>
+                        <DeleteClientProcedureFormModal 
+                        clientProcedureId={clientProc.id}
+                        ClientProcedureName={`${procedureDetails.name} ${clientProc.client.lastName}`}
+                        authozise={canDeleteClientProcedure}
+                        procedureId={clientProc.procedureId}
+                        />
                      </div>
                     </TableCell>
                   </TableRow>

@@ -416,6 +416,90 @@ export class ProcedureService extends BaseService {
     }
   }
 
+
+   /**
+   *  Suppression ou desinscription d'un client dans une etape
+   */
+
+   async deleteClientProcedure(clientProcedureId: string, deleteTransaction: boolean) {
+    try {
+      const organizationId = await this.getOrganizationId();
+      
+      // Vérifier les autorisations
+      const canDelete = await this.checkPermission("canDeleteClientStep");
+      if (!canDelete) {
+        throw new Error("Vous n'êtes pas autorisé à supprimer cette procédure");
+      }
+      
+      // Vérifier que la procédure appartient à l'organisation
+      const clientProcedure = await this.prisma.clientProcedure.findUnique({
+        where: { id: clientProcedureId },
+        select: { 
+          id: true, 
+          organizationId: true 
+        }, // Optimisation: récupérer seulement les champs nécessaires
+      });
+      
+      if (!clientProcedure || clientProcedure.organizationId !== organizationId) {
+        throw new Error("Procédure introuvable ou accès non autorisé");
+      }
+      
+      // Transaction optimisée
+      await this.prisma.$transaction(async (tx) => {
+        const whereClause = {
+          OR: [
+            { clientProcedureId },
+            { clientStep: { clientProcedureId } }
+          ]
+        };
+  
+        if (deleteTransaction) {
+          // Suppression en cascade optimisée
+          await Promise.all([
+            // Supprimer les revenus liés aux transactions
+            tx.revenue.deleteMany({
+              where: {
+                transaction: whereClause
+              }
+            }),
+            // Supprimer les dépenses liées aux transactions
+            tx.expense.deleteMany({
+              where: {
+                transaction: whereClause
+              }
+            })
+          ]);
+  
+          // Supprimer les transactions après avoir supprimé leurs dépendances
+          await tx.transaction.deleteMany({ 
+            where: whereClause
+          });
+        } else {
+          // Mise à jour des transactions pour les dissocier
+          await tx.transaction.updateMany({
+            where: whereClause,
+            data: { 
+              clientStepId: null,
+              clientProcedureId: null
+            }
+          });
+        }
+  
+        // Opérations finales en parallèle
+        await Promise.all([
+          // Supprimer les étapes clients
+          tx.clientStep.deleteMany({ where: { clientProcedureId } }),
+          // Supprimer la procédure client
+          tx.clientProcedure.delete({ where: { id: clientProcedureId } })
+        ]);
+      });
+      
+      return { success: true };
+    } catch (error) {
+      this.handleDatabaseError(error, "deleteClientProcedure"); // Correction du nom d'erreur
+    }
+  }
+
   /**
    * Récupère toutes les procédures de l'organisation
    */

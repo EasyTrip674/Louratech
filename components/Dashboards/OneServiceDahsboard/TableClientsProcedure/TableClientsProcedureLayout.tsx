@@ -15,7 +15,11 @@ export default async function TableClientsProcedureLayout({procedureId}:{
     return <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
     <div className="overflow-x-auto">
       <div className="min-w-full">
-       <TableClientsProcedure procedureDetails={procedure} canEditClientProcedure={session?.userDetails?.authorize?.canEditClientProcedure} />
+       <TableClientsProcedure procedureDetails={procedure} 
+       
+       canEditClientProcedure={session?.userDetails?.authorize?.canEditClientProcedure} 
+       canDeleteClientProcedure={session?.userDetails?.authorize?.canDeleteClientProcedure}
+       />
       </div>
     </div>
   </div>
