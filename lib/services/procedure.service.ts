@@ -193,7 +193,26 @@ export class ProcedureService extends BaseService {
         await tx.invoiceItem.deleteMany({ where: { procedureId } });
         // Gérer les transactions liées à la procédure
         if (deleteTransaction) {
-          await tx.transaction.deleteMany({ where: { procedureId } });
+           // Suppression en cascade optimisée
+           await Promise.all([
+            // Supprimer les revenus liés aux transactions
+            tx.revenue.deleteMany({
+              where: {
+                transaction: { procedureId } 
+              }
+            }),
+            // Supprimer les dépenses liées aux transactions
+            tx.expense.deleteMany({
+              where: {
+                transaction: { procedureId } 
+              }
+            })
+          ]);
+  
+          // Supprimer les transactions après avoir supprimé leurs dépendances
+          await tx.transaction.deleteMany({ 
+            where: { procedureId } 
+          });
         } else {
           await tx.transaction.updateMany({
             where: { procedureId },
@@ -326,23 +345,34 @@ export class ProcedureService extends BaseService {
   async deleteStep(stepId: string, deleteTransaction: boolean) {
     try {
       const organizationId = await this.getOrganizationId();
+      
       // Vérifier les autorisations
       const canDelete = await this.checkPermission("canDeleteStep");
       if (!canDelete) {
         throw new Error("Vous n'êtes pas autorisé à supprimer cette étape");
       }
+      
       // Vérifier que l'étape appartient à une procédure de l'organisation
       const step = await this.prisma.stepProcedure.findUnique({
         where: { id: stepId },
-        include: {
-          procedure: { select: { organizationId: true } },
-          clientSteps: true,
-          transactions: true,
+        select: {
+          id: true,
+          procedure: { 
+            select: { organizationId: true } 
+          },
+          clientSteps: {
+            select: { 
+              id: true, 
+              status: true 
+            }
+          }
         },
       });
+      
       if (!step || step.procedure.organizationId !== organizationId) {
         throw new Error("Étape introuvable ou accès non autorisé");
       }
+      
       // Vérifier s'il y a des étapes client actives
       const activeClientSteps = step.clientSteps.filter(
         cs => cs.status === "IN_PROGRESS"
@@ -350,22 +380,94 @@ export class ProcedureService extends BaseService {
       if (activeClientSteps.length > 0) {
         throw new Error("Impossible de supprimer cette étape car elle a des clients actifs");
       }
-      // Supprimer toutes les associations et gérer les transactions
+      
+      // Transaction optimisée
       await this.prisma.$transaction(async (tx) => {
-        // Supprimer les clientSteps liés à cette étape
-        await tx.clientStep.deleteMany({ where: { stepId } });
-        // Gérer les transactions liées à l'étape
         if (deleteTransaction) {
-          await tx.transaction.deleteMany({ where: { stepId } });
+          // Supprimer les revenus et dépenses liés aux transactions en parallèle
+          await Promise.all([
+            // Supprimer les revenus des transactions liées à l'étape
+            tx.revenue.deleteMany({
+              where: {
+                transaction: {
+                  stepId
+                }
+              }
+            }),
+            // Supprimer les dépenses des transactions liées à l'étape
+            tx.expense.deleteMany({
+              where: {
+                transaction: {
+                  stepId
+                }
+              }
+            }),
+            // Supprimer les revenus des transactions liées aux clientSteps de cette étape
+            tx.revenue.deleteMany({
+              where: {
+                transaction: {
+                  clientStep: {
+                    stepId
+                  }
+                }
+              }
+            }),
+            // Supprimer les dépenses des transactions liées aux clientSteps de cette étape
+            tx.expense.deleteMany({
+              where: {
+                transaction: {
+                  clientStep: {
+                    stepId
+                  }
+                }
+              }
+            })
+          ]);
+          
+          // Supprimer les transactions en parallèle
+          await Promise.all([
+            // Transactions directement liées à l'étape
+            tx.transaction.deleteMany({ 
+              where: { stepId } 
+            }),
+            // Transactions liées aux clientSteps de cette étape
+            tx.transaction.deleteMany({
+              where: {
+                clientStep: {
+                  stepId
+                }
+              }
+            })
+          ]);
         } else {
-          await tx.transaction.updateMany({
-            where: { stepId },
-            data: { stepId: null },
-          });
+          // Dissocier les transactions en parallèle
+          await Promise.all([
+            // Dissocier les transactions directement liées à l'étape
+            tx.transaction.updateMany({
+              where: { stepId },
+              data: { stepId: null },
+            }),
+            // Dissocier les transactions liées aux clientSteps
+            tx.transaction.updateMany({
+              where: {
+                clientStep: {
+                  stepId
+                }
+              },
+              data: { clientStepId: null }
+            })
+          ]);
         }
-        // Supprimer l'étape
-        await tx.stepProcedure.delete({ where: { id: stepId } });
+        
+        // Opérations finales en parallèle
+        await Promise.all([
+          // Supprimer les clientSteps liés à cette étape
+          tx.clientStep.deleteMany({ where: { stepId } }),
+          // Supprimer l'étape
+          tx.stepProcedure.delete({ where: { id: stepId } })
+        ]);
       });
+      
       return { success: true };
     } catch (error) {
       this.handleDatabaseError(error, "deleteStep");
@@ -379,43 +481,72 @@ export class ProcedureService extends BaseService {
   async deleteClientStep(clientStepId: string, deleteTransaction: boolean) {
     try {
       const organizationId = await this.getOrganizationId();
+      
       // Vérifier les autorisations
       const canDelete = await this.checkPermission("canDeleteClientStep");
       if (!canDelete) {
-        throw new Error("Vous n'êtes pas autorisé à supprimer cette procédure");
-      }
-      // Vérifier que la procédure appartient à l'organisation
-      const clientStep = await this.prisma.clientStep.findUnique({
-        where: { id: clientStepId },
-        include: {
-          transactions: true,
-          clientProcedure:true
-        },
-      });
-      if (!clientStep || clientStep.clientProcedure.organizationId !== organizationId) {
-        throw new Error("Procédure introuvable ou accès non autorisé");
+        throw new Error("Vous n'êtes pas autorisé à supprimer cette étape");
       }
       
-      // Supprimer toutes les associations et gérer les transactions
+      // Vérifier que l'étape appartient à l'organisation
+      const clientStep = await this.prisma.clientStep.findUnique({
+        where: { id: clientStepId },
+        select: {
+          id: true,
+          clientProcedure: {
+            select: {
+              organizationId: true
+            }
+          }
+        },
+      });
+      
+      if (!clientStep || clientStep.clientProcedure.organizationId !== organizationId) {
+        throw new Error("Étape introuvable ou accès non autorisé");
+      }
+      
+      // Transaction optimisée
       await this.prisma.$transaction(async (tx) => {
-       
         if (deleteTransaction) {
-          await tx.transaction.deleteMany({ where: { clientStepId } });
+          // Supprimer d'abord les revenus et dépenses liés aux transactions
+          await Promise.all([
+            tx.revenue.deleteMany({
+              where: {
+                transaction: {
+                  clientStepId
+                }
+              }
+            }),
+            tx.expense.deleteMany({
+              where: {
+                transaction: {
+                  clientStepId
+                }
+              }
+            })
+          ]);
+          
+          // Puis supprimer les transactions
+          await tx.transaction.deleteMany({ 
+            where: { clientStepId } 
+          });
         } else {
+          // Dissocier les transactions de l'étape
           await tx.transaction.updateMany({
             where: { clientStepId },
             data: { clientStepId: null },
           });
         }
-        // Supprimer la procédure
+        
+        // Supprimer l'étape
         await tx.clientStep.delete({ where: { id: clientStepId } });
       });
+      
       return { success: true };
     } catch (error) {
       this.handleDatabaseError(error, "deleteClientStep");
     }
   }
-
 
    /**
    *  Suppression ou desinscription d'un client dans une etape
