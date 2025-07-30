@@ -150,7 +150,6 @@ export class AuthorizationService extends BaseService {
           userId,
         },
       });
-
       return authorization;
     } catch (error) {
       this.handleDatabaseError(error, "createDefaultAuthorization");
