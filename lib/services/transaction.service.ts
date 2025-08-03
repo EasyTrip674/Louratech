@@ -216,7 +216,6 @@ export class TransactionService extends BaseService {
             await tx.transaction.delete({
               where: { id: transactionId }
             });
-
       })
 
       return { success: true };

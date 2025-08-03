@@ -1,166 +1,193 @@
 "use client";
-import { ApexOptions } from "apexcharts";
-import dynamic from "next/dynamic";
 import { getMonthlyTargetStatsType } from "@/db/queries/dasboard.query";
-import { formatCurrency } from "@/lib/utils";
-import { authClient } from "@/lib/auth-client";
-import { useCopilotReadable } from "@copilotkit/react-core";
+import { Users, TrendingUp, CheckCircle, Clock } from 'lucide-react';
+import dynamic from 'next/dynamic';
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export default function MonthlyTarget({MonthlyTargetData}:{MonthlyTargetData:getMonthlyTargetStatsType}) {
-  // Calculer le pourcentage de progression vers l'objectif (au lieu du pourcentage de changement)
-  const progressToTarget = Math.min(100, Math.round((MonthlyTargetData.currentMonthAmount / MonthlyTargetData.target) * 100));
-
-  const session = authClient.useSession()
-
-  useCopilotReadable({
-    description: "MonthlyTargetData",
-    value: MonthlyTargetData,
-  });
-  
-  const series = [progressToTarget];
-  const options: ApexOptions = {
-    colors: ["#465FFF"],
+// Composant pour le diagramme semi-circulaire avec ApexCharts
+const SemiCircularChart = ({ percentage, title, color = "#465FFF" }: { percentage: number, title: string, color?: string }) => {
+  const chartOptions = {
     chart: {
-      fontFamily: "Outfit, sans-serif",
-      type: "radialBar",
-      height: 330,
+      type: 'radialBar' as const,
+      height: 200,
       sparkline: {
-        enabled: true,
-      },
+        enabled: true
+      }
     },
     plotOptions: {
       radialBar: {
-        startAngle: -85,
-        endAngle: 85,
-        hollow: {
-          size: "80%",
-        },
+        startAngle: -90,
+        endAngle: 90,
         track: {
           background: "#E4E7EC",
-          strokeWidth: "100%",
+          strokeWidth: '12px',
           margin: 5,
         },
         dataLabels: {
           name: {
-            show: false,
+            show: true,
+            fontSize: '12px',
+            fontWeight: '400',
+            color: '#64748B',
+            offsetY: 30
           },
           value: {
-            fontSize: "36px",
-            fontWeight: "600",
-            offsetY: -40,
-            color: "#1D2939",
-            formatter: function (val) {
+            show: true,
+            fontSize: '24px',
+            fontWeight: 'bold',
+            color: '#1F2937',
+            offsetY: -10,
+            formatter: function (val: number) {
               return val + "%";
-            },
-          },
+            }
+          }
         },
-      },
+        hollow: {
+          size: '60%'
+        }
+      }
     },
     fill: {
-      type: "solid",
-      colors: ["#465FFF"],
+      colors: [color]
     },
     stroke: {
-      lineCap: "round",
+      lineCap: 'round' as const
     },
-    labels: ["Progression"],
+    labels: [title]
   };
 
-  // Déterminer la couleur du badge de croissance en fonction du pourcentage
-  const getBadgeClass = () => {
-    if (MonthlyTargetData.growth > 0) {
-      return "bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500";
-    } else if (MonthlyTargetData.growth < 0) {
-      return "bg-danger-50 text-danger-600 dark:bg-danger-500/15 dark:text-danger-500";
-    }
-    return "bg-gray-50 text-gray-600 dark:bg-gray-500/15 dark:text-gray-500";
-  };
-
-  // Génération du message d'objectif
-  const getTargetMessage = () => {
-    const remaining = MonthlyTargetData.target - MonthlyTargetData.currentMonthAmount;
-    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-    const currentDay = new Date().getDate();
-    const remainingDays = daysInMonth - currentDay;
-    
-    if (MonthlyTargetData.currentMonthAmount >= MonthlyTargetData.target) {
-      return `🎉 Bravo! Vous avez atteint votre objectif mensuel de ${formatCurrency(MonthlyTargetData.target,session.data?.userDetails?.organization?.comptaSettings?.currency)}.`;
-    } else {
-      return `🎯 Il vous reste ${formatCurrency(remaining)} pour atteindre votre objectif mensuel (${remainingDays} jours restants).`;
-    }
-  };
+  const series = [percentage];
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-white/[0.03]">
-      <div className="px-5 pt-5 bg-white shadow-default rounded-2xl pb-11 dark:bg-gray-900 sm:px-6 sm:pt-6">
-        {/* met une descriotion pour dire que le prochaine objectif est de 120% du CA du mois precedent */}
-      
-        <div className="flex justify-between">
+    <div className="w-48 h-32 mx-auto">
+      <ReactApexChart
+        options={chartOptions}
+        series={series}
+        type="radialBar"
+        height={200}
+      />
+    </div>
+  );
+};
+
+export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData: getMonthlyTargetStatsType }) {
+  const data = MonthlyTargetData;
+
+  return (
+    <div className="space-y-6">
+      {/* Statistiques des Employés */}
+      <div className="rounded-2xl border border-gray-200 bg-white shadow-default dark:border-gray-800 dark:bg-gray-900 p-6">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-              Objectif Mensuel
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 flex items-center gap-2">
+              <Users className="w-5 h-5 text-blue-500" />
+              Performance Équipe
             </h3>
-            <p className="mt-1 font-normal text-gray-500 text-theme-sm dark:text-gray-400">
-              Progression vers l&apos;objectif de {formatCurrency(MonthlyTargetData.target,session.data?.userDetails?.organization?.comptaSettings?.currency)}
-            </p>
-            <p className="mt-1 font-normal text-gray-500 text-theme-xs dark:text-gray-400">
-              Objectif de {formatCurrency(MonthlyTargetData.target)} basé sur le <span className="text-brand-300">120% </span> du Chiffre d&apos;Affaire du mois dernier 
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Aperçu de l&apos;activité et de l&apos;efficacité de votre équipe
             </p>
           </div>
         </div>
-        <div className="relative">
-          <div className="max-h-[330px]">
-            <ReactApexChart
-              options={options}
-              series={series}
-              type="radialBar"
-              height={330}
-            />
+
+        {/* Métriques principales */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="text-center">
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+              <Users className="w-6 h-6 text-blue-500" />
+            </div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
+              {data.employeeMetrics.totalActiveEmployees}
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Employés Actifs
+            </div>
           </div>
 
-          <span className={`absolute left-1/2 top-full -translate-x-1/2 -translate-y-[95%] rounded-full px-3 py-1 text-xs font-medium ${getBadgeClass()}`}>
-            {MonthlyTargetData?.growth > 0 ? '+' : ''}{MonthlyTargetData.growth}%
-          </span>
+          <div className="text-center">
+            <div className="w-12 h-12 bg-orange-100 dark:bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+              <Clock className="w-6 h-6 text-orange-500" />
+            </div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
+              {data.employeeMetrics.totalActiveProcedures}
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Procédures en Cours
+            </div>
+          </div>
+
+          <div className="text-center">
+            <div className="w-12 h-12 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+              <CheckCircle className="w-6 h-6 text-green-500" />
+            </div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
+              {data.employeeMetrics.totalCompletedProcedures}
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Terminées ce Mois
+            </div>
+          </div>
+
+          <div className="text-center">
+            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+              <TrendingUp className="w-6 h-6 text-purple-500" />
+            </div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
+              {data.employeeMetrics.averageWorkload}
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Charge Moyenne
+            </div>
+          </div>
         </div>
-        <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          {getTargetMessage()}
-        </p>
-      </div>
 
-      <div className="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5">
-        <div>
-          <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Objectif
-          </p>
-          <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            {formatCurrency(MonthlyTargetData.target,session.data?.userDetails?.organization?.comptaSettings?.currency)}
-          </p>
+        {/* Diagramme d'efficacité */}
+        <div className="flex justify-center mb-8">
+          <SemiCircularChart 
+            percentage={data.employeeMetrics.efficiencyRate} 
+            title="Taux d'Efficacité"
+            color="#10B981"
+          />
         </div>
 
-        <div className="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
-
+        {/* Top Performers */}
         <div>
-          <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Actuel
-          </p>
-          <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            {formatCurrency(MonthlyTargetData.currentMonthAmount,session.data?.userDetails?.organization?.comptaSettings?.currency)}
-          </p>
-        </div>
-
-        <div className="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
-
-        <div>
-          <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Aujourd&apos;hui
-          </p>
-          <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            {formatCurrency(MonthlyTargetData.today,session.data?.userDetails?.organization?.comptaSettings?.currency)}
-          </p>
+          <h4 className="text-md font-semibold text-gray-800 dark:text-white/90 mb-4">
+            Top Performers ce Mois
+          </h4>
+          <div className="space-y-3">
+            {data.employeeMetrics.topPerformers.map((employee, index) => (
+              <div key={employee.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white ${
+                    index === 0 ? 'bg-yellow-500' : 
+                    index === 1 ? 'bg-gray-400' : 
+                    index === 2 ? 'bg-amber-600' : 'bg-blue-500'
+                  }`}>
+                    {index + 1}
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {employee.name}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      {employee.completedSteps} étapes terminées
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-medium text-gray-900 dark:text-white">
+                    {employee.totalWorkload} dossiers
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    en charge
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

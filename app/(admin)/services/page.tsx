@@ -9,8 +9,8 @@ import MonthlyTargetSkeleton from "@/components/Dashboards/Homedasboard/MonthlyT
 import { StatisticsServiceLayout } from "@/components/Dashboards/Homedasboard/StatisticsChart/StatisticsChartLayout";
 import { ProceduresMetrics } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetrics";
 import StatisticsServiceSkeleton from "@/components/Dashboards/Homedasboard/StatisticsChart/StatisticsChartSkeleton";
-import RecentOrdersSkeleton from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersSkeleton";
-import { RecentOrdersLayout } from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersLayout";
+// import RecentOrdersSkeleton from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersSkeleton";
+// import { RecentOrdersLayout } from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersLayout";
 import MonthlySalesChartSkeleton from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthySalesChartSkeleton";
 import { ProceduresMetricsSkeleton } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
 
@@ -73,11 +73,11 @@ export default async function DashboardPage() {
           </Suspense>
         </div>
 
-        <div className="col-span-12">
+        {/* <div className="col-span-12">
           <Suspense fallback={<RecentOrdersSkeleton />}>
             <RecentOrdersLayout />
           </Suspense>
-        </div>
+        </div> */}
       </div>
     </DashboardDataProvider>
   );
