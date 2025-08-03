@@ -59,14 +59,87 @@ export async function getMonthlyTargetStats() {
     },
   });
 
-  
+  // Statistiques des employés - Procédures en cours par employé
+  const employeeStats = await prisma.user.findMany({
+    where: {
+      organizationId,
+      role: { in: ["USER", "EMPLOYEE", "ADMIN"] },
+      active: true,
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      name: true,
+      assignedClientProcedures: {
+        where: {
+          status: "IN_PROGRESS",
+        },
+        select: {
+          id: true,
+          procedure: {
+            select: {
+              name: true,
+            }
+          }
+        }
+      },
+      managedClientProcedures: {
+        where: {
+          status: "IN_PROGRESS",
+        },
+        select: {
+          id: true,
+        }
+      },
+      processedClientSteps: {
+        where: {
+          status: "COMPLETED",
+          completionDate: {
+            gte: startOfCurrentMonth,
+            lte: endOfCurrentMonth,
+          }
+        },
+        select: {
+          id: true,
+        }
+      }
+    }
+  });
 
-  // Définir un objectif mensuel basé sur les derniers résultats ou sur une valeur par défaut
-  // Ici, on utilise 120% du revenu du mois dernier ou 1000 par défaut
-  const lastMonthAmount = lastMonthRevenue._sum?.amount || 0;
-  const target = Math.max(1000, Math.round(lastMonthAmount * 1.2));
+  // Calculer les totaux pour les employés
+  const totalActiveEmployees = employeeStats.length;
+  const totalActiveProcedures = await prisma.clientProcedure.count({
+    where: {
+      organizationId,
+      status: "IN_PROGRESS",
+    }
+  });
+
+  const totalCompletedProcedures = await prisma.clientProcedure.count({
+    where: {
+      organizationId,
+      status: "COMPLETED",
+      completionDate: {
+        gte: startOfCurrentMonth,
+        lte: endOfCurrentMonth,
+      }
+    }
+  });
+
+  // Calculer la charge de travail moyenne
+  const averageWorkload = totalActiveEmployees > 0 
+    ? Math.round(totalActiveProcedures / totalActiveEmployees) 
+    : 0;
+
+  // Calcul des montants
   const currentMonthAmount = currentMonthRevenue._sum?.amount || 0;
-  
+  const lastMonthAmount = lastMonthRevenue._sum?.amount || 0;
+  const todayAmount = todayRevenue._sum?.amount || 0;
+
+  // Définir un objectif mensuel basé sur 120% du revenu du mois dernier
+  const target = Math.max(1000, Math.round(lastMonthAmount * 1.2));
+
   // Calculer le pourcentage de changement par rapport au mois dernier
   const percentageChange = lastMonthAmount > 0 
     ? ((currentMonthAmount - lastMonthAmount) / lastMonthAmount) * 100 
@@ -74,7 +147,6 @@ export async function getMonthlyTargetStats() {
 
   // Générer un message en fonction de la progression
   let message = "";
-  // comparer le pourcentage de changement par rapport au mois précedent
   if (percentageChange > 0) {
     message = `📈 Vous avez augmenté votre revenu de ${Math.round(percentageChange)}% par rapport au mois dernier.`;
   } else if (percentageChange < 0) {
@@ -87,15 +159,43 @@ export async function getMonthlyTargetStats() {
     message = `⚖️ Vous avez le même revenu que le mois dernier.`;
   }
 
+  // Calcul du taux d'efficacité des employés (procédures terminées vs en cours)
+  const efficiencyRate = totalActiveProcedures > 0 
+    ? Math.round((totalCompletedProcedures / (totalActiveProcedures + totalCompletedProcedures)) * 100)
+    : 0;
+
   return {
-    target: target, 
-    lastMonthAmount: lastMonthAmount, 
-    revenue: currentMonthAmount, 
+    // Données financières
+    target: target,
+    lastMonthAmount: lastMonthAmount,
+    revenue: currentMonthAmount,
     progress: Math.min(100, Math.round((currentMonthAmount / target) * 100)),
     growth: Math.round(percentageChange),
     message: message,
-    currentMonthAmount: currentMonthAmount, 
-    today: (todayRevenue._sum?.amount || 0), 
+    currentMonthAmount: currentMonthAmount,
+    today: todayAmount,
+
+    // Statistiques des employés
+    employeeMetrics: {
+      totalActiveEmployees,
+      totalActiveProcedures,
+      totalCompletedProcedures,
+      averageWorkload,
+      efficiencyRate,
+      topPerformers: employeeStats
+        .map(emp => ({
+          id: emp.id,
+          name: emp.firstName && emp.lastName 
+            ? `${emp.firstName} ${emp.lastName}` 
+            : emp.name || 'Employé',
+          activeProcedures: emp.assignedClientProcedures.length,
+          managedProcedures: emp.managedClientProcedures.length,
+          completedSteps: emp.processedClientSteps.length,
+          totalWorkload: emp.assignedClientProcedures.length + emp.managedClientProcedures.length
+        }))
+        .sort((a, b) => b.completedSteps - a.completedSteps)
+        .slice(0, 5)
+    }
   };
 }
 
