@@ -202,10 +202,22 @@ export class TransactionService extends BaseService {
         throw new Error("Transaction introuvable ou accès non autorisé");
       }
 
-      // Supprimer la transaction
-      await this.prisma.transaction.delete({
-        where: { id: transactionId }
-      });
+      await this.prisma.$transaction(async(tx)=>{
+
+            // Supprimer les revenus et les depenses relatives
+            await tx.revenue.deleteMany({
+              where: { transactionId }
+            });
+            await tx.expense.deleteMany({
+              where: { transactionId }
+            });
+
+           // Supprimer la transaction
+            await tx.transaction.delete({
+              where: { id: transactionId }
+            });
+
+      })
 
       return { success: true };
     } catch (error) {
