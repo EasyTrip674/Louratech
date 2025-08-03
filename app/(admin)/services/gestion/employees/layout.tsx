@@ -23,7 +23,7 @@ async function EmployeesAuthGuard({ children }: { children: React.ReactNode }) {
     }
 
     // Vérifier les autorisations directement depuis la session
-    if (!user?.userDetails?.authorize?.canCreateAdmin) {
+    if (!user?.userDetails?.authorize?.canReadAdmin) {
       return <NotAuthorized />;
     }
 
