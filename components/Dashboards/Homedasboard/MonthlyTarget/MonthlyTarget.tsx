@@ -149,7 +149,7 @@ export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData
             percentage={data.employeeMetrics.efficiencyRate} 
             title="Taux d'Efficacité"
             color="#10B981"
-          />
+            />
         </div>
 
         {/* Top Performers */}
@@ -162,7 +162,7 @@ export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData
               <div key={employee.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white ${
-                    index === 0 ? 'bg-yellow-500' : 
+                    index === 0 ? 'bg-yellow-500' :
                     index === 1 ? 'bg-gray-400' : 
                     index === 2 ? 'bg-amber-600' : 'bg-blue-500'
                   }`}>
