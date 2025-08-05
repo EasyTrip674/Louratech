@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
 import { customSession, organization } from "better-auth/plugins";
-import { scrypt } from "scrypt"; 
+// import  {scrypt}  from "scrypt"; 
  
 const prisma = new PrismaClient();
 export const auth = betterAuth({
@@ -50,18 +50,7 @@ export const auth = betterAuth({
     emailAndPassword:{
         enabled: true,
         autoSignIn: false,
-        password: {
-              hash: async (password: string) => {
-                // Your custom password hashing logic here, e.g., using scrypt
-                const hashedPassword = await scrypt.hash(password, { N: 16384, r: 8, p: 1 });
-                return hashedPassword;
-              },
-              verify: async (password: string, hashedPassword: string) => {
-                // Your custom password verification logic here
-                const isValid = await scrypt.verify(password, hashedPassword);
-                return isValid;
-              },
-        },
+      
     },
     database: prismaAdapter(prisma, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc

@@ -128,6 +128,9 @@ importers:
       react-toastify:
         specifier: ^11.0.5
         version: 11.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      scrypt:
+        specifier: ^6.0.3
+        version: 6.0.3
       tailwind-merge:
         specifier: ^3.0.2
         version: 3.3.1
@@ -153,6 +156,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.1.6(@types/react@19.1.8)
+      '@types/scrypt':
+        specifier: ^6.0.3
+        version: 6.0.3
       electron:
         specifier: ^36.2.1
         version: 36.7.1
@@ -2080,6 +2086,9 @@ packages:
 
   '@types/retry@0.12.0':
     resolution: {integrity: sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA==}
+
+  '@types/scrypt@6.0.3':
+    resolution: {integrity: sha512-7GuqhEYEjorHSwjG5SL9/TASpsrRM0vabeZxcGCCmAbBPLY0z09xIpAiMZetjaxARs4XpLsCAOb+PnX0+hRjRw==}
 
   '@types/semver@7.7.0':
     resolution: {integrity: sha512-k107IF4+Xr7UHjwDc7Cfd6PRQfbdkiRabXGRjo07b4WyPahFBZCZ1sE+BNxYIJPPg73UkfOsVOLwqVc/6ETrIA==}
@@ -4441,6 +4450,9 @@ packages:
     resolution: {integrity: sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==}
     hasBin: true
 
+  nan@2.23.0:
+    resolution: {integrity: sha512-1UxuyYGdoQHcGg87Lkqm3FzefucTa0NAiOcuRsDmysep3c1LVCRK2krrUDafMWtjSG04htvAmvg96+SDknOmgQ==}
+
   nanoid@3.3.11:
     resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -5147,6 +5159,10 @@ packages:
 
   scroll-into-view-if-needed@2.2.31:
     resolution: {integrity: sha512-dGCXy99wZQivjmjIqihaBQNjryrz5rueJY7eHfTdyWEiR4ttYpsajb14rn9s5d4DY4EcY6+4+U/maARBXJedkA==}
+
+  scrypt@6.0.3:
+    resolution: {integrity: sha512-NDrWb9hCm6Ev170XYVl7TSgu4R44Rjc8EVw1ce0TMN8EkfLvkhlwcfp61OVNc8EJDiHaQwVErn1fIU0RO3kSZw==}
+    engines: {node: '>= 0.10'}
 
   secure-json-parse@2.7.0:
     resolution: {integrity: sha512-6aU+Rwsezw7VR8/nyvKTx8QpWH9FrcYiXXlqC4z5d5XQBDRqtbfsRjnwGyqbi3gddNtWHuEk9OANUotL26qKUw==}
@@ -7774,6 +7790,10 @@ snapshots:
 
   '@types/retry@0.12.0': {}
 
+  '@types/scrypt@6.0.3':
+    dependencies:
+      '@types/node': 20.19.7
+
   '@types/semver@7.7.0': {}
 
   '@types/tough-cookie@4.0.5': {}
@@ -9545,7 +9565,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.10.0(debug@4.4.1))
+      retry-axios: 2.6.0(axios@1.10.0)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -10654,6 +10674,8 @@ snapshots:
 
   mustache@4.2.0: {}
 
+  nan@2.23.0: {}
+
   nanoid@3.3.11: {}
 
   nanostores@0.11.4: {}
@@ -11366,7 +11388,7 @@ snapshots:
 
   restructure@3.0.2: {}
 
-  retry-axios@2.6.0(axios@1.10.0(debug@4.4.1)):
+  retry-axios@2.6.0(axios@1.10.0):
     dependencies:
       axios: 1.10.0(debug@4.4.1)
 
@@ -11438,6 +11460,10 @@ snapshots:
   scroll-into-view-if-needed@2.2.31:
     dependencies:
       compute-scroll-into-view: 1.0.20
+
+  scrypt@6.0.3:
+    dependencies:
+      nan: 2.23.0
 
   secure-json-parse@2.7.0: {}
 

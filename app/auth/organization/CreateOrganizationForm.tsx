@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,15 +7,14 @@ import Link from "next/link";
 import Input from "@/components/form/input/InputField"; 
 import Button from "@/components/ui/button/Button";
 import { createOrganizationSchema } from "./create.organization.shema";
-import { doCreateOrganization } from "./organization.create.action";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { ChevronLeftIcon, Eye, EyeOff, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { ChevronLeftIcon, Eye, EyeOff, CheckCircle, AlertCircle, Loader2, Shield } from "lucide-react";
 import { toast } from 'react-toastify';
+import { debounce } from 'lodash';
 
 type OrganizationFormData = z.infer<typeof createOrganizationSchema>;
 
-// Types pour les erreurs spécifiques
 type ErrorType = 
   | 'USER_EXISTS' 
   | 'INVALID_CODE' 
@@ -23,6 +22,7 @@ type ErrorType =
   | 'TERMS_NOT_ACCEPTED' 
   | 'THROTTLED' 
   | 'NETWORK_ERROR' 
+  | 'VALIDATION_ERROR'
   | 'UNKNOWN_ERROR';
 
 interface FormError {
@@ -31,11 +31,61 @@ interface FormError {
   field?: keyof OrganizationFormData;
 }
 
+interface ApiErrorResponse {
+  error: string;
+}
+
+interface ApiSuccessResponse {
+  success: boolean;
+  data: {
+    organization: {
+      id: string;
+      name: string;
+      slug: string;
+      description: string;
+    };
+    user: {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      role: string;
+    };
+  };
+}
+
+// Action corrigée pour utiliser l'API /api/organizations
+const doCreateOrganization = async (data: OrganizationFormData): Promise<ApiSuccessResponse> => {
+  const response = await fetch('/api/organizations', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+
+  console.log(response);
+  
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    const errorMessage = (result as ApiErrorResponse).error || 'Erreur lors de la création';
+    throw new Error(errorMessage);
+  }
+
+  return result as ApiSuccessResponse;
+};
+
 export default function CreationOrganisationFormulaire() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formError, setFormError] = useState<FormError | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
+  const [checkingEmail, setCheckingEmail] = useState(false);
   const router = useRouter();
 
   const { 
@@ -44,24 +94,68 @@ export default function CreationOrganisationFormulaire() {
     formState: { errors, isValid, dirtyFields },
     setError,
     clearErrors,
-    watch
+    watch,
   } = useForm<OrganizationFormData>({
     resolver: zodResolver(createOrganizationSchema),
     defaultValues: {
       agreesToTerms: false
     },
-    mode: "onChange" // Validation en temps réel
+    mode: "onChange"
   });
 
-  // Observer les mots de passe pour validation en temps réel
   const password = watch("password");
   const confirmPassword = watch("confirmPassword");
+  const email = watch("email");
 
-  // Fonction pour parser et catégoriser les erreurs
+  // Fonction de vérification d'email débounced
+  const debouncedEmailCheck = useCallback(
+    debounce(async (emailValue: string) => {
+      if (!emailValue || !emailValue.includes('@')) return;
+      
+      setCheckingEmail(true);
+      try {
+        // Vérification via l'API check-email
+        const response = await fetch('/api/check-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailValue })
+        });
+        
+        const data = await response.json();
+        setEmailAvailable(!data.exists);
+        
+        if (data.exists) {
+          setError('email', {
+            type: 'manual',
+            message: 'Cet email est déjà utilisé'
+          });
+        } else {
+          clearErrors('email');
+        }
+      } catch (error) {
+        console.error('Erreur vérification email:', error);
+        // En cas d'erreur, on ne bloque pas l'utilisateur
+        setEmailAvailable(null);
+      } finally {
+        setCheckingEmail(false);
+      }
+    }, 500),
+    [setError, clearErrors]
+  );
+
+  // Vérification email en temps réel
+  useEffect(() => {
+    if (email && dirtyFields.email) {
+      debouncedEmailCheck(email);
+    }
+  }, [email, debouncedEmailCheck, dirtyFields.email]);
+
   const parseError = (error: Error): FormError => {
     const message = error.message.toLowerCase();
     
-    if (message.includes('user already exist') || message.includes('utilisateur existe déjà')) {
+    // Gestion des erreurs spécifiques de l'API
+    if (message.includes('utilisateur avec cet email existe déjà') || 
+        message.includes('user already exist')) {
       return {
         type: 'USER_EXISTS',
         message: 'Un compte avec cet email existe déjà. Essayez de vous connecter ou utilisez un autre email.',
@@ -69,7 +163,8 @@ export default function CreationOrganisationFormulaire() {
       };
     }
     
-    if (message.includes('code invalide') || message.includes('invalid code')) {
+    if (message.includes('code d\'invitation invalide') || 
+        message.includes('invalid invitation')) {
       return {
         type: 'INVALID_CODE',
         message: 'Le code d\'invitation fourni n\'est pas valide. Vérifiez votre code ou contactez votre administrateur.',
@@ -77,30 +172,26 @@ export default function CreationOrganisationFormulaire() {
       };
     }
     
-    if (message.includes('passwords do not match') || message.includes('mots de passe ne correspondent pas')) {
-      return {
-        type: 'PASSWORD_MISMATCH',
-        message: 'Les mots de passe ne correspondent pas.',
-        field: 'confirmPassword'
-      };
-    }
-    
-    if (message.includes('terms and conditions') || message.includes('conditions d\'utilisation')) {
-      return {
-        type: 'TERMS_NOT_ACCEPTED',
-        message: 'Vous devez accepter les conditions d\'utilisation pour continuer.',
-        field: 'agreesToTerms'
-      };
-    }
-    
-    if (message.includes('wait before submitting') || message.includes('throttled')) {
+    if (message.includes('trop de tentatives') || 
+        message.includes('rate limit') || 
+        message.includes('attendre')) {
       return {
         type: 'THROTTLED',
-        message: 'Veuillez patienter quelques secondes avant de soumettre à nouveau le formulaire.'
+        message: 'Trop de tentatives. Veuillez patienter 5 minutes avant de réessayer.'
       };
     }
     
-    if (message.includes('network') || message.includes('fetch')) {
+    if (message.includes('données invalides') || 
+        message.includes('validation')) {
+      return {
+        type: 'VALIDATION_ERROR',
+        message: 'Les données saisies ne sont pas valides. Vérifiez tous les champs.'
+      };
+    }
+    
+    if (message.includes('network') || 
+        message.includes('fetch') || 
+        message.includes('connexion')) {
       return {
         type: 'NETWORK_ERROR',
         message: 'Erreur de connexion. Vérifiez votre connexion Internet et réessayez.'
@@ -109,34 +200,44 @@ export default function CreationOrganisationFormulaire() {
     
     return {
       type: 'UNKNOWN_ERROR',
-      message: 'Une erreur inattendue s\'est produite. Veuillez réessayer ou contacter le support si le problème persiste.'
+      message: error.message || 'Une erreur inattendue s\'est produite. Veuillez réessayer ou contacter le support.'
     };
   };
 
   const creationOrganizationMutation = useMutation({
     mutationFn: async (data: OrganizationFormData) => {
-      // Réinitialiser les erreurs
+      // Protection contre les soumissions multiples
+      if (isSubmitting) {
+        throw new Error('Soumission déjà en cours');
+      }
+      
+      setIsSubmitting(true);
       setFormError(null);
       clearErrors();
       
-      const result = await doCreateOrganization(data);
-      
-      if (result?.data) {
-        // Succès - afficher un message de succès avec toast
-        toast.success("Organisation créée avec succès ! Redirection en cours...", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+      try {
+        const result = await doCreateOrganization(data);
         
-        // Délai pour permettre à l'utilisateur de voir le message
-        setTimeout(() => {
-          router.push("/auth/signin");
-        }, 2000);
-      } else {
-        throw new Error("Échec de la création de l'organisation");
+        if (result?.success && result?.data) {
+          toast.success("Organisation créée avec succès ! Redirection en cours...", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          
+          setIsSubmitted(true);
+          
+          // Redirection après délai
+          setTimeout(() => {
+            router.push("/auth/signin");
+          }, 2000);
+          
+          return result;
+        } else {
+          throw new Error("Échec de la création de l'organisation");
+        }
+      } finally {
+        setIsSubmitting(false);
       }
-      
-      return result;
     },
     onError: (error: Error) => {
       console.error("Erreur lors de la création de l'organisation:", error);
@@ -144,7 +245,7 @@ export default function CreationOrganisationFormulaire() {
       const parsedError = parseError(error);
       setFormError(parsedError);
       
-      // Définir l'erreur sur le champ spécifique si applicable
+      // Application de l'erreur au champ spécifique si défini
       if (parsedError.field) {
         setError(parsedError.field, {
           type: 'manual',
@@ -152,19 +253,17 @@ export default function CreationOrganisationFormulaire() {
         });
       }
       
-      // Toast d'erreur pour une meilleure visibilité
       toast.error(parsedError.message, {
         position: "top-right",
         autoClose: 5000,
       });
-    },
-    onSuccess: () => {
-      setIsSubmitted(true);
+      
+      setIsSubmitting(false);
     }
   });
 
-  const onSubmit = (data: OrganizationFormData) => {
-    // Validation supplémentaire côté client
+  const onSubmit = useCallback(async (data: OrganizationFormData) => {
+    // Validation finale côté client
     if (data.password !== data.confirmPassword) {
       setError('confirmPassword', {
         type: 'manual',
@@ -180,25 +279,65 @@ export default function CreationOrganisationFormulaire() {
       });
       return;
     }
+
+    // Vérification finale de l'email (si la vérification a été faite)
+    if (emailAvailable === false) {
+      setError('email', {
+        type: 'manual',
+        message: 'Cet email est déjà utilisé'
+      });
+      return;
+    }
     
     creationOrganizationMutation.mutate(data);
-  };
+  }, [creationOrganizationMutation, setError, emailAvailable]);
 
   // Fonction pour obtenir l'icône d'état du champ
   const getFieldIcon = (fieldName: keyof OrganizationFormData) => {
     const hasError = errors[fieldName];
     const isDirty = dirtyFields[fieldName];
-    const isLoading = creationOrganizationMutation.isPending;
     
-    if (isLoading) return <Loader2 className="w-4 h-4 animate-spin text-gray-400" />;
+    // Cas spécial pour l'email
+    if (fieldName === 'email') {
+      if (checkingEmail) return <Loader2 className="w-4 h-4 animate-spin text-blue-500" />;
+      if (hasError) return <AlertCircle className="w-4 h-4 text-red-500" />;
+      if (emailAvailable === true && isDirty) return <CheckCircle className="w-4 h-4 text-green-500" />;
+      if (emailAvailable === false) return <AlertCircle className="w-4 h-4 text-red-500" />;
+    }
+    
+    if (isSubmitting) return <Loader2 className="w-4 h-4 animate-spin text-gray-400" />;
     if (hasError) return <AlertCircle className="w-4 h-4 text-red-500" />;
     if (isDirty && !hasError) return <CheckCircle className="w-4 h-4 text-green-500" />;
     return null;
   };
 
-  // Composant d'alerte d'erreur
+  // Indicateur de force du mot de passe
+  const getPasswordStrength = (password: string) => {
+    if (!password) return { strength: 0, label: '', color: '' };
+    
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+    const levels = [
+      { label: 'Très faible', color: 'bg-red-500' },
+      { label: 'Faible', color: 'bg-orange-500' },
+      { label: 'Moyen', color: 'bg-yellow-500' },
+      { label: 'Fort', color: 'bg-blue-500' },
+      { label: 'Très fort', color: 'bg-green-500' }
+    ];
+    
+    return { strength, ...levels[strength - 1] || levels[0] };
+  };
+
+  const passwordStrength = getPasswordStrength(password || '');
+
+  // Composant d'alerte d'erreur amélioré
   const ErrorAlert = ({ error }: { error: FormError }) => (
-    <div className="flex items-start gap-3 p-4 mb-4 bg-red-50 border border-red-200 rounded-lg dark:bg-red-900/20 dark:border-red-800">
+    <div className="flex items-start gap-3 p-4 mb-4 bg-red-50 border border-red-200 rounded-lg dark:bg-red-900/20 dark:border-red-800 animate-in slide-in-from-top-2">
       <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
       <div>
         <h4 className="text-sm font-medium text-red-800 dark:text-red-200">
@@ -208,6 +347,7 @@ export default function CreationOrganisationFormulaire() {
           {error.type === 'TERMS_NOT_ACCEPTED' && 'Conditions d\'utilisation'}
           {error.type === 'THROTTLED' && 'Trop de tentatives'}
           {error.type === 'NETWORK_ERROR' && 'Erreur de connexion'}
+          {error.type === 'VALIDATION_ERROR' && 'Données invalides'}
           {error.type === 'UNKNOWN_ERROR' && 'Erreur inconnue'}
         </h4>
         <p className="text-sm text-red-700 dark:text-red-300 mt-1">
@@ -217,9 +357,9 @@ export default function CreationOrganisationFormulaire() {
     </div>
   );
 
-  // Composant de succès
+  // Composant de succès amélioré
   const SuccessAlert = () => (
-    <div className="flex items-start gap-3 p-4 mb-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/20 dark:border-green-800">
+    <div className="flex items-start gap-3 p-4 mb-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/20 dark:border-green-800 animate-in slide-in-from-top-2">
       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
       <div>
         <h4 className="text-sm font-medium text-green-800 dark:text-green-200">
@@ -231,6 +371,9 @@ export default function CreationOrganisationFormulaire() {
       </div>
     </div>
   );
+
+  // Vérifier si le formulaire peut être soumis
+  const canSubmit = isValid && !isSubmitting && !checkingEmail && emailAvailable !== false;
 
   return (
     <div className="flex flex-col justify-center w-full max-w-md mx-auto p-6">
@@ -260,7 +403,7 @@ export default function CreationOrganisationFormulaire() {
         
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="space-y-5">
-            {/* Détails de l'Organisation */}
+            {/* Organisation */}
             <div>
               <div className="relative">
                 <Input
@@ -269,6 +412,7 @@ export default function CreationOrganisationFormulaire() {
                   {...register("organizationName")}
                   placeholder="Saisissez le nom de votre organisation"
                   className={errors.organizationName ? "border-red-500" : ""}
+                  disabled={isSubmitting}
                 />
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                   {getFieldIcon("organizationName")}
@@ -287,10 +431,11 @@ export default function CreationOrganisationFormulaire() {
                 label="Description de l'Organisation"
                 {...register("organizationDescription")}
                 placeholder="Décrivez brièvement votre organisation (optionnel)"
+                disabled={isSubmitting}
               />
             </div>
 
-            {/* Informations de l'Administrateur */}
+            {/* Utilisateur */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <div className="relative">
@@ -300,6 +445,7 @@ export default function CreationOrganisationFormulaire() {
                     {...register("firstName")}
                     placeholder="Votre prénom"
                     className={errors.firstName ? "border-red-500" : ""}
+                    disabled={isSubmitting}
                   />
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                     {getFieldIcon("firstName")}
@@ -320,6 +466,7 @@ export default function CreationOrganisationFormulaire() {
                     {...register("lastName")}
                     placeholder="Votre nom de famille"
                     className={errors.lastName ? "border-red-500" : ""}
+                    disabled={isSubmitting}
                   />
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                     {getFieldIcon("lastName")}
@@ -334,6 +481,7 @@ export default function CreationOrganisationFormulaire() {
               </div>
             </div>
 
+            {/* Email avec vérification temps réel */}
             <div>
               <div className="relative">
                 <Input
@@ -342,7 +490,10 @@ export default function CreationOrganisationFormulaire() {
                   {...register("email")}
                   type="email"
                   placeholder="Saisissez votre adresse email"
-                  className={errors.email ? "border-red-500" : ""}
+                  className={`${errors.email ? "border-red-500" : ""} ${
+                    emailAvailable === true ? "border-green-500" : ""
+                  }`}
+                  disabled={isSubmitting}
                 />
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                   {getFieldIcon("email")}
@@ -354,9 +505,15 @@ export default function CreationOrganisationFormulaire() {
                   {errors.email.message}
                 </p>
               )}
+              {emailAvailable === true && dirtyFields.email && !errors.email && (
+                <p className="mt-1 text-sm text-green-600 flex items-center gap-1">
+                  <CheckCircle className="w-3 h-3" />
+                  Email disponible
+                </p>
+              )}
             </div>
 
-            {/* Mot de passe */}
+            {/* Mot de passe avec indicateur de force */}
             <div>
               <div className="relative">
                 <Input
@@ -366,6 +523,7 @@ export default function CreationOrganisationFormulaire() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Créez un mot de passe sécurisé"
                   className={errors.password ? "border-red-500" : ""}
+                  disabled={isSubmitting}
                 />
                 <div className="absolute right-12 top-1/2 transform -translate-y-1/2">
                   {getFieldIcon("password")}
@@ -374,14 +532,27 @@ export default function CreationOrganisationFormulaire() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  disabled={isSubmitting}
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              
+              {/* Indicateur de force du mot de passe */}
+              {password && (
+                <div className="mt-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="flex-1 bg-gray-200 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-300 ${passwordStrength.color}`}
+                        style={{ width: `${(passwordStrength.strength / 5) * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-gray-600">{passwordStrength.label}</span>
+                  </div>
+                </div>
+              )}
+              
               {errors.password && (
                 <p className="mt-1 text-sm text-red-500 flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
@@ -390,6 +561,7 @@ export default function CreationOrganisationFormulaire() {
               )}
             </div>
 
+            {/* Confirmation mot de passe */}
             <div>
               <div className="relative">
                 <Input
@@ -399,6 +571,7 @@ export default function CreationOrganisationFormulaire() {
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirmez votre mot de passe"
                   className={errors.confirmPassword ? "border-red-500" : ""}
+                  disabled={isSubmitting}
                 />
                 <div className="absolute right-12 top-1/2 transform -translate-y-1/2">
                   {getFieldIcon("confirmPassword")}
@@ -407,21 +580,19 @@ export default function CreationOrganisationFormulaire() {
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  disabled={isSubmitting}
                 >
-                  {showConfirmPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              
               {errors.confirmPassword && (
                 <p className="mt-1 text-sm text-red-500 flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
                   {errors.confirmPassword.message}
                 </p>
               )}
-              {/* Validation en temps réel des mots de passe */}
+              
               {password && confirmPassword && password !== confirmPassword && (
                 <p className="mt-1 text-sm text-amber-600 flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
@@ -439,6 +610,7 @@ export default function CreationOrganisationFormulaire() {
                   {...register("invitationCode")}
                   placeholder="Saisissez le code d'invitation"
                   className={errors.invitationCode ? "border-red-500" : ""}
+                  disabled={isSubmitting}
                 />
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                   {getFieldIcon("invitationCode")}
@@ -464,6 +636,7 @@ export default function CreationOrganisationFormulaire() {
                   className={`w-5 h-5 mt-0.5 text-primary-500 border-gray-300 rounded focus:ring-primary-500 ${
                     errors.agreesToTerms ? "border-red-500" : ""
                   }`}
+                  disabled={isSubmitting}
                 />
                 <div className="flex-1">
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -494,20 +667,27 @@ export default function CreationOrganisationFormulaire() {
               </div>
             </div>
 
-            {/* Bouton de Soumission */}
+            {/* Bouton de Soumission amélioré */}
             <Button
               type="submit" 
-              className="w-full flex items-center justify-center gap-2"
-              disabled={creationOrganizationMutation.isPending || !isValid}
+              className="w-full flex items-center justify-center gap-2 relative"
+              disabled={!canSubmit}
             >
-              {creationOrganizationMutation.isPending && (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              )}
-              {creationOrganizationMutation.isPending 
-                ? "Création en cours..." 
-                : "Créer mon Organisation"
-              }
+              {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+              {!isSubmitting && <Shield className="w-4 h-4" />}
+              {isSubmitting ? "Création en cours..." : "Créer mon Organisation"}
             </Button>
+
+            {/* Message d'aide */}
+            {!canSubmit && !isSubmitting && (
+              <div className="text-center">
+                <p className="text-xs text-gray-500">
+                  {checkingEmail && "Vérification de l'email en cours..."}
+                  {!isValid && !checkingEmail && "Veuillez remplir tous les champs requis"}
+                  {emailAvailable === false && "L'email est déjà utilisé"}
+                </p>
+              </div>
+            )}
 
             {/* Lien de connexion */}
             <div className="text-center">

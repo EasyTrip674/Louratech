@@ -68,6 +68,19 @@ export const doCreateOrganization = actionClient
                 .replace(/-+/g, '-')
                 .trim();
 
+                  // Créer l'utilisateur avec Better Auth (le hachage scrypt est géré automatiquement)
+                const userAuth = await auth.api.signUpEmail({
+                    body: {
+                        email: clientInput.email,
+                        password: clientInput.password,
+                        name: `${clientInput.firstName} ${clientInput.lastName}`,
+                    }
+                });
+
+                if (!userAuth.user) {
+                    throw new Error("Échec de la création de l'utilisateur");
+                }
+
             // 4. Transaction principale avec vérifications atomiques
             const result = await prisma.$transaction(async (tx) => {
                 // Vérifier l'existence de l'utilisateur
@@ -87,19 +100,7 @@ export const doCreateOrganization = actionClient
                     slug = `${baseSlug}-${counter}`;
                     counter++;
                 }
-
-                // Créer l'utilisateur avec Better Auth (le hachage scrypt est géré automatiquement)
-                const userAuth = await auth.api.ema({
-                    body: {
-                        email: clientInput.email,
-                        password: clientInput.password,
-                        name: `${clientInput.firstName} ${clientInput.lastName}`,
-                    }
-                });
-
-                if (!userAuth.user) {
-                    throw new Error("Échec de la création de l'utilisateur");
-                }
+              
 
                 // Mettre à jour l'utilisateur avec les informations complètes
                 const updatedUser = await tx.user.update({
