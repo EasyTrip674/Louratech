@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ArrowLeftFromLine } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
-import { authorizationService } from '@/lib/services';
+// import { authorizationService } from '@/lib/services';
 
 interface SettingsLayoutProps {
   children: ReactNode;
@@ -28,17 +28,17 @@ async function SettingsAuthGuard({ children }: { children: ReactNode }) {
     }
 
     // Vérifier les autorisations via le service
-    const canEdit = await authorizationService.checkUserPermission(session.userDetails.id, "canCreateAdmin");
-    if (!canEdit) {
-      return (
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-red-600 mb-4">Accès refusé</h1>
-            <p className="text-gray-600">Vous n&apos;avez pas les autorisations nécessaires</p>
-          </div>
-        </div>
-      );
-    }
+    // const canEdit = await authorizationService.checkUserPermission(session.userDetails.id, "canReadSettings");
+    // if (!canEdit) {
+    //   return (
+    //     <div className="flex items-center justify-center h-screen">
+    //       <div className="text-center">
+    //         <h1 className="text-2xl font-bold text-red-600 mb-4">Accès refusé</h1>
+    //         <p className="text-gray-600">Vous n&apos;avez pas les autorisations nécessaires</p>
+    //       </div>
+    //     </div>
+    //   );
+    // }
 
     return <>{children}</>;
   } catch (error) {
