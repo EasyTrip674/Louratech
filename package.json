@@ -59,7 +59,7 @@
     "react-hook-form": "^7.54.2",
     "react-icons": "^5.5.0",
     "react-toastify": "^11.0.5",
-    "scrypt": "^6.0.3",
+    "scrypt-js": "^3.0.1",
     "tailwind-merge": "^3.0.2",
     "zod": "^3.24.2"
   },
