@@ -50,7 +50,6 @@ export default function FeaturesSection() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
-              variants={cardVariants}
               className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center transition-transform hover:-translate-y-2 hover:shadow-2xl border border-gray-100 relative"
             >
               <div className="mb-4 relative">
