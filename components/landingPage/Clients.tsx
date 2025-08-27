@@ -159,14 +159,14 @@ const TargetClients = () => {
           {targetClients.map((client) => (
             <motion.div
               key={client.id}
-              variants={cardVariants}
+             
               whileHover="hover"
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all"
             >
               <div className="h-2 bg-gradient-to-r from-brand-500 to-brand-600"></div>
               <div className="p-8">
                 <motion.div 
-                  variants={iconVariants}  
+                
                   className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-6 mx-auto"
                 >
                   {client.icon}

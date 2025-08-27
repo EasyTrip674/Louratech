@@ -11,7 +11,7 @@ type Organization = {
   id: string;
   name: string;
   slug: string;
-  description: string | null;
+  description: string | null; 
   logo: string | null;
   metadata: string;
 };
