@@ -116,7 +116,7 @@ const CreateRevenuModal = ({}: Props) => {
         onClick={openModal}
        className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 transition-colors dark:bg-green-700 dark:hover:bg-green-800">
         <ArrowUpCircle className="w-4 h-4 mr-2" />
-        Créer un revenu
+         Encaisser
       </button>
 
       <Modal
@@ -127,7 +127,7 @@ const CreateRevenuModal = ({}: Props) => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Nouveau revenu
+              Encaissement
             </h3>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Veuillez remplir les informations de la revenue ci-dessous
@@ -321,7 +321,7 @@ const CreateRevenuModal = ({}: Props) => {
                   Création...
                 </>
               ) : (
-                'Créer la revenue'
+                'Encaisser'
               )}
             </Button>
           </div>

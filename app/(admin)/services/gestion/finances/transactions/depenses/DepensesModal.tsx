@@ -113,7 +113,7 @@ const CreateExpenseModal = ({}: Props) => {
         onClick={openModal}
         className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-colors dark:bg-red-700 dark:hover:bg-red-800">
         <ArrowDownCircle className="w-4 h-4 mr-2" />
-        Créer une dépense
+         Decaisser
       </button>
 
       <Modal
@@ -124,7 +124,7 @@ const CreateExpenseModal = ({}: Props) => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Nouvelle dépense
+              Decaissement
             </h3>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Veuillez remplir les informations de la dépense ci-dessous
@@ -319,7 +319,7 @@ const CreateExpenseModal = ({}: Props) => {
                   Création...
                 </>
               ) : (
-                'Créer la dépense'
+                'Decaisser'
               )}
             </Button>
           </div>

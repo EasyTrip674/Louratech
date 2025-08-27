@@ -47,7 +47,7 @@ const AppSidebar: React.FC = () => {
           ? [{ name: "Clients", path: "/services/gestion/clients", pro: false }]
           : []),
         ...(user?.authorize?.canReadTransaction ? 
-          [{ name: "Caisse", path: "/services/gestion/finances", pro: false }] 
+          [{ name: "Finances", path: "/services/gestion/finances", pro: false }] 
           : [])
       ],
     },
