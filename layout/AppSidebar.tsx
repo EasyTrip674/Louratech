@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 
 import SidebarWidget from "./SidebarWidget";
-import {  ChevronDownIcon, Ellipsis, GripHorizontal, LayoutDashboard, MonitorDot } from "lucide-react";
+import {  ChevronDownIcon, DollarSign, Ellipsis, GripHorizontal, LayoutDashboard, MonitorDot, Paperclip, Workflow } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import Logo from "@/components/logo";
 
@@ -14,6 +14,7 @@ type NavItem = {
   icon: React.ReactNode;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  comingSoon?: boolean; // Nouveau type pour identifier les sections à venir
 };
 
 
@@ -22,6 +23,8 @@ const AppSidebar: React.FC = () => {
   const pathname = usePathname();
   const session = authClient.useSession();
   const user = session?.data?.userDetails;
+  
+  // Les sections à venir sont toujours affichées mais désactivées
 
   const navItems: NavItem[] = [
     {
@@ -44,35 +47,48 @@ const AppSidebar: React.FC = () => {
           ? [{ name: "Clients", path: "/services/gestion/clients", pro: false }]
           : []),
         ...(user?.authorize?.canReadTransaction ? 
-          [{ name: "Finances", path: "/services/gestion/finances", pro: false }] 
+          [{ name: "Caisse", path: "/services/gestion/finances", pro: false }] 
           : [])
       ],
     },
-  
-    // {
-    //   name: "Comptabilites",
-    //   icon: <ListIcon />,
-    //   subItems: [{ name: "Statistiques", path: "/", pro: false }],
-    // },
-    // {
-    //   name: "Ai",
-    //   icon: <Book />,
-    //   subItems: [
-    //     { name: "Chat", path: "/blank", pro: true },
-    //     { name: "Historique", path: "/error-404", pro: true },
-    //   ],
-    // },
+    // Section marquée comme "à venir" - toujours visible mais désactivée
+    {
+      name: "Comptabilites",
+      icon: <DollarSign />,
+      comingSoon: true,
+      subItems: [{ name: "Statistiques", path: "#", pro: false , new:true}],
+    },
+    {
+      name: "Docs",
+      icon: <Paperclip />,
+      comingSoon: true,
+      subItems: [
+        { name: "Factures", path: "#", pro: false , new:true},
+        { name: "Billetin de paie", path: "#", pro: false , new:true}
+      ],
+    },
+    {
+      name: "Tickets",
+      icon: <Workflow />,
+      comingSoon: true,
+      subItems: [
+       
+      ],
+    },
+    
   ];
 
   
   const othersItems: NavItem[] = [
+    // Section marquée comme "à venir" - toujours visible mais désactivée
     // {
-    //   icon: <PieChartIcon />,
-    //   name: "Charts",
-    //   subItems: [
-    //     { name: "Line Chart", path: "/line-chart", pro: false },
-    //     { name: "Bar Chart", path: "/bar-chart", pro: false },
-    //   ],
+      // icon: <Paperclip />,
+      // name: "Docs",
+      // comingSoon: true,
+      // subItems: [
+      //   { name: "Line Chart", path: "/line-chart", pro: false },
+      //   { name: "Bar Chart", path: "/bar-chart", pro: false },
+      // ],
     // },
     // {
     //   icon: <BoxIcon />,
@@ -95,8 +111,9 @@ const AppSidebar: React.FC = () => {
     //   ],
     // },
   ];
-  
 
+
+  
   const renderMenuItems = (
     navItems: NavItem[],
     menuType: "main" | "others"
@@ -106,12 +123,13 @@ const AppSidebar: React.FC = () => {
         <li key={nav.name}>
           {nav.subItems ? (
             <button
-              onClick={() => handleSubmenuToggle(index, menuType)}
-              className={`menu-item group  ${
+              onClick={() => nav.comingSoon ? null : handleSubmenuToggle(index, menuType)}
+              disabled={nav.comingSoon}
+              className={`menu-item group relative ${
                 openSubmenu?.type === menuType && openSubmenu?.index === index
                   ? "menu-item-active"
                   : "menu-item-inactive"
-              } cursor-pointer ${
+              } ${nav.comingSoon ? "cursor-not-allowed opacity-60" : "cursor-pointer"} ${
                 !isExpanded && !isHovered
                   ? "lg:justify-center"
                   : "lg:justify-start"
@@ -122,14 +140,21 @@ const AppSidebar: React.FC = () => {
                   openSubmenu?.type === menuType && openSubmenu?.index === index
                     ? "menu-item-icon-active"
                     : "menu-item-icon-inactive"
-                }`}
+                } ${nav.comingSoon ? "text-gray-400 dark:text-gray-500" : ""}`}
               >
                 {nav.icon}
               </span>
               {(isExpanded || isHovered || isMobileOpen) && (
-                <span className={`menu-item-text`}>{nav.name}</span>
+                <span className={`menu-item-text flex items-center gap-2`}>
+                  {nav.name}
+                  {nav.comingSoon && (
+                    <span className="text-xs bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-0.5 rounded-full font-medium">
+                      soon
+                    </span>
+                  )}
+                </span>
               )}
-              {(isExpanded || isHovered || isMobileOpen) && (
+              {(isExpanded || isHovered || isMobileOpen) && !nav.comingSoon && (
                 <ChevronDownIcon
                   className={`ml-auto w-5 h-5 transition-transform duration-200  ${
                     openSubmenu?.type === menuType &&
@@ -143,34 +168,45 @@ const AppSidebar: React.FC = () => {
           ) : (
             nav.path && (
               <Link
-                onClick={() => {
-                    if (isMobileOpen) {
+                onClick={(e) => {
+                  if (nav.comingSoon) {
+                    e.preventDefault();
+                    return;
+                  }
+                  if (isMobileOpen) {
                     setTimeout(() => {
                       toggleMobileSidebar();
                     }, 1000);
-                    }
+                  }
                 }}
-                href={nav.path}
-                className={`menu-item group ${
+                href={nav.comingSoon ? "#" : nav.path}
+                className={`menu-item group relative ${
                   isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
-                }`}
+                } ${nav.comingSoon ? "cursor-not-allowed opacity-60" : ""}`}
               >
                 <span
                   className={`${
                     isActive(nav.path)
                       ? "menu-item-icon-active"
                       : "menu-item-icon-inactive"
-                  }`}
+                  } ${nav.comingSoon ? "text-gray-400 dark:text-gray-500" : ""}`}
                 >
                   {nav.icon}
                 </span>
                 {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className={`menu-item-text`}>{nav.name}</span>
+                  <span className={`menu-item-text flex items-center gap-2`}>
+                    {nav.name}
+                    {nav.comingSoon && (
+                      <span className="text-xs bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-0.5 rounded-full font-medium">
+                        soon
+                      </span>
+                    )}
+                  </span>
                 )}
               </Link>
             )
           )}
-          {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
+          {nav.subItems && !nav.comingSoon && (isExpanded || isHovered || isMobileOpen) && (
             <div
               ref={(el) => {
                 subMenuRefs.current[`${menuType}-${index}`] = el;
@@ -187,19 +223,23 @@ const AppSidebar: React.FC = () => {
                 {nav.subItems.map((subItem) => (
                   <li key={subItem.name}>
                     <Link
-                      onClick={() => {
+                      onClick={(e) => {
+                        if (nav.comingSoon) {
+                          e.preventDefault();
+                          return;
+                        }
                         if (isMobileOpen) {
                           setTimeout(() => {
                             toggleMobileSidebar();
                           }, 1000);
-                          }
-                    }}
-                      href={subItem.path}
+                        }
+                      }}
+                      href={nav.comingSoon ? "#" : subItem.path}
                       className={`menu-dropdown-item ${
                         isActive(subItem.path)
                           ? "menu-dropdown-item-active"
                           : "menu-dropdown-item-inactive"
-                      }`}
+                      } ${nav.comingSoon ? "cursor-not-allowed opacity-60" : ""}`}
                     >
                       {subItem.name}
                       <span className="flex items-center gap-1 ml-auto">
@@ -252,7 +292,9 @@ const AppSidebar: React.FC = () => {
   useEffect(() => {
     // Check if the current path matches any submenu item
     let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
+    ["main", 
+      // "others"
+    ].forEach((menuType) => {
       const items = menuType === "main" ? navItems : othersItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
@@ -324,6 +366,7 @@ const AppSidebar: React.FC = () => {
       >
        <Logo href="/services" showText={isExpanded || isHovered} />
       </div>
+      
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
@@ -352,11 +395,11 @@ const AppSidebar: React.FC = () => {
                     : "justify-start"
                 }`}
               >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
+                {/* {isExpanded || isHovered || isMobileOpen ? (
+                  // "Others"
                 ) : (
-                  <Ellipsis />
-                )}
+                  // <Ellipsis />
+                )} */}
               </h2>
               {renderMenuItems(othersItems, "others")}
             </div>
