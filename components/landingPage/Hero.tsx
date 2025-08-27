@@ -86,7 +86,7 @@ const FeatureIcon = ({ icon, text, delay }:{
   const Icon = icon;
   return (
     <motion.div 
-      variants={fadeInUp}
+      // variants={fadeInUp}
       initial="hidden"
       animate="visible"
       transition={{ delay }}
@@ -130,7 +130,7 @@ const Hero = () => {
       <PromoBanner />
       
       <motion.h1 
-        variants={fadeInUp}
+        // variants={fadeInUp}
         className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-gray-900 dark:text-white leading-tight tracking-tight"
       >
         Gérez votre{' '}
@@ -148,14 +148,14 @@ const Hero = () => {
       </motion.h1>
       
       <motion.h2 
-        variants={fadeInUp}
+        // variants={fadeInUp}
         className="font-medium text-xl sm:text-2xl md:text-3xl text-gray-700 dark:text-gray-300 mt-4 sm:mt-6 max-w-2xl"
       >
         La solution tout-en-un qui simplifie la vie des professionnels
       </motion.h2>
       
       <motion.p 
-        variants={fadeInUp}
+        // variants={fadeInUp}
         className="text-gray-600 dark:text-gray-400 max-w-xl mt-6 text-sm sm:text-base leading-relaxed"
       >
         Optimisez la gestion de votre entreprise avec notre plateforme intuitive.
@@ -175,7 +175,7 @@ const Hero = () => {
       
       <motion.a 
         href='/auth/signin'
-        variants={fadeInUp}
+        // variants={fadeInUp}
         className="mt-8 sm:mt-10 flex flex-col md:flex-row items-center gap-4 max-md:w-full p-4"
       >
         <GetStarted />
@@ -195,7 +195,7 @@ const Hero = () => {
       {renderHeroContent()}
       
       <motion.div 
-        variants={fadeInScale}
+        // variants={fadeInScale}
         initial="hidden"
         animate="visible"
         className="w-full mt-12 sm:mt-16 relative"
@@ -204,7 +204,7 @@ const Hero = () => {
         <div className="relative w-full max-w-5xl mx-auto perspective-1000">
           <div className="relative group">
             <motion.div 
-              variants={shimmer}
+              // variants={shimmer}
               initial="hidden"
               animate="visible"
               className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 rounded-xl blur opacity-25 group-hover:opacity-70 transition duration-700"
