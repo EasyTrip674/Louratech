@@ -44,7 +44,7 @@ export default function NotFound() {
           href="/"
           className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
         >
-          Easy Trip
+          LouraTech
         </Link>
       </p>
     </div>
