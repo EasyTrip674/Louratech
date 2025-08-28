@@ -11,7 +11,7 @@ import {
 import { tableOfContents } from './constants';
 import Introduction from './sections/Introduction';
 import Connexion from './sections/Connexion';
-import Creationentreprise from './sections/Creationentreprise';
+import Creationentreprise from './sections/CreationAgence';
 import GestionServices from './sections/GestionServices';
 import GestionFinances from './sections/GestionFinances';
 // import GestionClients from './sections/GestionClients';
