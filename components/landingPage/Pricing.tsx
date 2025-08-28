@@ -69,7 +69,7 @@ export const Pricing: React.FC = () => (
             Tarifs transparents et flexibles
           </h2>
           <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto">
-            Choisissez le forfait qui correspond le mieux aux besoins de votre agence
+            Choisissez le forfait qui correspond le mieux aux besoins de votre entreprise
           </p>
         </div>
         
@@ -84,7 +84,7 @@ export const Pricing: React.FC = () => (
             Vous avez des besoins spécifiques ?
           </h3>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Contactez notre équipe pour une solution sur mesure adaptée à votre agence
+            Contactez notre équipe pour une solution sur mesure adaptée à votre entreprise
           </p>
           <Button 
             styles="bg-gradient-to-r from-brand-600 to-brand-800 dark:from-brand-400 dark:to-brand-600 text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90 transition-all duration-300"

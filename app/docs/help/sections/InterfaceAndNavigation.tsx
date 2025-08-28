@@ -40,8 +40,8 @@ export default function InterfaceAndNavigation() {
 
             <p className="text-gray-600 dark:text-gray-400">
               Après vous être connecté avec succès, vous serez redirigé vers la
-              dashboard principale de votre agence. Cette interface centralisée
-              vous donne un aperçu complet de l&apos;activité de votre agence en un
+              dashboard principale de votre entreprise. Cette interface centralisée
+              vous donne un aperçu complet de l&apos;activité de votre entreprise en un
               seul coup d&apos;œil.
             </p>
           </div>
@@ -74,7 +74,7 @@ export default function InterfaceAndNavigation() {
               <ul className="list-disc list-inside text-blue-700 dark:text-blue-300 space-y-1 ml-4 text-sm">
                 <li>
                   <strong>En-tête :</strong> Contient le logo, le nom de
-                  l&apos;agence et le menu utilisateur
+                  l&apos;entreprise et le menu utilisateur
                 </li>
                 <li>
                   <strong>Sidebar :</strong> Navigation rapide vers toutes les
@@ -124,7 +124,7 @@ export default function InterfaceAndNavigation() {
                   Carte Clients
                 </h5>
                 <p className="text-green-700 dark:text-green-300 text-sm">
-                  Affiche le nombre total de clients dans votre agence. Le
+                  Affiche le nombre total de clients dans votre entreprise. Le
                   bouton &quot;Voir&quot; vous permet d&apos;accéder à la gestion complète des
                   clients.
                 </p>
@@ -135,7 +135,7 @@ export default function InterfaceAndNavigation() {
                   Carte Services
                 </h5>
                 <p className="text-purple-700 dark:text-purple-300 text-sm">
-                  Montre le nombre total de services proposés par votre agence.
+                  Montre le nombre total de services proposés par votre entreprise.
                   Cliquez sur &quot;Voir&quot; pour gérer vos différents types de
                   services.
                 </p>
@@ -273,7 +273,7 @@ export default function InterfaceAndNavigation() {
                 
                 <p className="text-gray-600 dark:text-gray-400">
                 Le menu latéral est l&apos;élément central de navigation dans l&apos;application, permettant un accès rapide 
-                et intuitif à toutes les fonctionnalités principales de votre agence.
+                et intuitif à toutes les fonctionnalités principales de votre entreprise.
                 </p>
             </div>
 
@@ -371,7 +371,7 @@ export default function InterfaceAndNavigation() {
                     <div className="border-l-4 border-blue-500 pl-4">
                         <h6 className="font-medium text-blue-700 dark:text-blue-300">Services</h6>
                         <p className="text-blue-600 dark:text-blue-400 text-sm mt-1">
-                        Gestion complète des services de l&apos;agence : création, modification, suivi de performance, 
+                        Gestion complète des services de l&apos;entreprise : création, modification, suivi de performance, 
                         et statistiques par type de service.
                         </p>
                     </div>
@@ -434,7 +434,7 @@ export default function InterfaceAndNavigation() {
                     <span className="font-medium">Conseil d&apos;utilisation :</span> Utilisez le menu latéral comme point 
                     de référence principal pour toutes vos tâches de gestion. La structure hiérarchique vous permet 
                     de trouver rapidement la fonctionnalité dont vous avez besoin, que ce soit pour consulter les 
-                    statistiques, gérer les clients, ou superviser les aspects financiers de votre agence.
+                    statistiques, gérer les clients, ou superviser les aspects financiers de votre entreprise.
                 </p>
                 </div>
             </div>

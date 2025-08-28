@@ -63,7 +63,7 @@ export default function Connexion() {
                 </div>
                 <div className="bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 rounded-lg p-4">
                   <p className="text-sm text-brand-800 dark:text-brand-200">
-                    <strong>Important :</strong> Les informations de connexion sont définies lors de la création de votre agence.
+                    <strong>Important :</strong> Les informations de connexion sont définies lors de la création de votre entreprise.
                   </p>
                 </div>
               </div>

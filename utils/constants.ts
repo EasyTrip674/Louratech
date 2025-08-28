@@ -4,19 +4,19 @@ export const targetClients = [
   {
     id: "client-1",
     icon: resources.agency,
-    title: "Agences de Voyage",
+    title: "entreprises de Voyage",
     description: "Optimisez la gestion de vos réservations, clients et planning avec une solution tout-en-un.",
   },
   {
     id: "client-2",
     icon: resources.tour,
-    title: "Agences de Tourisme",
+    title: "entreprises de Tourisme",
     description: "Gérez efficacement vos circuits, guides et activités touristiques en un seul endroit.",
   },
   {
     id: "client-3",
     icon: resources.event,
-    title: "Agences Événementielles",
+    title: "entreprises Événementielles",
     description: "Organisez vos événements, gérer vos clients et suivez vos budgets en temps réel.",
   },
   {
@@ -71,7 +71,7 @@ export const feedback = [
     content:
       "Cette plateforme a révolutionné notre façon de travailler. La gestion des clients et des réservations est maintenant un jeu d'enfant !",
     name: "Sarah D.",
-    title: "Directrice d'agence de voyage",
+    title: "Directrice d'entreprise de voyage",
     img: resources.people01,
   },
   {
@@ -79,7 +79,7 @@ export const feedback = [
     content:
       "Les outils d'analyse et de reporting nous permettent de mieux comprendre nos clients et d'optimiser nos offres.",
     name: "Thomas M.",
-    title: "Gérant d'agence touristique",
+    title: "Gérant d'entreprise touristique",
     img: resources.people02,
   },
   {
@@ -95,7 +95,7 @@ export const feedback = [
 export const stats = [
   {
     id: "stats-1",
-    title: "Agences Actives",
+    title: "entreprises Actives",
     value: "10+",
   },
   {

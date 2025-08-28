@@ -1,10 +1,10 @@
-# Gestion Agence Tool
+# Gestion entreprise Tool
 
 ## SERVICE VOYAGE :
     
 
 ## SERVICE COMPTABILITE : 
-J'ai intégré un système complet de gestion comptable pour votre agence. Voici les principales fonctionnalités ajoutées :
+J'ai intégré un système complet de gestion comptable pour votre entreprise. Voici les principales fonctionnalités ajoutées :
 
 ### Gestion des transactions
 - **Modèle Transaction** central pour toutes les opérations financières
@@ -37,7 +37,7 @@ J'ai intégré un système complet de gestion comptable pour votre agence. Voici
 - Suivi des créateurs et approbateurs de transactions
 - Horodatage de toutes les opérations
 
-Cette structure vous permettra de gérer l'ensemble des opérations comptables de votre agence, avec un suivi précis des dépenses et revenus, une gestion des factures clients, et la possibilité de générer des rapports financiers.
+Cette structure vous permettra de gérer l'ensemble des opérations comptables de votre entreprise, avec un suivi précis des dépenses et revenus, une gestion des factures clients, et la possibilité de générer des rapports financiers.
 
 
 

@@ -64,12 +64,12 @@ const BusinessPage: React.FC = () => (
     <h2
       className="text-gray-900 dark:text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl bg-gradient-to-r from-brand-600 to-brand-800 dark:from-brand-400 dark:to-brand-600 bg-clip-text text-transparent"
     >
-      Gérez votre agence <br className="sm:block hidden" /> en toute simplicité.
+      Gérez votre entreprise <br className="sm:block hidden" /> en toute simplicité.
     </h2>
     <p
       className="text-gray-600 dark:text-gray-300 text-base sm:text-lg md:text-xl max-w-xl mt-5 leading-relaxed"
     >
-      Notre solution tout-en-un vous permet de centraliser la gestion de votre agence,
+      Notre solution tout-en-un vous permet de centraliser la gestion de votre entreprise,
       du suivi des clients à la comptabilité, en passant par la planification des activités.
       Optimisez votre temps et augmentez votre productivité.
     </p>

@@ -225,7 +225,7 @@ export default function SignInForm() {
                   href="/auth/organization"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
                 >
-                 Creer une agence
+                 Creer une entreprise
                 </Link>
               </p>
             </div>

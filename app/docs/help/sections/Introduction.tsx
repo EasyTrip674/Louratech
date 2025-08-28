@@ -26,7 +26,7 @@ export default function Introduction() {
                   </h1>
                   
                   <p className="text-xl md:text-2xl text-white/80 mb-8 max-w-3xl mx-auto leading-relaxed">
-                    La plateforme de gestion d&apos;agences qui révolutionne la façon dont les entreprises africaines 
+                    La plateforme de gestion d&apos;entreprises qui révolutionne la façon dont les entreprises africaines 
                     <span className="text-cyan-400 font-semibold"> pilotent leurs activités</span> et 
                     <span className="text-purple-400 font-semibold"> développent leur croissance</span>.
                   </p>
@@ -93,7 +93,7 @@ export default function Introduction() {
                   <div className="text-4xl font-bold bg-gradient-to-br from-cyan-600 to-purple-600 bg-clip-text text-transparent mb-2">
                     10+
                   </div>
-                  <div className="text-gray-600 dark:text-gray-400 font-medium">Agences actives</div>
+                  <div className="text-gray-600 dark:text-gray-400 font-medium">entreprises actives</div>
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold bg-gradient-to-br from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">

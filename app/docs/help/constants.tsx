@@ -18,8 +18,8 @@ export   const tableOfContents = [
       ]
     },
     {
-      id: 'creation-agence',
-      title: 'Création de l\'agence',
+      id: 'creation-entreprise',
+      title: 'Création de l\'entreprise',
       icon: <Home className="w-4 h-4" />,
       subsections: []
     },

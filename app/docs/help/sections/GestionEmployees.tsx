@@ -8,7 +8,7 @@ export default function GestionEmployees() {
                     <h3 className="text-lg font-medium text-gray-900 dark:text-white">Gestion des Employés</h3>
 
                     <p className="text-gray-600 dark:text-gray-400">
-                        La section &quot;Gestion des Employés&quot; vous permet d&apos;administrer tous les utilisateurs de votre agence, 
+                        La section &quot;Gestion des Employés&quot; vous permet d&apos;administrer tous les utilisateurs de votre entreprise, 
                               y compris les administrateurs et les employés. Vous pouvez créer, modifier, supprimer des comptes 
                               et gérer leurs permissions d&apos;accès.
                     </p>
@@ -196,7 +196,7 @@ export default function GestionEmployees() {
                         <p className="text-gray-700 dark:text-gray-300 text-sm">
                             <span className="font-medium">Astuce :</span>
                             Utilisez les filtres de recherche pour trouver 
-                                    rapidement un employé spécifique, surtout dans les grandes agences. Le tableau est mis à jour 
+                                    rapidement un employé spécifique, surtout dans les grandes entreprises. Le tableau est mis à jour 
                                     en temps réel lors de la saisie dans la barre de recherche.
                         </p>
                     </div>

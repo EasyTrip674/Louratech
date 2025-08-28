@@ -37,7 +37,7 @@ const PrivacyPolicyPage: React.FC = () => {
     {
       icon: <Shield className="w-5 h-5 text-success-500" />,
       title: "Données d'entreprise",
-      description: "Informations sur votre agence, clients, projets, transactions"
+      description: "Informations sur votre entreprise, clients, projets, transactions"
     }
   ];
 
@@ -103,7 +103,7 @@ const PrivacyPolicyPage: React.FC = () => {
                   </h2>
                   <div className="prose prose-gray dark:prose-invert max-w-none">
                     <p className="text-gray-700 dark:text-gray-300 mb-4">
-                      LouraTech est une plateforme SaaS de gestion d&apos;agences basée en Afrique. 
+                      LouraTech est une plateforme SaaS de gestion d&apos;entreprises basée en Afrique. 
                       Cette politique de confidentialité explique comment nous collectons, utilisons, stockons et protégeons 
                       vos informations personnelles lorsque vous utilisez notre service.
                     </p>
@@ -156,7 +156,7 @@ const PrivacyPolicyPage: React.FC = () => {
                     <ul className="space-y-2 text-gray-700 dark:text-gray-300">
                       <li className="flex items-start space-x-2">
                         <ChevronRight className="w-4 h-4 mt-0.5 text-brand-500 flex-shrink-0" />
-                        <span>Fournir et maintenir nos services de gestion d&apos;agence</span>
+                        <span>Fournir et maintenir nos services de gestion d&apos;entreprise</span>
                       </li>
                       <li className="flex items-start space-x-2">
                         <ChevronRight className="w-4 h-4 mt-0.5 text-brand-500 flex-shrink-0" />

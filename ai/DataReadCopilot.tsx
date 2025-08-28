@@ -8,9 +8,9 @@ export default function DataReadCopilot({data}:{data:getAISnapshotType}) {
 
     useCopilotReadable({
         value: data,
-        description:  `# Agent IA - Gestionnaire d'Agence Complète
+        description:  `# Agent IA - Gestionnaire d'entreprise Complète
 ## Vue d'ensemble
-Cet agent a accès à un snapshot complet et détaillé de toutes les données opérationnelles d'une agence, lui permettant d'analyser, de répondre aux questions et d'effectuer des calculs avancés sur tous les aspects de la gestion d'entreprise.
+Cet agent a accès à un snapshot complet et détaillé de toutes les données opérationnelles d'une entreprise, lui permettant d'analyser, de répondre aux questions et d'effectuer des calculs avancés sur tous les aspects de la gestion d'entreprise.
 
 ## Capacités principales
 

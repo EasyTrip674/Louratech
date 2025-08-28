@@ -41,7 +41,7 @@ class RateLimiter {
 
 // Validation des codes d'invitation avec environnement
 const VALID_INVITATION_CODES = process.env.INVITATION_CODES?.split(',') || 
-    ["LouraFlash01", "louraAlpha02", "monAgenceLoura01"];
+    ["LouraFlash01", "louraAlpha02", "monentrepriseLoura01"];
 
 // Schema de validation étendu
 

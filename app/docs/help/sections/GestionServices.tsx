@@ -6,7 +6,7 @@ export default function GestionServices() {
             Gestion des services
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mb-8">
-            Les services constituent les activités qu&apos;exerce votre agence selon son domaine d&apos;activité.
+            Les services constituent les activités qu&apos;exerce votre entreprise selon son domaine d&apos;activité.
           </p>
         </div>
 
@@ -16,7 +16,7 @@ export default function GestionServices() {
           </h2>
           <div className="space-y-4">
             <p className="text-gray-600 dark:text-gray-400">
-              Pour ajouter un nouveau service à votre agence :
+              Pour ajouter un nouveau service à votre entreprise :
             </p>
             <ol className="list-decimal list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
               <li>Accédez à la section Gestion &gt; Services</li>

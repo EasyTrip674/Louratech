@@ -11,7 +11,7 @@ import {
 import { tableOfContents } from './constants';
 import Introduction from './sections/Introduction';
 import Connexion from './sections/Connexion';
-import CreationAgence from './sections/CreationAgence';
+import Creationentreprise from './sections/Creationentreprise';
 import GestionServices from './sections/GestionServices';
 import GestionFinances from './sections/GestionFinances';
 // import GestionClients from './sections/GestionClients';
@@ -73,9 +73,9 @@ const DocumentationPage = () => {
           <InterfaceAndNavigation />
         )
 
-      case 'creation-agence':
+      case 'creation-entreprise':
         return (
-          <CreationAgence />
+          <Creationentreprise />
         );
 
       case 'gestion-services':

@@ -121,7 +121,7 @@ export const doCreateTransaction = adminAction
                             <p>Voici les détails de la transaction :</p>
                             <p>Montant : ${result.amount} FNG</p>
                             <p>Référence : ${result.reference}</p>
-                            <p> Créé par : ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} pour un service de votre agence</p>
+                            <p> Créé par : ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} pour un service de votre entreprise</p>
                             <p>Date : ${new Date(result.createdAt).toLocaleDateString("fr-FR")}</p>
                             <p>Merci de votre confiance.</p>
                         `
@@ -147,7 +147,7 @@ export const doCreateTransaction = adminAction
                                     <p>Voici les détails de la transaction :</p>
                                     <p>Montant : ${result.amount} FNG</p>
                                     <p>Référence : ${result.reference}</p>
-                                    <p> Créé par : ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} pour un service de votre agence</p>
+                                    <p> Créé par : ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} pour un service de votre entreprise</p>
                                     <p>Date : ${new Date(result.createdAt).toLocaleDateString("fr-FR")}</p>
                                     <p>Merci de votre confiance.</p>
                                 `

@@ -21,7 +21,7 @@ model SuperAdmin {
 }
 
 
-// Entité principale représentant une agence ou une entreprise
+// Entité principale représentant une entreprise ou une entreprise
 model organization {
   id          String   @id @default(cuid())
   name        String
@@ -303,7 +303,7 @@ enum StepStatus {
   FAILED       // Échec
 }
 
-// Service ou produit proposé par l'agence, composé d'étapes
+// Service ou produit proposé par l'entreprise, composé d'étapes
 model Procedure {
   id          String          @id @default(cuid())
   name        String

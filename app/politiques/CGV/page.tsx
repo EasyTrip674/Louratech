@@ -126,7 +126,7 @@ const CGVPage: React.FC = () => {
                   <div className="prose prose-gray dark:prose-invert max-w-none">
                     <p className="text-gray-700 dark:text-gray-300 mb-4">
                       LouraTech est une société de droit guinéen spécialisée dans le développement de solutions SaaS 
-                      pour la gestion d&apos;agences. Notre plateforme offre des outils complets pour optimiser la gestion 
+                      pour la gestion d&apos;entreprises. Notre plateforme offre des outils complets pour optimiser la gestion 
                       des clients, projets, et opérations commerciales.
                     </p>
                     <p className="text-gray-700 dark:text-gray-300">
@@ -146,7 +146,7 @@ const CGVPage: React.FC = () => {
                       <div>
                         <span className="font-medium text-gray-900 dark:text-white">« LouraTech » :</span>
                         <span className="text-gray-700 dark:text-gray-300 ml-2">
-                          La société LouraTech, éditeur de la plateforme SaaS de gestion d&apos;agence.
+                          La société LouraTech, éditeur de la plateforme SaaS de gestion d&apos;entreprise.
                         </span>
                       </div>
                       <div>
@@ -178,7 +178,7 @@ const CGVPage: React.FC = () => {
                   </h2>
                   <p className="text-gray-700 dark:text-gray-300 mb-4">
                     Les présentes CGV ont pour objet de définir les conditions dans lesquelles LouraTech 
-                    fournit au Client l&apos;accès à sa plateforme SaaS de gestion d&apos;agence, ainsi que les 
+                    fournit au Client l&apos;accès à sa plateforme SaaS de gestion d&apos;entreprise, ainsi que les 
                     services associés.
                   </p>
                   <p className="text-gray-700 dark:text-gray-300">

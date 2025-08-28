@@ -1,12 +1,12 @@
-export default function CreationAgence() {
+export default function Creationentreprise() {
     return (
-        <section id="creation-agence" className="space-y-8">
+        <section id="creation-entreprise" className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Création de l&apos;agence
+            Création de l&apos;entreprise
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mb-8">
-            Guide étape par étape pour créer votre agence sur LouraTech.
+            Guide étape par étape pour créer votre entreprise sur LouraTech.
           </p>
         </div>
 
@@ -16,7 +16,7 @@ export default function CreationAgence() {
           </h2>
           <div className="space-y-6">
             <p className="text-gray-600 dark:text-gray-400">
-              Pour créer votre agence, cliquez sur <strong>&quot;Créer une agence&quot;</strong> et renseignez les informations suivantes :
+              Pour créer votre entreprise, cliquez sur <strong>&quot;Créer une entreprise&quot;</strong> et renseignez les informations suivantes :
             </p>
             
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
@@ -27,7 +27,7 @@ export default function CreationAgence() {
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                    <span className="text-sm text-red-700 dark:text-red-300">Nom de l&apos;agence</span>
+                    <span className="text-sm text-red-700 dark:text-red-300">Nom de l&apos;entreprise</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-red-500 rounded-full"></div>
@@ -62,7 +62,7 @@ export default function CreationAgence() {
               <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
                 <li>• Adresse physique</li>
                 <li>• Site web</li>
-                <li>• Description de l&apos;agence</li>
+                <li>• Description de l&apos;entreprise</li>
                 <li>• Logo de l&apos;entreprise</li>
               </ul>
             </div>

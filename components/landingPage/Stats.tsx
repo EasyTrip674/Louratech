@@ -8,7 +8,7 @@ const Stats = () => (
       <h2 
         className="text-gray-900 dark:text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl bg-gradient-to-r from-brand-600 to-brand-800 dark:from-brand-400 dark:to-brand-600 bg-clip-text "
       >
-        Une solution complète pour votre agence
+        Une solution complète pour votre entreprise
       </h2>
     </div>
 
@@ -35,7 +35,7 @@ const Stats = () => (
         Notre vision 2026
       </h3>
       <p className="text-gray-600 dark:text-gray-300 text-lg sm:text-xl md:text-2xl font-medium">
-        Leader de la digitalisation des agences en Afrique
+        Leader de la digitalisation des entreprises en Afrique
       </p>
       <GradientBackground />
     </div>

@@ -12,10 +12,10 @@ interface TestimonialProps {
 const testimonials = [
   {
     id: "testimonial-1",
-    content: "Ce SaaS a révolutionné la gestion de notre agence marketing. En quelques mois, notre productivité a augmenté de 35% et nos clients sont plus satisfaits que jamais.",
+    content: "Ce SaaS a révolutionné la gestion de notre entreprise marketing. En quelques mois, notre productivité a augmenté de 35% et nos clients sont plus satisfaits que jamais.",
     name: "Mamadou Bah",
     position: "Directrice",
-    company: "AgenceWeb Plus",
+    company: "entrepriseWeb Plus",
     image: "/api/placeholder/100/100"
   },
   {
@@ -44,7 +44,7 @@ const Testimonials: React.FC = () => (
           Ce que disent nos clients
         </h2>
         <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto">
-          Des centaines d&apos;agences font confiance à notre solution pour optimiser leur gestion quotidienne
+          Des centaines d&apos;entreprises font confiance à notre solution pour optimiser leur gestion quotidienne
         </p>
       </div>
       

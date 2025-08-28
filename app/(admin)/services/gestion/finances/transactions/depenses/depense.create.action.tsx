@@ -86,7 +86,7 @@ export const doCreateDepense = adminAction
                 <p>Voici les détails de la transaction :</p>
                 <p>Montant : ${transaction.amount} FNG</p>
                 <p>Référence : ${transaction.reference}</p>
-                <p> Créé par : ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} pour un service de votre agence</p>
+                <p> Créé par : ${ctx.user.userDetails?.firstName} ${ctx.user.userDetails?.lastName} pour un service de votre entreprise</p>
                 <p>Date : ${new Date(transaction.createdAt).toLocaleDateString("fr-FR")}</p>
                 <p>Merci de votre confiance.</p>
                `
