@@ -1,4 +1,5 @@
 "use client";
+import { DocHelpButton } from "@/components/common/DocButton";
 import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import UserDropdown from "@/components/header/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
@@ -179,6 +180,7 @@ const AppHeader: React.FC = () => {
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
             {/* <!-- Dark Mode Toggler --> */}
+            <DocHelpButton />
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
 
