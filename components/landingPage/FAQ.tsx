@@ -23,11 +23,7 @@ interface FAQItemProps {
       question: "Est-il possible de changer de forfait à tout moment ?",
       answer: "Oui, vous pouvez passer à un forfait supérieur à tout moment. La mise à niveau est immédiate et vous ne payez que la différence proratisée."
     },
-    {
-      id: "faq-5",
-      question: "Quelles sont les options d'intégration disponibles ?",
-      answer: "Notre solution s'intègre avec plus de 50 outils populaires comme Google Calendar, Slack, Trello, et bien d'autres. Nous disposons également d'une API REST complète."
-    }
+   
   ];
 
 export const FAQ: React.FC = () => {
