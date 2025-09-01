@@ -17,10 +17,12 @@ export const loadTokens = () => {
   refreshToken = localStorage.getItem("refresh");
 };
 
-const api = axios.create({
+const baseApi = axios.create({
   baseURL: API_URL,
   headers: { "Content-Type": "application/json" },
 });
+const api = baseApi;
+
 
 // Inject token avant chaque requête
 api.interceptors.request.use((config) => {
@@ -55,5 +57,5 @@ api.interceptors.response.use(
   }
 );
 
-export default api;
+export {api, baseApi};
 

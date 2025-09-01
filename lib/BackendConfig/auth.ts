@@ -1,7 +1,7 @@
-import api, { setTokens, loadTokens } from "./api";
+import  {baseApi,api, setTokens, loadTokens } from "./api";
 
-export const login = async (username: string, password: string) => {
-  const res = await api.post("/api/token/", { username, password });
+export const login = async (email: string, password: string) => {
+  const res = await baseApi.post("/api/accounts/auth/login/", { email, password });
   const { access, refresh } = res.data;
   setTokens(access, refresh);
   return res.data;
@@ -9,7 +9,8 @@ export const login = async (username: string, password: string) => {
 
 export const fetchMe = async () => {
   loadTokens();
-  const res = await api.get("/api/core/me/");
+  const res = await api.get("/api/core/me");
+  console.log(res.data);
   return res.data;
 };
 

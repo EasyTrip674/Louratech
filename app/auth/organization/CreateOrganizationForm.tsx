@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeftIcon, Eye, EyeOff, CheckCircle, AlertCircle, Loader2, Shield } from "lucide-react";
 import { toast } from 'react-toastify';
 import { debounce } from 'lodash';
+import { baseApi } from "@/lib/BackendConfig/api";
 
 type OrganizationFormData = z.infer<typeof createOrganizationSchema>;
 
@@ -56,25 +57,14 @@ interface ApiSuccessResponse {
 
 // Action corrigée pour utiliser l'API /api/organizations
 const doCreateOrganization = async (data: OrganizationFormData): Promise<ApiSuccessResponse> => {
-  const response = await fetch('/api/organizations', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
+  const response = await baseApi.post('api/accounts/organization/create/', {...data});
+  const result = await response.data;
+  console.log(result)
 
-
-  console.log(response);
-  
-
-  const result = await response.json();
-
-  if (!response.ok) {
-    const errorMessage = (result as ApiErrorResponse).error || 'Erreur lors de la création';
-    throw new Error(errorMessage);
-  }
-
+  // if (!(response.status === 200)) {
+  //   const errorMessage = (result as ApiErrorResponse).error || 'Erreur lors de la création';
+  //   throw new Error(errorMessage);
+  // }
   return result as ApiSuccessResponse;
 };
 
@@ -144,11 +134,11 @@ export default function CreationOrganisationFormulaire() {
   );
 
   // Vérification email en temps réel
-  useEffect(() => {
-    if (email && dirtyFields.email) {
-      debouncedEmailCheck(email);
-    }
-  }, [email, debouncedEmailCheck, dirtyFields.email]);
+  // useEffect(() => {
+  //   if (email && dirtyFields.email) {
+  //     debouncedEmailCheck(email);
+  //   }
+  // }, [email, debouncedEmailCheck, dirtyFields.email]);
 
   const parseError = (error: Error): FormError => {
     const message = error.message.toLowerCase();

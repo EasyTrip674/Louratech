@@ -7,12 +7,12 @@ function useAuth() {
   const userQuery = useQuery({
     queryKey: ["me"],
     queryFn: fetchMe,
-    retry: false, // éviter de spam si pas logué
+    retry: false, 
   });
 
   const loginMutation = useMutation({
-    mutationFn: ({ username, password }: { username: string; password: string }) =>
-      login(username, password),
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      login(email, password),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
     },

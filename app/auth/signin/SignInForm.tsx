@@ -9,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { authClient } from "@/lib/auth-client";
 import { Eye, EyeClosed, MoveLeft } from "lucide-react";
+import { baseApi } from "@/lib/BackendConfig/api";
+import useAuth from "@/lib/BackendConfig/useAuth";
 
 // Définir le schéma avec Zod
 const signInSchema = z.object({
@@ -23,6 +25,7 @@ type SignInFormValues = z.infer<typeof signInSchema>;
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { login } = useAuth()
   
   // Initialiser react-hook-form avec le résolveur zod
   const {
@@ -41,17 +44,12 @@ export default function SignInForm() {
   // Gestionnaire de soumission de formulaire
   const onSubmit = async (data: SignInFormValues) => {
     try {
-      const { data:result, error } = await authClient.signIn.email({
-        email: data.email,
-        password: data.password,
-        rememberMe: data.rememberMe,
-        callbackURL: "/services"
-      });
       
+      const res = await login(data)
 
-      console.log(result);
+      console.log(res);
       console.log(error);
-      if (error) {
+      if (res.error != "") {
         setError("Données invalides");
       }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

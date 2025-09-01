@@ -739,7 +739,6 @@ model authorization {
   canDeleteClientProcedure Boolean @default(false)
   canDeleteClientStep Boolean @default(false)
   canDeleteClientDocument Boolean @default(false)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }

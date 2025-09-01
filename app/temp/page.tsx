@@ -5,8 +5,8 @@ import { useState } from "react";
 
 export default function HomePage() {
   const { user, isLoading,  logout } = useAuth();
-  const [username, setUsername] = useState("salim");
-  const [password, setPassword] = useState("12345678");
+  const [email, setemail] = useState("salim@gmail.com");
+  const [password, setPassword] = useState("test123");
 
   if (isLoading) return <p>Chargement...</p>;   
 
@@ -15,18 +15,18 @@ export default function HomePage() {
       <h1 className="text-xl font-bold">Dashboard</h1>
       {user ? (
         <div>
-          <p>Connecté en tant que {user.username}</p>
+          <p>Connecté en tant que {user.name}</p>
           <button onClick={logout}>Se déconnecter</button>
         </div>
       ) : (
         <div>
-          <input value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input value={email} onChange={(e) => setemail(e.target.value)} />
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button onClick={() => login(username, password)}>Se connecter</button>
+          <button onClick={() => login(email, password)}>Se connecter</button>
         </div>
       )}
     </div>
