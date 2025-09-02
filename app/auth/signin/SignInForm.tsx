@@ -7,12 +7,13 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { authClient } from "@/lib/auth-client";
 import { Eye, EyeClosed, MoveLeft } from "lucide-react";
-import { baseApi } from "@/lib/BackendConfig/api";
 import useAuth from "@/lib/BackendConfig/useAuth";
+import { login } from "@/lib/BackendConfig/auth";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-// Définir le schéma avec Zod
 const signInSchema = z.object({
   email: z.string().email({ message: "Veuillez entrer une adresse e-mail valide" }),
   password: z.string().min(6, { message: "Le mot de passe doit comporter au moins 6 caractères" }),
@@ -25,7 +26,7 @@ type SignInFormValues = z.infer<typeof signInSchema>;
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { login } = useAuth()
+  const router = useRouter()
   
   // Initialiser react-hook-form avec le résolveur zod
   const {
@@ -41,20 +42,36 @@ export default function SignInForm() {
     }
   });
 
+  const loginMutation = useMutation({
+    mutationFn: async({ email, password }: { email: string; password: string }) => {
+     const res =  await login(email, password);
+
+     console.log(res);
+     if (res?.status === 200) {
+        return res.data
+     }
+
+    },
+    onSuccess: () => {
+      // queryClient.invalidateQueries({ queryKey: ["me"] });
+      toast.success("Succes")
+      router.push("/services")
+    },
+  });
+
   // Gestionnaire de soumission de formulaire
   const onSubmit = async (data: SignInFormValues) => {
+    setError("")
     try {
-      
-      const res = await login(data)
-
-      console.log(res);
-      console.log(error);
-      if (res.error != "") {
-        setError("Données invalides");
+      await loginMutation.mutateAsync(data)
+      if (loginMutation.error) {
+        setError(loginMutation.error.message)
       }
+      console.log(loginMutation);
+      
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      setError("Données invalides");
+      setError("L'email ou le mot de passe ne pas correct !!");
     }
   };
 

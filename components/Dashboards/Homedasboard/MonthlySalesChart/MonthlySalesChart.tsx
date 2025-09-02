@@ -2,8 +2,8 @@
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import { getStatisticsDataType } from "@/db/queries/dasboard.query";
 import { useCopilotReadable } from "@copilotkit/react-core";
+import { UseMonthlySalesDataReturn } from "@/db/queries/hooks/useMonthlySalesData";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -15,7 +15,7 @@ type ViewType = 'monthly' | 'quarterly' | 'yearly';
 export default function AdvancedStatisticsChart({
   statisticsData
 }: {
-  statisticsData: getStatisticsDataType
+  statisticsData: UseMonthlySalesDataReturn
 }) {
   const [chartType, setChartType] = useState<ChartType>('bar');
   const [viewType, setViewType] = useState<ViewType>('monthly');
@@ -32,7 +32,7 @@ export default function AdvancedStatisticsChart({
       const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
       return {
         categories: quarters,
-        series: statisticsData.series.map(serie => ({
+        series: statisticsData?.data?.series.map(serie => ({
           ...serie,
           data: [
             // Moyenne des 3 premiers mois (Jan-Mar)
@@ -49,7 +49,7 @@ export default function AdvancedStatisticsChart({
     } else if (viewType === 'yearly') {
       return {
         categories: ['2024'],
-        series: statisticsData.series.map(serie => ({
+        series: statisticsData.data?.series.map(serie => ({
           ...serie,
           data: [serie.data.reduce((a, b) => a + b, 0) / 12] // Moyenne annuelle
         }))
@@ -62,7 +62,7 @@ export default function AdvancedStatisticsChart({
         "Janv", "Fév", "Mars", "Avr", "Mai", "Juin",
         "Juil", "Août", "Sept", "Oct", "Nov", "Déc"
       ],
-      series: statisticsData.series
+      series: statisticsData.data?.series
     };
   };
 
@@ -260,7 +260,7 @@ export default function AdvancedStatisticsChart({
 
   const getSeriesForChart = () => {
     if (chartType === 'mixed') {
-      return series.map((serie, index) => ({
+      return series?.map((serie, index) => ({
         ...serie,
         type: index === 0 ? 'column' : 'line'
       }));
@@ -335,7 +335,7 @@ export default function AdvancedStatisticsChart({
 
       {/* Statistiques rapides */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {series.map((serie, index) => {
+        {series?.map((serie, index) => {
           const total = serie.data.reduce((a, b) => a + b, 0);
           const average = total / serie.data.length;
           const colorClasses = [

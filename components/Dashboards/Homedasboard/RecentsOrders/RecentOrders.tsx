@@ -1,3 +1,4 @@
+import { UseRecentOrdersReturn } from "@/db/queries/hooks/useRecentOrders";
 import {
   Table,
   TableBody,
@@ -6,7 +7,6 @@ import {
   TableRow,
 } from "../../../ui/table";
 import Link from "next/link";
-import { recentOrdersType } from "@/db/queries/dasboard.query";
 
 
 
@@ -16,13 +16,10 @@ export default async function  RecentOrders(
   {
     clientProcedureData,
   }: {
-    clientProcedureData: recentOrdersType
+    clientProcedureData: UseRecentOrdersReturn
   }
 ) {
   
-
-  
-
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
@@ -103,7 +100,7 @@ export default async function  RecentOrders(
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {clientProcedureData.map((clientProcedure) => (
+            {clientProcedureData.data?.orders.map((clientProcedure) => (
               <TableRow key={clientProcedure.id} className="">
                 <TableCell className="py-3">
                   <div className="flex flex-col">

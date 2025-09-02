@@ -10,68 +10,64 @@ import "@copilotkit/react-ui/styles.css";
 import { useRouter } from "next/navigation";
 import { CopilotKit } from "@copilotkit/react-core";
 import FeedBackChat from "@/components/feedback/ChatFeedBack";
+import useAuth from "@/lib/BackendConfig/useAuth";
 // import CopilotProvider from "@/context/CopilotProvider";
 
 // Composant de gestion de l'authentification
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { data: session, isPending, error } = authClient.useSession();
+  const auth = useAuth()
 
-
-   
 
   // Gérer les redirections avec useEffect pour éviter les problèmes de hooks conditionnels
-  React.useEffect(() => {
-    if (!isPending && !session) {
-      router.push("/auth/signin");
-    }
-  }, [session, isPending, router]);
+  // React.useEffect(() => {
+  //   if (!auth.user) {
+  //     router.push("/auth/signin");
+  //   }
+  // }, [auth, router]);
 
 
-
-  React.useEffect(() => {
-    if (session && !session.userDetails.organization?.active) {
-      authClient.signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            router.push("/auth/signin");
-          },
-        },
-      });
-    }
-  }, [session, router]);
+  // React.useEffect(() => {
+  //   if (session && !session.userDetails.organization?.active) {
+  //     authClient.signOut({
+  //       fetchOptions: {
+  //         onSuccess: () => {
+  //           router.push("/auth/signin");
+  //         },
+  //       },
+  //     });
+  //   }
+  // }, [auth, router]);
 
   
 
-
-
  
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Erreur d&apos;authentification</h2>
-          <p className="text-gray-600 mb-4">{error.message}</p>
-          <button
-            onClick={() => router.push("/auth/signin")}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Se connecter
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <div className="text-center">
+  //         <h2 className="text-2xl font-bold text-red-600 mb-4">Erreur d&apos;authentification</h2>
+  //         <p className="text-gray-600 mb-4">{error.message}</p>
+  //         <button
+  //           onClick={() => router.push("/auth/signin")}
+  //           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+  //         >
+  //           Se connecter
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (!session) {
-    return null;
-  }
+  // if (!auth.user) {
+  //   return null;
+  // }
 
   // Vérifier si l'organisation est active
-  if (!session.userDetails.organization?.active) {
-    return null;
-  }
+  // if (!session.userDetails.organization?.active) {
+  //   return null;
+  // }
 
   return <>{children}</>;
 }

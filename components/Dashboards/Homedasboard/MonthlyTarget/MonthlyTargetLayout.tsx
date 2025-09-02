@@ -1,10 +1,10 @@
-import { getMonthlyTargetStats } from "@/db/queries/dasboard.query";
+"use client"
+import useMonthlyTargetStats from "@/db/queries/hooks/useMonthlyTargetStats";
 import MonthlyTarget from "./MonthlyTarget";
 
 
-export const MonthlyTargetLayout = async()=>{
-  const MonthlyTargetData = await getMonthlyTargetStats();
-
+export const MonthlyTargetLayout = ()=>{
+  const MonthlyTargetData =  useMonthlyTargetStats();
 
     return (
         <>

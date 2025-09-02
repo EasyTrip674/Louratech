@@ -1,11 +1,12 @@
 // layout
+"use client"
 
-import { getStatisticsData } from "@/db/queries/dasboard.query";
+import useMonthlySalesData from "@/db/queries/hooks/useMonthlySalesData";
 import MonthlySalesChart from "./MonthlySalesChart";
 
-export const MonthSalesChartLayout = async()=>{
+export const MonthSalesChartLayout = ()=>{
 
-  const monthlySalesData = await getStatisticsData();
+  const monthlySalesData = useMonthlySalesData();
 
 
     return (

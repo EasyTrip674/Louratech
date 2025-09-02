@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { authClient } from "@/lib/auth-client";
 import SignOutButton from "@/app/auth/SignOut";
+import useAuth from "@/lib/BackendConfig/useAuth";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,12 +13,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
   setIsOpen((prev) => !prev);
 }
 
-  const { 
-    data: session, 
-    // isPending, //loading state
-    // error, //error object
-    // refetch //refetch the session
-  } = authClient.useSession();
+  const session = useAuth();
 
   function closeDropdown() {
     setIsOpen(false);
@@ -37,11 +32,11 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             alt="User"
           /> */}
           {/* replace par first letter */}
-          {session?.user?.name.charAt(0)}
+          {session?.user?.first_name?.charAt(0)}
         </span>
 
         <span className="block mr-1 font-medium text-theme-sm">
-          {session?.user?.name}
+          {session?.user?.first_name}
         </span>
 
         <svg
@@ -71,7 +66,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-          {session?.user?.name}
+          {session?.user?.first_name}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
             {session?.user?.email}
@@ -105,7 +100,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             </DropdownItem>
           </li>
        {
-        session?.userDetails?.authorize?.canEditOrganization && (
+        session?.user?.authorize?.canEditOrganization && (
           <li>
           <DropdownItem
             onItemClick={closeDropdown}

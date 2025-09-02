@@ -1,425 +1,191 @@
-import { startOfMonth, endOfMonth, subMonths } from "date-fns";
-import prisma from "../prisma";
-import { Prisma } from "@prisma/client";
-import { getOrgnaizationId } from "./utils.query";
+// services/statsService.ts
+import { api } from "../../lib/BackendConfig/api"; // Votre configuration API existante
 
-export async function getMonthlyTargetStats() {
-  const organizationId = await getOrgnaizationId();
-  const now = new Date();
-  const startOfCurrentMonth = startOfMonth(now);
-  const endOfCurrentMonth = endOfMonth(now);
-  const startOfLastMonth = startOfMonth(subMonths(now, 1));
-  const endOfLastMonth = endOfMonth(subMonths(now, 1));
+// Types correspondant aux données retournées par Django
+export interface TopPerformer {
+  id: number;
+  name: string;
+  activeProcedures: number;
+  managedProcedures: number;
+  completedSteps: number;
+  totalWorkload: number;
+}
 
-  // Récupérer le revenu total du mois en cours
-  const currentMonthRevenue = await prisma.transaction.aggregate({
-    where: {
-      organizationId,
-      type: "REVENUE",
-      status: "APPROVED",
-      date: {
-        gte: startOfCurrentMonth,
-        lte: endOfCurrentMonth,
-      },
-    },
-    _sum: {
-      amount: true,
-    },
-  });
+export interface EmployeeMetrics {
+  totalActiveEmployees: number;
+  totalActiveProcedures: number;
+  totalCompletedProcedures: number;
+  averageWorkload: number;
+  efficiencyRate: number;
+  topPerformers: TopPerformer[];
+}
 
-  // Récupérer le revenu total du mois dernier
-  const lastMonthRevenue = await prisma.transaction.aggregate({
-    where: {
-      organizationId,
-      type: "REVENUE",
-      status: "APPROVED",
-      date: {
-        gte: startOfLastMonth,
-        lte: endOfLastMonth,
-      },
-    },
-    _sum: {
-      amount: true,
-    },
-  });
+export interface MonthlyTargetStats {
+  target: number;
+  lastMonthAmount: number;
+  revenue: number;
+  progress: number;
+  growth: number;
+  message: string;
+  currentMonthAmount: number;
+  today: number;
+  employeeMetrics: EmployeeMetrics;
+}
 
-  // Récupérer le revenu d'aujourd'hui
-  const todayRevenue = await prisma.transaction.aggregate({
-    where: {
-      organizationId,
-      type: "REVENUE",
-      status: "APPROVED",
-      date: {
-        gte: new Date(now.setHours(0, 0, 0, 0)),
-        lte: new Date(now.setHours(23, 59, 59, 999)),
-      },
-    },
-    _sum: {
-      amount: true,
-    },
-  });
+export interface SeriesData {
+  name: string;
+  data: number[];
+}
 
-  // Statistiques des employés - Procédures en cours par employé
-  const employeeStats = await prisma.user.findMany({
-    where: {
-      organizationId,
-      role: { in: ["USER", "EMPLOYEE", "ADMIN"] },
-      active: true,
-    },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      name: true,
-      assignedClientProcedures: {
-        where: {
-          status: "IN_PROGRESS",
-        },
-        select: {
-          id: true,
-          procedure: {
-            select: {
-              name: true,
-            }
-          }
-        }
-      },
-      managedClientProcedures: {
-        where: {
-          status: "IN_PROGRESS",
-        },
-        select: {
-          id: true,
-        }
-      },
-      processedClientSteps: {
-        where: {
-          status: "COMPLETED",
-          completionDate: {
-            gte: startOfCurrentMonth,
-            lte: endOfCurrentMonth,
-          }
-        },
-        select: {
-          id: true,
-        }
-      }
+export interface ChartData {
+  series: SeriesData[];
+}
+
+export interface ClientServiceDataPoint {
+  x: string;
+  y: number;
+}
+
+export interface ClientServiceSeries {
+  name: string;
+  data: ClientServiceDataPoint[];
+}
+
+export interface ClientServiceData {
+  series: ClientServiceSeries[];
+}
+
+export interface Client {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  fullName: string;
+}
+
+export interface RecentOrder {
+  id: number;
+  createdAt: string;
+  status: string;
+  startDate: string | null;
+  completionDate: string | null;
+  client: Client;
+}
+
+export interface RecentOrders {
+  orders: RecentOrder[];
+}
+
+// Services pour les statistiques
+class StatsService {
+  /**
+   * Récupère les statistiques mensuelles d'objectifs
+   * Équivalent à getMonthlyTargetStats()
+   */
+  async getMonthlyTargetStats(): Promise<MonthlyTargetStats> {
+    try {
+      const response = await api.get<MonthlyTargetStats>("/api/core/dashboard/monthly-target/");
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des statistiques mensuelles:", error);
+      throw error;
     }
-  });
-
-  // Calculer les totaux pour les employés
-  const totalActiveEmployees = employeeStats.length;
-  const totalActiveProcedures = await prisma.clientProcedure.count({
-    where: {
-      organizationId,
-      status: "IN_PROGRESS",
-    }
-  });
-
-  const totalCompletedProcedures = await prisma.clientProcedure.count({
-    where: {
-      organizationId,
-      status: "COMPLETED",
-      completionDate: {
-        gte: startOfCurrentMonth,
-        lte: endOfCurrentMonth,
-      }
-    }
-  });
-
-  // Calculer la charge de travail moyenne
-  const averageWorkload = totalActiveEmployees > 0 
-    ? Math.round(totalActiveProcedures / totalActiveEmployees) 
-    : 0;
-
-  // Calcul des montants
-  const currentMonthAmount = currentMonthRevenue._sum?.amount || 0;
-  const lastMonthAmount = lastMonthRevenue._sum?.amount || 0;
-  const todayAmount = todayRevenue._sum?.amount || 0;
-
-  // Définir un objectif mensuel basé sur 120% du revenu du mois dernier
-  const target = Math.max(1000, Math.round(lastMonthAmount * 1.2));
-
-  // Calculer le pourcentage de changement par rapport au mois dernier
-  const percentageChange = lastMonthAmount > 0 
-    ? ((currentMonthAmount - lastMonthAmount) / lastMonthAmount) * 100 
-    : 0;
-
-  // Générer un message en fonction de la progression
-  let message = "";
-  if (percentageChange > 0) {
-    message = `📈 Vous avez augmenté votre revenu de ${Math.round(percentageChange)}% par rapport au mois dernier.`;
-  } else if (percentageChange < 0) {
-    message = `📉 Vous avez diminué votre revenu de ${Math.abs(Math.round(percentageChange))}% par rapport au mois dernier.`;
-  } else if (percentageChange === 0 && lastMonthAmount === 0) {
-    message = `⚖️ Vous n'avez pas fait de chiffre le mois dernier.`;
-  } else if (percentageChange === 0 && lastMonthAmount > 0) {
-    message = `⚖️ Vous n'avez pas fait de chiffre ce mois-ci.`;
-  } else {
-    message = `⚖️ Vous avez le même revenu que le mois dernier.`;
   }
 
-  // Calcul du taux d'efficacité des employés (procédures terminées vs en cours)
-  const efficiencyRate = totalActiveProcedures > 0 
-    ? Math.round((totalCompletedProcedures / (totalActiveProcedures + totalCompletedProcedures)) * 100)
-    : 0;
-
-  return {
-    // Données financières
-    target: target,
-    lastMonthAmount: lastMonthAmount,
-    revenue: currentMonthAmount,
-    progress: Math.min(100, Math.round((currentMonthAmount / target) * 100)),
-    growth: Math.round(percentageChange),
-    message: message,
-    currentMonthAmount: currentMonthAmount,
-    today: todayAmount,
-
-    // Statistiques des employés
-    employeeMetrics: {
-      totalActiveEmployees,
-      totalActiveProcedures,
-      totalCompletedProcedures,
-      averageWorkload,
-      efficiencyRate,
-      topPerformers: employeeStats
-        .map(emp => ({
-          id: emp.id,
-          name: emp.firstName && emp.lastName 
-            ? `${emp.firstName} ${emp.lastName}` 
-            : emp.name || 'Employé',
-          activeProcedures: emp.assignedClientProcedures.length,
-          managedProcedures: emp.managedClientProcedures.length,
-          completedSteps: emp.processedClientSteps.length,
-          totalWorkload: emp.assignedClientProcedures.length + emp.managedClientProcedures.length
-        }))
-        .sort((a, b) => b.completedSteps - a.completedSteps)
-        .slice(0, 5)
+  /**
+   * Récupère les données de vente mensuelles
+   * Équivalent à getMonthlySalesData()
+   */
+  async getMonthlySalesData(): Promise<ChartData> {
+    try {
+      const response = await api.get<ChartData>("/api/core/dashboard/monthly-sales/");
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données de ventes mensuelles:", error);
+      throw error;
     }
-  };
-}
-
-export type getMonthlyTargetStatsType = Prisma.PromiseReturnType<
-  typeof getMonthlyTargetStats
->;
-
-export async function getMonthlySalesData() {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const organizationId = await getOrgnaizationId();
-
-  // Récupérer les revenus mensuels pour l'année en cours
-  const monthlyRevenues = await prisma.transaction.groupBy({
-    by: ['date'],
-    where: {
-      organizationId,
-      type: "REVENUE",
-      status: "APPROVED",
-      date: {
-        gte: new Date(currentYear, 0, 1), // Début de l'année
-        lte: new Date(currentYear, 11, 31), // Fin de l'année
-      },
-    },
-    _sum: {
-      amount: true,
-    },
-  });
-
-  // Initialiser les données mensuelles
-  const monthlyData = Array(12).fill(0);
-
-  // Remplir les données mensuelles
-  monthlyRevenues.forEach(revenue => {
-    const month = new Date(revenue.date).getMonth();
-    monthlyData[month] = (revenue._sum?.amount || 0) / 1000; // Convertir en K pour l'affichage
-  });
-
-  return {
-    series: [{
-      name: "Revenue",
-      data: monthlyData,
-    }],
-  };
-}
-
-export type getMonthlySalesDataType = Prisma.PromiseReturnType<
-  typeof getMonthlySalesData
->;
-
-export async function getStatisticsData() {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const organizationId = await getOrgnaizationId();
-
-  // Récupérer les transactions approuvées pour l'année en cours
-  const monthlyTransactions = await prisma.transaction.groupBy({
-    by: ['date', 'type'],
-    where: {
-      organizationId,
-      status: "APPROVED",
-      type: {
-        in: ["REVENUE", "EXPENSE"]
-      },
-      date: {
-        gte: new Date(currentYear, 0, 1),
-        lte: new Date(currentYear, 11, 31),
-      },
-    },
-    _sum: {
-      amount: true,
-    },
-  });
-
-  // Initialiser les données mensuelles
-  const revenueData = Array(12).fill(0);
-  const expenseData = Array(12).fill(0);
-
-  // Remplir les données mensuelles
-  monthlyTransactions.forEach(transaction => {
-    const month = new Date(transaction?.date).getMonth();
-    const amount = (transaction._sum?.amount || 0) / 1000; // Convertir en K pour l'affichage
-    
-    if (transaction.type === "REVENUE") {
-      revenueData[month] = amount;
-    } else if (transaction.type === "EXPENSE") {
-      expenseData[month] = amount;
-    }
-  });
-
-  return {
-    series: [
-      {
-        name: "Revenue",
-        data: revenueData,
-      },
-      {
-        name: "Depense",
-        data: expenseData,
-      },
-    ],
-  };
-}
-
-export type getStatisticsDataType = Prisma.PromiseReturnType<
-  typeof getStatisticsData
->;
-
-export async function getClientServiceData(timeRange: 'month' | 'year' | 'all' = 'all' ) {
-  const organizationId = await getOrgnaizationId();
-  const now = new Date();
-  
-  // Define the time range based on the parameter
-  let startDate;
-  switch (timeRange) {
-    case 'month':
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-      break;
-    case 'year':
-      startDate = new Date(now.getFullYear(), 0, 1);
-      break;
-    case 'all':
-    default:
-      startDate = new Date(2000, 0, 1); // Going far back to include all data
-      break;
   }
 
-  // Get all procedures in the organization
-  const procedures = await prisma.procedure.findMany({
-    where: {
-      organizationId,
-      isActive: true
-    },
-    select: {
-      id: true,
-      name: true
+  /**
+   * Récupère les données statistiques (revenus vs dépenses)
+   * Équivalent à getStatisticsData()
+   */
+  async getStatisticsData(): Promise<ChartData> {
+    try {
+      const response = await api.get<ChartData>("/api/core/dashboard/statistics/");
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données statistiques:", error);
+      throw error;
     }
-  });
+  }
 
-  // For each procedure, get the client registration data over time
-  const seriesData = await Promise.all(
-    procedures.map(async (procedure) => {
-      // Get client procedures for this specific procedure
-      const clientProcedures = await prisma.clientProcedure.findMany({
-        where: {
-          organizationId,
-          procedureId: procedure.id,
-          startDate: {
-            gte: startDate
-          }
-        },
-        orderBy: {
-          startDate: 'asc'
-        },
-        select: {
-          startDate: true,
-          procedureId: true
-        }
+  /**
+   * Récupère les données de service client
+   * Équivalent à getClientServiceData()
+   * @param timeRange - 'month' | 'year' | 'all'
+   */
+  async getClientServiceData(timeRange: 'month' | 'year' | 'all' = 'all'): Promise<ClientServiceData> {
+    try {
+      const response = await api.get<ClientServiceData>("/api/core/dashboard/client-service/", {
+        params: { timeRange }
       });
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données de service client:", error);
+      throw error;
+    }
+  }
 
-      // Group the data by date - count registrations on each date
-      const groupedByDate = clientProcedures.reduce((acc, cp) => {
-        // Format the date to YYYY-MM-DD for grouping
-        const dateKey = cp.startDate.toISOString().split('T')[0];
-        
-        if (!acc[dateKey]) {
-          acc[dateKey] = 0;
-        }
-        acc[dateKey]++;
-        
-        return acc;
-      }, {} as Record<string, number>);
+  /**
+   * Récupère les commandes récentes
+   * Équivalent à recentOrders()
+   */
+  async getRecentOrders(): Promise<RecentOrders> {
+    try {
+      const response = await api.get<RecentOrders>("/api/core/dashboard/recent-orders/");
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des commandes récentes:", error);
+      throw error;
+    }
+  }
 
-      // Convert to cumulative data for showing total clients over time
-      const cumulativeData : Array<{
-          x: Date;
-          y: number;
-        }> = [];
-      let cumulativeCount = 0;
-      
-      Object.keys(groupedByDate).sort().forEach(date => {
-        cumulativeCount += groupedByDate[date];
-        cumulativeData.push({
-          x: new Date(date),
-          y: cumulativeCount
-        });
-      });
+  /**
+   * Récupère toutes les données du dashboard en une seule fois
+   * Utile pour optimiser les appels API
+   */
+  async getAllDashboardData(timeRange: 'month' | 'year' | 'all' = 'all') {
+    try {
+      const [
+        monthlyTargetStats,
+        monthlySalesData,
+        statisticsData,
+        clientServiceData,
+        recentOrders
+      ] = await Promise.all([
+        this.getMonthlyTargetStats(),
+        this.getMonthlySalesData(),
+        this.getStatisticsData(),
+        this.getClientServiceData(timeRange),
+        this.getRecentOrders()
+      ]);
 
-      // Return the series data in format required by ApexCharts
       return {
-        name: procedure.name,
-        data: cumulativeData
+        monthlyTargetStats,
+        monthlySalesData,
+        statisticsData,
+        clientServiceData,
+        recentOrders
       };
-    })
-  );
-
-  // Filter out procedures with no client data
-  const filteredSeriesData = seriesData.filter(series => series.data.length > 0);
-
-  return {
-    series: filteredSeriesData
-  };
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données du dashboard:", error);
+      throw error;
+    }
+  }
 }
 
-export type getClientServiceDataType = Prisma.PromiseReturnType<
-  typeof getClientServiceData
->;
+// Instance singleton
+export const statsService = new StatsService();
 
-export const recentOrders = async () => {
-  const organizationId = await getOrgnaizationId()
-  return await prisma.clientProcedure.findMany({
-    where:{
-      organizationId: organizationId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    include:{
-        client:true
-    },
-    take: 5,
-  });
-}
-
-export type recentOrdersType = Prisma.PromiseReturnType<
-  typeof recentOrders
->;
+// Hooks are defined under `db/queries/hooks/`. Import them directly from their files to avoid circular dependencies.

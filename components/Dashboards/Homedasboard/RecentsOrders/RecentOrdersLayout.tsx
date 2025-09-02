@@ -1,9 +1,10 @@
-import { recentOrders } from "@/db/queries/dasboard.query";
+"use client";
+import useRecentOrders from "@/db/queries/hooks/useRecentOrders";
 import RecentOrders from "./RecentOrders";
 
 
-export const RecentOrdersLayout = async()=>{
-  const recentOrdersClientProcedures = await recentOrders();
+export const RecentOrdersLayout = ()=>{
+  const recentOrdersClientProcedures = useRecentOrders();
 
 
     return (

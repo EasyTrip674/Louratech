@@ -23,14 +23,17 @@ export const metadata: Metadata = {
 async function DashboardDataProvider({ children }: { children: React.ReactNode }) {
   try {
     // Récupérer les données du dashboard
-    const dashboardStats = await dashboardService.getDashboardStats();
+    // const dashboardStats = await dashboardService.getDashboardStats();
 
   
 
 
     // Passer les données aux composants enfants via un contexte ou props
     return (
-      <div className="dashboard-data" data-stats={JSON.stringify(dashboardStats)}>
+      // <div className="dashboard-data" data-stats={JSON.stringify(dashboardStats)}>
+      //   {children}
+      // </div>
+      <div>
         {children}
       </div>
     );
@@ -52,25 +55,25 @@ export default async function DashboardPage() {
     <DashboardDataProvider>
       <div className="grid grid-cols-12 gap-4 md:gap-6">
         <div className="col-span-12 space-y-6 xl:col-span-7">
-          <Suspense fallback={<ProceduresMetricsSkeleton />}>
+          {/* <Suspense fallback={<ProceduresMetricsSkeleton />}>
             <ProceduresMetrics />
-          </Suspense>
+          </Suspense> */}
           
-          <Suspense fallback={<MonthlySalesChartSkeleton />}>
+          {/* <Suspense fallback={<MonthlySalesChartSkeleton />}>
             <MonthSalesChartLayout />
-          </Suspense>
+          </Suspense> */}
         </div>
 
         <div className="col-span-12 xl:col-span-5">
-          <Suspense fallback={<MonthlyTargetSkeleton />}>
+          {/* <Suspense fallback={<MonthlyTargetSkeleton />}>
             <MonthlyTargetLayout />
-          </Suspense>
+          </Suspense> */}
         </div>
 
         <div className="col-span-12">
-          <Suspense fallback={<StatisticsServiceSkeleton />}>
+          {/* <Suspense fallback={<StatisticsServiceSkeleton />}>
             <StatisticsServiceLayout />
-          </Suspense>
+          </Suspense> */}
         </div>
 
         {/* <div className="col-span-12">

@@ -21,12 +21,13 @@ function useAuth() {
   const logoutMutation = () => {
     logout();
     queryClient.clear();
+    
   };
 
   return {
     user: userQuery.data,
     isLoading: userQuery.isLoading,
-    login: loginMutation.mutateAsync,
+    login: loginMutation,
     logout: logoutMutation,
   };
 }

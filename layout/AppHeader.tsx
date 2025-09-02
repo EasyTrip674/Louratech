@@ -4,6 +4,7 @@ import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import UserDropdown from "@/components/header/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
 import { authClient } from "@/lib/auth-client";
+import useAuth from "@/lib/BackendConfig/useAuth";
 import Link from "next/link";
 import React, { useState ,useEffect,useRef} from "react";
 
@@ -12,7 +13,7 @@ const AppHeader: React.FC = () => {
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
-  const { data: session} = authClient.useSession();
+  const { user: session} = useAuth()
 
 
   const handleToggle = () => {
@@ -163,7 +164,7 @@ const AppHeader: React.FC = () => {
           <h1 className="text-2xl font-extrabold text-gray-800 dark:text-white tracking-tight">
             {/* organizationName */}
             <span className="inline-flex items-center">
-              {session?.userDetails?.organization?.name}
+              {session?.organization?.name}
               <span className="ml-2 h-2 w-2 rounded-full bg-green-500"></span>
             </span>
           </h1>

@@ -4,23 +4,20 @@ import { useModal } from "@/hooks/useModal";
 import Button from "@/components/ui/button/Button";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import useAuth from "@/lib/BackendConfig/useAuth";
 
 
 
 const SignOutButton = () => {
   const { isOpen, openModal, closeModal } = useModal();
   const router = useRouter();
+  const auth = useAuth();
 
   const handleSignOut = async () => {
     // Add your sign out logic here
     // Example: signOut(), auth.logout(), etc.
-    await authClient.signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            router.push("/auth/signin"); // redirect to login page
-          },
-        },
-      });
+      auth.logout()
+      router.push("/auth/signin"); // redirect to login page
     closeModal();
   };
 
@@ -29,7 +26,7 @@ const SignOutButton = () => {
    
    <button
             onClick={openModal}
-        className="flex items-center text-red-500 gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+        className="flex items-center  gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
         <svg
             className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"

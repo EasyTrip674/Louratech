@@ -1,5 +1,5 @@
 "use client";
-import { getMonthlyTargetStatsType } from "@/db/queries/dasboard.query";
+import { UseMonthlyTargetStatsReturn } from '@/db/queries/hooks/useMonthlyTargetStats';
 import { Users, TrendingUp, CheckCircle, Clock } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
@@ -73,8 +73,11 @@ const SemiCircularChart = ({ percentage, title, color = "#465FFF" }: { percentag
   );
 };
 
-export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData: getMonthlyTargetStatsType }) {
-  const data = MonthlyTargetData;
+export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData: UseMonthlyTargetStatsReturn }) {
+  const data = MonthlyTargetData.data;
+  if (!data) {
+    return null;
+  }
 
   return (
     <div className="space-y-6">
@@ -99,7 +102,7 @@ export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData
               <Users className="w-6 h-6 text-blue-500" />
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {data.employeeMetrics.totalActiveEmployees}
+              {data?.employeeMetrics.totalActiveEmployees}
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400">
               Employés Actifs
@@ -111,7 +114,7 @@ export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData
               <Clock className="w-6 h-6 text-orange-500" />
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {data.employeeMetrics.totalActiveProcedures}
+              {data?.employeeMetrics.totalActiveProcedures}
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400">
               Services en Cours
@@ -123,7 +126,7 @@ export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData
               <CheckCircle className="w-6 h-6 text-green-500" />
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {data.employeeMetrics.totalCompletedProcedures}
+              {data?.employeeMetrics.totalCompletedProcedures}
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400">
               Terminées ce Mois
@@ -135,7 +138,7 @@ export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData
               <TrendingUp className="w-6 h-6 text-purple-500" />
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {data.employeeMetrics.averageWorkload}
+              {data?.employeeMetrics.averageWorkload}
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400">
               Charge Moyenne
@@ -146,7 +149,7 @@ export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData
         {/* Diagramme d'efficacité */}
         <div className="flex justify-center mb-8">
           <SemiCircularChart 
-            percentage={data.employeeMetrics.efficiencyRate} 
+            percentage={data?.employeeMetrics.efficiencyRate} 
             title="Taux d'Efficacité"
             color="#10B981"
             />
@@ -158,7 +161,7 @@ export default function MonthlyTarget({ MonthlyTargetData }: { MonthlyTargetData
             Top Performers ce Mois
           </h4>
           <div className="space-y-3">
-            {data.employeeMetrics.topPerformers.map((employee, index) => (
+            {data?.employeeMetrics.topPerformers.map((employee, index) => (
               <div key={employee.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white ${

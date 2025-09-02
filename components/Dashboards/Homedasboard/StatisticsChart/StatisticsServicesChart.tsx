@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
-import { getClientServiceDataType } from "@/db/queries/dasboard.query";
+import { UseClientServiceDataReturn } from "@/db/queries/hooks/useClientServiceData";
 
 // Import react-apexcharts dynamically to avoid SSR issues
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -19,7 +19,7 @@ interface ServiceClientData {
 }
 
 interface StatisticsChartProps {
-  clientServicesData: getClientServiceDataType;
+  clientServicesData: UseClientServiceDataReturn;
 }
 
 // Période de temps pour le filtrage
@@ -38,14 +38,14 @@ export default function StatisticsServiceChart({ clientServicesData }: Statistic
 
   // Calcul des statistiques globales
   const statistics = useMemo(() => {
-    if (!clientServicesData?.series?.length) return null;
+    if (!clientServicesData?.data?.series?.length) return null;
 
-    const allData = clientServicesData.series.flatMap(series => series.data);
+    const allData = clientServicesData.data?.series.flatMap(series => series.data);
     const totalClients = allData.reduce((sum, point) => sum + point.y, 0);
-    const avgPerService = totalClients / clientServicesData.series.length;
+    const avgPerService = totalClients / clientServicesData.data?.series.length;
     
     // Service le plus performant
-    const serviceStats = clientServicesData.series.map(series => ({
+    const serviceStats = clientServicesData.data?.series.map(series => ({
       name: series.name,
       total: series.data.reduce((sum, point) => sum + point.y, 0),
       avg: series.data.reduce((sum, point) => sum + point.y, 0) / series.data.length,
@@ -64,13 +64,13 @@ export default function StatisticsServiceChart({ clientServicesData }: Statistic
       avgPerService: Math.round(avgPerService),
       topService,
       fastestGrowth,
-      serviceCount: clientServicesData.series.length
+      serviceCount: clientServicesData.data?.series.length
     };
   }, [clientServicesData]);
 
   // Filtrage des données selon la période
   const filteredData = useMemo(() => {
-    if (!clientServicesData?.series) return [];
+    if (!clientServicesData?.data?.series) return [];
 
     const now = new Date();
     let startDate: Date;
@@ -89,17 +89,22 @@ export default function StatisticsServiceChart({ clientServicesData }: Statistic
         startDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
         break;
       default:
-        return clientServicesData.series;
+        return clientServicesData.data?.series;
     }
 
-    return clientServicesData.series.map(series => ({
+    return clientServicesData.data?.series.map(series => ({
       ...series,
       data: series.data.filter(point => new Date(point.x) >= startDate)
     }));
   }, [clientServicesData, selectedPeriod]);
 
   useEffect(() => {
-    setChartData(filteredData);
+    // Convert incoming x: string to Date to match local ServiceClientData type
+    const normalized = filteredData.map(series => ({
+      name: series.name,
+      data: series.data.map(point => ({ x: new Date(point.x), y: point.y }))
+    }));
+    setChartData(normalized);
 
     const options: ApexOptions = {
       chart: {
