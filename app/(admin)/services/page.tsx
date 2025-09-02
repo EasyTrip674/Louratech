@@ -55,25 +55,25 @@ export default async function DashboardPage() {
     <DashboardDataProvider>
       <div className="grid grid-cols-12 gap-4 md:gap-6">
         <div className="col-span-12 space-y-6 xl:col-span-7">
-          {/* <Suspense fallback={<ProceduresMetricsSkeleton />}>
+          <Suspense fallback={<ProceduresMetricsSkeleton />}>
             <ProceduresMetrics />
-          </Suspense> */}
+          </Suspense>
           
-          {/* <Suspense fallback={<MonthlySalesChartSkeleton />}>
+          <Suspense fallback={<MonthlySalesChartSkeleton />}>
             <MonthSalesChartLayout />
-          </Suspense> */}
+          </Suspense>
         </div>
 
         <div className="col-span-12 xl:col-span-5">
-          {/* <Suspense fallback={<MonthlyTargetSkeleton />}>
+          <Suspense fallback={<MonthlyTargetSkeleton />}>
             <MonthlyTargetLayout />
-          </Suspense> */}
+          </Suspense>
         </div>
 
         <div className="col-span-12">
-          {/* <Suspense fallback={<StatisticsServiceSkeleton />}>
+          <Suspense fallback={<StatisticsServiceSkeleton />}>
             <StatisticsServiceLayout />
-          </Suspense> */}
+          </Suspense>
         </div>
 
         {/* <div className="col-span-12">

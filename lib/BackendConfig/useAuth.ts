@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchMe, login, logout } from "./auth";
+import { User } from "@/types/auth";
 
 function useAuth() {
   const queryClient = useQueryClient();
 
-  const userQuery = useQuery({
+  const userQuery = useQuery<User>({
     queryKey: ["me"],
     queryFn: fetchMe,
     retry: false, 
@@ -12,7 +13,7 @@ function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
-      login(email, password),
+    login(email, password),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
     },

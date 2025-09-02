@@ -8,6 +8,7 @@ import SidebarWidget from "./SidebarWidget";
 import {  ChevronDownIcon, DollarSign, Ellipsis, GripHorizontal, LayoutDashboard, MonitorDot, Paperclip, Workflow } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import Logo from "@/components/logo";
+import useAuth from "@/lib/BackendConfig/useAuth";
 
 type NavItem = {
   name: string;
@@ -21,8 +22,7 @@ type NavItem = {
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered, toggleMobileSidebar} = useSidebar();
   const pathname = usePathname();
-  const session = authClient.useSession();
-  const user = session?.data?.userDetails;
+  const {user} = useAuth();
   
   // Les sections à venir sont toujours affichées mais désactivées
 
@@ -37,16 +37,16 @@ const AppSidebar: React.FC = () => {
       name: "Gestion",
       path: "/services/gestion",
       subItems: [
-        ...(user?.authorize?.canReadProcedure
+        ...(user?.authorization?.can_read_procedure
           ? [{ name: "Services", path: "/services/gestion/procedures", pro: false }]
           : []),
-        ...(user?.authorize?.canReadAdmin
+        ...(user?.authorization?.can_read_admin
           ? [{ name: "Admin/Employés", path: "/services/gestion/employees", pro: false }]
           : []),
-        ...(user?.authorize?.canReadClient
+        ...(user?.authorization?.can_read_client
           ? [{ name: "Clients", path: "/services/gestion/clients", pro: false }]
           : []),
-        ...(user?.authorize?.canReadTransaction ? 
+        ...(user?.authorization?.can_read_transaction ? 
           [{ name: "Finances", path: "/services/gestion/finances", pro: false }] 
           : [])
       ],

@@ -100,7 +100,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             </DropdownItem>
           </li>
        {
-        session?.user?.authorize?.canEditOrganization && (
+        session?.user?.authorization.can_edit_compta_settings && (
           <li>
           <DropdownItem
             onItemClick={closeDropdown}
