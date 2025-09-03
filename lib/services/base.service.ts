@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import useAuth from "../BackendConfig/useAuth";
 
 export abstract class BaseService {
   protected prisma: PrismaClient;
@@ -13,20 +12,16 @@ export abstract class BaseService {
    * Récupère l'ID de l'organisation de l'utilisateur connecté
    */
   protected async getOrganizationId(): Promise<string> {
-    const user = await auth.api.getSession({
-      headers: await headers(),
-    });
-    return user?.userDetails?.organizationId ?? "";
+    const s = useAuth()
+    return s.user?.organization.id ?? "";
   }
 
   /**
    * Récupère l'utilisateur connecté avec ses détails
    */
   protected async getCurrentUser() {
-    const user = await auth.api.getSession({
-      headers: await headers(),
-    });
-    return user;
+    const s = useAuth()
+    return s.user;
   }
 
   /**
@@ -34,7 +29,7 @@ export abstract class BaseService {
    */
   protected async checkPermission(permission: string): Promise<boolean> {
     const user = await this.getCurrentUser();
-    const authorization = user?.userDetails?.authorize?.[permission as keyof typeof user.userDetails.authorize];
+    const authorization = user?.authorization?.[permission as keyof typeof user.authorization];
     return Boolean(authorization);
   }
 
@@ -43,7 +38,7 @@ export abstract class BaseService {
    */
   protected async validateOrganizationAccess(organizationId: string): Promise<boolean> {
     const user = await this.getCurrentUser();
-    return user?.userDetails?.organizationId === organizationId;
+    return user?.organization.id === organizationId;
   }
 
   /**

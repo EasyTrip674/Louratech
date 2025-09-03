@@ -1,17 +1,13 @@
-
-import { auth } from "@/lib/auth";
-import React from "react";
-import { headers } from "next/headers";
+"use client";
 import NotAuthorized from "@/app/not-authorized";
+import useAuth from "@/lib/BackendConfig/useAuth";
 
 // Composant pour vérifier les autorisations des procédures
-async function ProceduresAuthGuard({ children }: { children: React.ReactNode }) {
+ function ProceduresAuthGuard({ children }: { children: React.ReactNode }) {
   try {
-    const user = await auth.api.getSession({
-      headers: await headers()
-    });
+    const {user} = useAuth()
 
-    if (!user) {
+    if (!user?.email) {
       return (
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
@@ -23,7 +19,7 @@ async function ProceduresAuthGuard({ children }: { children: React.ReactNode }) 
     }
 
     // Vérifier les autorisations directement depuis la session
-    if (!user?.userDetails?.authorize?.canCreateProcedure) {
+    if (!user?.authorization.can_read_procedure) {
       return <NotAuthorized />;
     }
 

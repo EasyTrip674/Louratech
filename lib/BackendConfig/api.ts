@@ -8,21 +8,25 @@ let refreshToken: string | null = null;
 export const setTokens = (access: string, refresh: string) => {
   accessToken = access;
   refreshToken = refresh;
-  localStorage.setItem("access", access);
-  localStorage.setItem("refresh", refresh);
+  if (typeof window !== "undefined") {
+    localStorage.setItem("access", access);
+    localStorage.setItem("refresh", refresh);
+  }
 };
 
 export const loadTokens = () => {
-  accessToken = localStorage.getItem("access");
-  refreshToken = localStorage.getItem("refresh");
+  if (typeof window !== "undefined") {
+    accessToken = localStorage.getItem("access");
+    refreshToken = localStorage.getItem("refresh");
+  }
 };
 
 const baseApi = axios.create({
   baseURL: API_URL,
   headers: { "Content-Type": "application/json" },
 });
-const api = baseApi;
 
+const api = baseApi
 
 // Inject token avant chaque requête
 api.interceptors.request.use((config) => {
@@ -32,30 +36,42 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Gérer expiration → refresh
+// Gérer expiration → refresh (sans async/await dans l'interceptor)
 api.interceptors.response.use(
   (res) => res,
-  async (error) => {
+  (error) => {
     const original = error.config;
-    if (error.response?.status === 401 && refreshToken) {
-      try {
-        const res = await axios.post(`${API_URL}/api/token/refresh/`, {
-          refresh: refreshToken,
-        });
+    if (error.response?.status === 401 && refreshToken && !original._retry) {
+      original._retry = true;
+      
+      return axios.post(`${API_URL}/api/token/refresh/`, {
+        refresh: refreshToken,
+      })
+      .then((res) => {
         const newAccess = res.data.access;
         accessToken = newAccess;
-        localStorage.setItem("access", newAccess);
-        console.log("newAccess", newAccess)
+        if (typeof window !== "undefined") {
+          localStorage.setItem("access", newAccess);
+        }
+        console.log("newAccess", newAccess);
 
         original.headers.Authorization = `Bearer ${newAccess}`;
-        return api(original);
-      } catch (err) {
+        return baseApi(original);
+      })
+      .catch((err) => {
         console.error("⚠️ Refresh token invalide, rediriger login");
-      }
+        // Nettoyer les tokens
+        accessToken = null;
+        refreshToken = null;
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+        }
+        return Promise.reject(error);
+      });
     }
     return Promise.reject(error);
   }
 );
 
-export {api, baseApi};
-
+export { baseApi , api};

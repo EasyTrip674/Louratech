@@ -25,9 +25,6 @@ async function DashboardDataProvider({ children }: { children: React.ReactNode }
     // Récupérer les données du dashboard
     // const dashboardStats = await dashboardService.getDashboardStats();
 
-  
-
-
     // Passer les données aux composants enfants via un contexte ou props
     return (
       // <div className="dashboard-data" data-stats={JSON.stringify(dashboardStats)}>

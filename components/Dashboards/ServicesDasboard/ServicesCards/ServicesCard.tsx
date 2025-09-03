@@ -1,18 +1,23 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { ProcedureCard } from "@/components/procedures/ProcedureCard";
-import { gProcedureWithStat } from "@/db/queries/procedures.query";
 import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/BackendConfig/api";
 
-export default function ServicesCard(
-  { procedureData }: { procedureData: gProcedureWithStat }
-) {
+export default function ServicesCard() {
+  const { data: procedureData, isLoading, isError } = useQuery({
+    queryKey: ["proceduresServices"],
+    queryFn: () => api.get("api/procedures/procedures/with-stats/").then(res => res.data),
+    retry: false
+  });
+
+
   // État pour la recherche, le filtrage et la pagination
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [filteredData, setFilteredData] = useState(procedureData);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
   const itemsPerPage = 4;
 
   // Options de filtre
@@ -27,16 +32,25 @@ export default function ServicesCard(
 
   // Appliquer la recherche et le filtrage
   useEffect(() => {
-    let result = [...procedureData];
+    if (!procedureData || procedureData.data.length === 0) {
+      setFilteredData([]);
+      return;
+    }
+    
+    console.log(procedureData);
+    
+    
+    let result = [...procedureData.data];
     
     // Appliquer la recherche
     if (searchTerm) {
       result = result.filter(procedure => 
-        procedure.title.toLowerCase().includes(searchTerm.toLowerCase())
+        procedure.title?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    
-    // Appliquer le filtrage
+
+   
+    // // Appliquer le filtrage
     switch (filterStatus) {
       case "inProgress":
         result = result.filter(procedure => procedure.inProgress > 0);
@@ -61,6 +75,28 @@ export default function ServicesCard(
     setFilteredData(result);
     setCurrentPage(1); // Réinitialiser à la première page après changement de filtre/recherche
   }, [searchTerm, filterStatus, procedureData]);
+
+  if (!procedureData) {
+    return null
+  }
+  
+  // Gestion du chargement et des erreurs
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto"></div>
+          <p className="mt-4 text-gray-500">Chargement des services...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !procedureData) {
+    return null;
+  }
+
+  console.log(procedureData);
 
   // Calculer les éléments pour la page actuelle
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -113,7 +149,7 @@ export default function ServicesCard(
           {currentItems.map((procedure, index) => (
             <ProcedureCard
               procedureId={procedure.id}
-              key={index}
+              key={procedure.id || index} // Utilisez procedure.id si disponible
               title={procedure.title}
               totalClients={procedure.totalClients}
               inProgress={procedure.inProgress}
