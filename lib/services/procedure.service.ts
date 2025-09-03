@@ -1,6 +1,7 @@
 // import { BaseService } from "./base.service";
 
 import { api } from "../BackendConfig/api";
+import { BaseService } from "./base.service";
 
 
 export interface CreateProcedureData {
@@ -19,6 +20,23 @@ export interface Step {
   procedure: string; // id de la procédure
   created_at: string;
   updated_at: string;
+}
+
+export interface ProcedureStat {
+  id: string;
+  title: string;
+  total_clients: number;
+  description: string;
+  change: number;
+  in_progress: number;
+  completed: number;
+  failed: number;
+  timeframe: string;
+}
+
+export interface ProceduresWithStatsResponse {
+  success: boolean;
+  data: ProcedureStat[];
 }
 
 export interface Procedure {
@@ -63,11 +81,7 @@ export interface UpdateStepData {
 }
 
 
-
-
-
-
-export class ProcedureService {
+export class ProcedureService extends BaseService {
   /**
    * =====================
    *   PROCEDURES

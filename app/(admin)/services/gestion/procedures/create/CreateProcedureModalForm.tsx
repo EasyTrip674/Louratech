@@ -12,9 +12,8 @@ import { useMutation } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
 import { createProcedureScheme } from "./procedure.create.sheme";
-import { doCreateProcedure } from "./procedure.create.action";
-import { authClient } from "@/lib/auth-client";
-
+import useAuth from "@/lib/BackendConfig/useAuth";
+import { api } from "@/lib/BackendConfig/api";
 // Zod validation schema
 
 // Infer the TypeScript type from the Zod schema
@@ -38,15 +37,16 @@ export default function CreateProcedureFormModal() {
     },
   });
 
-
-
   // Watch form values in real-time
   // const watchedValues = watch();
 
   const createMutation = useMutation({
     mutationFn: async (data: ProcedureFormData) => {
-    const result = await doCreateProcedure(data);
-    if (result?.data?.success) {
+    const result = await api.post(`api/procedures/procedures/`, {
+      description: "",
+      ...data
+    });
+    if (result?.data) {
       closeModal();
       reset();
       successModal.openModal();
@@ -74,8 +74,8 @@ export default function CreateProcedureFormModal() {
     
   };
 
-  const session = authClient.useSession();
-  if (!session.data?.userDetails?.authorize?.canEditProcedure) return null;
+  const session = useAuth();
+  if (!session.user?.authorization.can_create_procedure) return null;
 
 
   return (

@@ -67,6 +67,15 @@ export type Authorization = {
     name: string;
   };
   
+  export type ComptaSettings = {
+    fiscal_year: string;
+    tax_identification?: string | null;
+    currency: string;
+    default_tax_rate?: number | null;
+    invoice_prefix?: string | null;
+    invoice_number_format?: string | null;
+  };
+
   export type User = {
     id: string;
     email: string;
@@ -86,5 +95,6 @@ export type Authorization = {
     updated_at: string;
     authorization: Authorization;
     organization: Organization;
+    compta_settings: ComptaSettings
   };
   

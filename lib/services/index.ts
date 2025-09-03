@@ -1,4 +1,3 @@
-// Export des services
 export { BaseService } from "./base.service";
 export { ClientService, type CreateClientData, type UpdateClientData } from "./client.service";
 export { EmployeeService, type CreateEmployeeData, type UpdateEmployeeData } from "./employee.service";

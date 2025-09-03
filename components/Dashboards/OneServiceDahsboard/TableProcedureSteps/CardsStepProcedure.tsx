@@ -2,28 +2,53 @@
 import React from "react";
 import Button from "@/components/ui/button/Button";
 import { Eye, Clock, ChevronRight } from "lucide-react";
-import { ProcedureWithStepsDb } from "@/db/queries/procedures.query";
 import EditStepFormModal from "../../../../app/(admin)/services/gestion/procedures/[procedureId]/steps/step/edit/EditStepFormModal";
-import { authClient } from "@/lib/auth-client";
 import { formatCurrency } from "@/lib/utils";
 import DeleteStepFormModal from "@/app/(admin)/services/gestion/procedures/[procedureId]/steps/step/delete/DeleteStepFormModal";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/BackendConfig/api";
+import useAuth from "@/lib/BackendConfig/useAuth";
 
 type CardsProcedureStepsProps = {
-  procedureDetails: ProcedureWithStepsDb;
   readOnly?: boolean;
+  procedureId:string
 };
 
-export default function CardsProcedureSteps({
-  procedureDetails,
-  readOnly = false
-}: CardsProcedureStepsProps) {
-  if (!procedureDetails || !procedureDetails.steps) return null;
+interface ProcedureStep {
+  id: string;
+  name: string;
+  description: string;
+  estimatedDuration: number | null;
+  price: number | null;
+  order: number;
+  procedureId: string;
+  createdAt: string;
+}
+interface ProcedureStepsResponse {
+  success: boolean;
+  data: {
+    procedureId: string;
+    steps: ProcedureStep[];
+  };
+}
 
-  const session = authClient.useSession();
+export default function CardsProcedureSteps({
+  readOnly = false,
+  procedureId
+}: CardsProcedureStepsProps) {
+
+  const { data: procedureData, isLoading, isError } = useQuery<ProcedureStepsResponse>({
+    queryKey: [`procedure${procedureId}.summary`],
+    queryFn: () => api.get(`api/procedures/procedures/${procedureId}/steps/summary`).then(res => res.data),
+    retry: false
+  });
+  const session = useAuth()
+  const procedureDetails = procedureData?.data;
+
+  if (!procedureDetails || !procedureDetails.steps) return null;
 
   // Sort steps by order
   const sortedSteps = [...procedureDetails?.steps].sort((a, b) => Number(a.createdAt) - Number(b.createdAt));
-
   return (
     <div className="space-y-6">
 
@@ -46,7 +71,7 @@ export default function CardsProcedureSteps({
               {/* Prix du module */}
               {step.price !== null && (
                 <div className="bg-green-100 dark:bg-green-900/30 py-1 px-3 rounded-full">
-                  <span className="text-green-700 dark:text-green-300 text-sm font-medium">{formatCurrency(step.price, session.data?.userDetails?.organization?.comptaSettings?.currency)}</span>
+                  <span className="text-green-700 dark:text-green-300 text-sm font-medium">{formatCurrency(step.price, session.user?.compta_settings?.currency)}</span>
                 </div>
               )}
             </div>
@@ -83,7 +108,7 @@ export default function CardsProcedureSteps({
                 <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
                   <div className="flex items-center space-x-2">
                   {
-                    session.data?.userDetails?.authorize?.canEditStep && (
+                    session.user?.authorization?.can_edit_step && (
                       <EditStepFormModal 
                       procedureId={step.procedureId} 
                       stepId={step.id} 
@@ -95,11 +120,11 @@ export default function CardsProcedureSteps({
                     />
                     )
                   }
-                     <DeleteStepFormModal stepId={step.id} authozise={session.data?.userDetails?.authorize?.canDeleteStep ?? false} nameStep={step.name} />
+                     <DeleteStepFormModal stepId={step.id} authozise={session.user?.authorization?.can_delete_step ?? false} nameStep={step.name} />
                   </div>
                {
-                session.data?.userDetails?.authorize?.canReadStep && (
-                  <Button
+                session.user?.authorization?.can_read_step && (
+                <Button
                   variant="outline"
                   size="sm"
                   href={`/services/gestion/procedures/${step.procedureId}/steps/step/${step.id}`}

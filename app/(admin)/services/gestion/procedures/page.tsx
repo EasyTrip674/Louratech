@@ -1,4 +1,4 @@
-import ProceduresPage from "./procedurePage";
+import ProceduresPage from "./proceduresPage";
 
 export default function page(){
   return <ProceduresPage />

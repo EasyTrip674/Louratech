@@ -11,12 +11,11 @@ export const doCreateProcedure = adminAction
     .action(async ({ clientInput, ctx }) => {
         try {
             console.log("Creating Procedure with data:", clientInput);
-
             // Vérifier l'autorisation
             if (ctx.user.userDetails?.authorize?.canCreateProcedure === false) {
                 throw new Error("Vous n'êtes pas autorisé à créer un service");
             }
-
+            
             // Utiliser le service procedure
             const procedure = await procedureService.createProcedure(clientInput);
 

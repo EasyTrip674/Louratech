@@ -1,20 +1,16 @@
-import { getProcedureWithStepsDb } from "@/db/queries/procedures.query";
-
+"use client"
 import TableProcedureSteps from './CardsStepProcedure';
 
 
-export default async function TableProcedureStepsLayout(
+export default function TableProcedureStepsLayout(
     {procedureId}:{procedureId:string}
 ){
-
-    const procedureDataStep = await getProcedureWithStepsDb(procedureId);
-
 
 
     return ( 
     <div className="overflow-x-auto">
         <TableProcedureSteps
-        procedureDetails={procedureDataStep}
+        procedureId={procedureId}
         />
    </div>)
 }

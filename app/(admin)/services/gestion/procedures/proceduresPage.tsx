@@ -11,6 +11,8 @@ import { Suspense } from 'react';
 
 // Composant pour récupérer les données des procédures
 function ProceduresPage() {
+
+
     return (
       <div className="procedures-data" >
          <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pb-10">
@@ -23,12 +25,12 @@ function ProceduresPage() {
               </div>
               
               <div className="flex items-center gap-3 mt-6 md:mt-0">
-                {/* <CreateProcedureFormModal /> */}
+                <CreateProcedureFormModal />
               </div>
             </div>
-            {/* <Suspense fallback={<StatsServicesSkeleton />}>
+            <Suspense fallback={<StatsServicesSkeleton />}>
               <StatsServices />
-            </Suspense> */}
+            </Suspense>
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">

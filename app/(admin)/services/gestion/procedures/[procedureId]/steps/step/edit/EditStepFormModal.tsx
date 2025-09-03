@@ -15,6 +15,7 @@ import type { z } from "zod";
 import TextArea from "@/components/form/input/TextArea";
 import { doEditStep } from "./step.edit.action";
 import { editStepProcedureSchema } from "./step.edit.shema";
+import { api } from "@/lib/BackendConfig/api";
 
 // Infer the TypeScript type from the Zod schema
 type StepProcedureScheme = z.infer<typeof editStepProcedureSchema>;
@@ -65,7 +66,9 @@ export default function EditStepFormModal({
 
   const editMutation = useMutation({
     mutationFn: async (data: StepProcedureScheme) => {
-      const result = await doEditStep(data);
+      const result = await api.patch(`api/procedures/steps/${stepId}`, {
+        ...data
+      });
       
       if (result?.data?.success) {
         closeModal();
@@ -183,13 +186,13 @@ export default function EditStepFormModal({
             </div>
             {/* Required field */}
             <div className="col-span-1 flex items-center gap-2">
-              <input
-                id="isRequired"
-                type="checkbox"
-                {...register("isRequired")}
-                defaultChecked={isRequired}
-                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
+            <input
+              id="isRequired"
+              type="checkbox"
+              {...register("isRequired")}
+              className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+
               <Label htmlFor="isRequired">Obligatoire</Label>
               {errors.isRequired && (
                 <span className="text-xs text-red-500 ml-2">{errors.isRequired.message as string}</span>

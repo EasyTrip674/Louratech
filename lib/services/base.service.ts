@@ -1,13 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import useAuth from "../BackendConfig/useAuth";
 
 export abstract class BaseService {
-  protected prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
-
+ 
   /**
    * Récupère l'ID de l'organisation de l'utilisateur connecté
    */
@@ -62,10 +56,5 @@ export abstract class BaseService {
     throw new Error(`Une erreur est survenue lors de l\'opération ${error}`);
   }
 
-  /**
-   * Méthode pour nettoyer les ressources
-   */
-  async dispose(): Promise<void> {
-    await this.prisma.$disconnect();
-  }
+
 } 

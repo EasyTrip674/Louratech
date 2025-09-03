@@ -1,38 +1,23 @@
-import prisma from "@/db/prisma";
-import { getOrgnaizationId } from "@/db/queries/utils.query";
+"use client"
+import { api } from "@/lib/BackendConfig/api";
+import { ProceduresWithStatsResponse } from "@/lib/services/procedure.service";
+import { useQuery } from "@tanstack/react-query";
 import { Backpack, FileCheck, Users } from "lucide-react";
 
-export default async function StatsServices() {
+export default  function StatsServices() {
 
-
-  const organizationId = await getOrgnaizationId()
-
-  const totalClients = await prisma.client.count({
-    where: {
-      organizationId,
-    },
-  });
-  const pendingServices = await prisma.clientProcedure.count({
-    where: {
-      status: {
-        in: ["IN_PROGRESS"],
-      },
-      procedure: {
-        organizationId,
-      }
-    },
+  const { data: procedureData, isLoading, isError } = useQuery<ProceduresWithStatsResponse>({
+    queryKey: ["proceduresServices"],
+    queryFn: () => api.get("api/procedures/procedures/with-stats/").then(res => res.data),
+    retry: false
   });
 
-  const finishServices = await prisma.clientProcedure.count({
-    where: {
-      status: {
-        in: ["COMPLETED"],
-      },
-      procedure: {
-        organizationId,
-      }
-    },
-  });
+
+
+  const totalClients = procedureData?.data?.reduce((acc, item) => acc + (item.total_clients), 0) ?? 0;
+  const pendingServices = procedureData?.data.reduce((acc, item)=> acc + item.in_progress,0) ?? 0;
+
+  const finishServices = procedureData?.data.reduce((acc, item)=> acc + item.completed,0) ?? 0;
 
   // taux de réussite
   const successRate = (finishServices / (pendingServices + finishServices) || 0) * 100;
