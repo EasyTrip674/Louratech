@@ -8,7 +8,7 @@ import { Modal } from "@/components/ui/modal";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import { Edit } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
 import type { z } from "zod";
@@ -44,21 +44,26 @@ export default function EditStepFormModal({
   const { isOpen, openModal, closeModal } = useModal();
   const successModal = useModal();
   const errorModal = useModal();
+  const queryClient = useQueryClient();
+
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset
+    reset,
+    watch,
+    setValue,
+    setError
   } = useForm<StepProcedureScheme>({
     resolver: zodResolver(editStepProcedureSchema),
     defaultValues: {
       name,
-      description,
+      description: description || name,
       price: price ?? 0,
       estimatedDuration: estimatedDuration ?? 0,
-      order,
-      isRequired,
+      order : order ?? 1,
+      isRequired: isRequired ?? false,
       procedureId,
       stepId,
     }
@@ -66,23 +71,48 @@ export default function EditStepFormModal({
 
   const editMutation = useMutation({
     mutationFn: async (data: StepProcedureScheme) => {
-      const result = await api.patch(`api/procedures/steps/${stepId}`, {
-        ...data
+      console.log("Données envoyées:", data); // Debug log
+      
+      const result = await api.patch(`api/procedures/steps/${stepId}/`, {
+        name: data.name,
+        description: data.description ?? "",
+        estimated_duration: data.estimatedDuration,
+        required: data.isRequired,
+        price: data.price,
+        procedure: data.procedureId,
+        order: data.order,
       });
       
-      if (result?.data?.success) {
-        closeModal();
-        reset();
-        successModal.openModal();
-        return result;
-      } 
+      return result;
+    },
+    onSuccess: (result) => {
+      console.log("Succès:", result); // Debug log
+      closeModal();
+      reset();
+      successModal.openModal();
+      queryClient.invalidateQueries();
+    },
+    onError: (error: any) => {
+      console.error("Erreur modification step:", error);
       
-      errorModal.openModal();
-      throw new Error("Failed to edit step");
+      // Gestion des erreurs de validation du backend
+      if (error?.response?.data?.errors) {
+        const backendErrors = error.response.data.errors;
+        Object.entries(backendErrors).forEach(([field, message]) => {
+          setError(field as keyof StepProcedureScheme, { 
+            type: "server", 
+            message: String(message) 
+          });
+        });
+      } else {
+        closeModal();
+        errorModal.openModal();
+      }
     }
   });
 
   const onSubmit = (data: StepProcedureScheme) => {
+    console.log("Formulaire soumis avec:", data); // Debug log
     editMutation.mutate(data);
   };
 
@@ -90,6 +120,11 @@ export default function EditStepFormModal({
     closeModal();
     reset();
   };
+
+  // Collect all error messages
+  const allErrorMessages = Object.values(errors)
+    .map(e => (typeof e?.message === "string" ? e.message : null))
+    .filter(Boolean);
 
   return (
     <>
@@ -119,8 +154,6 @@ export default function EditStepFormModal({
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
             Modifier le module
           </h4>
-
-        
           
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 border-b border-gray-200 dark:border-gray-800 pb-6">
             {/* Name field */}
@@ -135,36 +168,45 @@ export default function EditStepFormModal({
                 placeholder="Entrez le nom du module" 
               />
             </div>
+            
             {/* Description field */}
             <div className="col-span-1">
               <Label>Description (Optionnel)</Label>
               <TextArea 
-                {...register("description")}
+                value={watch("description") ?? ""}
+                onChangeValue={(value) => setValue("description", value, { shouldValidate: true })}
                 error={!!errors.description} 
                 hint={errors.description?.message} 
-                placeholder="Entrez une description détaillée du module" 
-                onChangeValue={()=>register("description").onChange}
+                placeholder="Entrez une description détaillée du module"
               />
             </div>
+            
             {/* Price field */}
             <div className="col-span-1">
               <Input 
                 label="Prix de base pour ce module"
-                required
-                {...register("price", { valueAsNumber: true })} 
+                {...register("price", { 
+                  valueAsNumber: true,
+                  setValueAs: (value) => value === '' ? undefined : Number(value)
+                })} 
                 error={!!errors.price} 
                 hint={errors.price?.message} 
                 type="number" 
                 min="0"
+                step="0.01"
                 placeholder="Entrez le prix" 
               />
               <p className="text-xs text-gray-500 mt-1">Ce prix sera personnalisable par client</p>
             </div>
+            
             {/* Order field */}
             <div className="col-span-1">
               <Input
                 label="Ordre du module"
-                {...register("order", { valueAsNumber: true })}
+                {...register("order", { 
+                  valueAsNumber: true,
+                  setValueAs: (value) => value === '' ? undefined : Number(value)
+                })}
                 error={!!errors.order}
                 hint={errors.order?.message}
                 type="number"
@@ -172,11 +214,15 @@ export default function EditStepFormModal({
                 placeholder="Ordre dans la procédure"
               />
             </div>
+            
             {/* Estimated Duration field */}
             <div className="col-span-1">
               <Input
                 label="Durée estimée (jours)"
-                {...register("estimatedDuration", { valueAsNumber: true })}
+                {...register("estimatedDuration", { 
+                  valueAsNumber: true,
+                  setValueAs: (value) => value === '' ? undefined : Number(value)
+                })}
                 error={!!errors.estimatedDuration}
                 hint={errors.estimatedDuration?.message}
                 type="number"
@@ -184,15 +230,15 @@ export default function EditStepFormModal({
                 placeholder="Durée estimée en jours"
               />
             </div>
+            
             {/* Required field */}
             <div className="col-span-1 flex items-center gap-2">
-            <input
-              id="isRequired"
-              type="checkbox"
-              {...register("isRequired")}
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-
+              <input
+                id="isRequired"
+                type="checkbox"
+                {...register("isRequired")}
+                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
               <Label htmlFor="isRequired">Obligatoire</Label>
               {errors.isRequired && (
                 <span className="text-xs text-red-500 ml-2">{errors.isRequired.message as string}</span>

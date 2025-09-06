@@ -15,6 +15,7 @@ import { doDeleteProcedure } from "./procedure.delete.action";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { deleteProcedureSchema } from "./procedure.delete.shema";
+import { api } from "@/lib/BackendConfig/api";
 
 // Infer the TypeScript type from the Zod schema
 type ProcedureFormData = z.infer<typeof deleteProcedureSchema>;
@@ -63,8 +64,10 @@ export default function DeleteProcedureFormModal({ procedureId,countClient, inPa
   const DeleteMutation = useMutation({
     mutationFn: async (data: ProcedureFormData) => {
       try {
-        const result = await doDeleteProcedure(data);
-        if (result?.data?.success) {
+        const result = await api.delete(`api/procedures/procedures/${procedureId}/`);
+        console.log(result);
+        
+        if (result?.status == 200 || result.status == 204) {
           closeModal();
           reset();
           successModal.openModal();
@@ -72,7 +75,7 @@ export default function DeleteProcedureFormModal({ procedureId,countClient, inPa
           router.push("/services/gestion/procedures")
           return result;
         } else {
-          setServerError(result?.serverError || "Erreur lors de la suppression");
+          setServerError("Erreur lors de la suppression");
           errorModal.openModal();
           throw new Error("Failed to delete Procedure");
         }

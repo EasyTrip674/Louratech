@@ -16,6 +16,7 @@ import type { z } from "zod";
 import TextArea from "@/components/form/input/TextArea";
 import { doCreateStep } from "./step.create.action";
 import { authClient } from "@/lib/auth-client";
+import { api } from "@/lib/BackendConfig/api";
 
 // Infer the TypeScript type from the Zod schema
 type StepProcedureScheme = z.infer<typeof createStepProcedureSchema>;
@@ -48,8 +49,16 @@ export default function CreateStepFormModal({procedureId}:{
 
   const createMutation = useMutation({
     mutationFn: async (data: StepProcedureScheme) => {
-      const result = await doCreateStep(data);
-      if (result?.data?.success) {
+      const result = await api.post("api/procedures/steps/",{
+        name:data.name,
+        description : data.description,
+        estimated_duration: data.estimatedDuration,
+        required: data.isRequired,
+        price: data.price,
+        procedure : data.procedureId,
+        order: 1,
+      });
+      if (result?.status == 200 || result.status === 201) {
         closeModal();
         reset();
         successModal.openModal();

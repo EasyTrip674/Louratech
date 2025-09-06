@@ -21,7 +21,7 @@ interface ProcedureStep {
   estimatedDuration: number | null;
   price: number | null;
   order: number;
-  procedureId: string;
+  procedure: string;
   createdAt: string;
 }
 interface ProcedureStepsResponse {
@@ -45,7 +45,9 @@ export default function CardsProcedureSteps({
   const session = useAuth()
   const procedureDetails = procedureData?.data;
 
+
   if (!procedureDetails || !procedureDetails.steps) return null;
+  
 
   // Sort steps by order
   const sortedSteps = [...procedureDetails?.steps].sort((a, b) => Number(a.createdAt) - Number(b.createdAt));
@@ -110,7 +112,7 @@ export default function CardsProcedureSteps({
                   {
                     session.user?.authorization?.can_edit_step && (
                       <EditStepFormModal 
-                      procedureId={step.procedureId} 
+                      procedureId={procedureDetails.procedureId} 
                       stepId={step.id} 
                       name={step.name} 
                       description={step.description} 
@@ -127,7 +129,7 @@ export default function CardsProcedureSteps({
                 <Button
                   variant="outline"
                   size="sm"
-                  href={`/services/gestion/procedures/${step.procedureId}/steps/step/${step.id}`}
+                  href={`/services/gestion/procedures/${procedureDetails.procedureId}/steps/step/${step.id}`}
                   className="flex items-center"
                 >
                   <Eye className="w-4 h-4 mr-1" />

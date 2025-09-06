@@ -15,6 +15,7 @@ import { doDeleteStep } from "./step.delete.action";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { deleteStepSchema } from "./step.delete.shema";
+import { api } from "@/lib/BackendConfig/api";
 
 // Infer the TypeScript type from the Zod schema
 type StepFormData = z.infer<typeof deleteStepSchema>;
@@ -63,18 +64,18 @@ export default function DeleteStepFormModal({ stepId, inPageProfile = false ,nam
   const DeleteMutation = useMutation({
     mutationFn: async (data: StepFormData) => {
       try {
-        const result = await doDeleteStep(data);
-        if (result?.data?.success) {
+        const result = await api.delete(`api/procedures/steps/${data.stepId}/`);
+        if (result?.status == 204 || result.status == 200) {
           closeModal();
           reset();
           successModal.openModal();
           router.refresh();
           return result;
         } else {
-          setServerError(result?.serverError || "Erreur lors de la suppression");
+          setServerError("Erreur lors de la suppression");
           errorModal.openModal();
           throw new Error("Failed to delete Step");
-        }
+        } 
       } catch (error) {
         setServerError("Une erreur est survenue lors de la suppression");
         errorModal.openModal();

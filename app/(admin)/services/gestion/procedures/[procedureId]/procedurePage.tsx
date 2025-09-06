@@ -1,6 +1,5 @@
 "use client";
 import React, { Suspense } from 'react';
-// import { ArrowLeft } from 'lucide-react';
 import Button from "@/components/ui/button/Button";
 import Link from 'next/link';
 import AddClientToStepModal from './clients/[clientProcedureId]/clientProcedure/AddClientToStepModal';
@@ -37,6 +36,7 @@ export type procedureDetailsType = {
       category: string | null;
       is_active: boolean;
       organization: string;
+      client_procedures_count : number;
     }
 }
 
@@ -45,7 +45,7 @@ export type procedureDetailsType = {
 export default function ProcedureDetailPage({procedureId}:{
     procedureId:string
 }) {
-    // const session  = useAuth()
+    const session  = useAuth()
 
 
   const { data: procedureData, isLoading, isError } = useQuery<procedureDetailsType>({
@@ -56,7 +56,9 @@ export default function ProcedureDetailPage({procedureId}:{
 
   const procedure = procedureData?.data;
 
-  
+  if (!procedure) {
+    return null;
+  }  
   
 
 //   const clients = await clientService.getClientsForSelect();
@@ -82,20 +84,21 @@ export default function ProcedureDetailPage({procedureId}:{
        
         </div>
         <div className='flex gap-2 items-center'>
-        {/* {
+        {
           session?.user?.authorization?.can_edit_procedure && (
             <EditProcedureFormModal procedure={
               { procedureId: procedure.id, name:procedure.name ?? "", description: procedure.description ?? "" }
             } />
           )
-         } */}
+         }
            <div className="flex items-center gap-3 mt-4 md:mt-0">
-              {/* <DeleteProcedureFormModal 
+              <DeleteProcedureFormModal 
               procedureId={procedure.id} 
               procedureName={procedure.name} 
               authozise={session?.user?.authorization.can_delete_client_procedure ?? false} 
-              countClient={procedure._count.clientProcedures}
-              /> */}
+              countClient={procedure.client_procedures_count}
+
+              />
           </div>
 
         </div>
@@ -118,11 +121,11 @@ export default function ProcedureDetailPage({procedureId}:{
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-medium text-gray-900 dark:text-white">Modules</h2>
           <div>
-            {/* {
+            {
               session?.user?.authorization?.can_create_step && (
                 <CreateStepFormModal procedureId={procedureId} />
               )
-            } */}
+            }
           </div>
         </div>
         <div className="rounded-lg overflow-hidden">
