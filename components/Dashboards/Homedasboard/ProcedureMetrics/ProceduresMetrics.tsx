@@ -1,21 +1,22 @@
+"use client";
 import React from "react";
 import { BoxIcon, Users2 } from "lucide-react";
-import prisma from "@/db/prisma";
-import { getOrgnaizationId } from "@/db/queries/utils.query";
 import Button from "@/components/ui/button/Button";
 
 export const ProceduresMetrics = async () => {
-  const organisation = await getOrgnaizationId();
-  const clientsCount = await prisma.client.count({
-    where: {
-      organizationId: organisation,
-    },
-  });
-  const servicesCount = await prisma.procedure.count({
-    where: {
-      organizationId: organisation,
-    },
-  });
+  // const organisation = await getOrgnaizationId();
+  // const clientsCount = await prisma.client.count({
+  //   where: {
+  //     organizationId: organisation,
+  //   },
+  // });
+  // const servicesCount = await prisma.procedure.count({
+  //   where: {
+  //     organizationId: organisation,
+  //   },
+  // });
+
+  return null;
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
       {/* <!-- Métrique Item Début --> */}

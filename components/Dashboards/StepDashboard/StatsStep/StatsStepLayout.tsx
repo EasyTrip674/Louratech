@@ -1,34 +1,74 @@
+"use client";
 import EditStepFormModal from "@/app/(admin)/services/gestion/procedures/[procedureId]/steps/step/edit/EditStepFormModal";
 import Button from "@/components/ui/button/Button";
-import { getStepProcedureDetails } from "@/db/queries/procedures.query";
-import { auth } from "@/lib/auth";
+import { api } from "@/lib/BackendConfig/api";
+import useAuth from "@/lib/BackendConfig/useAuth";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import {  useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowLeft, Calendar, CheckCircle, Clock, CreditCard, FileText, ListChecks, Users } from "lucide-react";
-import { headers } from "next/headers";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
-export default async function StatsStepLayout(
+
+interface StepDetailResponse {
+  success : boolean,
+ data:{
+  id: string;
+  name: string;
+  description: string | null;
+  price: number | null;
+  order: number;
+  required: boolean;
+  estimatedDuration: number | null;
+  createdAt: string;
+  updatedAt: string;
+  procedureId: string;
+  totalClients: number;
+  inProgressCount: number;
+  completedCount: number;
+  waitingCount: number;
+  failedCount: number;
+  skippedCount: number;
+  totalRevenue: number;
+  averagePrice: number;
+  clientSteps: {
+    id: string;
+    clientProcedureId: string;
+    status: string;
+    price: number | null;
+    startDate: string | null;
+    completionDate: string | null;
+    processedById: string | null;
+    notes: string | null;
+  }[];
+ }
+}
+
+export default function StatsStepLayout(
     {stepId}:{stepId:string}
 ) {
-    const step = await getStepProcedureDetails(stepId);
+  
+  const session = useAuth();
+  const { data: stepResponse, isLoading, isError , error} = useSuspenseQuery<StepDetailResponse>({
+      queryKey: [`step-${stepId}-overview`],
+      queryFn: () => api.get(`api/procedures/steps/${stepId}/overview/`).then(res => res.data),
+      retry: false,
+    });
+    if (isLoading) return <div>Chargement...</div>;
+    if (isError) return <div>Erreur lors du chargement du module {error.message}</div>;
 
-    if (!step) {
-      return notFound();
+    if (!stepResponse?.data) {
+      return null;
     }
-    const session = await auth.api.getSession({
-      headers: await headers()
-    })
-  
+    const step = stepResponse.data
+    
     // Calculate stats for the dashboard
-    const inProgressCount = step.clientSteps?.filter(cs => cs.status === 'IN_PROGRESS').length || 0;
-    const completedCount = step.clientSteps?.filter(cs => cs.status === 'COMPLETED').length || 0;
-    const waitingCount = step.clientSteps?.filter(cs => cs.status === 'WAITING').length || 0;
-    const totalClients = step.clientSteps?.length || 0;
-    const totalRevenue = step.clientSteps?.reduce((sum, cs) => sum + (cs.price || 0), 0) || 0;
-    const averagePrice = totalClients ? Math.round(totalRevenue / totalClients) : 0;
+    // const inProgressCount = step.clientSteps?.filter(cs => cs.status === 'IN_PROGRESS').length || 0;
+    // const completedCount = step.clientSteps?.filter(cs => cs.status === 'COMPLETED').length || 0;
+    // const waitingCount = step.clientSteps?.filter(cs => cs.status === 'WAITING').length || 0;
+    // const totalClients = step.clientSteps?.length || 0;
+    // const step.totalRevenue = step.clientSteps?.reduce((sum, cs) => sum + (cs.price || 0), 0) || 0;
+    // const averagePrice = totalClients ? Math.round(step.totalRevenue / totalClients) : 0;
   
-
     return (
       <>
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
@@ -55,7 +95,7 @@ export default async function StatsStepLayout(
         
         <div className="flex items-center">
         {
-          session?.userDetails?.authorize?.canEditStep && (
+          session?.user?.authorization?.can_edit_step && (
             <EditStepFormModal
             procedureId={step.procedureId}
             stepId={step.id}
@@ -77,7 +117,7 @@ export default async function StatsStepLayout(
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Clients</p>
-              <p className="text-3xl font-bold mt-2 dark:text-white">{totalClients}</p>
+              <p className="text-3xl font-bold mt-2 dark:text-white">{step.totalClients}</p>
             </div>
             <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
               <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -86,8 +126,8 @@ export default async function StatsStepLayout(
           <div className="mt-4 flex justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Répartition :</span>
             <div className="flex gap-2">
-              <span className="text-green-600 dark:text-green-400 font-medium">{completedCount} terminés</span>
-              <span className="text-blue-600 dark:text-blue-400 font-medium">{inProgressCount} en cours</span>
+              <span className="text-green-600 dark:text-green-400 font-medium">{step.completedCount} terminés</span>
+              <span className="text-blue-600 dark:text-blue-400 font-medium">{step.inProgressCount} en cours</span>
             </div>
           </div>
         </div>
@@ -96,7 +136,7 @@ export default async function StatsStepLayout(
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Revenu total</p>
-              <p className="text-3xl font-bold mt-2 dark:text-white">{formatCurrency(totalRevenue,session?.userDetails?.organization?.comptaSettings?.currency)}</p>
+              <p className="text-3xl font-bold mt-2 dark:text-white">{formatCurrency(step.totalRevenue,session?.user?.compta_settings?.currency)}</p>
             </div>
             <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
               <CreditCard className="w-6 h-6 text-green-600 dark:text-green-400" />
@@ -104,7 +144,7 @@ export default async function StatsStepLayout(
           </div>
           <div className="mt-4 flex justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Prix moyen :</span>
-            <span className="text-green-600 dark:text-green-400 font-medium">{formatCurrency(averagePrice,session?.userDetails?.organization?.comptaSettings?.currency)}</span>
+            <span className="text-green-600 dark:text-green-400 font-medium">{formatCurrency(step.averagePrice,session?.user?.compta_settings?.currency)}</span>
           </div>
         </div>
 
@@ -112,7 +152,7 @@ export default async function StatsStepLayout(
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Prix de base</p>
-              <p className="text-3xl font-bold mt-2 dark:text-white">{step.price ? formatCurrency(step.price,session?.userDetails?.organization?.comptaSettings?.currency) : 'Non défini'}</p>
+              <p className="text-3xl font-bold mt-2 dark:text-white">{step.price ? formatCurrency(step.price,session?.user?.compta_settings?.currency) : 'Non défini'}</p>
             </div>
             <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
               <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
@@ -162,7 +202,7 @@ export default async function StatsStepLayout(
                 <div className="h-3 w-3 rounded-full bg-blue-500 dark:bg-blue-400"></div>
                 <span className="text-sm font-medium dark:text-white">En cours</span>
               </div>
-              <span className="text-2xl font-bold dark:text-white">{inProgressCount}</span>
+              <span className="text-2xl font-bold dark:text-white">{step.inProgressCount}</span>
             </div>
             
             <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800/80 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -170,7 +210,7 @@ export default async function StatsStepLayout(
                 <div className="h-3 w-3 rounded-full bg-yellow-500 dark:bg-yellow-400"></div>
                 <span className="text-sm font-medium dark:text-white">En attente externe</span>
               </div>
-              <span className="text-2xl font-bold dark:text-white">{waitingCount}</span>
+              <span className="text-2xl font-bold dark:text-white">{step.waitingCount}</span>
             </div>
             
             <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800/80 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -178,7 +218,7 @@ export default async function StatsStepLayout(
                 <div className="h-3 w-3 rounded-full bg-green-500 dark:bg-green-400"></div>
                 <span className="text-sm font-medium dark:text-white">Complétés</span>
               </div>
-              <span className="text-2xl font-bold dark:text-white">{completedCount}</span>
+              <span className="text-2xl font-bold dark:text-white">{step.completedCount}</span>
             </div>
           </div>
         </div>
@@ -196,9 +236,9 @@ export default async function StatsStepLayout(
                 <h3 className="text-sm font-medium text-green-800 dark:text-green-300">Revenu total</h3>
                 <CreditCard className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
-              <p className="text-3xl font-bold text-green-700 dark:text-green-300">{formatCurrency(totalRevenue,session?.userDetails?.organization?.comptaSettings?.currency)} </p>
+              <p className="text-3xl font-bold text-green-700 dark:text-green-300">{formatCurrency(step.totalRevenue,session?.user?.compta_settings?.currency)} </p>
               <p className="text-sm text-green-600 dark:text-green-400 mt-2">
-                {totalClients} client{totalClients > 1 ? 's' : ''}
+                {step.totalClients} client{step.totalClients > 1 ? 's' : ''}
               </p>
             </div>
             
@@ -207,9 +247,9 @@ export default async function StatsStepLayout(
                 <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300">Prix moyen facturé</h3>
                 <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">{formatCurrency(averagePrice,session?.userDetails?.organization?.comptaSettings?.currency)}</p>
+              <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">{formatCurrency(step.averagePrice,session?.user?.compta_settings?.currency)}</p>
               <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">
-                {step.price ? `Prix de base: ${formatCurrency(step.price,session?.userDetails?.organization?.comptaSettings?.currency)}` : 'Prix de base non défini'}
+                {step.price ? `Prix de base: ${formatCurrency(step.price,session?.user?.compta_settings?.currency)}` : 'Prix de base non défini'}
               </p>
             </div>
             

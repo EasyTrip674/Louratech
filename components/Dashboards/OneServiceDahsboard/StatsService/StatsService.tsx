@@ -2,7 +2,7 @@
 import { api } from "@/lib/BackendConfig/api";
 import useAuth from "@/lib/BackendConfig/useAuth";
 import { formatCurrency } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery} from "@tanstack/react-query";
 import { CheckCircle, Clock, CreditCard, Users } from "lucide-react";
 
 export interface ServiceDetailResponse {

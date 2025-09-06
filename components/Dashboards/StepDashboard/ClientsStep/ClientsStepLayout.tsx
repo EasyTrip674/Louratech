@@ -1,27 +1,23 @@
+"use client";
 import Button from "@/components/ui/button/Button";
-import { getStepProcedureDetails } from "@/db/queries/procedures.query";
-import { auth } from "@/lib/auth";
+import useAuth from "@/lib/BackendConfig/useAuth";
 import { formatCurrency, formatDate, getStatusBadgeClasses } from "@/lib/utils";
 import { Eye,  Users } from "lucide-react";
-import { headers } from "next/headers";
-import Link from "next/link";
 
-export default async function ClientsStepLayout({
+export default function ClientsStepLayout({
 stepId
 }:{
     stepId:string
 }) {
 
-    const step = await getStepProcedureDetails(stepId);
+    // const step = await getStepProcedureDetails(stepId);
 
-    if (!step) {
-      return null
-    }
-    const session = await auth.api.getSession({
-      headers: await headers()
-    })
+    // if (!step) {
+    //   return null
+    // }
+    const session = useAuth();
   
-    
+    return null;
     return (
         <div className="bg-white dark:bg-gray-800/40 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-gray-700/50 shadow-sm overflow-hidden">
         <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700/50">
@@ -44,15 +40,15 @@ stepId
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-transparent">
-              {!step.clientSteps?.length && (
+              {/* {!step.clientSteps?.length && (
                 <tr>
                   <td colSpan={6} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                     Aucun client inscrit pour cette étape
                   </td>
                 </tr>
-              )}
+              )} */}
               
-              {step.clientSteps?.map((clientStep) => (
+              {/* {step.clientSteps?.map((clientStep) => (
                 <tr key={clientStep.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center">
@@ -102,18 +98,18 @@ stepId
                     </Link>
                   </td>
                 </tr>
-              ))}
+              ))} */}
             </tbody>
           </table>
         </div>
         
-        {step.clientSteps?.length > 0 && (
+        {/* {step.clientSteps?.length > 0 && (
           <div className="px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700">
             <div className="text-sm text-gray-500 dark:text-gray-400">
               Affichage de {step.clientSteps.length} client{step.clientSteps.length > 1 ? 's' : ''}
             </div>
           </div>
-        )}
+        )} */}
       </div>
     );
     }

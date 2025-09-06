@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import React, { Suspense } from "react";
-import { dashboardService } from "@/lib/services";
 
 // Composants du dashboard
 import { MonthSalesChartLayout } from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthSalesChartLayout";
@@ -9,8 +8,6 @@ import MonthlyTargetSkeleton from "@/components/Dashboards/Homedasboard/MonthlyT
 import { StatisticsServiceLayout } from "@/components/Dashboards/Homedasboard/StatisticsChart/StatisticsChartLayout";
 import { ProceduresMetrics } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetrics";
 import StatisticsServiceSkeleton from "@/components/Dashboards/Homedasboard/StatisticsChart/StatisticsChartSkeleton";
-// import RecentOrdersSkeleton from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersSkeleton";
-// import { RecentOrdersLayout } from "@/components/Dashboards/Homedasboard/RecentsOrders/RecentOrdersLayout";
 import MonthlySalesChartSkeleton from "@/components/Dashboards/Homedasboard/MonthlySalesChart/MonthySalesChartSkeleton";
 import { ProceduresMetricsSkeleton } from "@/components/Dashboards/Homedasboard/ProcedureMetrics/ProceduresMetricsSkeleton";
 
@@ -30,7 +27,7 @@ async function DashboardDataProvider({ children }: { children: React.ReactNode }
       // <div className="dashboard-data" data-stats={JSON.stringify(dashboardStats)}>
       //   {children}
       // </div>
-      <div>
+      <div className="dashboard-data" >
         {children}
       </div>
     );

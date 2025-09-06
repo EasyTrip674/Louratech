@@ -11,7 +11,10 @@ const TansQueryProvider = ({children}:PropsWithChildren) => {
   useEffect(() => {
     loadTokens(); // Charger les tokens au démarrage
   }, []);
-const queryClient = new QueryClient()
+const queryClient = new QueryClient(
+  {
+  }
+)
   return (
      <QueryClientProvider client={queryClient}>
       {children}

@@ -5,7 +5,7 @@ import { Eye, Clock, ChevronRight } from "lucide-react";
 import EditStepFormModal from "../../../../app/(admin)/services/gestion/procedures/[procedureId]/steps/step/edit/EditStepFormModal";
 import { formatCurrency } from "@/lib/utils";
 import DeleteStepFormModal from "@/app/(admin)/services/gestion/procedures/[procedureId]/steps/step/delete/DeleteStepFormModal";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery} from "@tanstack/react-query";
 import { api } from "@/lib/BackendConfig/api";
 import useAuth from "@/lib/BackendConfig/useAuth";
 

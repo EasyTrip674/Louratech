@@ -10,7 +10,6 @@ export const doEditClient = adminAction
     .schema(editClientSchema)
     .action(async ({ clientInput, ctx }) => {
         try {
-            console.log("Editing client with data:", clientInput);
             
             // Vérifier l'autorisation
             if (ctx.user.userDetails?.authorize?.canEditClient === false) {

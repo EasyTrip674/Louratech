@@ -10,7 +10,6 @@ export const doDeleteClient = adminAction
     .schema(deleteClientSchema)
     .action(async ({ clientInput, ctx }) => {
         try {
-            console.log("Deleting client with data:", clientInput);
             
             // Vérifier l'autorisation
             if (ctx.user.userDetails?.authorize?.canDeleteClient === false) {

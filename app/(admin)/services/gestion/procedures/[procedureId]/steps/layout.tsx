@@ -1,23 +1,20 @@
-
-import { auth } from "@/lib/auth";
+"use client";
 import React from "react";
-import { headers } from "next/headers";
 import NotAuthorized from "@/app/not-authorized";
+import useAuth from "@/lib/BackendConfig/useAuth";
 
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-    const user = await  auth.api.getSession({
-    headers: await headers()
-    })
+    const session = useAuth()
 
 
     // mais une page d'erreur 403
 
-    if (!user?.userDetails?.authorize?.canReadStep) {
+    if (!session?.user?.authorization?.can_read_step) {
         return (
           <NotAuthorized />     
         );

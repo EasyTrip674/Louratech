@@ -1,7 +1,7 @@
 "use client"
 import { api } from "@/lib/BackendConfig/api";
 import { ProceduresWithStatsResponse } from "@/lib/services/procedure.service";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery} from "@tanstack/react-query";
 import { Backpack, FileCheck, Users } from "lucide-react";
 
 export default  function StatsServices() {

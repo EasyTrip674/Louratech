@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { ProcedureCard } from "@/components/procedures/ProcedureCard";
 import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery} from "@tanstack/react-query";
 import { api } from "@/lib/BackendConfig/api";
 
 export default function ServicesCard() {
-  const { data: procedureData, isLoading, isError } = useQuery({
+  const { data: procedureData, isLoading, isError } = useSuspenseQuery({
     queryKey: ["proceduresServices"],
     queryFn: () => api.get("api/procedures/procedures/with-stats/").then(res => res.data),
     retry: false

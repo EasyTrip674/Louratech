@@ -1,6 +1,6 @@
 "use client";
 import { api } from "@/lib/BackendConfig/api";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery} from "@tanstack/react-query";
 import { ProcedureFinancialSummary } from "./ProcedureFinancialSummary";
 
 export default function ProcedureFinancialSummaryLayout(
@@ -8,7 +8,7 @@ export default function ProcedureFinancialSummaryLayout(
 ){
 
    
-  const { data: procedureData, isLoading, isError } = useQuery({
+  const { data: procedureData, isLoading, isError } = useSuspenseQuery({
     queryKey: [`procedure${procedureId}.summary`],
     queryFn: () => api.get(`api/procedures/procedures/${procedureId}/finance/summary`).then(res => res.data),
     retry: false

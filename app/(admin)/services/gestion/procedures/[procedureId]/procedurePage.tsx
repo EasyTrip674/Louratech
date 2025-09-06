@@ -15,7 +15,7 @@ import TableProcedureStepsLayout from '@/components/Dashboards/OneServiceDahsboa
 import EditProcedureFormModal from './edit/CreateEditModalForm';
 import DeleteProcedureFormModal from './delete/DeleteProcedureFormModal';
 import useAuth from '@/lib/BackendConfig/useAuth';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery} from '@tanstack/react-query';
 import { api } from '@/lib/BackendConfig/api';
 import { ArrowLeft } from 'lucide-react';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
@@ -48,7 +48,7 @@ export default function ProcedureDetailPage({procedureId}:{
     const session  = useAuth()
 
 
-  const { data: procedureData, isLoading, isError } = useQuery<procedureDetailsType>({
+  const { data: procedureData, isLoading, isError } = useSuspenseQuery<procedureDetailsType>({
     queryKey: [`procedure${procedureId}`],
     queryFn: () => api.get(`api/procedures/procedures/${procedureId}`).then(res => res.data),
     retry: false

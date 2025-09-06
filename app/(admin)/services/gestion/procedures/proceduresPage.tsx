@@ -5,8 +5,6 @@ import StatsServices from '@/components/Dashboards/ServicesDasboard/StatsService
 import StatsServicesSkeleton from '@/components/Dashboards/ServicesDasboard/StatsServices/StatsServicesSkeleton'
 import ServicesCardLayout from '@/components/Dashboards/ServicesDasboard/ServicesCards/ServicesCardLayout'
 import ServicesCardsSkeleton from '@/components/Dashboards/ServicesDasboard/ServicesCards/ServicesCardSkeleton'
-import { procedureService } from '@/lib/services'
-import { useQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
 
 // Composant pour récupérer les données des procédures
