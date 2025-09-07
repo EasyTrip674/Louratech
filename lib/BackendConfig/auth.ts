@@ -36,6 +36,9 @@ export const fetchMe = async () => {
   loadTokens();
   const res = await api.get("/api/core/me");
   console.log(res.data);
+  // if (!res.data) {
+  //   logout()
+  // }
   return res.data;
 };
 
