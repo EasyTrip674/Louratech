@@ -8,7 +8,7 @@ import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import Input from "@/components/form/input/InputField";
 import { Plus } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation,  useQueryClient } from "@tanstack/react-query";
 import SuccessModal from "@/components/alerts/SuccessModal";
 import ErrorModal from "@/components/alerts/ErrorModal";
 import { createProcedureScheme } from "./procedure.create.sheme";
@@ -23,7 +23,7 @@ export default function CreateProcedureFormModal() {
   const { isOpen, openModal, closeModal } = useModal();
   const successModal = useModal();
   const errorModal = useModal();
-
+  const    queryClient =useQueryClient()
 
   const {
     register,
@@ -57,6 +57,7 @@ export default function CreateProcedureFormModal() {
   },
     onSuccess: () => {
       console.log("Procedure created successfully");
+      queryClient.invalidateQueries();
     },
     onError: () => {
       console.error("Failed to create Procedure");

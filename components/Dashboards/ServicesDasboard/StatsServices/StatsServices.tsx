@@ -6,7 +6,7 @@ import { Backpack, FileCheck, Users } from "lucide-react";
 
 export default  function StatsServices() {
 
-  const { data: procedureData, isLoading, isError } = useQuery<ProceduresWithStatsResponse>({
+  const { data: procedureData, isLoading, isError } = useSuspenseQuery<ProceduresWithStatsResponse>({
     queryKey: ["proceduresServices"],
     queryFn: () => api.get("api/procedures/procedures/with-stats/").then(res => res.data),
     retry: false

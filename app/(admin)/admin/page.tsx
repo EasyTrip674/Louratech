@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { 
   CreditCard, 
@@ -116,7 +116,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Statistiques globales */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Organisations</CardTitle>
@@ -168,10 +168,10 @@ export default function AdminDashboardPage() {
             </p>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
 
       {/* Modules d'administration */}
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         <h2 className="text-xl font-semibold">Modules d'Administration</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {adminModules.map((module) => (
@@ -201,10 +201,10 @@ export default function AdminDashboardPage() {
             </Card>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Actions rapides */}
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         <h2 className="text-xl font-semibold">Actions Rapides</h2>
         <div className="flex flex-wrap gap-3">
           <Button variant="outline">
@@ -228,10 +228,10 @@ export default function AdminDashboardPage() {
             Nouvelle transaction
           </Button>
         </div>
-      </div>
+      </div> */}
 
       {/* Activité récente */}
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         <h2 className="text-xl font-semibold">Activité Récente</h2>
         <Card>
           <CardContent className="pt-6">
@@ -274,7 +274,7 @@ export default function AdminDashboardPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -1,5 +1,3 @@
-import { api } from '@/lib/BackendConfig/api';
-// import React, { Suspense } from 'react'
 import CreateProcedureFormModal from './create/CreateProcedureModalForm'
 import StatsServices from '@/components/Dashboards/ServicesDasboard/StatsServices/StatsServices'
 import StatsServicesSkeleton from '@/components/Dashboards/ServicesDasboard/StatsServices/StatsServicesSkeleton'
@@ -9,8 +7,6 @@ import { Suspense } from 'react';
 
 // Composant pour récupérer les données des procédures
 function ProceduresPage() {
-
-
     return (
       <div className="procedures-data" >
          <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pb-10">
@@ -41,7 +37,7 @@ function ProceduresPage() {
                 </Suspense>
 
             <div className="mt-8 text-center flex justify-center items-center">
-              {/* <CreateProcedureFormModal /> */}
+              <CreateProcedureFormModal />
             </div>
           </div>
         </div>
