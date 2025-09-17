@@ -56,9 +56,9 @@ export const doCreateOrganization = actionClient
             }
 
             // 2. Validation du code d'invitation
-            if (!VALID_INVITATION_CODES.includes(clientInput.invitationCode)) {
-                throw new Error("Code d'invitation invalide");
-            }
+            // if (!VALID_INVITATION_CODES.includes(clientInput.invitationCode)) {
+            //     throw new Error("Code d'invitation invalide");
+            // }
 
             // 3. Génération du slug unique
             const baseSlug = clientInput.organizationName
@@ -131,7 +131,7 @@ export const doCreateOrganization = actionClient
                         metadata: JSON.stringify({
                             createdBy: updatedUser.id,
                             createdAt: new Date().toISOString(),
-                            invitationCode: clientInput.invitationCode
+                            // invitationCode: clientInput.invitationCode
                         }),
                         active: true,
                         users: {

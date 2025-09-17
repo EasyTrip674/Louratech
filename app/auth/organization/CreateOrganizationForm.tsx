@@ -163,14 +163,14 @@ export default function CreationOrganisationFormulaire() {
       };
     }
     
-    if (message.includes('code d\'invitation invalide') || 
-        message.includes('invalid invitation')) {
-      return {
-        type: 'INVALID_CODE',
-        message: 'Le code d\'invitation fourni n\'est pas valide. Vérifiez votre code ou contactez votre administrateur.',
-        field: 'invitationCode'
-      };
-    }
+    // if (message.includes('code d\'invitation invalide') || 
+    //     message.includes('invalid invitation')) {
+    //   return {
+    //     type: 'INVALID_CODE',
+    //     message: 'Le code d\'invitation fourni n\'est pas valide. Vérifiez votre code ou contactez votre administrateur.',
+    //     field: 'invitationCode'
+    //   };
+    // }
     
     if (message.includes('trop de tentatives') || 
         message.includes('rate limit') || 
@@ -602,7 +602,7 @@ export default function CreationOrganisationFormulaire() {
             </div>
 
             {/* Code d'invitation */}
-            <div>
+            {/* <div>
               <div className="relative">
                 <Input
                   label="Code d'Invitation"
@@ -625,7 +625,7 @@ export default function CreationOrganisationFormulaire() {
               <p className="mt-1 text-xs text-gray-500">
                 Contactez votre administrateur si vous n&apos;avez pas de code d&apos;invitation
               </p>
-            </div>
+            </div> */}
 
             {/* Conditions d'utilisation */}
             <div>

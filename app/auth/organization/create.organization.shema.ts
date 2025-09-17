@@ -4,7 +4,7 @@ export const createOrganizationSchema = z.object({
     // Détails de l'organisation
     organizationName: z.string().min(2, { message: "Le nom de l'organisation doit contenir au moins 2 caractères" }),
     organizationDescription: z.string().optional(),
-    invitationCode: z.string().min(2, { message: "Le code d'invitation doit contenir au moins 2 caractères" }),
+    // invitationCode: z.string().min(2, { message: "Le code d'invitation doit contenir au moins 2 caractères" }),
     // Détails de l'administrateur
     firstName: z.string().min(2, { message: "Le prénom doit contenir au moins 2 caractères" }),
     lastName: z.string().min(2, { message: "Le nom de famille doit contenir au moins 2 caractères" }),

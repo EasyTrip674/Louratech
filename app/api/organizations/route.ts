@@ -132,12 +132,12 @@ export async function POST(request: NextRequest) {
         }
 
         // 2. Validation du code d'invitation
-        if (!VALID_INVITATION_CODES.includes(validatedData.invitationCode)) {
-            return NextResponse.json(
-                { error: "Code d'invitation invalide" },
-                { status: 400 }
-            );
-        }
+        // if (!VALID_INVITATION_CODES.includes(validatedData.invitationCode)) {
+        //     return NextResponse.json(
+        //         { error: "Code d'invitation invalide" },
+        //         { status: 400 }
+        //     );
+        // }
 
         // 3. Génération du slug unique
         const baseSlug = validatedData.organizationName
@@ -215,7 +215,7 @@ export async function POST(request: NextRequest) {
                     metadata: JSON.stringify({
                         createdBy: updatedUser.id,
                         createdAt: new Date().toISOString(),
-                        invitationCode: validatedData.invitationCode
+                        // invitationCode: validatedData.invitationCode
                     }),
                     active: true,
                     users: {
