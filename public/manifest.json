@@ -2,7 +2,7 @@
     "name": "Loura Tech",
     "short_name": "Loura",
     "description": "Gestion d'entreprise",
-    "start_url": "/",
+    "start_url": "/services",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#000000",
