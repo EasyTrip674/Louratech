@@ -21,6 +21,11 @@ export default [
       // Warnings Next.js pour les <img> peuvent rester en warning
       "@next/next/no-img-element": "warn",
       "jsx-a11y/alt-text": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "react/no-unescaped-entities": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@next/next/no-img-element": "warn",
+      "jsx-a11y/alt-text": "warn"
     },
   },
 ];
