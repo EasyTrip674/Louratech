@@ -6,6 +6,7 @@ import GetStarted from './GetStarted';
 import GradientBackground from './GradientBackground';
 import { DollarSign, ArrowRight, TrendingUp, ShieldCheck, Smartphone } from 'lucide-react';
 import YouTubeEmbed from '../ui/video/YouTubeEmbed';
+import InstallPWAButton from './InstallPwaBtn';
 
 // Animation variants (keeping the existing ones)
 const fadeInUp = {
@@ -187,12 +188,15 @@ const Hero = () => {
         </div>
       </motion.a>
       <GradientBackground />
+      <InstallPWAButton />
+
     </motion.div>
   ), [typedText, isTypingComplete]);
 
   return (
     <section id="home" className="flex flex-col relative py-16 md:py-24 min-h-screen overflow-hidden">
       {renderHeroContent()}
+
       
       <motion.div 
         // variants={fadeInScale}
