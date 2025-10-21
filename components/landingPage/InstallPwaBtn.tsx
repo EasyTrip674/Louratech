@@ -45,9 +45,9 @@ export default function InstallPWAButton() {
   };
 
   // Simple design: Only show if possible to install & not already installed
-  // if (isInstalled || !isInstallable) {
-  //   return null;
-  // }
+  if (isInstalled || !isInstallable) {
+    return null;
+  }
 
   return (
     <div className="w-full flex justify-center mt-6">
