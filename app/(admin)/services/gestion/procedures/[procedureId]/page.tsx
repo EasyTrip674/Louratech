@@ -24,7 +24,6 @@ import EditProcedureFormModal from './edit/CreateEditModalForm';
 import DeleteProcedureFormModal from './delete/DeleteProcedureFormModal';
 // import AddClientToProcedureModal from '@/components/procedures/AddClientToProcedureModal';
 
-// Type pour les paramètres de la page
 type PageProps = {
   params: Promise<{ procedureId: string }>;
 };
