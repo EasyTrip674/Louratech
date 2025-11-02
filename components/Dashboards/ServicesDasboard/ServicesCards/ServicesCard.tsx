@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { ProcedureCard } from "@/components/procedures/ProcedureCard";
 import { gProcedureWithStat } from "@/db/queries/procedures.query";
 import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
+import EmptyState from "@/components/ui/empty-state/EmptyState";
 
 export default function ServicesCard(
   { procedureData }: { procedureData: gProcedureWithStat }
@@ -124,15 +125,11 @@ export default function ServicesCard(
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="rounded-full bg-gray-100 p-4 dark:bg-gray-800">
-            <Search className="size-8 text-gray-400" />
-          </div>
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucun service trouvé</h3>
-          <p className="mt-1 text-gray-500 dark:text-gray-400">
-            Essayez de modifier vos critères de recherche ou de filtrage.
-          </p>
-        </div>
+        <EmptyState
+          icon={Search}
+          title="Aucun service trouvé"
+          description="Essayez de modifier vos critères de recherche ou de filtrage."
+        />
       )}
       
       {/* Pagination */}

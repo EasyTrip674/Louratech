@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
+import {
   Search,
   FileText,
   Filter,
@@ -21,6 +21,7 @@ import CreateRevenuModal from "../../../../app/(admin)/services/gestion/finances
 import { authClient } from "@/lib/auth-client";
 import Input from "@/components/form/input/InputField";
 import Select from "@/components/form/Select";
+import EmptyState from "@/components/ui/empty-state/EmptyState";
 
 // Page principale des finances
 export default function FilteredTransactions({
@@ -599,32 +600,29 @@ export default function FilteredTransactions({
       
       {/* Message si aucune transaction */}
       {filteredTransactions.length === 0 && (
-        <div className="p-8 text-center">
-          <div className="mb-4 flex justify-center">
-            <FileText className="w-12 h-12 text-gray-400" />
-          </div>
-          <h3 className="text-lg font-medium text-gray-800 dark:text-white/90 mb-2">
-            Aucune transaction trouvée
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-            {searchTerm || hasActiveFilters
+        <EmptyState
+          icon={FileText}
+          title="Aucune transaction trouvée"
+          description={
+            searchTerm || hasActiveFilters
               ? "Aucune transaction ne correspond à vos critères de recherche. Essayez de modifier vos filtres."
-              : selectedTab === "expenses" 
+              : selectedTab === "expenses"
                 ? "Aucune dépense enregistrée. Créez une nouvelle dépense pour commencer."
                 : selectedTab === "revenues"
                   ? "Aucun revenu enregistré. Créez un nouveau revenu pour commencer."
                   : "Aucune transaction n'a été enregistrée. Commencez par créer un revenu ou une dépense."
-            }
-          </p>
-          {(searchTerm || hasActiveFilters) && (
-            <button
-              onClick={resetFilters}
-              className="mt-4 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30"
-            >
-              Réinitialiser les filtres
-            </button>
-          )}
-        </div>
+          }
+          action={
+            (searchTerm || hasActiveFilters) ? (
+              <button
+                onClick={resetFilters}
+                className="mt-4 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30"
+              >
+                Réinitialiser les filtres
+              </button>
+            ) : undefined
+          }
+        />
       )}
       
       {/* Information sur le nombre de résultats */}

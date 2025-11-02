@@ -2,8 +2,8 @@
 import { useCallback, useEffect, useState } from 'react';
 // import Image from 'next/image';
 import { motion } from 'framer-motion';
-import GetStarted from './GetStarted';
-import GradientBackground from './GradientBackground';
+// import GetStarted from './GetStarted';
+// import GradientBackground from './GradientBackground';
 import { DollarSign, ArrowRight, TrendingUp, ShieldCheck, Smartphone } from 'lucide-react';
 import YouTubeEmbed from '../ui/video/YouTubeEmbed';
 import InstallPWAButton from './InstallPwaBtn';
@@ -179,7 +179,7 @@ const Hero = () => {
         // variants={fadeInUp}
         className="mt-8 sm:mt-10 flex flex-col md:flex-row items-center gap-4 max-md:w-full p-4"
       >
-        <GetStarted />
+        {/* <GetStarted /> */}
         <div
           className="group flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
         >
@@ -187,7 +187,7 @@ const Hero = () => {
           <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
         </div>
       </motion.a>
-      <GradientBackground />
+      {/* <GradientBackground /> */}
       <InstallPWAButton />
 
     </motion.div>

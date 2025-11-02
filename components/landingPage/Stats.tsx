@@ -1,6 +1,6 @@
 import { stats } from "@/utils/constants";
 import styles from "@/utils/style";
-import GradientBackground from "./GradientBackground";
+// import GradientBackground from "./GradientBackground";
 
 const Stats = () => (
   <section className={`${styles.flexCenter} flex-col sm:mb-20 mb-6 text-center relative overflow-hidden`}>
@@ -37,7 +37,7 @@ const Stats = () => (
       <p className="text-gray-600 dark:text-gray-300 text-lg sm:text-xl md:text-2xl font-medium">
         Leader de la digitalisation des entreprises en Afrique
       </p>
-      <GradientBackground />
+      {/* <GradientBackground /> */}
     </div>
   </section>
 );

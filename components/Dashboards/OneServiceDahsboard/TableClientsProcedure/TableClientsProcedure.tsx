@@ -9,13 +9,13 @@ import {
   TableRow
 } from "@/components/ui/table";
 
-import { 
-  Eye, 
-  Clock, 
-  CheckCircle, 
-  User, 
-  Calendar, 
-  AlertCircle, 
+import {
+  Eye,
+  Clock,
+  CheckCircle,
+  User,
+  Calendar,
+  AlertCircle,
   Search,
   ChevronRight,
   Filter,
@@ -27,6 +27,7 @@ import Link from "next/link";
 import { calculateProgress, formatDate } from "@/lib/utils";
 import { getStatusIcon, getStepStatusBadge } from "@/lib/StatusBadge";
 import DeleteClientProcedureFormModal from "./delete/DeleteClientProcedureFormModal";
+import EmptyState from "@/components/ui/empty-state/EmptyState";
 
 type TableClientsProcedureProps = {
   procedureDetails: procedureDetailsDb;
@@ -436,38 +437,28 @@ export default function TableClientsProcedure({
       
       {/* Message vide */}
       {filteredData.length === 0 && clientProcedures.length > 0 && (
-        <div className="p-8 text-center">
-          <div className="mb-4 flex justify-center">
-            <Search className="w-12 h-12 text-gray-400" />
-          </div>
-          <h3 className="text-lg font-medium text-gray-800 dark:text-white/90 mb-2">
-            Aucun résultat trouvé
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-4">
-            Aucun client ne correspond à vos critères de recherche.
-          </p>
-          <button
-            onClick={clearFilters}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg hover:bg-brand-100 dark:bg-brand-900/30 dark:text-brand-400 dark:hover:bg-brand-900/50"
-          >
-            <X className="w-4 h-4 mr-2" />
-            Effacer les filtres
-          </button>
-        </div>
+        <EmptyState
+          icon={Search}
+          title="Aucun résultat trouvé"
+          description="Aucun client ne correspond à vos critères de recherche."
+          action={
+            <button
+              onClick={clearFilters}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg hover:bg-brand-100 dark:bg-brand-900/30 dark:text-brand-400 dark:hover:bg-brand-900/50"
+            >
+              <X className="w-4 h-4 mr-2" />
+              Effacer les filtres
+            </button>
+          }
+        />
       )}
 
       {clientProcedures.length === 0 && (
-        <div className="p-8 text-center">
-          <div className="mb-4 flex justify-center">
-            <AlertCircle className="w-12 h-12 text-gray-400" />
-          </div>
-          <h3 className="text-lg font-medium text-gray-800 dark:text-white/90 mb-2">
-            Aucun client enregistré
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-            Cette procédure n&apos;a pas encore de clients associés. Veuillez ajouter des clients pour commencer.
-          </p>
-        </div>
+        <EmptyState
+          icon={AlertCircle}
+          title="Aucun client enregistré"
+          description="Cette procédure n'a pas encore de clients associés. Veuillez ajouter des clients pour commencer."
+        />
       )}
     </div>
   );
