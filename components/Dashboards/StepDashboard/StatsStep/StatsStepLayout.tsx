@@ -1,5 +1,6 @@
 import EditStepFormModal from "@/app/(admin)/services/gestion/procedures/[procedureId]/steps/step/edit/EditStepFormModal";
 import Button from "@/components/ui/button/Button";
+import { StatCard } from "@/components/ui/stat-card";
 import { getStepProcedureDetails } from "@/db/queries/procedures.query";
 import { auth } from "@/lib/auth";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -73,16 +74,12 @@ export default async function StatsStepLayout(
 
       {/* Stats overview cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800/40 backdrop-blur-sm rounded-xl p-6 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Clients</p>
-              <p className="text-3xl font-bold mt-2 dark:text-white">{totalClients}</p>
-            </div>
-            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-              <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            </div>
-          </div>
+        <StatCard
+          icon={Users}
+          color="blue"
+          label="Clients"
+          value={totalClients}
+        >
           <div className="mt-4 flex justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Répartition :</span>
             <div className="flex gap-2">
@@ -90,55 +87,47 @@ export default async function StatsStepLayout(
               <span className="text-blue-600 dark:text-blue-400 font-medium">{inProgressCount} en cours</span>
             </div>
           </div>
-        </div>
+        </StatCard>
 
-        <div className="bg-white dark:bg-gray-800/40 backdrop-blur-sm rounded-xl p-6 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Revenu total</p>
-              <p className="text-3xl font-bold mt-2 dark:text-white">{formatCurrency(totalRevenue,session?.userDetails?.organization?.comptaSettings?.currency)}</p>
-            </div>
-            <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-              <CreditCard className="w-6 h-6 text-green-600 dark:text-green-400" />
-            </div>
-          </div>
+        <StatCard
+          icon={CreditCard}
+          color="green"
+          label="Revenu total"
+          value={formatCurrency(totalRevenue, session?.userDetails?.organization?.comptaSettings?.currency)}
+        >
           <div className="mt-4 flex justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Prix moyen :</span>
-            <span className="text-green-600 dark:text-green-400 font-medium">{formatCurrency(averagePrice,session?.userDetails?.organization?.comptaSettings?.currency)}</span>
+            <span className="text-green-600 dark:text-green-400 font-medium">
+              {formatCurrency(averagePrice, session?.userDetails?.organization?.comptaSettings?.currency)}
+            </span>
           </div>
-        </div>
+        </StatCard>
 
-        <div className="bg-white dark:bg-gray-800/40 backdrop-blur-sm rounded-xl p-6 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Prix de base</p>
-              <p className="text-3xl font-bold mt-2 dark:text-white">{step.price ? formatCurrency(step.price,session?.userDetails?.organization?.comptaSettings?.currency) : 'Non défini'}</p>
-            </div>
-            <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-              <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-            </div>
-          </div>
+        <StatCard
+          icon={FileText}
+          color="purple"
+          label="Prix de base"
+          value={step.price ? formatCurrency(step.price, session?.userDetails?.organization?.comptaSettings?.currency) : 'Non défini'}
+        >
           <div className="mt-4 flex justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Position :</span>
-            <span className="text-purple-600 dark:text-purple-400 font-medium">Étape {step.order} {step.required ? ' (obligatoire)' : ''}</span>
+            <span className="text-purple-600 dark:text-purple-400 font-medium">
+              Étape {step.order}{step.required ? ' (obligatoire)' : ''}
+            </span>
           </div>
-        </div>
+        </StatCard>
 
-        <div className="bg-white dark:bg-gray-800/40 backdrop-blur-sm rounded-xl p-6 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Délai estimé</p>
-              <p className="text-3xl font-bold mt-2 dark:text-white">{step.estimatedDuration || '–'} <span className="text-base font-normal">{step.estimatedDuration ? 'jours' : ''}</span></p>
-            </div>
-            <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
-              <Clock className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-            </div>
-          </div>
+        <StatCard
+          icon={Clock}
+          color="amber"
+          label="Délai estimé"
+          value={`${step.estimatedDuration || '–'}${step.estimatedDuration ? ' jours' : ''}`}
+        >
           <div className="mt-4 flex justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Mise à jour :</span>
             <span className="text-amber-600 dark:text-amber-400 font-medium">{formatDate(step.updatedAt)}</span>
           </div>
-        </div>
+        </StatCard>
       </div>
 
       {/* Detailed stats section */}
