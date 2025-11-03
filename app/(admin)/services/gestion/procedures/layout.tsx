@@ -23,7 +23,7 @@ async function ProceduresAuthGuard({ children }: { children: React.ReactNode }) 
     }
 
     // Vérifier les autorisations directement depuis la session
-    if (!user?.userDetails?.authorize?.canCreateProcedure) {
+    if (!user?.userDetails?.authorize?.canReadProcedure) {
       return <NotAuthorized />;
     }
 

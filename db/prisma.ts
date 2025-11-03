@@ -1,7 +1,26 @@
-// init prisma client
-import { PrismaClient } from '@prisma/client'
+// PrismaClient singleton to avoid connection pool exhaustion
+// See: https://www.prisma.io/docs/guides/performance-and-optimization/connection-management
 
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prismaClientSingleton = () => {
+  return new PrismaClient({
+    log:
+      process.env.NODE_ENV === "development"
+        ? ["query", "error", "warn"]
+        : ["error"],
+  });
+};
+
+declare global {
+  // eslint-disable-next-line no-var
+  var prismaGlobal: undefined | ReturnType<typeof prismaClientSingleton>;
+}
+
+const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+
+if (process.env.NODE_ENV !== "production") {
+  globalThis.prismaGlobal = prisma;
+}
 
 export default prisma;

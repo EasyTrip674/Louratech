@@ -23,7 +23,7 @@ async function ClientsAuthGuard({ children }: { children: React.ReactNode }) {
     }
 
     // Vérifier les autorisations directement depuis la session
-    if (!user?.userDetails?.authorize?.canCreateClient) {
+    if (!user?.userDetails?.authorize?.canReadClient) {
       return <NotAuthorized />;
     }
 

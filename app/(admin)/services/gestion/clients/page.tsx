@@ -19,9 +19,12 @@ async function ClientsDataProvider({ children }: { children: React.ReactNode }) 
   try {
     // Récupérer tous les clients via le service
     const clients = await clientService.getAllClients();
-    
+
+    // S'assurer que clients a une structure valide
+    const safeClients = clients || { data: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 0 } };
+
     return (
-      <div className="clients-data" data-clients={JSON.stringify(clients)}>
+      <div className="clients-data" data-clients={JSON.stringify(safeClients)}>
         {children}
       </div>
     );

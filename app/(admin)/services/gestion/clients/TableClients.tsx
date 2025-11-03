@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Eye, Search } from 'lucide-react';
-import { clientsTableOrganizationDB } from '@/lib/services/client.service';
 import Button from '@/components/ui/button/Button';
 import CreateClientFormModal from './create/CreateClientFormModal';
 import EditClientFormModal from './edit/EditClientFormModal';
@@ -12,7 +11,20 @@ import { Table, TableHeader, TableBody, TableRow, TableCell } from '@/components
 import { useRouter } from 'next/navigation';
 
 export default function TableClients() {
-  const [clients, setClients] = useState<clientsTableOrganizationDB>([]);
+  // Type pour le tableau de clients (données extraites de la réponse paginée)
+  type Client = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string | null;
+    phone: string | null;
+    passport: string | null;
+    address: string | null;
+    birthDate: Date | null;
+    createdAt: Date;
+  };
+
+  const [clients, setClients] = useState<Client[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"name" | "email" | "createdAt">("name");
@@ -32,19 +44,25 @@ export default function TableClients() {
       const clientsData = clientsDataElement.getAttribute('data-clients');
       if (clientsData) {
         try {
-          const parsedClients = JSON.parse(clientsData);
-          setClients(parsedClients);
+          const parsedData = JSON.parse(clientsData);
+          // Extraire le tableau 'data' de l'objet paginé
+          const clientsArray = parsedData?.data || [];
+          setClients(Array.isArray(clientsArray) ? clientsArray : []);
         } catch (error) {
           console.error('Erreur lors du parsing des données clients:', error);
+          setClients([]);
         }
       }
+    } else {
+      // Si l'élément n'existe pas, initialiser avec un tableau vide
+      setClients([]);
     }
     setIsLoading(false);
   }, []);
 
   // Mise à jour du useMemo pour appliquer tous les filtres
   const filteredAndSortedClients = useMemo(() => {
-    if (!clients || clients.length === 0) return [];
+    if (!Array.isArray(clients) || clients.length === 0) return [];
     let filtered = [...clients];
     
     // Appliquer le filtre de recherche

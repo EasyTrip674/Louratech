@@ -180,14 +180,14 @@ enum Role {
 // Modèle utilisateur central - base pour tous les types d'utilisateurs
 model User {
   id            String        @id @default(cuid())
-  email         String        @unique 
+  email         String        @unique
   emailVerified       Boolean       @default(false)
 
   image         String?
   firstName     String?
   lastName      String?
 
-  name         String      @default("") 
+  name         String      @default("")
   password      String?
   role          Role          @default(USER)
   active        Boolean       @default(true)
@@ -199,7 +199,7 @@ model User {
   coupons Coupon[]
 
   admin         Admin?
-  
+
   createdTransactions Transaction[] @relation("CreatedBy")
   approvedTransactions Transaction[] @relation("ApprovedBy")
   createdExpenses Expense[] @relation("ExpenseCreatedBy")
@@ -216,6 +216,8 @@ model User {
 
   account account[]
 
+  @@index([organizationId, role])
+  @@index([organizationId, active])
 }
 
 // Profil client étendu avec informations personnelles détaillées
@@ -226,8 +228,8 @@ model Client {
   address     String?
   birthDate   DateTime?
 
- 
-  reference String? 
+
+  reference String?
 
   email         String?
   image         String?
@@ -246,9 +248,13 @@ model Client {
 
   organization  organization @relation(fields: [organizationId], references: [id])
   organizationId String
-  
+
   invoices    Invoice[]  // Factures associées à ce client
   clientProcedures ClientProcedure[] // Procédures suivies par ce client
+
+  @@index([organizationId])
+  @@index([email])
+  @@index([organizationId, lastName])
 }
 
 // Profil administrateur étendu avec coordonnées professionnelles
@@ -264,6 +270,9 @@ model Admin {
 
   organization  organization @relation(fields: [organizationId], references: [id])
   organizationId String
+
+  @@index([organizationId])
+  @@index([userId])
 }
 
 // Étape individuelle d'une procédure avec son prix spécifique
@@ -275,15 +284,18 @@ model StepProcedure {
   order       Int      // Ordre de l'étape dans la procédure
   estimatedDuration Int? // Durée estimée en jours
   required    Boolean  @default(true) // Si l'étape est obligatoire ou optionnelle
-  
+
   procedure   Procedure @relation(fields: [procedureId], references: [id])
   procedureId String
-  
+
   clientSteps ClientStep[] // Instances de cette étape pour des clients spécifiques
   transactions Transaction[] @relation("StepTransactions")
-  
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([procedureId])
+  @@index([procedureId, order])
 }
 
 // Statut d'avancement d'une procédure client
@@ -309,85 +321,103 @@ model Procedure {
   name        String
   description String
   price       Float?
-  
+
   estimatedDuration Int?       // Durée estimée totale en jours
   category    String?         // Catégorie de procédure
   isActive    Boolean         @default(true) // Si la procédure est disponible
-  
+
   steps       StepProcedure[]
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
   organization    organization? @relation(fields: [organizationId], references: [id])
   organizationId  String?
-  
+
   invoiceItems    InvoiceItem[]  // Lignes de facture liées à cette procédure
   clientProcedures ClientProcedure[] // Instances de cette procédure pour des clients
   transactions Transaction[] @relation("ProcedureTransactions")
+
+  @@index([organizationId])
+  @@index([organizationId, isActive])
+  @@index([isActive])
 }
 
 // Instance d'une procédure suivie par un client
 model ClientProcedure {
   id              String          @id @default(cuid())
-  
+
   clientId        String          // Client concerné
   client          Client          @relation(fields: [clientId], references: [id])
-  
+
   procedureId     String          // Procédure suivie
   procedure       Procedure       @relation(fields: [procedureId], references: [id])
-  
+
   status          ProcedureStatus @default(IN_PROGRESS)
   startDate       DateTime        @default(now())
   completionDate  DateTime?       // Date réelle de fin
   dueDate         DateTime?       // Date prévue de fin
   reference       String?         // Référence/numéro de dossier
   notes           String?         // Notes spécifiques à ce dossier
-  
+
   assignedToId    String?         // Employé responsable principal
   assignedTo      User?           @relation("AssignedTo", fields: [assignedToId], references: [id])
-  
+
   managerId       String?         // Superviseur/manager
   manager         User?           @relation("ManagedBy", fields: [managerId], references: [id])
-  
+
   organization    organization    @relation(fields: [organizationId], references: [id])
   organizationId  String
-  
+
   steps           ClientStep[]    // Étapes spécifiques à cette procédure client
   documents       ClientDocument[] // Documents associés à cette procédure
   transactions    Transaction[] @relation("ClientProcedureTransactions")
-  
+
   invoiceId       String?         // Facture liée si la procédure est facturée
   invoice         Invoice?        @relation(fields: [invoiceId], references: [id])
-  
+
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
+
+  @@index([organizationId, status])
+  @@index([organizationId, startDate])
+  @@index([procedureId])
+  @@index([clientId])
+  @@index([assignedToId])
+  @@index([managerId])
+  @@index([status])
 }
 
 // Instance d'une étape spécifique pour une procédure client
 model ClientStep {
   id              String      @id @default(cuid())
-  
+
   clientProcedureId String    // Procédure client à laquelle appartient cette étape
   clientProcedure ClientProcedure @relation(fields: [clientProcedureId], references: [id])
-  
+
   stepId          String      // Étape de référence
   step            StepProcedure @relation(fields: [stepId], references: [id])
-  
+
   status          StepStatus  @default(IN_PROGRESS)
   startDate       DateTime?   // Date de début réel
   completionDate  DateTime?   // Date de fin réel
-  
+
   processedById   String?     // Employé qui a traité cette étape
   processedBy     User?       @relation("ProcessedBy", fields: [processedById], references: [id])
-  
+
   notes           String?     // Notes spécifiques à cette étape
   price           Float?      // Prix final appliqué (peut différer du prix par défaut)
-  
+
   documents       ClientDocument[] // Documents spécifiques à cette étape
   transactions    Transaction[] @relation("ClientStepTransactions")
-  
+
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+
+  @@index([clientProcedureId])
+  @@index([stepId])
+  @@index([status])
+  @@index([processedById])
+  @@index([clientProcedureId, status])
 }
 
 // Document associé à une procédure ou une étape
@@ -446,24 +476,24 @@ model Transaction {
   reference       String?           // Référence externe (n° chèque, etc.)
   paymentMethod   PaymentMethod    @default(CASH)   // Méthode de paiement
   attachments     String?           // URLs séparées par des virgules pour pièces jointes
-  
+
   createdById     String            // Utilisateur ayant créé la transaction
   createdBy       User              @relation("CreatedBy", fields: [createdById], references: [id])
-  
+
   approvedById    String?           // Utilisateur ayant approuvé la transaction
   approvedBy      User?             @relation("ApprovedBy", fields: [approvedById], references: [id])
-  
+
   approvedAt      DateTime?         // Date d'approbation
-  
+
   organization    organization      @relation(fields: [organizationId], references: [id])
   organizationId  String
-  
+
   categoryId      String?           // Catégorie comptable
   category        Category?         @relation(fields: [categoryId], references: [id])
 
   expense         Expense?          // Détails si c'est une dépense
   revenue         Revenue?          // Détails si c'est un revenu
-  
+
 
   clientStepId    String?           // Lien vers une étape client (si applicable)
   clientStep      ClientStep?       @relation("ClientStepTransactions", fields: [clientStepId], references: [id])
@@ -474,17 +504,25 @@ model Transaction {
   userId          String?           // Utilisateur associé (si applicable)
   user            User?             @relation("UserTransactions", fields: [userId], references: [id])
 
-  
+
   procedureId     String?           // Procédure associée (si applicable)
   procedure       Procedure?        @relation("ProcedureTransactions", fields: [procedureId], references: [id])
 
   stepId          String?           // Étape associée (si applicable)
   step            StepProcedure?    @relation("StepTransactions", fields: [stepId], references: [id])
 
-  
+
 
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+
+  @@index([organizationId, type, status])
+  @@index([organizationId, date])
+  @@index([organizationId, createdAt])
+  @@index([clientProcedureId])
+  @@index([clientStepId])
+  @@index([categoryId])
+  @@index([createdById])
 }
 
 // Catégories comptables pour la classification des transactions
@@ -570,26 +608,31 @@ model Invoice {
   discount        Float?        // Remise appliquée
   notes           String?       // Notes ou conditions
   status          InvoiceStatus @default(DRAFT)  // Statut actuel
-  
+
   issuedDate      DateTime      // Date d'émission
   dueDate         DateTime      // Date d'échéance
   paidDate        DateTime?     // Date de paiement complet
-  
+
   clientId        String        // Client facturé
   client          Client        @relation(fields: [clientId], references: [id])
-  
+
   createdById     String        // Utilisateur ayant créé la facture
   createdBy       User          @relation("InvoiceCreatedBy", fields: [createdById], references: [id])
-  
+
   organization    organization  @relation(fields: [organizationId], references: [id])
   organizationId  String
-  
+
   items           InvoiceItem[] // Détail des lignes de facturation
   revenue         Revenue?      // Revenu associé quand payée
   clientProcedures ClientProcedure[] // Procédures facturées
-  
+
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+
+  @@index([organizationId, status])
+  @@index([clientId])
+  @@index([invoiceNumber])
+  @@index([organizationId, issuedDate])
 }
 
 // Ligne individuelle d'une facture
@@ -643,6 +686,10 @@ model session {
   updatedAt DateTime @updatedAt
 
   user      User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([activeorganizationId])
+  @@index([token])
 }
 
 model account{

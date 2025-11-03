@@ -273,25 +273,168 @@ export class TransactionService extends BaseService {
   }
 
   /**
-   * Récupère toutes les transactions de l'organisation
+   * Récupère toutes les transactions de l'organisation avec pagination
+   * @param page - Numéro de page (commence à 1)
+   * @param limit - Nombre d'éléments par page
+   * @param filters - Filtres optionnels (type, status, date range)
    */
-  async getAllTransactions() {
+  async getAllTransactions(
+    page: number = 1,
+    limit: number = 50,
+    filters?: {
+      type?: string;
+      status?: string;
+      startDate?: Date;
+      endDate?: Date;
+    }
+  ) {
     try {
       const organizationId = await this.getOrganizationId();
-      
+      const skip = (page - 1) * limit;
+
+      // Build where clause with filters
+      const where: any = { organizationId };
+      if (filters?.type) {
+        where.type = filters.type;
+      }
+      if (filters?.status) {
+        where.status = filters.status;
+      }
+      if (filters?.startDate || filters?.endDate) {
+        where.date = {};
+        if (filters.startDate) {
+          where.date.gte = filters.startDate;
+        }
+        if (filters.endDate) {
+          where.date.lte = filters.endDate;
+        }
+      }
+
+      // OPTIMIZATION: Use select instead of include to fetch only necessary fields
+      const [transactions, total] = await Promise.all([
+        this.prisma.transaction.findMany({
+          where,
+          select: {
+            id: true,
+            amount: true,
+            description: true,
+            type: true,
+            status: true,
+            date: true,
+            reference: true,
+            paymentMethod: true,
+            createdAt: true,
+            updatedAt: true,
+            createdBy: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+            approvedBy: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+            category: {
+              select: {
+                id: true,
+                name: true,
+                type: true,
+              },
+            },
+            expense: {
+              select: {
+                id: true,
+                title: true,
+                vendor: true,
+                invoiceNumber: true,
+              },
+            },
+            revenue: {
+              select: {
+                id: true,
+                source: true,
+                referenceNumber: true,
+              },
+            },
+            clientProcedure: {
+              select: {
+                id: true,
+                reference: true,
+                client: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                  },
+                },
+                procedure: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          skip,
+          take: limit,
+        }),
+        this.prisma.transaction.count({ where }),
+      ]);
+
+      return {
+        transactions,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    } catch (error) {
+      this.handleDatabaseError(error, "getAllTransactions");
+    }
+  }
+
+  /**
+   * Récupère toutes les transactions sans pagination (pour exports, etc.)
+   * ⚠️ À utiliser avec précaution - peut retourner beaucoup de données
+   */
+  async getAllTransactionsUnpaginated() {
+    try {
+      const organizationId = await this.getOrganizationId();
+
       return await this.prisma.transaction.findMany({
         where: { organizationId },
-        include: {
-          createdBy: true,
-          organization: true,
-          approvedBy: true,
-          category: true,
-          expense: true,
-          revenue: true,
-          clientProcedure: {
-            include: {
-              client: true,
-              procedure: true,
+        select: {
+          id: true,
+          amount: true,
+          description: true,
+          type: true,
+          status: true,
+          date: true,
+          reference: true,
+          paymentMethod: true,
+          createdAt: true,
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          category: {
+            select: {
+              id: true,
+              name: true,
             },
           },
         },
@@ -300,7 +443,7 @@ export class TransactionService extends BaseService {
         },
       });
     } catch (error) {
-      this.handleDatabaseError(error, "getAllTransactions");
+      this.handleDatabaseError(error, "getAllTransactionsUnpaginated");
     }
   }
 

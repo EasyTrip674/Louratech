@@ -64,6 +64,72 @@ export class EmployeeService extends BaseService {
         }
       });
 
+      // Créer les autorisations par défaut pour le rôle ADMIN
+      await this.prisma.authorization.create({
+        data: {
+          userId: user.id,
+          // Permissions générales
+          canChangeUserAuthorization: true,
+          canChangeUserPassword: true,
+          // Permissions de création
+          canCreateOrganization: true,
+          canCreateStep: true,
+          canCreateClient: true,
+          canCreateProcedure: true,
+          canCreateTransaction: true,
+          canCreateAdmin: true,
+          canCreateInvoice: true,
+          canCreateExpense: true,
+          canCreateRevenue: true,
+          canCreateComptaSettings: true,
+          canCreateClientProcedure: true,
+          canCreateClientStep: true,
+          canCreateClientDocument: true,
+          // Permissions de lecture
+          canReadOrganization: true,
+          canReadStep: true,
+          canReadClient: true,
+          canReadProcedure: true,
+          canReadTransaction: true,
+          canReadInvoice: true,
+          canReadExpense: true,
+          canReadRevenue: true,
+          canReadComptaSettings: true,
+          canReadAdmin: true,
+          canReadClientProcedure: true,
+          canReadClientStep: true,
+          canReadClientDocument: true,
+          // Permissions de modification
+          canEditOrganization: true,
+          canEditStep: true,
+          canEditClient: true,
+          canEditProcedure: true,
+          canEditTransaction: true,
+          canEditInvoice: true,
+          canEditExpense: true,
+          canEditRevenue: true,
+          canEditComptaSettings: true,
+          canEditAdmin: true,
+          canEditClientProcedure: true,
+          canEditClientStep: true,
+          canEditClientDocument: true,
+          // Permissions de suppression
+          canDeleteOrganization: true,
+          canDeleteStep: true,
+          canDeleteClient: true,
+          canDeleteProcedure: true,
+          canDeleteTransaction: true,
+          canDeleteInvoice: true,
+          canDeleteExpense: true,
+          canDeleteRevenue: true,
+          canDeleteComptaSettings: true,
+          canDeleteAdmin: true,
+          canDeleteClientProcedure: true,
+          canDeleteClientStep: true,
+          canDeleteClientDocument: true,
+        }
+      });
+
       // Créer l'employé
       const employee = await this.prisma.admin.create({
         data: {
@@ -73,7 +139,11 @@ export class EmployeeService extends BaseService {
           userId: user.id,
         },
         include: {
-          user: true,
+          user: {
+            include: {
+              authorize: true
+            }
+          },
           organization: true
         }
       });

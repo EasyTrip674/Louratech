@@ -77,36 +77,6 @@ export type PartialAuthorizationData = Partial<AuthorizationData>;
 
 export class AuthorizationService extends BaseService {
   /**
-   * Récupère toutes les clés de permissions
-   */
-  private getAllPermissionKeys(): Array<keyof AuthorizationData> {
-    return [
-      // Général
-      "canChangeUserAuthorization", "canChangeUserPassword",
-      // Create
-      "canCreateOrganization", "canCreateStep", "canCreateClient", "canCreateProcedure",
-      "canCreateTransaction", "canCreateAdmin", "canCreateInvoice", "canCreateExpense",
-      "canCreateRevenue", "canCreateComptaSettings", "canCreateClientProcedure",
-      "canCreateClientStep", "canCreateClientDocument",
-      // Read
-      "canReadOrganization", "canReadStep", "canReadClient", "canReadProcedure",
-      "canReadTransaction", "canReadInvoice", "canReadExpense", "canReadRevenue",
-      "canReadComptaSettings", "canReadAdmin", "canReadClientProcedure",
-      "canReadClientStep", "canReadClientDocument",
-      // Edit
-      "canEditOrganization", "canEditStep", "canEditClient", "canEditProcedure",
-      "canEditTransaction", "canEditInvoice", "canEditExpense", "canEditRevenue",
-      "canEditComptaSettings", "canEditAdmin", "canEditClientProcedure",
-      "canEditClientStep", "canEditClientDocument",
-      // Delete
-      "canDeleteOrganization", "canDeleteStep", "canDeleteClient", "canDeleteProcedure",
-      "canDeleteTransaction", "canDeleteInvoice", "canDeleteExpense", "canDeleteRevenue",
-      "canDeleteComptaSettings", "canDeleteAdmin", "canDeleteClientProcedure",
-      "canDeleteClientStep", "canDeleteClientDocument",
-    ];
-  }
-
-  /**
    * Met à jour les autorisations d'un utilisateur
    */
   async updateUserAuthorization(userId: string, authorizationId: string, data: PartialAuthorizationData) {
@@ -114,7 +84,7 @@ export class AuthorizationService extends BaseService {
       const organizationId = await this.getOrganizationId();
       
       // Vérifier les autorisations
-      const canManageAuth = await this.checkPermission("canManageAuthorization");
+      const canManageAuth = await this.checkPermission("canChangeUserAuthorization");
       if (!canManageAuth) {
         throw new Error("Vous n'êtes pas autorisé à modifier les autorisations");
       }
@@ -218,64 +188,170 @@ export class AuthorizationService extends BaseService {
    * Récupère les permissions par défaut selon le rôle
    */
   private getDefaultPermissionsByRole(role: string): AuthorizationData {
-    const allKeys = this.getAllPermissionKeys();
-    const basePermissions: Record<string, boolean> = {};
-
     // Initialiser toutes les permissions à false
-    allKeys.forEach(key => {
-      basePermissions[key] = false;
-    });
+    const basePermissions: AuthorizationData = {
+      canChangeUserAuthorization: false,
+      canChangeUserPassword: false,
+      canCreateOrganization: false,
+      canCreateStep: false,
+      canCreateClient: false,
+      canCreateProcedure: false,
+      canCreateTransaction: false,
+      canCreateAdmin: false,
+      canCreateInvoice: false,
+      canCreateExpense: false,
+      canCreateRevenue: false,
+      canCreateComptaSettings: false,
+      canCreateClientProcedure: false,
+      canCreateClientStep: false,
+      canCreateClientDocument: false,
+      canReadOrganization: false,
+      canReadStep: false,
+      canReadClient: false,
+      canReadProcedure: false,
+      canReadTransaction: false,
+      canReadInvoice: false,
+      canReadExpense: false,
+      canReadRevenue: false,
+      canReadComptaSettings: false,
+      canReadAdmin: false,
+      canReadClientProcedure: false,
+      canReadClientStep: false,
+      canReadClientDocument: false,
+      canEditOrganization: false,
+      canEditStep: false,
+      canEditClient: false,
+      canEditProcedure: false,
+      canEditTransaction: false,
+      canEditInvoice: false,
+      canEditExpense: false,
+      canEditRevenue: false,
+      canEditComptaSettings: false,
+      canEditAdmin: false,
+      canEditClientProcedure: false,
+      canEditClientStep: false,
+      canEditClientDocument: false,
+      canDeleteOrganization: false,
+      canDeleteStep: false,
+      canDeleteClient: false,
+      canDeleteProcedure: false,
+      canDeleteTransaction: false,
+      canDeleteInvoice: false,
+      canDeleteExpense: false,
+      canDeleteRevenue: false,
+      canDeleteComptaSettings: false,
+      canDeleteAdmin: false,
+      canDeleteClientProcedure: false,
+      canDeleteClientStep: false,
+      canDeleteClientDocument: false,
+    };
 
     switch (role) {
       case "ADMIN":
         // Admin a toutes les permissions
-        allKeys.forEach(key => {
-          basePermissions[key] = true;
-        });
-        break;
+        return {
+          canChangeUserAuthorization: true,
+          canChangeUserPassword: true,
+          canCreateOrganization: true,
+          canCreateStep: true,
+          canCreateClient: true,
+          canCreateProcedure: true,
+          canCreateTransaction: true,
+          canCreateAdmin: true,
+          canCreateInvoice: true,
+          canCreateExpense: true,
+          canCreateRevenue: true,
+          canCreateComptaSettings: true,
+          canCreateClientProcedure: true,
+          canCreateClientStep: true,
+          canCreateClientDocument: true,
+          canReadOrganization: true,
+          canReadStep: true,
+          canReadClient: true,
+          canReadProcedure: true,
+          canReadTransaction: true,
+          canReadInvoice: true,
+          canReadExpense: true,
+          canReadRevenue: true,
+          canReadComptaSettings: true,
+          canReadAdmin: true,
+          canReadClientProcedure: true,
+          canReadClientStep: true,
+          canReadClientDocument: true,
+          canEditOrganization: true,
+          canEditStep: true,
+          canEditClient: true,
+          canEditProcedure: true,
+          canEditTransaction: true,
+          canEditInvoice: true,
+          canEditExpense: true,
+          canEditRevenue: true,
+          canEditComptaSettings: true,
+          canEditAdmin: true,
+          canEditClientProcedure: true,
+          canEditClientStep: true,
+          canEditClientDocument: true,
+          canDeleteOrganization: true,
+          canDeleteStep: true,
+          canDeleteClient: true,
+          canDeleteProcedure: true,
+          canDeleteTransaction: true,
+          canDeleteInvoice: true,
+          canDeleteExpense: true,
+          canDeleteRevenue: true,
+          canDeleteComptaSettings: true,
+          canDeleteAdmin: true,
+          canDeleteClientProcedure: true,
+          canDeleteClientStep: true,
+          canDeleteClientDocument: true,
+        };
 
       case "USER":
         // User a des permissions de lecture et quelques créations
-        basePermissions.canReadOrganization = true;
-        basePermissions.canReadClient = true;
-        basePermissions.canReadProcedure = true;
-        basePermissions.canReadStep = true;
-        basePermissions.canReadClientProcedure = true;
-        basePermissions.canReadClientStep = true;
-        basePermissions.canReadClientDocument = true;
-        basePermissions.canCreateClient = true;
-        basePermissions.canEditClient = true;
-        basePermissions.canCreateClientProcedure = true;
-        basePermissions.canEditClientProcedure = true;
-        basePermissions.canCreateClientStep = true;
-        basePermissions.canEditClientStep = true;
-        basePermissions.canCreateClientDocument = true;
-        break;
+        return {
+          ...basePermissions,
+          canReadOrganization: true,
+          canReadClient: true,
+          canReadProcedure: true,
+          canReadStep: true,
+          canReadClientProcedure: true,
+          canReadClientStep: true,
+          canReadClientDocument: true,
+          canCreateClient: true,
+          canEditClient: true,
+          canCreateClientProcedure: true,
+          canEditClientProcedure: true,
+          canCreateClientStep: true,
+          canEditClientStep: true,
+          canCreateClientDocument: true,
+        };
 
       case "EMPLOYEE":
         // Employee a des permissions limitées aux procédures assignées
-        basePermissions.canReadProcedure = true;
-        basePermissions.canReadStep = true;
-        basePermissions.canReadClientProcedure = true;
-        basePermissions.canReadClientStep = true;
-        basePermissions.canReadClientDocument = true;
-        basePermissions.canEditClientStep = true;
-        basePermissions.canCreateClientDocument = true;
-        break;
+        return {
+          ...basePermissions,
+          canReadProcedure: true,
+          canReadStep: true,
+          canReadClientProcedure: true,
+          canReadClientStep: true,
+          canReadClientDocument: true,
+          canEditClientStep: true,
+          canCreateClientDocument: true,
+        };
 
       case "CLIENT":
         // Client a accès uniquement à ses propres dossiers
-        basePermissions.canReadClientProcedure = true;
-        basePermissions.canReadClientStep = true;
-        basePermissions.canReadClientDocument = true;
-        break;
+        return {
+          ...basePermissions,
+          canReadClientProcedure: true,
+          canReadClientStep: true,
+          canReadClientDocument: true,
+        };
 
       default:
         // Par défaut, aucune permission
-        break;
+        return basePermissions;
     }
-
-    return basePermissions as AuthorizationData;
   }
 
   /**
@@ -331,153 +407,243 @@ export class AuthorizationService extends BaseService {
    * Récupère les permissions d'un template de rôle
    */
   private getRoleTemplatePermissions(templateName: string): AuthorizationData | null {
-    const allKeys = this.getAllPermissionKeys();
-    const permissions: Record<string, boolean> = {};
-
-    // Initialiser toutes à false
-    allKeys.forEach(key => {
-      permissions[key] = false;
-    });
+    // Permissions de base (toutes à false)
+    const basePermissions: AuthorizationData = {
+      canChangeUserAuthorization: false,
+      canChangeUserPassword: false,
+      canCreateOrganization: false,
+      canCreateStep: false,
+      canCreateClient: false,
+      canCreateProcedure: false,
+      canCreateTransaction: false,
+      canCreateAdmin: false,
+      canCreateInvoice: false,
+      canCreateExpense: false,
+      canCreateRevenue: false,
+      canCreateComptaSettings: false,
+      canCreateClientProcedure: false,
+      canCreateClientStep: false,
+      canCreateClientDocument: false,
+      canReadOrganization: false,
+      canReadStep: false,
+      canReadClient: false,
+      canReadProcedure: false,
+      canReadTransaction: false,
+      canReadInvoice: false,
+      canReadExpense: false,
+      canReadRevenue: false,
+      canReadComptaSettings: false,
+      canReadAdmin: false,
+      canReadClientProcedure: false,
+      canReadClientStep: false,
+      canReadClientDocument: false,
+      canEditOrganization: false,
+      canEditStep: false,
+      canEditClient: false,
+      canEditProcedure: false,
+      canEditTransaction: false,
+      canEditInvoice: false,
+      canEditExpense: false,
+      canEditRevenue: false,
+      canEditComptaSettings: false,
+      canEditAdmin: false,
+      canEditClientProcedure: false,
+      canEditClientStep: false,
+      canEditClientDocument: false,
+      canDeleteOrganization: false,
+      canDeleteStep: false,
+      canDeleteClient: false,
+      canDeleteProcedure: false,
+      canDeleteTransaction: false,
+      canDeleteInvoice: false,
+      canDeleteExpense: false,
+      canDeleteRevenue: false,
+      canDeleteComptaSettings: false,
+      canDeleteAdmin: false,
+      canDeleteClientProcedure: false,
+      canDeleteClientStep: false,
+      canDeleteClientDocument: false,
+    };
 
     switch (templateName.toUpperCase()) {
       case "ADMIN_COMPLET":
       case "ADMINISTRATEUR":
         // Toutes les permissions
-        allKeys.forEach(key => {
-          permissions[key] = true;
-        });
-        break;
+        return {
+          canChangeUserAuthorization: true,
+          canChangeUserPassword: true,
+          canCreateOrganization: true,
+          canCreateStep: true,
+          canCreateClient: true,
+          canCreateProcedure: true,
+          canCreateTransaction: true,
+          canCreateAdmin: true,
+          canCreateInvoice: true,
+          canCreateExpense: true,
+          canCreateRevenue: true,
+          canCreateComptaSettings: true,
+          canCreateClientProcedure: true,
+          canCreateClientStep: true,
+          canCreateClientDocument: true,
+          canReadOrganization: true,
+          canReadStep: true,
+          canReadClient: true,
+          canReadProcedure: true,
+          canReadTransaction: true,
+          canReadInvoice: true,
+          canReadExpense: true,
+          canReadRevenue: true,
+          canReadComptaSettings: true,
+          canReadAdmin: true,
+          canReadClientProcedure: true,
+          canReadClientStep: true,
+          canReadClientDocument: true,
+          canEditOrganization: true,
+          canEditStep: true,
+          canEditClient: true,
+          canEditProcedure: true,
+          canEditTransaction: true,
+          canEditInvoice: true,
+          canEditExpense: true,
+          canEditRevenue: true,
+          canEditComptaSettings: true,
+          canEditAdmin: true,
+          canEditClientProcedure: true,
+          canEditClientStep: true,
+          canEditClientDocument: true,
+          canDeleteOrganization: true,
+          canDeleteStep: true,
+          canDeleteClient: true,
+          canDeleteProcedure: true,
+          canDeleteTransaction: true,
+          canDeleteInvoice: true,
+          canDeleteExpense: true,
+          canDeleteRevenue: true,
+          canDeleteComptaSettings: true,
+          canDeleteAdmin: true,
+          canDeleteClientProcedure: true,
+          canDeleteClientStep: true,
+          canDeleteClientDocument: true,
+        };
 
       case "MANAGER":
       case "GESTIONNAIRE":
-        // Read all
-        permissions.canReadOrganization = true;
-        permissions.canReadClient = true;
-        permissions.canReadProcedure = true;
-        permissions.canReadStep = true;
-        permissions.canReadClientProcedure = true;
-        permissions.canReadClientStep = true;
-        permissions.canReadClientDocument = true;
-        permissions.canReadTransaction = true;
-        permissions.canReadExpense = true;
-        permissions.canReadRevenue = true;
-        permissions.canReadInvoice = true;
-
-        // Create operational
-        permissions.canCreateClient = true;
-        permissions.canCreateProcedure = true;
-        permissions.canCreateStep = true;
-        permissions.canCreateClientProcedure = true;
-        permissions.canCreateClientStep = true;
-        permissions.canCreateClientDocument = true;
-        permissions.canCreateTransaction = true;
-
-        // Edit operational
-        permissions.canEditClient = true;
-        permissions.canEditProcedure = true;
-        permissions.canEditStep = true;
-        permissions.canEditClientProcedure = true;
-        permissions.canEditClientStep = true;
-        permissions.canEditClientDocument = true;
-
-        // No critical deletes
-        break;
+        // Gestion opérationnelle sans suppressions critiques
+        return {
+          ...basePermissions,
+          canReadOrganization: true,
+          canReadClient: true,
+          canReadProcedure: true,
+          canReadStep: true,
+          canReadClientProcedure: true,
+          canReadClientStep: true,
+          canReadClientDocument: true,
+          canReadTransaction: true,
+          canReadExpense: true,
+          canReadRevenue: true,
+          canReadInvoice: true,
+          canCreateClient: true,
+          canCreateProcedure: true,
+          canCreateStep: true,
+          canCreateClientProcedure: true,
+          canCreateClientStep: true,
+          canCreateClientDocument: true,
+          canCreateTransaction: true,
+          canEditClient: true,
+          canEditProcedure: true,
+          canEditStep: true,
+          canEditClientProcedure: true,
+          canEditClientStep: true,
+          canEditClientDocument: true,
+        };
 
       case "COMPTABLE":
-        // Read all
-        permissions.canReadOrganization = true;
-        permissions.canReadClient = true;
-        permissions.canReadProcedure = true;
-        permissions.canReadClientProcedure = true;
-        permissions.canReadTransaction = true;
-        permissions.canReadExpense = true;
-        permissions.canReadRevenue = true;
-        permissions.canReadInvoice = true;
-        permissions.canReadComptaSettings = true;
-
-        // Full CRUD on financial
-        permissions.canCreateTransaction = true;
-        permissions.canCreateExpense = true;
-        permissions.canCreateRevenue = true;
-        permissions.canCreateInvoice = true;
-        permissions.canCreateComptaSettings = true;
-
-        permissions.canEditTransaction = true;
-        permissions.canEditExpense = true;
-        permissions.canEditRevenue = true;
-        permissions.canEditInvoice = true;
-        permissions.canEditComptaSettings = true;
-
-        permissions.canDeleteTransaction = true;
-        permissions.canDeleteExpense = true;
-        permissions.canDeleteRevenue = true;
-        permissions.canDeleteInvoice = true;
-        break;
+        // Accès financier complet
+        return {
+          ...basePermissions,
+          canReadOrganization: true,
+          canReadClient: true,
+          canReadProcedure: true,
+          canReadClientProcedure: true,
+          canReadTransaction: true,
+          canReadExpense: true,
+          canReadRevenue: true,
+          canReadInvoice: true,
+          canReadComptaSettings: true,
+          canCreateTransaction: true,
+          canCreateExpense: true,
+          canCreateRevenue: true,
+          canCreateInvoice: true,
+          canCreateComptaSettings: true,
+          canEditTransaction: true,
+          canEditExpense: true,
+          canEditRevenue: true,
+          canEditInvoice: true,
+          canEditComptaSettings: true,
+          canDeleteTransaction: true,
+          canDeleteExpense: true,
+          canDeleteRevenue: true,
+          canDeleteInvoice: true,
+        };
 
       case "ASSISTANT":
       case "ASSISTANT_ADMIN":
-        // Read operational
-        permissions.canReadOrganization = true;
-        permissions.canReadClient = true;
-        permissions.canReadProcedure = true;
-        permissions.canReadStep = true;
-        permissions.canReadClientProcedure = true;
-        permissions.canReadClientStep = true;
-        permissions.canReadClientDocument = true;
-
-        // Create clients and procedures
-        permissions.canCreateClient = true;
-        permissions.canCreateClientProcedure = true;
-        permissions.canCreateClientStep = true;
-        permissions.canCreateClientDocument = true;
-
-        // Edit
-        permissions.canEditClient = true;
-        permissions.canEditClientProcedure = true;
-        permissions.canEditClientStep = true;
-        permissions.canEditClientDocument = true;
-
-        // Limited delete
-        permissions.canDeleteClientDocument = true;
-        break;
+        // Gestion des clients et dossiers
+        return {
+          ...basePermissions,
+          canReadOrganization: true,
+          canReadClient: true,
+          canReadProcedure: true,
+          canReadStep: true,
+          canReadClientProcedure: true,
+          canReadClientStep: true,
+          canReadClientDocument: true,
+          canCreateClient: true,
+          canCreateClientProcedure: true,
+          canCreateClientStep: true,
+          canCreateClientDocument: true,
+          canEditClient: true,
+          canEditClientProcedure: true,
+          canEditClientStep: true,
+          canEditClientDocument: true,
+          canDeleteClientDocument: true,
+        };
 
       case "CONSULTANT":
       case "VIEWER":
-        // Read only (except admin data)
-        permissions.canReadOrganization = true;
-        permissions.canReadClient = true;
-        permissions.canReadProcedure = true;
-        permissions.canReadStep = true;
-        permissions.canReadClientProcedure = true;
-        permissions.canReadClientStep = true;
-        permissions.canReadClientDocument = true;
-        permissions.canReadTransaction = true;
-        permissions.canReadExpense = true;
-        permissions.canReadRevenue = true;
-        permissions.canReadInvoice = true;
-        permissions.canReadComptaSettings = true;
-        break;
+        // Lecture seule
+        return {
+          ...basePermissions,
+          canReadOrganization: true,
+          canReadClient: true,
+          canReadProcedure: true,
+          canReadStep: true,
+          canReadClientProcedure: true,
+          canReadClientStep: true,
+          canReadClientDocument: true,
+          canReadTransaction: true,
+          canReadExpense: true,
+          canReadRevenue: true,
+          canReadInvoice: true,
+          canReadComptaSettings: true,
+        };
 
       case "OPERATEUR":
-        // Read assigned procedures
-        permissions.canReadProcedure = true;
-        permissions.canReadStep = true;
-        permissions.canReadClientProcedure = true;
-        permissions.canReadClientStep = true;
-        permissions.canReadClientDocument = true;
-
-        // Update client steps
-        permissions.canEditClientStep = true;
-
-        // Add documents
-        permissions.canCreateClientDocument = true;
-        break;
+        // Traitement des dossiers assignés
+        return {
+          ...basePermissions,
+          canReadProcedure: true,
+          canReadStep: true,
+          canReadClientProcedure: true,
+          canReadClientStep: true,
+          canReadClientDocument: true,
+          canEditClientStep: true,
+          canCreateClientDocument: true,
+        };
 
       default:
         return null;
     }
-
-    return permissions as AuthorizationData;
   }
 
   /**

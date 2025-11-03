@@ -307,7 +307,7 @@ export type getStatisticsDataType = Prisma.PromiseReturnType<
 export async function getClientServiceData(timeRange: 'month' | 'year' | 'all' = 'all' ) {
   const organizationId = await getOrgnaizationId();
   const now = new Date();
-  
+
   // Define the time range based on the parameter
   let startDate;
   switch (timeRange) {
@@ -335,62 +335,69 @@ export async function getClientServiceData(timeRange: 'month' | 'year' | 'all' =
     }
   });
 
-  // For each procedure, get the client registration data over time
-  const seriesData = await Promise.all(
-    procedures.map(async (procedure) => {
-      // Get client procedures for this specific procedure
-      const clientProcedures = await prisma.clientProcedure.findMany({
-        where: {
-          organizationId,
-          procedureId: procedure.id,
-          startDate: {
-            gte: startDate
-          }
-        },
-        orderBy: {
-          startDate: 'asc'
-        },
-        select: {
-          startDate: true,
-          procedureId: true
-        }
+  // OPTIMIZATION: Get ALL client procedures in a single query instead of N+1 queries
+  const allClientProcedures = await prisma.clientProcedure.findMany({
+    where: {
+      organizationId,
+      procedureId: { in: procedures.map(p => p.id) },
+      startDate: { gte: startDate }
+    },
+    select: {
+      startDate: true,
+      procedureId: true
+    },
+    orderBy: {
+      startDate: 'asc'
+    }
+  });
+
+  // Group client procedures by procedureId in memory
+  const clientProceduresByProcedure = allClientProcedures.reduce((acc, cp) => {
+    if (!acc[cp.procedureId]) {
+      acc[cp.procedureId] = [];
+    }
+    acc[cp.procedureId].push(cp);
+    return acc;
+  }, {} as Record<string, Array<{ startDate: Date; procedureId: string }>>);
+
+  // Build series data for each procedure
+  const seriesData = procedures.map((procedure) => {
+    const clientProcedures = clientProceduresByProcedure[procedure.id] || [];
+
+    // Group the data by date - count registrations on each date
+    const groupedByDate = clientProcedures.reduce((acc, cp) => {
+      // Format the date to YYYY-MM-DD for grouping
+      const dateKey = cp.startDate.toISOString().split('T')[0];
+
+      if (!acc[dateKey]) {
+        acc[dateKey] = 0;
+      }
+      acc[dateKey]++;
+
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Convert to cumulative data for showing total clients over time
+    const cumulativeData : Array<{
+        x: Date;
+        y: number;
+      }> = [];
+    let cumulativeCount = 0;
+
+    Object.keys(groupedByDate).sort().forEach(date => {
+      cumulativeCount += groupedByDate[date];
+      cumulativeData.push({
+        x: new Date(date),
+        y: cumulativeCount
       });
+    });
 
-      // Group the data by date - count registrations on each date
-      const groupedByDate = clientProcedures.reduce((acc, cp) => {
-        // Format the date to YYYY-MM-DD for grouping
-        const dateKey = cp.startDate.toISOString().split('T')[0];
-        
-        if (!acc[dateKey]) {
-          acc[dateKey] = 0;
-        }
-        acc[dateKey]++;
-        
-        return acc;
-      }, {} as Record<string, number>);
-
-      // Convert to cumulative data for showing total clients over time
-      const cumulativeData : Array<{
-          x: Date;
-          y: number;
-        }> = [];
-      let cumulativeCount = 0;
-      
-      Object.keys(groupedByDate).sort().forEach(date => {
-        cumulativeCount += groupedByDate[date];
-        cumulativeData.push({
-          x: new Date(date),
-          y: cumulativeCount
-        });
-      });
-
-      // Return the series data in format required by ApexCharts
-      return {
-        name: procedure.name,
-        data: cumulativeData
-      };
-    })
-  );
+    // Return the series data in format required by ApexCharts
+    return {
+      name: procedure.name,
+      data: cumulativeData
+    };
+  });
 
   // Filter out procedures with no client data
   const filteredSeriesData = seriesData.filter(series => series.data.length > 0);

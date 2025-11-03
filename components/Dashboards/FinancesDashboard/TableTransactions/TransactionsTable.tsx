@@ -89,7 +89,7 @@ export const TransactionsTable = ({ transactions }: { transactions: getTransacti
       case "EXPENSE":
         return <ArrowDownCircle className="w-5 h-5 text-red-500" />;
       case "TRANSFER":
-        return <ArrowUpCircle className="w-5 h-5 text-brand-500" rotate={90} />;
+        return <ArrowUpCircle className="w-5 h-5 text-brand-500 rotate-90" />;
       default:
         return null;
     }

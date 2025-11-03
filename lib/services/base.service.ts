@@ -1,12 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import prisma from "@/db/prisma";
 
 export abstract class BaseService {
   protected prisma: PrismaClient;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    // Use singleton instance instead of creating new connections
+    this.prisma = prisma;
   }
 
   /**
