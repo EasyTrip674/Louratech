@@ -41,7 +41,6 @@ export default function RootLayout({
               <Analytics />
               <ThemeProvider>
               <PostHogProvider>
-
               <TansQueryProvider>
                 <SidebarProvider>
                   <>

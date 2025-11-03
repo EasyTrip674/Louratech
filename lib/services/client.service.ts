@@ -1,4 +1,6 @@
 import { BaseService } from "./base.service";
+import type { PaginationParams, PaginatedResponse } from "@/lib/types/pagination";
+import { normalizePaginationParams, calculatePaginationSkip, createPaginationMeta } from "@/lib/types/pagination";
 
 // Types équivalents à ceux de db/queries/clients.query.ts
 import type { Prisma } from "@prisma/client";
@@ -234,29 +236,54 @@ export class ClientService extends BaseService {
   }
 
   /**
-   * Récupère tous les clients de l'organisation
+   * Récupère tous les clients de l'organisation (avec pagination)
    */
-  async getAllClients() {
+  async getAllClients(params: PaginationParams = {}) {
     try {
       const organizationId = await this.getOrganizationId();
-      
-      return await this.prisma.client.findMany({
-        where: { organizationId },
-        select: {
-          id: true,
-          address: true,
-          phone: true,
-          passport: true,
-          birthDate: true,
-          fatherLastName: true,
-          fatherFirstName: true,
-          motherLastName: true,
-          motherFirstName: true,
-          firstName: true,
-          lastName: true,
-          email: true,
-        }
-      });
+      const { page, limit, search, sortBy, sortOrder } = normalizePaginationParams(params);
+      const skip = calculatePaginationSkip(page, limit);
+
+      // Construire la condition de recherche
+      const where: Prisma.ClientWhereInput = {
+        organizationId,
+        ...(search && {
+          OR: [
+            { firstName: { contains: search, mode: 'insensitive' } },
+            { lastName: { contains: search, mode: 'insensitive' } },
+            { email: { contains: search, mode: 'insensitive' } },
+            { phone: { contains: search, mode: 'insensitive' } },
+          ],
+        }),
+      };
+
+      // Requêtes parallèles pour données + total
+      const [data, total] = await Promise.all([
+        this.prisma.client.findMany({
+          where,
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            passport: true,
+            address: true,
+            birthDate: true,
+            createdAt: true,
+            // Optimisé : seulement les champs nécessaires pour la liste
+          },
+          skip,
+          take: limit,
+          orderBy: { [sortBy]: sortOrder },
+        }),
+        this.prisma.client.count({ where }),
+      ]);
+
+      return {
+        data,
+        pagination: createPaginationMeta(page, limit, total),
+      } as PaginatedResponse<typeof data[0]>;
     } catch (error) {
       this.handleDatabaseError(error, "getAllClients");
     }
