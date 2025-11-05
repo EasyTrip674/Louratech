@@ -13,7 +13,7 @@ async function ClientsDataProvider({ children }: { children: React.ReactNode }) 
   try {
     const clients = await clientService.getAllClients();
     
-    if (!clients || clients.length === 0) {
+    if (!clients || !clients?.data || clients?.data?.length === 0) {
       return (
         <div className="text-center py-8">
           <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
